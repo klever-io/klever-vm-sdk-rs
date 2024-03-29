@@ -1,6 +1,6 @@
 use core::cmp::Ordering;
 
-use multiversx_sc::api::{use_raw_handle, BigFloatApiImpl, HandleConstraints, Sign};
+use klever_sc::api::{use_raw_handle, BigFloatApiImpl, HandleConstraints, Sign};
 
 use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
 

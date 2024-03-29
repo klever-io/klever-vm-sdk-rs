@@ -1,5 +1,5 @@
 {
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -97,7 +97,7 @@
                 "arguments": [
                     [
                         "nested:str:TOKENA-1234",
-                        "nested:str:EGLD",
+                        "nested:str:KLV",
                         "nested:str:TOKENB-1234"
                     ]
                 ],
@@ -108,7 +108,7 @@
                 "out": [
                     [
                         "nested:str:TOKENA-1234",
-                        "nested:str:EGLD",
+                        "nested:str:KLV",
                         "nested:str:TOKENB-1234"
                     ]
                 ],

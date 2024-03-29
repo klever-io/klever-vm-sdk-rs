@@ -1,6 +1,6 @@
 {
     "name": "payment_sameShard",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -30,7 +30,7 @@
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:proxy-first",
-                "egldValue": "0x123400",
+                "klvValue": "0x123400",
                 "function": "forwardToOtherContract",
                 "arguments": [],
                 "gasLimit": "0x1000000000000",

@@ -1,6 +1,6 @@
 use adder::*;
-use multiversx_sc::storage::mappers::SingleValue;
-use multiversx_sc_scenario::{api::StaticApi, num_bigint::BigUint, scenario_model::*, *};
+use klever_sc::storage::mappers::SingleValue;
+use klever_sc_scenario::{api::StaticApi, num_bigint::BigUint, scenario_model::*, *};
 
 const ADDER_PATH_EXPR: &str = "file:output/adder.wasm";
 
@@ -24,7 +24,7 @@ fn adder_blackbox_with_values() {
         .set_state_step(
             SetStateStep::new()
                 .put_account(owner_address, Account::new().nonce(1))
-                .new_address(owner_address, 1, "sc:adder"),
+                .new_address(owner_address, 2, "sc:adder"),
         )
         .sc_deploy_use_result(
             ScDeployStep::new()

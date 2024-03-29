@@ -1,5 +1,5 @@
-pub const NON_PAYABLE_FUNC_EGLD: &str = "function does not accept EGLD payment";
-pub const NON_PAYABLE_FUNC_ESDT: &str = "function does not accept ESDT payment";
+pub const NON_PAYABLE_FUNC_KLV: &str = "function does not accept KLV payment";
+pub const NON_PAYABLE_FUNC_KDA: &str = "function does not accept KDA payment";
 
 pub const BIG_INT_BITWISE_OPERATION_NEGATIVE: &str =
     "bitwise operations only allowed on positive integers";

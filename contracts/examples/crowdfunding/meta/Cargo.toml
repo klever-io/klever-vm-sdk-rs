@@ -1,0 +1,13 @@
+[package]
+name = "crowdfunding-meta"
+version = "0.0.0"
+authors = ["Yuri Miguel <yurimiguel@klever.io>"]
+edition = "2021"
+publish = false
+
+[dependencies.crowdfunding]
+path = ".."
+
+[dependencies.klever-sc-meta]
+version = "0.43.3"
+path = "../../../../framework/meta"

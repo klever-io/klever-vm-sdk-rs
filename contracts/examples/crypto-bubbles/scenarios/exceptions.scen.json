@@ -34,7 +34,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "0x04",
+                "status": "57",
                 "message": "str:argument decode error (winner): bad array length",
                 "logs": "*",
                 "gas": "*",
@@ -56,7 +56,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "0x04",
+                "status": "57",
                 "message": "str:argument decode error (player): bad array length",
                 "logs": "*",
                 "gas": "*",

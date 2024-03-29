@@ -1,5 +1,5 @@
 use formatted_message_features::*;
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc_scenario::api::StaticApi;
 
 fn check_printed_and_clear(expected: &str) {
     let printed = StaticApi::printed_messages();

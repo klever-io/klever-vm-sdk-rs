@@ -3,7 +3,7 @@
     "steps": [
         {
             "step": "externalSteps",
-            "path": "fund-egld-and-esdt.scen.json"
+            "path": "fund-klv-and-kda.scen.json"
         },
         {
             "step": "scCall",
@@ -22,7 +22,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:cannot deposit funds without covering the fee cost first",
                 "logs": "*",
                 "gas": "*",
@@ -35,7 +35,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:the_digital_cash_contract",
-                "egldValue": "1,000",
+                "klvValue": "1,000",
                 "function": "deposit_fees",
                 "arguments": [
                     "0xa40e72cdac3580e7203a4c2565c932f7691c35e624bcfd82718d7f559c88f440"
@@ -81,7 +81,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:the_digital_cash_contract",
-                "egldValue": "1,000",
+                "klvValue": "1,000",
                 "function": "deposit_fees",
                 "arguments": [
                     "0x8dc17613990e9b7476401a36d112d1a4d31190dec21e7e9a3c933872a27613ee"
@@ -127,7 +127,7 @@
                 "sc:the_digital_cash_contract": {
                     "nonce": "0",
                     "balance": "4,040",
-                    "esdt": {
+                    "kda": {
                         "str:CASHTOKEN-123456": "50",
                         "str:CASHTOKEN-112233": "50",
                         "str:CASHTOKEN-445566": "50",
@@ -136,8 +136,10 @@
                     "storage": {
                         "str:deposit|0xa40e72cdac3580e7203a4c2565c932f7691c35e624bcfd82718d7f559c88f440": {
                             "0-depositor_address": "address:acc2",
-                            "1-esdt_funds": "u32:0",
-                            "2-egld_funds": "biguint:1,000",
+                            "1-kda_funds": {
+                                "0-list_size": "u32:0"
+                            },
+                            "2-klv_funds": "biguint:1,000",
                             "3-valability": "u64:60",
                             "4-expiration_round": "u64:10",
                             "5-fees": {
@@ -147,8 +149,17 @@
                         },
                         "str:deposit|0x487bd4010b50c24a02018345fe5171edf4182e6294325382c75ef4c4409f01bd": {
                             "0-depositor_address": "address:acc2",
-                            "1-esdt_funds": "u32:1|nested:str:CASHTOKEN-123456|u64:0|biguint:50",
-                            "2-egld_funds": "biguint:0",
+                            "1-kda_funds": {
+                                "0-list_size": "u32:1",
+                                "1-items": [
+                                    {
+                                        "0-token_identifier": "nested:str:CASHTOKEN-123456",
+                                        "1-nonce": "u64:0",
+                                        "2-amount": "biguint:50"
+                                    }
+                                ]
+                            },
+                            "2-klv_funds": "biguint:0",
                             "3-valability": "u64:100",
                             "4-expiration_round": "u64:16",
                             "5-fees": {
@@ -158,8 +169,27 @@
                         },
                         "str:deposit|0x8dc17613990e9b7476401a36d112d1a4d31190dec21e7e9a3c933872a27613ee": {
                             "0-depositor_address": "address:acc2",
-                            "1-esdt_funds": "u32:3|nested:str:CASHTOKEN-112233|u64:0|biguint:50|nested:str:CASHTOKEN-445566|u64:0|biguint:50|nested:str:CASHTOKEN-778899|u64:0|biguint:50",
-                            "2-egld_funds": "biguint:0",
+                            "1-kda_funds": {
+                                "0-list_size": "u32:3",
+                                "1-items": [
+                                    {
+                                        "0-token_identifier": "nested:str:CASHTOKEN-112233",
+                                        "1-nonce": "u64:0",
+                                        "2-amount": "biguint:50"
+                                    },
+                                    {
+                                        "0-token_identifier": "nested:str:CASHTOKEN-445566",
+                                        "1-nonce": "u64:0",
+                                        "2-amount": "biguint:50"
+                                    },
+                                    {
+                                        "0-token_identifier": "nested:str:CASHTOKEN-778899",
+                                        "1-nonce": "u64:0",
+                                        "2-amount": "biguint:50"
+                                    }
+                                ]
+                            },
+                            "2-klv_funds": "biguint:0",
                             "3-valability": "u64:100",
                             "4-expiration_round": "u64:16",
                             "5-fees": {
@@ -180,7 +210,7 @@
                 "address:acc2": {
                     "nonce": "7",
                     "balance": "997,000",
-                    "esdt": {
+                    "kda": {
                         "str:CASHTOKEN-123456": "50"
                     },
                     "storage": {}
@@ -188,7 +218,7 @@
                 "address:acc3": {
                     "nonce": "3",
                     "balance": "999,970",
-                    "esdt": {
+                    "kda": {
                         "str:CASHTOKEN-112233": "50",
                         "str:CASHTOKEN-445566": "50",
                         "str:CASHTOKEN-778899": "50"

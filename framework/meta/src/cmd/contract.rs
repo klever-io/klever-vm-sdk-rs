@@ -6,7 +6,7 @@ pub mod output_contract;
 use crate::cli_args::{ContractCliAction, ContractCliArgs};
 use clap::Parser;
 use meta_config::MetaConfig;
-use multiversx_sc::contract_base::ContractAbiProvider;
+use klever_sc::contract_base::ContractAbiProvider;
 use output_contract::OutputContractGlobalConfig;
 
 /// Entry point in the program from the contract meta crates.

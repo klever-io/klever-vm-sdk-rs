@@ -30,7 +30,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Only the token owner can approve!",
                 "gas": "*",
                 "refund": "*"

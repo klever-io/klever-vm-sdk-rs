@@ -1,4 +1,4 @@
-use multiversx_sc_codec as codec;
+use klever_sc_codec as codec;
 
 use codec::{
     test_util::{check_dep_encode_decode, check_top_encode_decode},

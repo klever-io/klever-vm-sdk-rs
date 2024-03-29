@@ -5,7 +5,7 @@
             "step": "setState",
             "accounts": {
                 "address:the-address": {
-                    "username": "str:theusername.elrond"
+                    "username": "str:theusername.klever"
                 }
             }
         },
@@ -13,7 +13,7 @@
             "step": "checkState",
             "accounts": {
                 "address:the-address": {
-                    "username": "str:wrong.elrond"
+                    "username": "str:wrong.klever"
                 }
             }
         }

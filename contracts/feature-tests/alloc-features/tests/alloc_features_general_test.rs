@@ -1,5 +1,5 @@
-use multiversx_sc::types::{SCResult, StaticSCError};
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc::types::{SCResult, StaticSCError};
+use klever_sc_scenario::api::StaticApi;
 
 use alloc_features::macro_features_legacy::MacroFeaturesLegacy;
 

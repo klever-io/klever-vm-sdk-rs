@@ -1,6 +1,6 @@
 use factorial::*;
-use multiversx_sc::types::BigUint;
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc::types::BigUint;
+use klever_sc_scenario::api::StaticApi;
 
 #[test]
 fn test_factorial() {

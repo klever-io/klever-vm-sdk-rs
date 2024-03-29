@@ -9,17 +9,9 @@ pub enum CallType {
     // DirectCall means that the call is an explicit SC invocation originating from a user Transaction
     DirectCall = 0,
 
-    // AsynchronousCall means that the invocation was performed from within
-    // another SmartContract from another Shard, using asyncCall
-    AsynchronousCall = 1,
-
-    // AsynchronousCallBack means that an AsynchronousCall was performed
-    // previously, and now the control returns to the caller SmartContract's callBack method
-    AsynchronousCallBack = 2,
-
-    // ESDTTransferAndExecute means that there is a smart contract execution after the ESDT transfer
+    // KDATransferAndExecute means that there is a smart contract execution after the KDA transfer
     // this is needed in order to skip the check whether a contract is payable or not
-    ESDTTransferAndExecute = 3,
+    KDATransferAndExecute = 1,
 }
 
 // VmValueRequest defines the request struct for values available in a VM
@@ -61,9 +53,6 @@ pub struct OutputAccountApi {
     address: Address,
     nonce: u64,
 
-    // TODO: unknow type of data
-    // balance: Option<String>,
-    balance_delta: u64,
     storage_updates: Option<HashMap<String, StorageUpdateApi>>,
     code: Option<String>,
     code_metadata: Option<String>,

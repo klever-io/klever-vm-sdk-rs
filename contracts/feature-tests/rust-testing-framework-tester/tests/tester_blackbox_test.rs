@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::{api::StaticApi, scenario_model::*, *};
+use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
 use rust_testing_framework_tester::*; // TODO: clean up imports
 
 const WASM_PATH_EXPR: &str = "file:output/rust-testing-framework-tester.wasm";
@@ -29,7 +29,7 @@ fn tester_deploy_test() {
         .set_state_step(
             SetStateStep::new()
                 .put_account(owner_address, Account::new())
-                .new_address(owner_address, 0, &adder_contract),
+                .new_address(owner_address, 1, &adder_contract),
         )
         .sc_deploy_use_result(
             ScDeployStep::new()
@@ -59,7 +59,7 @@ fn tester_deploy_test_spawned_thread() {
             .set_state_step(
                 SetStateStep::new()
                     .put_account(owner_address, Account::new())
-                    .new_address(owner_address, 0, &adder_contract),
+                    .new_address(owner_address, 1, &adder_contract),
             )
             .sc_deploy_use_result(
                 ScDeployStep::new()

@@ -1,12 +1,13 @@
 {
+    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
             "accounts": {
                 "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60": {
                     "nonce": "481",
-                    "balance": "106274669842530000003",
-                    "esdt": {
+                    "balance": "10627466984253000",
+                    "kda": {
                         "str:CAN-14dc0a": "1000",
                         "str:CAN-2abf4b": "1000",
                         "str:CAN-6d39e6": "1000",
@@ -21,7 +22,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60",
-                    "creatorNonce": "481",
+                    "creatorNonce": "482",
                     "newAddress": "0x0000000000000000050028600ceb73ac22ec0b6f257aff7bed74dffa3ebfed60"
                 }
             ]

@@ -1,13 +1,9 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
 }
 
-#[test]
-fn use_module_claim_developer_rewards_go() {
-    world().run("scenarios/use_module_claim_developer_rewards.scen.json");
-}
 
 #[test]
 fn use_module_dns_register_go() {

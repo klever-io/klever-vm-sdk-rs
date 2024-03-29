@@ -54,10 +54,6 @@ impl ScenarioRunner for ScenarioWorld {
         self.for_each_runner_mut(|runner| runner.run_transfer_step(step));
     }
 
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        self.for_each_runner_mut(|runner| runner.run_validator_reward_step(step));
-    }
-
     fn run_check_state_step(&mut self, step: &CheckStateStep) {
         self.for_each_runner_mut(|runner| runner.run_check_state_step(step));
     }

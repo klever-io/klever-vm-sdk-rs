@@ -13,7 +13,7 @@
             "gitVersion": "<git version here>"
         },
         "framework": {
-            "name": "multiversx-sc",
+            "name": "klever-sc",
             "version": "0.43.3"
         }
     },
@@ -29,7 +29,7 @@
         "docs": [
             "The external view init prepares a contract that looks in another contract's storage.",
             "It takes a single argument, the other contract's address",
-            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `multiversx_sc::external_view_contract`."
+            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `klever_sc::external_view_contract`."
         ],
         "inputs": [
             {
@@ -99,7 +99,6 @@
             ]
         }
     ],
-    "hasCallback": false,
     "types": {
         "AbiEnum": {
             "type": "enum",
@@ -217,64 +216,36 @@
                 }
             ]
         },
-        "EsdtLocalRole": {
-            "type": "enum",
-            "variants": [
-                {
-                    "name": "None",
-                    "discriminant": 0
-                },
-                {
-                    "name": "Mint",
-                    "discriminant": 1
-                },
-                {
-                    "name": "Burn",
-                    "discriminant": 2
-                },
-                {
-                    "name": "NftCreate",
-                    "discriminant": 3
-                },
-                {
-                    "name": "NftAddQuantity",
-                    "discriminant": 4
-                },
-                {
-                    "name": "NftBurn",
-                    "discriminant": 5
-                },
-                {
-                    "name": "NftAddUri",
-                    "discriminant": 6
-                },
-                {
-                    "name": "NftUpdateAttributes",
-                    "discriminant": 7
-                },
-                {
-                    "name": "Transfer",
-                    "discriminant": 8
-                }
-            ]
-        },
-        "EsdtTokenData": {
+        "AttributesInfo": {
             "type": "struct",
             "fields": [
                 {
-                    "name": "token_type",
-                    "type": "EsdtTokenType"
-                },
-                {
-                    "name": "amount",
-                    "type": "BigUint"
-                },
-                {
-                    "name": "frozen",
+                    "name": "is_paused",
                     "type": "bool"
                 },
                 {
-                    "name": "hash",
+                    "name": "is_nft_mint_stopped",
+                    "type": "bool"
+                },
+                {
+                    "name": "is_royalties_change_stopped",
+                    "type": "bool"
+                },
+                {
+                    "name": "is_nft_metadata_change_stopped",
+                    "type": "bool"
+                }
+            ]
+        },
+        "KdaTokenData": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "asset_type",
+                    "type": "KdaTokenType"
+                },
+                {
+                    "name": "id",
                     "type": "bytes"
                 },
                 {
@@ -282,24 +253,68 @@
                     "type": "bytes"
                 },
                 {
-                    "name": "attributes",
+                    "name": "ticker",
                     "type": "bytes"
                 },
                 {
-                    "name": "creator",
+                    "name": "owner_address",
                     "type": "Address"
                 },
                 {
-                    "name": "royalties",
-                    "type": "BigUint"
+                    "name": "logo",
+                    "type": "bytes"
                 },
                 {
                     "name": "uris",
-                    "type": "List<bytes>"
+                    "type": "List<URI>"
+                },
+                {
+                    "name": "precision",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "initial_supply",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "circulating_supply",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "max_supply",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "minted_value",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "burned_value",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "issue_date",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "royalties",
+                    "type": "RoyaltiesData"
+                },
+                {
+                    "name": "properties",
+                    "type": "PropertiesInfo"
+                },
+                {
+                    "name": "attributes",
+                    "type": "AttributesInfo"
+                },
+                {
+                    "name": "roles",
+                    "type": "List<RolesInfo>"
                 }
             ]
         },
-        "EsdtTokenPayment": {
+        "KdaTokenPayment": {
             "type": "struct",
             "fields": [
                 {
@@ -316,7 +331,7 @@
                 }
             ]
         },
-        "EsdtTokenType": {
+        "KdaTokenType": {
             "type": "enum",
             "variants": [
                 {
@@ -332,12 +347,8 @@
                     "discriminant": 2
                 },
                 {
-                    "name": "Meta",
-                    "discriminant": 3
-                },
-                {
                     "name": "Invalid",
-                    "discriminant": 4
+                    "discriminant": 3
                 }
             ]
         },
@@ -464,6 +475,164 @@
                 {
                     "name": "something",
                     "type": "()"
+                }
+            ]
+        },
+        "PropertiesInfo": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "can_freeze",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_wipe",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_pause",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_mint",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_burn",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_change_owner",
+                    "type": "bool"
+                },
+                {
+                    "name": "can_add_roles",
+                    "type": "bool"
+                },
+                {
+                    "name": "limit_transfer",
+                    "type": "bool"
+                }
+            ]
+        },
+        "RolesInfo": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                },
+                {
+                    "name": "has_role_mint",
+                    "type": "bool"
+                },
+                {
+                    "name": "has_role_set_ito_prices",
+                    "type": "bool"
+                },
+                {
+                    "name": "has_role_deposit",
+                    "type": "bool"
+                },
+                {
+                    "name": "has_role_transfer",
+                    "type": "bool"
+                }
+            ]
+        },
+        "RoyaltiesData": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                },
+                {
+                    "name": "transfer_percentage",
+                    "type": "List<RoyaltyData>"
+                },
+                {
+                    "name": "transfer_fixed",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "market_percentage",
+                    "type": "u32"
+                },
+                {
+                    "name": "market_fixed",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "split_royalties",
+                    "type": "List<RoyaltyInfo>"
+                },
+                {
+                    "name": "ito_percentage",
+                    "type": "u32"
+                },
+                {
+                    "name": "ito_fixed",
+                    "type": "BigUint"
+                }
+            ]
+        },
+        "RoyaltyData": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "percentage",
+                    "type": "u32"
+                }
+            ]
+        },
+        "RoyaltyInfo": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "Address"
+                },
+                {
+                    "name": "percent_transfer_percentage",
+                    "type": "u32"
+                },
+                {
+                    "name": "percent_transfer_fixed",
+                    "type": "u32"
+                },
+                {
+                    "name": "percent_market_percentage",
+                    "type": "u32"
+                },
+                {
+                    "name": "percent_market_fixed",
+                    "type": "u32"
+                },
+                {
+                    "name": "percent_ito_percentage",
+                    "type": "u32"
+                },
+                {
+                    "name": "percent_ito_fixed",
+                    "type": "u32"
+                }
+            ]
+        },
+        "URI": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "bytes"
+                },
+                {
+                    "name": "value",
+                    "type": "bytes"
                 }
             ]
         }

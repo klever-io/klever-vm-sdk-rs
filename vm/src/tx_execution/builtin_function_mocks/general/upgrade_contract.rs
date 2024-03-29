@@ -46,8 +46,8 @@ impl BuiltinFunction for UpgradeContract {
         let exec_input = TxInput {
             from: tx_input.from,
             to: tx_input.to,
-            egld_value: tx_input.egld_value,
-            esdt_values: Vec::new(),
+            klv_value: tx_input.klv_value,
+            kda_values: Vec::new(),
             func_name: TxFunctionName::INIT,
             args,
             gas_limit: tx_input.gas_limit,

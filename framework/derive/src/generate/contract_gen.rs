@@ -1,5 +1,5 @@
 use super::{
-    method_call_gen::{generate_call_method, generate_promises_callback_call_method},
+    method_call_gen::generate_call_method,
     method_gen,
 };
 use crate::model::{ContractTrait, MethodImpl, PublicRole};
@@ -29,9 +29,6 @@ pub fn generate_call_methods(contract_trait: &ContractTrait) -> Vec<proc_macro2:
         .filter_map(|m| match &m.public_role {
             PublicRole::Init(_init_metadata) => Some(generate_call_method(m)),
             PublicRole::Endpoint(_endpoint_metadata) => Some(generate_call_method(m)),
-            PublicRole::CallbackPromise(_callback_metadata) => {
-                Some(generate_promises_callback_call_method(m))
-            },
             _ => None,
         })
         .collect()

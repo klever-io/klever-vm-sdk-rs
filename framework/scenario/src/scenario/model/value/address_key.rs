@@ -1,6 +1,6 @@
 use super::{value_from_slice, AddressValue};
 use crate::{
-    multiversx_sc::types::Address,
+    klever_sc::types::Address,
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         value_interpreter::interpret_string,
@@ -28,7 +28,7 @@ impl AddressKey {
         self.value.clone()
     }
 
-    pub fn to_vm_address(&self) -> multiversx_chain_vm::types::VMAddress {
+    pub fn to_vm_address(&self) -> klever_chain_vm::types::VMAddress {
         self.value.as_array().into()
     }
 }

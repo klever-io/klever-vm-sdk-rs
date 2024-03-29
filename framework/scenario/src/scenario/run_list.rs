@@ -80,12 +80,6 @@ impl ScenarioRunner for ScenarioRunnerList {
         }
     }
 
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        for runner in self.list.iter_mut() {
-            runner.run_validator_reward_step(step);
-        }
-    }
-
     fn run_check_state_step(&mut self, step: &CheckStateStep) {
         for runner in self.list.iter_mut() {
             runner.run_check_state_step(step);

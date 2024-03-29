@@ -2,11 +2,11 @@
 
 use rust_snippets_generator_test::{ProxyTrait as _, *};
 
-use multiversx_sc_snippets::{
+use klever_sc_snippets::{
     env_logger,
     erdrs::wallet::Wallet,
-    multiversx_sc::{codec::multi_types::*, types::*},
-    multiversx_sc_scenario::{
+    klever_sc::{codec::multi_types::*, types::*},
+    klever_sc_scenario::{
         api::StaticApi,
         bech32,
         scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext},
@@ -20,7 +20,7 @@ const GATEWAY: &str = sdk::blockchain::DEVNET_GATEWAY;
 const PEM: &str = "alice.pem";
 const SC_ADDRESS: &str = "";
 
-const SYSTEM_SC_BECH32: &str = "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
+const SYSTEM_SC_BECH32: &str = "klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
 const DEFAULT_ADDRESS_EXPR: &str =
     "0x0000000000000000000000000000000000000000000000000000000000000000";
 const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;
@@ -46,8 +46,8 @@ async fn main() {
         "custom_struct" => state.custom_struct().await,
         "optional_type" => state.optional_type().await,
         "option_type" => state.option_type().await,
-        "esdt_token_payment" => state.esdt_token_payment().await,
-        "egld_or_esdt_payment" => state.egld_or_esdt_payment().await,
+        "kda_token_payment" => state.kda_token_payment().await,
+        "klv_or_kda_payment" => state.klv_or_kda_payment().await,
         "payable_endpoint" => state.payable_endpoint().await,
         "managed_buffer" => state.managed_buffer().await,
         "multi_value_2" => state.multi_value_2().await,
@@ -168,7 +168,7 @@ impl State {
     }
 
     async fn multi_result(&mut self) {
-        let _arg = TokenIdentifier::from_esdt_bytes(&b""[..]);
+        let _arg = TokenIdentifier::from_kda_bytes(&b""[..]);
 
         let response: TypedResponse<MultiValueVec<BigUint<StaticApi>>> = self
             .interactor
@@ -185,7 +185,7 @@ impl State {
     }
 
     async fn nested_result(&mut self) {
-        let _arg = TokenIdentifier::from_esdt_bytes(&b""[..]);
+        let _arg = TokenIdentifier::from_kda_bytes(&b""[..]);
 
         let response: TypedResponse<
             ManagedVec<StaticApi, ManagedVec<StaticApi, BigUint<StaticApi>>>,
@@ -239,7 +239,7 @@ impl State {
 
     async fn option_type(&mut self) {
         let _arg = Option::Some(ManagedVec::from_single_item(
-            TokenIdentifier::from_esdt_bytes(&b""[..]),
+            TokenIdentifier::from_kda_bytes(&b""[..]),
         ));
 
         let response: TypedResponse<Option<u64>> = self
@@ -256,18 +256,18 @@ impl State {
         println!("Result: {result:?}");
     }
 
-    async fn esdt_token_payment(&mut self) {
-        let _arg = OptionalValue::Some(EsdtTokenPayment::new(
-            TokenIdentifier::from_esdt_bytes(&b""[..]),
+    async fn kda_token_payment(&mut self) {
+        let _arg = OptionalValue::Some(KdaTokenPayment::new(
+            TokenIdentifier::from_kda_bytes(&b""[..]),
             0u64,
             BigUint::from(0u128),
         ));
 
-        let response: TypedResponse<EsdtTokenPayment<StaticApi>> = self
+        let response: TypedResponse<KdaTokenPayment<StaticApi>> = self
             .interactor
             .sc_call_use_result(
                 ScCallStep::new()
-                    .call(self.contract.esdt_token_payment(_arg))
+                    .call(self.contract.kda_token_payment(_arg))
                     .from(&self.wallet_address)
                     .expect(TxExpect::ok().additional_error_message("SC call failed: ")),
             )
@@ -277,18 +277,18 @@ impl State {
         println!("Result: {result:?}");
     }
 
-    async fn egld_or_esdt_payment(&mut self) {
-        let arg = EgldOrEsdtTokenPayment::new(
-            EgldOrEsdtTokenIdentifier::esdt(&b""[..]),
+    async fn klv_or_kda_payment(&mut self) {
+        let arg = KdaTokenPayment::new(
+            TokenIdentifier::kda(&b""[..]),
             0u64,
             BigUint::from(0u128),
         );
 
-        let response: TypedResponse<EgldOrEsdtTokenIdentifier<StaticApi>> = self
+        let response: TypedResponse<TokenIdentifier<StaticApi>> = self
             .interactor
             .sc_call_use_result(
                 ScCallStep::new()
-                    .call(self.contract.egld_or_esdt_payment(arg))
+                    .call(self.contract.klv_or_kda_payment(arg))
                     .from(&self.wallet_address)
                     .expect(TxExpect::ok().additional_error_message("SC call failed: ")),
             )
@@ -309,7 +309,7 @@ impl State {
                 ScCallStep::new()
                     .call(self.contract.payable_endpoint())
                     .from(&self.wallet_address)
-                    .esdt_transfer(token_id.to_vec(), token_nonce, token_amount)
+                    .kda_transfer(token_id.to_vec(), token_nonce, token_amount)
                     .expect(TxExpect::ok().additional_error_message("SC call failed: ")),
             )
             .await;
@@ -378,7 +378,7 @@ impl State {
 
     async fn complex_multi_values(&mut self) {
         let arg = MultiValueVec::from(vec![MultiValue3::from((
-            TokenIdentifier::from_esdt_bytes(&b""[..]),
+            TokenIdentifier::from_kda_bytes(&b""[..]),
             0u64,
             BigUint::<StaticApi>::from(0u128),
         ))]);

@@ -56,11 +56,12 @@
                     },
                     {
                         "address": "*",
-                        "endpoint": "str:transferValueOnly",
+                        "endpoint": "str:KleverTransfer",
                         "topics": [
-                            "sc:crypto_bubbles",
-                            "address:acc1",
-                            "0x0200"
+                            "str:KLV",
+                            "",
+                            "0x0200",
+                            "address:acc1"
                         ],
                         "data": ""
                     },

@@ -1,8 +1,8 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait ProxyTestSecond {
     #[storage_set("last_payment")]
     fn set_last_payment(&self, last_payment: &BigUint);
@@ -26,26 +26,26 @@ pub trait ProxyTestSecond {
     fn set_message_me_4(&self, s4: &ManagedAddress);
 
     #[init]
-    #[payable("EGLD")]
+    #[payable("KLV")]
     fn init(&self, init_arg: i32) -> i32 {
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().klv_value();
         self.set_last_payment(&payment);
         self.set_init_arg(init_arg);
         init_arg + 1
     }
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(payMe)]
     fn pay_me(&self, arg1: i64) {
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().klv_value();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
     }
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(payMeWithResult)]
     fn pay_me_with_result_endpoint(&self, arg1: i64) -> i64 {
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().klv_value();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
 

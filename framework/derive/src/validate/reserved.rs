@@ -1,7 +1,6 @@
 const RESERVED: &[&str] = &[
     "getSCAddress",
     "getOwnerAddress",
-    "getShardOfAddress",
     "isSmartContract",
     "getExternalBalance",
     "getBlockHash",

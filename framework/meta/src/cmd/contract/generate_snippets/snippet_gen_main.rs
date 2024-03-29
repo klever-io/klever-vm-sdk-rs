@@ -1,6 +1,6 @@
 use std::fs::File;
 
-use multiversx_sc::abi::ContractAbi;
+use klever_sc::abi::ContractAbi;
 
 use crate::cli_args::GenerateSnippetsArgs;
 

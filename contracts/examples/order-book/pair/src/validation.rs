@@ -1,5 +1,5 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 use crate::common::{FeeConfig, FeeConfigEnum};
 
@@ -11,7 +11,7 @@ use super::{
     },
 };
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait ValidationModule: common::CommonModule {
     fn require_valid_order_input_amount(&self, params: &OrderInputParams<Self::Api>) {
         require!(params.amount != BigUint::zero(), "Amout cannot be zero");
@@ -70,7 +70,7 @@ pub trait ValidationModule: common::CommonModule {
     }
 
     fn require_valid_buy_payment(&self) -> Payment<Self::Api> {
-        let (token_id, amount) = self.call_value().single_fungible_esdt();
+        let (token_id, amount) = self.call_value().single_fungible_kda();
         let second_token_id = self.second_token_id().get();
         require!(
             token_id == second_token_id,
@@ -81,7 +81,7 @@ pub trait ValidationModule: common::CommonModule {
     }
 
     fn require_valid_sell_payment(&self) -> Payment<Self::Api> {
-        let (token_id, amount) = self.call_value().single_fungible_esdt();
+        let (token_id, amount) = self.call_value().single_fungible_kda();
         let first_token_id = self.first_token_id().get();
         require!(
             token_id == first_token_id,

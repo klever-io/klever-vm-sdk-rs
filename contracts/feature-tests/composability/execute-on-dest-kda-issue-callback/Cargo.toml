@@ -1,0 +1,24 @@
+[package]
+name = "execute-on-dest-kda-issue-callback"
+version = "0.0.0"
+authors = ["Dorin Iancu <dorin.iancu@multiversx.com>"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+
+[dependencies.parent]
+path = "parent"
+
+[dependencies.child]
+path = "child"
+
+[dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.43.3"
+path = "../../../framework/scenario"

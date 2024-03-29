@@ -12,7 +12,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:contract_owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:the_nft_contract"
                 }
             ]

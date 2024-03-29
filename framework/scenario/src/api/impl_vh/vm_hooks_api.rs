@@ -4,8 +4,8 @@ use super::VMHooksApiBackend;
 
 use std::marker::PhantomData;
 
-use multiversx_chain_vm::executor::{MemPtr, VMHooks};
-use multiversx_sc::api::{HandleTypeInfo, ManagedBufferApiImpl};
+use klever_chain_vm::executor::{MemPtr, VMHooks};
+use klever_sc::api::{HandleTypeInfo, ManagedBufferApiImpl};
 
 #[derive(Clone, Debug)]
 pub struct VMHooksApi<S: VMHooksApiBackend> {

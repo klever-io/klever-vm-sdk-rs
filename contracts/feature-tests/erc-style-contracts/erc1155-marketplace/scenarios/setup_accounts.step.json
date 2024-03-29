@@ -8,21 +8,21 @@
                 "address:creator": {
                     "nonce": "0",
                     "balance": "1000",
-                    "esdt": {
+                    "kda": {
                         "str:marketToken": "1000"
                     }
                 },
                 "address:user1": {
                     "nonce": "0",
                     "balance": "1000",
-                    "esdt": {
+                    "kda": {
                         "str:marketToken": "1000"
                     }
                 },
                 "address:user2": {
                     "nonce": "0",
                     "balance": "1000",
-                    "esdt": {
+                    "kda": {
                         "str:marketToken": "1000"
                     }
                 },

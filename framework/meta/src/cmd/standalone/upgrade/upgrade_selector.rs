@@ -6,7 +6,6 @@ use crate::{
 
 use super::{
     upgrade_0_31::upgrade_to_31_0,
-    upgrade_0_32::upgrade_to_32_0,
     upgrade_0_39::{postprocessing_after_39_0, upgrade_to_39_0},
     upgrade_common::{cargo_check, version_bump_in_cargo_toml},
     upgrade_print::*,
@@ -68,9 +67,6 @@ fn upgrade_function_selector(dir: &RelevantDirectory) {
     match dir.upgrade_in_progress {
         Some((_, "0.31.0")) => {
             upgrade_to_31_0(dir);
-        },
-        Some((_, "0.32.0")) => {
-            upgrade_to_32_0(dir);
         },
         Some((_, "0.39.0")) => {
             upgrade_to_39_0(dir);

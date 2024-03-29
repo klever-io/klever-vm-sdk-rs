@@ -1,6 +1,6 @@
 # Digital Cash Contract
 
-The basic idea of MultiversX Digital Cash is that ONE link can hold information (ESDT tokens, EGLD) on chain, this link can be sent from one person to another, there is no need to hold any wallet to receive, consume and send it forward to another person.
+The basic idea of Klever Digital Cash is that ONE link can hold information (KDA tokens, KLV) on chain, this link can be sent from one person to another, there is no need to hold any wallet to receive, consume and send it forward to another person.
 
 # Usage
 
@@ -8,7 +8,7 @@ The basic idea of MultiversX Digital Cash is that ONE link can hold information 
 
 The contract allows funding any number of tokens in 1 call within a address under a valability if the fee cost was covered.
 
-In order to fund one should first call `deposit_fees` depositing the fee funds as `eGLD` within the contract. Only after, if the fees cover the transfer of the certain number of tokens, it is possible to deposit the funds, making them available for claiming or forwarding.
+In order to fund one should first call `deposit_fees` depositing the fee funds as `KLV` within the contract. Only after, if the fees cover the transfer of the certain number of tokens, it is possible to deposit the funds, making them available for claiming or forwarding.
 
 `fund` after making sure everything is ok on the fee aspect will set up the `deposit` storage increasing the number of tokens to transfer by the number of tokens paid to the endpoint and set the expiration date by the number of rounds specified within the `valability` parameter.
 

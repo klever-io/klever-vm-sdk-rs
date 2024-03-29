@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// Test endpoint argument and result serialization.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait EchoManagedTypes {
     #[endpoint]
     fn echo_big_uint(&self, bi: BigUint) -> BigUint {
@@ -64,13 +64,6 @@ pub trait EchoManagedTypes {
         mv: ManagedVec<TokenIdentifier>,
     ) -> ManagedVec<TokenIdentifier> {
         mv
-    }
-
-    #[endpoint]
-    fn echo_managed_async_result_empty(&self, a: ManagedAsyncCallResult<()>) {
-        if let ManagedAsyncCallResult::Err(msg) = a {
-            sc_panic!(msg.err_msg)
-        }
     }
 
     #[endpoint]

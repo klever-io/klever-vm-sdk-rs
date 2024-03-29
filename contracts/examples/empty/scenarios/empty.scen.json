@@ -12,7 +12,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "1",
+                    "creatorNonce": "2",
                     "newAddress": "sc:empty"
                 }
             ]

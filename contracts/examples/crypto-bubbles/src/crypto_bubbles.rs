@@ -1,8 +1,8 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait CryptoBubbles {
     /// constructor function
     /// is called immediately after the contract is created
@@ -10,10 +10,10 @@ pub trait CryptoBubbles {
     fn init(&self) {}
 
     /// player adds funds
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(topUp)]
     fn top_up(&self) {
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().klv_value();
         let caller = self.blockchain().get_caller();
         self.player_balance(&caller)
             .update(|balance| *balance += &*payment);
@@ -38,7 +38,7 @@ pub trait CryptoBubbles {
             *balance -= amount;
         });
 
-        self.send().direct_egld(player, amount);
+        self.send().direct_klv(player, amount);
 
         self.withdraw_event(player, amount);
     }
@@ -60,10 +60,10 @@ pub trait CryptoBubbles {
     }
 
     // player tops up + joins a game
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(joinGame)]
     fn join_game(&self, game_index: BigUint) {
-        let bet = self.call_value().egld_value();
+        let bet = self.call_value().klv_value();
         let player = self.blockchain().get_caller();
         self.top_up();
         self.add_player_to_game_state_change(&game_index, &player, &bet)

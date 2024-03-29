@@ -73,7 +73,7 @@
                 "sc:nft-minter": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:NFT-123456": {
                             "instances": [
                                 {
@@ -99,14 +99,14 @@
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "ESDTRoleNFTCreate"
+                                "KDARoleNFTCreate"
                             ]
                         }
                     },
                     "storage": {
                         "str:nftTokenId": "str:NFT-123456",
                         "str:priceTag|u64:1": {
-                            "1-token": "nested:str:EGLD",
+                            "1-token": "nested:str:KLV",
                             "2-nonce": "u64:0",
                             "3-amount": "biguint:500"
                         },

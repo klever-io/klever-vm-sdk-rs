@@ -22,7 +22,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Only fungible tokens can be burned",
                 "logs": "*",
                 "gas": "*",

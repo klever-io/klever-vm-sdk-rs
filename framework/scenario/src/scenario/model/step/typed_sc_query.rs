@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::multiversx_sc::codec::{CodecFrom, TopEncodeMulti};
+use crate::klever_sc::codec::{CodecFrom, TopEncodeMulti};
 
 use crate::{
     scenario::model::{AddressValue, BytesValue, TxExpect},

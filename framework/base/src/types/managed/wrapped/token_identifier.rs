@@ -7,11 +7,9 @@ use crate::{
     types::{ManagedBuffer, ManagedType},
 };
 
-use super::EgldOrEsdtTokenIdentifier;
-
 /// Specialized type for handling token identifiers.
 /// It wraps a BoxedBytes with the full ASCII name of the token.
-/// EGLD is stored as an empty name.
+/// KLV is stored as an empty name.
 ///
 /// Not yet implemented, but we might add additional restrictions when deserializing as argument.
 #[repr(transparent)]
@@ -40,11 +38,46 @@ impl<M: ManagedTypeApi> ManagedType<M> for TokenIdentifier<M> {
 }
 
 impl<M: ManagedTypeApi> TokenIdentifier<M> {
+    /// This special representation is interpreted as the KLV token.
+    #[allow(clippy::needless_borrow)]
+    pub const KLV_REPRESENTATION: &'static [u8; 3] = &b"KLV";
+
+    /// New instance of the special KLV token representation.
     #[inline]
-    pub fn from_esdt_bytes<B: Into<ManagedBuffer<M>>>(bytes: B) -> Self {
+    pub fn klv() -> Self {
+        Self {
+            buffer: ManagedBuffer::new_from_bytes(Self::KLV_REPRESENTATION),
+        }
+    }
+
+    #[inline]
+    pub fn from_kda_bytes<B: Into<ManagedBuffer<M>>>(bytes: B) -> Self {
         TokenIdentifier {
             buffer: bytes.into(),
         }
+    }
+
+    #[inline]
+    pub fn is_klv(&self) -> bool {
+        self.buffer.is_empty() || self.buffer == Self::KLV_REPRESENTATION
+    }
+
+    #[inline]
+    pub fn into_name(self) -> ManagedBuffer<M> {
+        if self.is_klv() {
+            ManagedBuffer::from(&Self::KLV_REPRESENTATION[..])
+        } else {
+            self.buffer 
+        }
+    }
+
+    /// Checks the KDA token identifier for validity. 
+    /// Will fail if it encodes an invalid KDA token identifier.
+    pub fn is_valid(&self) -> bool {
+        if self.is_klv() {
+            return true;
+        }
+        self.is_valid_kda_identifier()        
     }
 
     #[inline]
@@ -62,7 +95,7 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
         self.buffer.to_boxed_bytes()
     }
 
-    pub fn is_valid_esdt_identifier(&self) -> bool {
+    pub fn is_valid_kda_identifier(&self) -> bool {
         M::managed_type_impl().validate_token_identifier(self.buffer.handle.clone())
     }
 
@@ -99,21 +132,11 @@ impl<M: ManagedTypeApi> From<&str> for TokenIdentifier<M> {
 impl<M: ManagedTypeApi> PartialEq for TokenIdentifier<M> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.buffer == other.buffer
+        self.buffer == other.buffer || self.is_klv() && other.is_klv()
     }
 }
 
 impl<M: ManagedTypeApi> Eq for TokenIdentifier<M> {}
-
-impl<M: ManagedTypeApi> PartialEq<EgldOrEsdtTokenIdentifier<M>> for TokenIdentifier<M> {
-    #[inline]
-    fn eq(&self, other: &EgldOrEsdtTokenIdentifier<M>) -> bool {
-        other.map_ref_or_else(
-            || false,
-            |esdt_token_identifier| esdt_token_identifier == self,
-        )
-    }
-}
 
 impl<M: ManagedTypeApi> NestedEncode for TokenIdentifier<M> {
     #[inline]

@@ -1,8 +1,8 @@
-use multiversx_sc::storage::{
+use klever_sc::storage::{
     mappers::{StorageClearable, StorageMapper, UnorderedSetMapper},
     StorageKey,
 };
-use multiversx_sc_scenario::api::SingleTxApi;
+use klever_sc_scenario::api::SingleTxApi;
 
 fn create_set() -> UnorderedSetMapper<SingleTxApi, u64> {
     let base_key = StorageKey::new(&b"my_unordered_set"[..]);

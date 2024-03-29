@@ -1,8 +1,5 @@
 use super::{HandleTypeInfo, ManagedTypeApi, ManagedTypeApiImpl, RawHandle};
-use crate::types::{
-    heap::{Address, Box, H256},
-    EsdtLocalRoleFlags,
-};
+use crate::types::heap::{Address, Box, H256};
 
 pub trait BlockchainApi: ManagedTypeApi {
     type BlockchainApiImpl: BlockchainApiImpl
@@ -36,14 +33,6 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
     }
 
     fn load_owner_address_managed(&self, dest: Self::ManagedBufferHandle);
-
-    fn get_shard_of_address_legacy(&self, address: &Address) -> u32;
-
-    fn get_shard_of_address(&self, address_handle: Self::ManagedBufferHandle) -> u32 {
-        let mut address = Address::zero();
-        let _ = self.mb_load_slice(address_handle, 0, address.as_mut());
-        self.get_shard_of_address_legacy(&address)
-    }
 
     fn is_smart_contract_legacy(&self, address: &Address) -> bool;
 
@@ -95,13 +84,7 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         self.mb_overwrite(dest, self.get_prev_block_random_seed_legacy().as_slice());
     }
 
-    fn get_current_esdt_nft_nonce(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64;
-
-    fn load_esdt_balance(
+    fn load_kda_balance(
         &self,
         address_handle: Self::ManagedBufferHandle,
         token_id_handle: Self::ManagedBufferHandle,
@@ -110,34 +93,53 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
     );
 
     #[allow(clippy::too_many_arguments)]
-    fn managed_get_esdt_token_data(
+    fn managed_get_user_kda(
         &self,
         address_handle: RawHandle,
-        token_id_handle: RawHandle,
+        ticker_handle: RawHandle,
         nonce: u64,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
-        name_handle: RawHandle,
-        attributes_handle: RawHandle,
-        creator_handle: RawHandle,
-        royalties_handle: RawHandle,
-        uris_handle: RawHandle,
+        balance_handle: RawHandle,
+        frozen_handle: RawHandle,
+        last_claim_handle: RawHandle,
+        buckets_handle: RawHandle,
+        mime_handle: RawHandle,
+        metadata_handle: RawHandle,
     );
 
-    fn check_esdt_frozen(
+    #[allow(clippy::too_many_arguments)]
+    fn managed_get_kda_token_data(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
+        address_handle: RawHandle,
+        ticker_handle: RawHandle,
         nonce: u64,
-    ) -> bool;
+        precision_handle: RawHandle,
+        id_handle: RawHandle,
+        name_handle: RawHandle,
+        creator_handle: RawHandle,
+        logo_handle: RawHandle,
+        uris_handle: RawHandle,
+        initial_supply_handle: RawHandle,
+        circulating_supply_handle: RawHandle,
+        max_supply_handle: RawHandle,
+        minted_handle: RawHandle,
+        burned_handle: RawHandle,
+        royalties_handle: RawHandle,
+        properties_handle: RawHandle,
+        attributes_handle: RawHandle,
+        roles_handle: RawHandle,
+        issue_date_handle: RawHandle,
+    );
 
-    fn check_esdt_paused(&self, token_id_handle: Self::ManagedBufferHandle) -> bool;
-
-    fn check_esdt_limited_transfer(&self, token_id_handle: Self::ManagedBufferHandle) -> bool;
-
-    fn load_esdt_local_roles(
+    fn managed_get_kda_roles(
         &self,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> EsdtLocalRoleFlags;
+        ticker_handle: RawHandle,
+        roles_handle: RawHandle,
+    );
+
+    fn managed_get_back_transfers(
+        &self,
+        kda_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    );
+
 }

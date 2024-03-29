@@ -74,6 +74,4 @@ pub trait EndpointArgumentApiImpl: ErrorApi + ManagedTypeApi {
             Self::error_api_impl().signal_error(err_msg::ARG_OUT_OF_RANGE)
         }
     }
-
-    fn load_callback_closure_buffer(&self, dest: Self::ManagedBufferHandle);
 }

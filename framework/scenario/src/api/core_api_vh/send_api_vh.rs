@@ -1,5 +1,5 @@
-use multiversx_chain_vm::mem_conv;
-use multiversx_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
+// use klever_chain_vm::mem_conv;
+use klever_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};
 
@@ -12,31 +12,7 @@ impl<VHB: VMHooksApiBackend> SendApi for VMHooksApi<VHB> {
 }
 
 impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
-    fn transfer_value_execute(
-        &self,
-        to_handle: RawHandle,
-        amount_handle: RawHandle,
-        gas_limit: u64,
-        endpoint_name_handle: RawHandle,
-        arg_buffer_handle: RawHandle,
-    ) -> Result<(), &'static [u8]> {
-        let result = self.with_vm_hooks(|vh| {
-            vh.managed_transfer_value_execute(
-                to_handle,
-                amount_handle,
-                gas_limit as i64,
-                endpoint_name_handle,
-                arg_buffer_handle,
-            )
-        });
-        if result == 0 {
-            Ok(())
-        } else {
-            Err(b"transferValueExecute failed")
-        }
-    }
-
-    fn multi_transfer_esdt_nft_execute(
+    fn multi_transfer_kda_nft_execute(
         &self,
         to_handle: RawHandle,
         payments_handle: RawHandle,
@@ -45,7 +21,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         arg_buffer_handle: RawHandle,
     ) -> Result<(), &'static [u8]> {
         let result = self.with_vm_hooks(|vh| {
-            vh.managed_multi_transfer_esdt_nft_execute(
+            vh.managed_multi_transfer_kda_nft_execute(
                 to_handle,
                 payments_handle,
                 gas_limit as i64,
@@ -56,73 +32,14 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         if result == 0 {
             Ok(())
         } else {
-            Err(b"multiTransferESDTNFTExecute failed")
+            Err(b"multiTransferKDANFTExecute failed")
         }
-    }
-
-    fn async_call_raw(
-        &self,
-        to_handle: RawHandle,
-        egld_value_handle: RawHandle,
-        endpoint_name_handle: RawHandle,
-        arg_buffer_handle: RawHandle,
-    ) -> ! {
-        self.with_vm_hooks(|vh| {
-            vh.managed_async_call(
-                to_handle,
-                egld_value_handle,
-                endpoint_name_handle,
-                arg_buffer_handle,
-            )
-        });
-
-        // Although not explicit in the VM hooks interface, the method always terminates execution.
-        unreachable!()
-    }
-
-    fn create_async_call_raw(
-        &self,
-        to_handle: RawHandle,
-        egld_value_handle: RawHandle,
-        endpoint_name_handle: RawHandle,
-        arg_buffer_handle: RawHandle,
-        success_callback: &'static str,
-        error_callback: &'static str,
-        gas: u64,
-        extra_gas_for_callback: u64,
-        callback_closure_handle: RawHandle,
-    ) {
-        self.with_vm_hooks(|vh| {
-            mem_conv::with_mem_ptr(
-                success_callback.as_bytes(),
-                |success_offset, success_length| {
-                    mem_conv::with_mem_ptr(
-                        error_callback.as_bytes(),
-                        |error_offset, error_length| {
-                            vh.managed_create_async_call(
-                                to_handle,
-                                egld_value_handle,
-                                endpoint_name_handle,
-                                arg_buffer_handle,
-                                success_offset,
-                                success_length,
-                                error_offset,
-                                error_length,
-                                gas as i64,
-                                extra_gas_for_callback as i64,
-                                callback_closure_handle,
-                            );
-                        },
-                    )
-                },
-            )
-        });
     }
 
     fn deploy_contract(
         &self,
         gas: u64,
-        egld_value_handle: RawHandle,
+        klv_value_handle: RawHandle,
         code_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
@@ -132,7 +49,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         self.with_vm_hooks(|vh| {
             vh.managed_create_contract(
                 gas as i64,
-                egld_value_handle,
+                klv_value_handle,
                 code_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
@@ -145,7 +62,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
     fn deploy_from_source_contract(
         &self,
         gas: u64,
-        egld_value_handle: RawHandle,
+        klv_value_handle: RawHandle,
         source_contract_address_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
@@ -155,7 +72,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         self.with_vm_hooks(|vh| {
             vh.managed_deploy_from_source_contract(
                 gas as i64,
-                egld_value_handle,
+                klv_value_handle,
                 source_contract_address_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
@@ -169,7 +86,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         &self,
         sc_address_handle: RawHandle,
         gas: u64,
-        egld_value_handle: RawHandle,
+        klv_value_handle: RawHandle,
         source_contract_address_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
@@ -182,7 +99,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
             vh.managed_upgrade_from_source_contract(
                 sc_address_handle,
                 gas as i64,
-                egld_value_handle,
+                klv_value_handle,
                 source_contract_address_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
@@ -195,7 +112,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         &self,
         sc_address_handle: RawHandle,
         gas: u64,
-        egld_value_handle: RawHandle,
+        klv_value_handle: RawHandle,
         code_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
@@ -208,7 +125,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
             vh.managed_upgrade_contract(
                 sc_address_handle,
                 gas as i64,
-                egld_value_handle,
+                klv_value_handle,
                 code_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
@@ -221,7 +138,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         &self,
         gas: u64,
         to_handle: RawHandle,
-        egld_value_handle: RawHandle,
+        klv_value_handle: RawHandle,
         endpoint_name_handle: RawHandle,
         arg_buffer_handle: RawHandle,
         result_handle: RawHandle,
@@ -230,7 +147,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
             vh.managed_execute_on_dest_context(
                 gas as i64,
                 to_handle,
-                egld_value_handle,
+                klv_value_handle,
                 endpoint_name_handle,
                 arg_buffer_handle,
                 result_handle,
@@ -242,7 +159,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         &self,
         _gas: u64,
         _to_handle: RawHandle,
-        _egld_value_handle: RawHandle,
+        _klv_value_handle: RawHandle,
         _endpoint_name_handle: RawHandle,
         _arg_buffer_handle: RawHandle,
         _result_handle: RawHandle,

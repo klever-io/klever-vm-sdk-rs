@@ -1,6 +1,6 @@
 {
     "name": "payable",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -13,7 +13,7 @@
                 "address:an-account": {
                     "nonce": "0",
                     "balance": "10000",
-                    "esdt": {
+                    "kda": {
                         "str:TOK-000001": "1000",
                         "str:TOK-000002": "500",
                         "str:TOK-000003": "500",
@@ -35,7 +35,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:TOK-000001",
                         "value": "100"
@@ -61,8 +61,8 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
-                "message": "str:incorrect number of ESDT transfers",
+                "status": "57",
+                "message": "str:incorrect number of KDA transfers",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -74,7 +74,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:TOK-000001",
                         "value": "100"
@@ -92,8 +92,8 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
-                "message": "str:incorrect number of ESDT transfers",
+                "status": "57",
+                "message": "str:incorrect number of KDA transfers",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -105,7 +105,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:TOK-000001",
                         "value": "100"

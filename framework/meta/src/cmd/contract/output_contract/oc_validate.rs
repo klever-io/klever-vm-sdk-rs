@@ -1,4 +1,4 @@
-use multiversx_sc::abi::{ContractAbi, EndpointAbi};
+use klever_sc::abi::{ContractAbi, EndpointAbi};
 
 use super::OutputContract;
 
@@ -10,13 +10,24 @@ pub fn validate_output_contract(output_contract: &OutputContract) -> Result<(), 
 
 fn check_single_constructor(output_contract: &OutputContract) -> Result<(), String> {
     match output_contract.abi.constructors.len() {
-            0 => Err("Missing constructor. Add a method annotated with `#[init]`.".to_string()),
-            1 => Ok(()),
-            _ => Err("More than one contrctructor present. Exactly one method annotated with `#[init]` is required.".to_string()),
-        }
+        0 => if has_upgrade(output_contract) {
+            Ok(())
+        } else {
+            Err("Missing constructor. Add a method annotated with `#[init]`.".to_string())
+        },
+        1 => Ok(()),
+        _ => Err("More than one constructor present. Exactly one method annotated with `#[init]` is required.".to_string()),
+    }
 }
 
-/// Note: promise callbacks not included, since they have `#[call_value]` arguments, that are currently not modelled.
+fn has_upgrade(contract_variant: &OutputContract) -> bool {
+    contract_variant
+        .abi
+        .endpoints
+        .iter()
+        .any(|endpoint| endpoint.name == "upgrade")
+}
+
 fn validate_contract_var_args(abi: &ContractAbi) -> Result<(), String> {
     for endpoint_abi in abi.constructors.iter().chain(abi.endpoints.iter()) {
         validate_endpoint_var_args(endpoint_abi)?;

@@ -1,6 +1,6 @@
 use std::{fs::File, io::Write};
 
-use multiversx_sc::abi::{ContractAbi, EndpointAbi, EndpointMutabilityAbi, InputAbi, OutputAbi};
+use klever_sc::abi::{ContractAbi, EndpointAbi, EndpointMutabilityAbi, InputAbi, OutputAbi};
 
 use super::{snippet_gen_common::write_newline, snippet_type_map::map_abi_type_to_rust_type};
 
@@ -103,13 +103,13 @@ fn write_payments_declaration(file: &mut File, accepted_tokens: &[&str]) {
         return;
     }
 
-    // only handle EGLD and "any" case, as they're the most common
+    // only handle KLV and "any" case, as they're the most common
     let biguint_default = map_abi_type_to_rust_type("BigUint".to_string());
     let first_accepted = accepted_tokens[0];
-    if first_accepted == "EGLD" {
+    if first_accepted == "KLV" {
         writeln!(
             file,
-            "        let egld_amount = {};",
+            "        let klv_amount = {};",
             biguint_default.get_default_value_expr()
         )
         .unwrap();
@@ -160,10 +160,10 @@ fn endpoint_args_when_called(inputs: &[InputAbi]) -> String {
 fn write_contract_call(file: &mut File, endpoint_abi: &EndpointAbi) {
     let payment_snippet = if endpoint_abi.payable_in_tokens.is_empty() {
         ""
-    } else if endpoint_abi.payable_in_tokens[0] == "EGLD" {
-        "\n                    .egld_value(egld_amount)"
+    } else if endpoint_abi.payable_in_tokens[0] == "KLV" {
+        "\n                    .klv_value(klv_amount)"
     } else {
-        "\n                    .esdt_transfer(token_id.to_vec(), token_nonce, token_amount)"
+        "\n                    .kda_transfer(token_id.to_vec(), token_nonce, token_amount)"
     };
 
     let output_type = map_output_types_to_rust_types(&endpoint_abi.outputs);

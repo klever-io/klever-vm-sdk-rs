@@ -13,10 +13,10 @@ impl TxPanic {
     }
 
     pub fn user_error(message: &str) -> TxPanic {
-        TxPanic::new(4, message)
+        TxPanic::new(57, message)
     }
 
     pub fn vm_error(message: &str) -> TxPanic {
-        TxPanic::new(10, message)
+        TxPanic::new(62, message)
     }
 }

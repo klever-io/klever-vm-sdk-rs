@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 mod contract_data;
 
@@ -9,14 +9,14 @@ use contract_data::{Schedule, UnlockType};
 
 const PERCENTAGE_TOTAL: u64 = 100;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait TokenRelease {
     // The SC initializes with the setup period started. After the initial setup, the SC offers a function that ends the setup period.
     // There is no function to start the setup period back on, so once the setup period is ended, it cannot be changed.
     #[init]
     fn init(&self, token_identifier: TokenIdentifier) {
         require!(
-            token_identifier.is_valid_esdt_identifier(),
+            token_identifier.is_valid_kda_identifier(),
             "Invalid token provided"
         );
         self.token_identifier().set(&token_identifier);
@@ -314,11 +314,11 @@ pub trait TokenRelease {
         amount: &BigUint,
     ) {
         self.send()
-            .direct_esdt(address, token_identifier, 0, amount);
+            .direct_kda(address, token_identifier, 0, amount);
     }
 
     fn mint_all_tokens(&self, token_identifier: &TokenIdentifier, amount: &BigUint) {
-        self.send().esdt_local_mint(token_identifier, 0, amount);
+        self.send().kda_mint(token_identifier, 0, amount);
     }
 
     fn require_setup_period_live(&self) {

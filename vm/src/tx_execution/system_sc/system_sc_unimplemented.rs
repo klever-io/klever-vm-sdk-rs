@@ -5,18 +5,18 @@ use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult};
 /// Every unimplemented fn will be implemented and moved to its corresponding file.
 /// This file will be deleted.
 
-pub fn register_meta_esdt(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
+pub fn register_meta_kda(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
     unimplemented!()
 }
 
-pub fn change_sft_to_meta_esdt(
+pub fn change_sft_to_meta_kda(
     tx_input: TxInput,
     tx_cache: TxCache,
 ) -> (TxResult, BlockchainUpdate) {
     unimplemented!()
 }
 
-pub fn esdt_burn(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
+pub fn kda_burn(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
     unimplemented!()
 }
 

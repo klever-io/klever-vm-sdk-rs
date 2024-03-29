@@ -11,18 +11,7 @@ impl SendApi for UncallableApi {
 }
 
 impl SendApiImpl for UncallableApi {
-    fn transfer_value_execute(
-        &self,
-        _to_handle: RawHandle,
-        _amount_handle: RawHandle,
-        _gas_limit: u64,
-        _endpoint_name_handle: RawHandle,
-        _arg_buffer_handle: RawHandle,
-    ) -> Result<(), &'static [u8]> {
-        unreachable!()
-    }
-
-    fn multi_transfer_esdt_nft_execute(
+    fn multi_transfer_kda_nft_execute(
         &self,
         _to_handle: RawHandle,
         _payments_handle: RawHandle,
@@ -30,31 +19,6 @@ impl SendApiImpl for UncallableApi {
         _endpoint_name_handle: RawHandle,
         _arg_buffer_handle: RawHandle,
     ) -> Result<(), &'static [u8]> {
-        unreachable!()
-    }
-
-    fn async_call_raw(
-        &self,
-        _to_handle: RawHandle,
-        _amount_handle: RawHandle,
-        _endpoint_name_handle: RawHandle,
-        _arg_buffer_handle: RawHandle,
-    ) -> ! {
-        unreachable!()
-    }
-
-    fn create_async_call_raw(
-        &self,
-        _to_handle: RawHandle,
-        _amount_handle: RawHandle,
-        _endpoint_name_handle: RawHandle,
-        _arg_buffer_handle: RawHandle,
-        _success_callback: &'static str,
-        _error_callback: &'static str,
-        _gas: u64,
-        _extra_gas_for_callback: u64,
-        _callback_closure: RawHandle,
-    ) {
         unreachable!()
     }
 

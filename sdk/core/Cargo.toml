@@ -1,19 +1,19 @@
 [package]
-name = "multiversx-sdk"
+name = "klever-vm-sdk"
 version = "0.2.0"
 edition = "2021"
 
 authors = [
-    "MultiversX <contact@multiversx.com>",
+    "Klever <contact@klever.io>",
 ]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "SDK for interacting with the MultiversX blockchain"
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "SDK for interacting with the Klever blockchain"
 categories = ["cryptography::cryptocurrencies", "api-bindings"]
-keywords = ["multiversx", "blockchain", "sdk", "api"]
+keywords = ["klever", "blockchain", "sdk", "api"]
 
 [dependencies]
 tokio = { version = "1.24", features = ["full"] }

@@ -1,19 +1,7 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
-}
-
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-#[test]
-fn promises_multi_transfer_go() {
-    world().run("scenarios-promises/promises_multi_transfer.scen.json");
-}
-
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-#[test]
-fn promises_single_transfer_go() {
-    world().run("scenarios-promises/promises_single_transfer.scen.json");
 }
 
 #[test]
@@ -28,86 +16,8 @@ fn builtin_func_set_user_name_go() {
 }
 
 #[test]
-fn forw_queue_async_go() {
-    world().run("scenarios/forw_queue_async.scen.json");
-}
-
-#[test]
-fn forw_raw_async_accept_egld_go() {
-    world().run("scenarios/forw_raw_async_accept_egld.scen.json");
-}
-
-#[test]
-fn forw_raw_async_accept_esdt_go() {
-    world().run("scenarios/forw_raw_async_accept_esdt.scen.json");
-}
-
-#[test]
-fn forw_raw_async_echo_go() {
-    world().run("scenarios/forw_raw_async_echo.scen.json");
-}
-
-#[test]
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-fn forw_raw_async_send_and_retrieve_multi_transfer_funds_go() {
-    world().run("scenarios/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json");
-}
-
-#[test]
-fn forw_raw_builtin_nft_local_mint_via_async_call_go() {
-    world().run("scenarios/forw_raw_builtin_nft_local_mint_via_async_call.scen.json");
-}
-
-#[test]
-fn forw_raw_builtin_nft_local_mint_via_sync_call_go() {
-    world().run("scenarios/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json");
-}
-
-#[test]
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-fn forw_raw_call_async_retrieve_multi_transfer_go() {
-    world().run("scenarios/forw_raw_call_async_retrieve_multi_transfer.scen.json");
-}
-
-#[test]
-fn forw_raw_contract_deploy_go() {
-    world().run("scenarios/forw_raw_contract_deploy.scen.json");
-}
-
-#[test]
-fn forw_raw_contract_upgrade_go() {
-    world().run("scenarios/forw_raw_contract_upgrade.scen.json");
-}
-
-#[test]
-fn forw_raw_contract_upgrade_self_go() {
-    world().run("scenarios/forw_raw_contract_upgrade_self.scen.json");
-}
-
-#[test]
-fn forw_raw_direct_egld_go() {
-    world().run("scenarios/forw_raw_direct_egld.scen.json");
-}
-
-#[test]
-fn forw_raw_direct_esdt_go() {
-    world().run("scenarios/forw_raw_direct_esdt.scen.json");
-}
-
-#[test]
-fn forw_raw_direct_multi_esdt_go() {
-    world().run("scenarios/forw_raw_direct_multi_esdt.scen.json");
-}
-
-#[test]
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-fn forw_raw_init_async_go() {
-    world().run("scenarios/forw_raw_init_async.scen.json");
-}
-
-#[test]
-fn forw_raw_init_sync_accept_egld_go() {
-    world().run("scenarios/forw_raw_init_sync_accept_egld.scen.json");
+fn forw_raw_init_sync_accept_klv_go() {
+    world().run("scenarios/forw_raw_init_sync_accept_klv.scen.json");
 }
 
 #[test]
@@ -126,8 +36,8 @@ fn forw_raw_sync_echo_caller_go() {
 }
 
 #[test]
-fn forw_raw_sync_egld_go() {
-    world().run("scenarios/forw_raw_sync_egld.scen.json");
+fn forw_raw_sync_klv_go() {
+    world().run("scenarios/forw_raw_sync_klv.scen.json");
 }
 
 #[test]
@@ -141,18 +51,18 @@ fn forw_raw_sync_same_context_go() {
 }
 
 #[test]
-fn forw_raw_sync_same_context_egld_go() {
-    world().run("scenarios/forw_raw_sync_same_context_egld.scen.json");
+fn forw_raw_sync_same_context_klv_go() {
+    world().run("scenarios/forw_raw_sync_same_context_klv.scen.json");
 }
 
 #[test]
-fn forw_raw_transf_exec_accept_egld_go() {
-    world().run("scenarios/forw_raw_transf_exec_accept_egld.scen.json");
+fn forw_raw_transf_exec_accept_klv_go() {
+    world().run("scenarios/forw_raw_transf_exec_accept_klv.scen.json");
 }
 
 #[test]
-fn forw_raw_transf_exec_reject_egld_go() {
-    world().run("scenarios/forw_raw_transf_exec_reject_egld.scen.json");
+fn forw_raw_transf_exec_reject_klv_go() {
+    world().run("scenarios/forw_raw_transf_exec_reject_klv.scen.json");
 }
 
 #[test]
@@ -181,49 +91,13 @@ fn forwarder_builtin_nft_local_mint_go() {
 }
 
 #[test]
-fn forwarder_call_async_accept_egld_go() {
-    world().run("scenarios/forwarder_call_async_accept_egld.scen.json");
+fn forwarder_call_sync_accept_kda_go() {
+    world().run("scenarios/forwarder_call_sync_accept_kda.scen.json");
 }
 
 #[test]
-fn forwarder_call_async_accept_esdt_go() {
-    world().run("scenarios/forwarder_call_async_accept_esdt.scen.json");
-}
-
-#[test]
-fn forwarder_call_async_accept_nft_go() {
-    world().run("scenarios/forwarder_call_async_accept_nft.scen.json");
-}
-
-#[test]
-fn forwarder_call_async_multi_transfer_go() {
-    world().run("scenarios/forwarder_call_async_multi_transfer.scen.json");
-}
-
-#[test]
-fn forwarder_call_async_retrieve_egld_go() {
-    world().run("scenarios/forwarder_call_async_retrieve_egld.scen.json");
-}
-
-#[test]
-#[ignore = "currently compatible with VM 1.5, not with VM 1.4"]
-fn forwarder_call_async_retrieve_esdt_go() {
-    world().run("scenarios/forwarder_call_async_retrieve_esdt.scen.json");
-}
-
-#[test]
-fn forwarder_call_async_retrieve_nft_go() {
-    world().run("scenarios/forwarder_call_async_retrieve_nft.scen.json");
-}
-
-#[test]
-fn forwarder_call_sync_accept_egld_go() {
-    world().run("scenarios/forwarder_call_sync_accept_egld.scen.json");
-}
-
-#[test]
-fn forwarder_call_sync_accept_esdt_go() {
-    world().run("scenarios/forwarder_call_sync_accept_esdt.scen.json");
+fn forwarder_call_sync_accept_klv_go() {
+    world().run("scenarios/forwarder_call_sync_accept_klv.scen.json");
 }
 
 #[test]
@@ -237,13 +111,13 @@ fn forwarder_call_sync_accept_nft_go() {
 }
 
 #[test]
-fn forwarder_call_sync_accept_then_read_egld_go() {
-    world().run("scenarios/forwarder_call_sync_accept_then_read_egld.scen.json");
+fn forwarder_call_sync_accept_then_read_kda_go() {
+    world().run("scenarios/forwarder_call_sync_accept_then_read_kda.scen.json");
 }
 
 #[test]
-fn forwarder_call_sync_accept_then_read_esdt_go() {
-    world().run("scenarios/forwarder_call_sync_accept_then_read_esdt.scen.json");
+fn forwarder_call_sync_accept_then_read_klv_go() {
+    world().run("scenarios/forwarder_call_sync_accept_then_read_klv.scen.json");
 }
 
 #[test]
@@ -252,13 +126,13 @@ fn forwarder_call_sync_accept_then_read_nft_go() {
 }
 
 #[test]
-fn forwarder_call_sync_retrieve_egld_go() {
-    world().run("scenarios/forwarder_call_sync_retrieve_egld.scen.json");
+fn forwarder_call_sync_retrieve_kda_go() {
+    world().run("scenarios/forwarder_call_sync_retrieve_kda.scen.json");
 }
 
 #[test]
-fn forwarder_call_sync_retrieve_esdt_go() {
-    world().run("scenarios/forwarder_call_sync_retrieve_esdt.scen.json");
+fn forwarder_call_sync_retrieve_klv_go() {
+    world().run("scenarios/forwarder_call_sync_retrieve_klv.scen.json");
 }
 
 #[test]
@@ -267,23 +141,23 @@ fn forwarder_call_sync_retrieve_nft_go() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_egld_go() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_egld.scen.json");
+fn forwarder_call_transf_exec_accept_kda_go() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_kda.scen.json");
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_egld_twice_go() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_egld_twice.scen.json");
+fn forwarder_call_transf_exec_accept_kda_twice_go() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_kda_twice.scen.json");
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_esdt_go() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_esdt.scen.json");
+fn forwarder_call_transf_exec_accept_klv_go() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_klv.scen.json");
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_esdt_twice_go() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_esdt_twice.scen.json");
+fn forwarder_call_transf_exec_accept_klv_twice_go() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_klv_twice.scen.json");
 }
 
 #[test]
@@ -332,13 +206,13 @@ fn forwarder_contract_upgrade_go() {
 }
 
 #[test]
-fn forwarder_get_esdt_local_roles_go() {
-    world().run("scenarios/forwarder_get_esdt_local_roles.scen.json");
+fn forwarder_get_kda_local_roles_go() {
+    world().run("scenarios/forwarder_get_kda_local_roles.scen.json");
 }
 
 #[test]
-fn forwarder_get_esdt_token_data_go() {
-    world().run("scenarios/forwarder_get_esdt_token_data.scen.json");
+fn forwarder_get_kda_token_data_go() {
+    world().run("scenarios/forwarder_get_kda_token_data.scen.json");
 }
 
 #[test]
@@ -367,11 +241,6 @@ fn forwarder_nft_decode_complex_attributes_go() {
 }
 
 #[test]
-fn forwarder_nft_transfer_async_go() {
-    world().run("scenarios/forwarder_nft_transfer_async.scen.json");
-}
-
-#[test]
 fn forwarder_nft_transfer_exec_go() {
     world().run("scenarios/forwarder_nft_transfer_exec.scen.json");
 }
@@ -392,18 +261,18 @@ fn forwarder_retrieve_funds_with_accept_func_go() {
 }
 
 #[test]
-fn forwarder_send_esdt_multi_transfer_go() {
-    world().run("scenarios/forwarder_send_esdt_multi_transfer.scen.json");
+fn forwarder_send_kda_multi_transfer_go() {
+    world().run("scenarios/forwarder_send_kda_multi_transfer.scen.json");
 }
 
 #[test]
-fn forwarder_send_twice_egld_go() {
-    world().run("scenarios/forwarder_send_twice_egld.scen.json");
+fn forwarder_send_twice_kda_go() {
+    world().run("scenarios/forwarder_send_twice_kda.scen.json");
 }
 
 #[test]
-fn forwarder_send_twice_esdt_go() {
-    world().run("scenarios/forwarder_send_twice_esdt.scen.json");
+fn forwarder_send_twice_klv_go() {
+    world().run("scenarios/forwarder_send_twice_klv.scen.json");
 }
 
 #[test]
@@ -412,8 +281,8 @@ fn forwarder_sync_echo_go() {
 }
 
 #[test]
-fn forwarder_tranfer_esdt_with_fees_go() {
-    world().run("scenarios/forwarder_tranfer_esdt_with_fees.scen.json");
+fn forwarder_tranfer_kda_with_fees_go() {
+    world().run("scenarios/forwarder_tranfer_kda_with_fees.scen.json");
 }
 
 #[test]
@@ -472,21 +341,21 @@ fn proxy_test_upgrade_go() {
 }
 
 #[test]
-fn recursive_caller_egld_1_go() {
-    world().run("scenarios/recursive_caller_egld_1.scen.json");
+fn recursive_caller_kda_1_go() {
+    world().run("scenarios/recursive_caller_kda_1.scen.json");
 }
 
 #[test]
-fn recursive_caller_esdt_1_go() {
-    world().run("scenarios/recursive_caller_esdt_1.scen.json");
+fn recursive_caller_klv_1_go() {
+    world().run("scenarios/recursive_caller_klv_1.scen.json");
 }
 
 #[test]
-fn send_egld_go() {
-    world().run("scenarios/send_egld.scen.json");
+fn send_kda_go() {
+    world().run("scenarios/send_kda.scen.json");
 }
 
 #[test]
-fn send_esdt_go() {
-    world().run("scenarios/send_esdt.scen.json");
+fn send_klv_go() {
+    world().run("scenarios/send_klv.scen.json");
 }

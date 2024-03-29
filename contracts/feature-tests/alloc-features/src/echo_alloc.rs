@@ -1,12 +1,12 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 use crate::types::*;
 
 // String is not part of the standard imports because we want to discourage its use
-use multiversx_sc::types::String;
+use klever_sc::types::String;
 
 /// Test serialization for heap-allocated types.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait EchoAllocTypes {
     #[endpoint]
     fn echo_h256(&self, h: H256) -> H256 {
@@ -52,13 +52,6 @@ pub trait EchoAllocTypes {
     fn echo_str_box(&self, s: Box<str>) -> MultiValue2<Box<str>, usize> {
         let l = s.len();
         (s, l).into()
-    }
-
-    #[endpoint]
-    fn echo_async_result_empty(&self, a: AsyncCallResult<()>) {
-        if let AsyncCallResult::Err(msg) = a {
-            sc_panic!(msg.err_msg);
-        }
     }
 
     #[endpoint]

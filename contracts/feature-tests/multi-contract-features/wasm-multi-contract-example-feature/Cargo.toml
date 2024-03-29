@@ -17,7 +17,7 @@ panic = "abort"
 path = ".."
 features = ["example_feature"]
 
-[dependencies.multiversx-sc-wasm-adapter]
+[dependencies.klever-sc-wasm-adapter]
 version = "0.43.3"
 path = "../../../../framework/wasm-adapter"
 

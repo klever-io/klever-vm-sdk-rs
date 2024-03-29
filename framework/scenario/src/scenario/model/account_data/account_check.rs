@@ -1,7 +1,7 @@
 use crate::{
     scenario::model::{
-        BigUintValue, BytesKey, BytesValue, CheckEsdt, CheckEsdtInstances, CheckEsdtMap,
-        CheckEsdtMapContents, CheckStorage, CheckStorageDetails, CheckValue, U64Value,
+        BigUintValue, BytesKey, BytesValue, CheckKda, CheckKdaInstances, CheckKdaMap,
+        CheckKdaMapContents, CheckStorage, CheckStorageDetails, CheckValue, U64Value,
     },
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -15,13 +15,11 @@ pub struct CheckAccount {
     pub comment: Option<String>,
     pub nonce: CheckValue<U64Value>,
     pub balance: CheckValue<BigUintValue>,
-    pub esdt: CheckEsdtMap,
+    pub kda: CheckKdaMap,
     pub username: CheckValue<BytesValue>,
     pub storage: CheckStorage,
     pub code: CheckValue<BytesValue>,
-    pub owner: CheckValue<BytesValue>, // WARNING! Not currently checked. TODO: implement check
-    pub developer_rewards: CheckValue<BigUintValue>,
-    pub async_call_data: CheckValue<BytesValue>,
+    pub owner: CheckValue<BytesValue>,
 }
 
 impl CheckAccount {
@@ -62,7 +60,7 @@ impl CheckAccount {
         self
     }
 
-    pub fn esdt_balance<K, V>(mut self, token_id_expr: K, balance_expr: V) -> Self
+    pub fn kda_balance<K, V>(mut self, token_id_expr: K, balance_expr: V) -> Self
     where
         BytesKey: From<K>,
         BigUintValue: From<V>,
@@ -70,26 +68,26 @@ impl CheckAccount {
         let token_id = BytesKey::from(token_id_expr);
         let balance = BigUintValue::from(balance_expr);
 
-        match &mut self.esdt {
-            CheckEsdtMap::Unspecified | CheckEsdtMap::Star => {
-                let mut new_esdt_map = BTreeMap::new();
-                let _ = new_esdt_map.insert(token_id, CheckEsdt::Short(balance));
+        match &mut self.kda {
+            CheckKdaMap::Unspecified | CheckKdaMap::Star => {
+                let mut new_kda_map = BTreeMap::new();
+                let _ = new_kda_map.insert(token_id, CheckKda::Short(balance));
 
-                let new_check_esdt_map = CheckEsdtMapContents {
-                    contents: new_esdt_map,
-                    other_esdts_allowed: true,
+                let new_check_kda_map = CheckKdaMapContents {
+                    contents: new_kda_map,
+                    other_kdas_allowed: true,
                 };
 
-                self.esdt = CheckEsdtMap::Equal(new_check_esdt_map);
+                self.kda = CheckKdaMap::Equal(new_check_kda_map);
             },
-            CheckEsdtMap::Equal(check_esdt_map) => {
-                if check_esdt_map.contents.contains_key(&token_id) {
-                    let prev_entry = check_esdt_map.contents.get_mut(&token_id).unwrap();
+            CheckKdaMap::Equal(check_kda_map) => {
+                if check_kda_map.contents.contains_key(&token_id) {
+                    let prev_entry = check_kda_map.contents.get_mut(&token_id).unwrap();
                     match prev_entry {
-                        CheckEsdt::Short(prev_balance_check) => *prev_balance_check = balance,
-                        CheckEsdt::Full(prev_esdt_check) => match prev_esdt_check.instances {
-                            CheckEsdtInstances::Star => todo!(),
-                            CheckEsdtInstances::Equal(_) => todo!(),
+                        CheckKda::Short(prev_balance_check) => *prev_balance_check = balance,
+                        CheckKda::Full(prev_kda_check) => match prev_kda_check.instances {
+                            CheckKdaInstances::Star => todo!(),
+                            CheckKdaInstances::Equal(_) => todo!(),
                         },
                     }
                 }
@@ -122,19 +120,11 @@ impl InterpretableFrom<Box<CheckAccountRaw>> for CheckAccount {
             comment: from.comment,
             nonce: CheckValue::<U64Value>::interpret_from(from.nonce, context),
             balance: CheckValue::<BigUintValue>::interpret_from(from.balance, context),
-            esdt: CheckEsdtMap::interpret_from(from.esdt, context),
+            kda: CheckKdaMap::interpret_from(from.kda, context),
             username: CheckValue::<BytesValue>::interpret_from(from.username, context),
             storage: CheckStorage::interpret_from(from.storage, context),
             code: CheckValue::<BytesValue>::interpret_from(from.code, context),
             owner: CheckValue::<BytesValue>::interpret_from(from.owner, context),
-            developer_rewards: CheckValue::<BigUintValue>::interpret_from(
-                from.developer_rewards,
-                context,
-            ),
-            async_call_data: CheckValue::<BytesValue>::interpret_from(
-                from.async_call_data,
-                context,
-            ),
         }
     }
 }
@@ -145,13 +135,11 @@ impl IntoRaw<CheckAccountRaw> for CheckAccount {
             comment: self.comment,
             nonce: self.nonce.into_raw(),
             balance: self.balance.into_raw(),
-            esdt: self.esdt.into_raw(),
+            kda: self.kda.into_raw(),
             username: self.username.into_raw(),
             storage: self.storage.into_raw(),
             code: self.code.into_raw_explicit(), // TODO: convert back to into_raw after VM CI upgrade
             owner: self.owner.into_raw_explicit(), // TODO: convert back to into_raw after VM CI upgrade
-            developer_rewards: self.developer_rewards.into_raw(),
-            async_call_data: self.async_call_data.into_raw(),
         }
     }
 }

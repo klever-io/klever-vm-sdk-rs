@@ -9,10 +9,10 @@ publish = false
 path = "src/nft_storage_prepay.rs"
 
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../framework/base"
 
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"

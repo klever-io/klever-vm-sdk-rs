@@ -4,7 +4,7 @@ use crate::api::{
     },
     VmApiImpl,
 };
-use multiversx_sc::{
+use klever_sc::{
     api::{BlockchainApi, BlockchainApiImpl, ManagedBufferApiImpl, RawHandle},
     types::heap::{Address, Box, H256},
 };
@@ -20,7 +20,6 @@ extern "C" {
 
     fn managedCaller(resultHandle: i32);
 
-    fn getShardOfAddress(address_ptr: *const u8) -> i32;
     fn isSmartContract(address_ptr: *const u8) -> i32;
 
     /// Currently not used.
@@ -47,7 +46,7 @@ extern "C" {
 
     // big int API
     fn bigIntGetExternalBalance(address_ptr: *const u8, dest: i32);
-    fn bigIntGetESDTExternalBalance(
+    fn bigIntGetKDAExternalBalance(
         address_ptr: *const u8,
         tokenIDOffset: *const u8,
         tokenIDLen: i32,
@@ -55,32 +54,46 @@ extern "C" {
         dest: i32,
     );
 
-    // ESDT NFT
-    fn getCurrentESDTNFTNonce(
-        address_ptr: *const u8,
-        tokenIDOffset: *const u8,
-        tokenIDLen: i32,
-    ) -> i64;
-
-    fn managedGetESDTTokenData(
-        addressHandle: i32,
-        tokenIDHandle: i32,
-        nonce: i64,
-        valueHandle: i32,
-        propertiesHandle: i32,
-        hashHandle: i32,
-        nameHandle: i32,
-        attributesHandle: i32,
-        creatorHandle: i32,
-        royaltiesHandle: i32,
-        urisHandle: i32,
+    fn managedGetUserKDA(
+        address_handle: i32,
+        ticker_handle: i32,
+        nonce: u64,
+        balance_handle: i32,
+        frozen_handle: i32,
+        last_claim_handle: i32,
+        buckets_handle: i32,
+        mime_handle: i32,
+        metadata_handle: i32,
     );
 
-    fn managedIsESDTFrozen(addressHandle: i32, tokenIDHandle: i32, nonce: i64) -> i32;
-    fn managedIsESDTPaused(tokenIDHandle: i32) -> i32;
-    fn managedIsESDTLimitedTransfer(tokenIDHandle: i32) -> i32;
+    fn managedGetKDATokenData(
+        address_handle: i32,
+        ticker_handle: i32,
+        nonce: u64,
+        precision_handle: i32,
+        id_handle: i32,
+        name_handle: i32,
+        creator_handle: i32,
+        logo_handle: i32,
+        uris_handle: i32,
+        initial_supply_handle: i32,
+        circulating_supply_handle: i32,
+        max_supply_handle: i32,
+        minted_handle: i32,
+        burned_handle: i32,
+        royalties_handle: i32,
+        properties_handle: i32,
+        attributes_handle: i32,
+        roles_handle: i32,
+        issue_date_handle: i32,
+    );
 
-    fn getESDTLocalRoles(tokenhandle: i32) -> i64;
+    fn managedGetKDARoles(
+        ticker_handle: i32,
+        roles_handle: i32,
+    );
+
+    fn managedGetBackTransfers(kdaTransfersValueHandle: i32, callValueHandle: i32);
 }
 
 impl BlockchainApi for VmApiImpl {
@@ -131,17 +144,6 @@ impl BlockchainApiImpl for VmApiImpl {
             managedOwnerAddress(dest);
         }
     }
-
-    #[inline]
-    fn get_shard_of_address_legacy(&self, address: &Address) -> u32 {
-        unsafe { getShardOfAddress(address.as_ref().as_ptr()) as u32 }
-    }
-
-    #[inline]
-    fn get_shard_of_address(&self, address_handle: Self::ManagedBufferHandle) -> u32 {
-        unsafe { getShardOfAddress(unsafe_buffer_load_address(address_handle)) as u32 }
-    }
-
     #[inline]
     fn is_smart_contract_legacy(&self, address: &Address) -> bool {
         unsafe { isSmartContract(address.as_ref().as_ptr()) > 0 }
@@ -257,23 +259,7 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    #[inline]
-    fn get_current_esdt_nft_nonce(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64 {
-        unsafe {
-            let token_identifier_len = self.mb_len(token_id_handle);
-            getCurrentESDTNFTNonce(
-                unsafe_buffer_load_address(address_handle),
-                unsafe_buffer_load_token_identifier(token_id_handle),
-                token_identifier_len as i32,
-            ) as u64
-        }
-    }
-
-    fn load_esdt_balance(
+    fn load_kda_balance(
         &self,
         address_handle: Self::ManagedBufferHandle,
         token_id_handle: Self::ManagedBufferHandle,
@@ -282,7 +268,7 @@ impl BlockchainApiImpl for VmApiImpl {
     ) {
         let token_identifier_len = self.mb_len(token_id_handle);
         unsafe {
-            bigIntGetESDTExternalBalance(
+            bigIntGetKDAExternalBalance(
                 unsafe_buffer_load_address(address_handle),
                 unsafe_buffer_load_token_identifier(token_id_handle),
                 token_identifier_len as i32,
@@ -292,62 +278,100 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    fn managed_get_esdt_token_data(
+    fn managed_get_user_kda(
+            &self,
+            address_handle: RawHandle,
+            ticker_handle: RawHandle,
+            nonce: u64,
+            balance_handle: RawHandle,
+            frozen_handle: RawHandle,
+            last_claim_handle: RawHandle,
+            buckets_handle: RawHandle,
+            mime_handle: RawHandle,
+            metadata_handle: RawHandle,
+        ) {
+            unsafe {
+                managedGetUserKDA(
+                    address_handle,
+                    ticker_handle,
+                    nonce,
+                    balance_handle,
+                    frozen_handle,
+                    last_claim_handle,
+                    buckets_handle,
+                    mime_handle,
+                    metadata_handle,
+                );
+            }
+    }
+
+    fn managed_get_kda_token_data(
         &self,
         address_handle: RawHandle,
-        token_id_handle: RawHandle,
+        ticker_handle: RawHandle,
         nonce: u64,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
+        precision_handle: RawHandle,
+        id_handle: RawHandle,
         name_handle: RawHandle,
-        attributes_handle: RawHandle,
         creator_handle: RawHandle,
-        royalties_handle: RawHandle,
+        logo_handle: RawHandle,
         uris_handle: RawHandle,
+        initial_supply_handle: RawHandle,
+        circulating_supply_handle: RawHandle,
+        max_supply_handle: RawHandle,
+        minted_handle: RawHandle,
+        burned_handle: RawHandle,
+        royalties_handle: RawHandle,
+        properties_handle: RawHandle,
+        attributes_handle: RawHandle,
+        roles_handle: RawHandle,
+        issue_date_handle: RawHandle,
     ) {
         unsafe {
-            managedGetESDTTokenData(
+            managedGetKDATokenData(
                 address_handle,
-                token_id_handle,
-                nonce as i64,
-                value_handle,
-                properties_handle,
-                hash_handle,
+                ticker_handle,
+                nonce,
+                precision_handle,
+                id_handle,
                 name_handle,
-                attributes_handle,
                 creator_handle,
-                royalties_handle,
+                logo_handle,
                 uris_handle,
+                initial_supply_handle,
+                circulating_supply_handle,
+                max_supply_handle,
+                minted_handle,
+                burned_handle,
+                royalties_handle,
+                properties_handle,
+                attributes_handle,
+                roles_handle,
+                issue_date_handle,
             );
         }
     }
 
-    fn check_esdt_frozen(
+    fn managed_get_kda_roles(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-        nonce: u64,
-    ) -> bool {
-        unsafe { managedIsESDTFrozen(address_handle, token_id_handle, nonce as i64) > 0 }
-    }
-
-    fn check_esdt_paused(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unsafe { managedIsESDTPaused(token_id_handle) > 0 }
-    }
-
-    fn check_esdt_limited_transfer(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        unsafe { managedIsESDTLimitedTransfer(token_id_handle) > 0 }
-    }
-
-    fn load_esdt_local_roles(
-        &self,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> multiversx_sc::types::EsdtLocalRoleFlags {
+        ticker_handle: RawHandle,
+        roles_handle: RawHandle,
+    ) {
         unsafe {
-            multiversx_sc::types::EsdtLocalRoleFlags::from_bits_unchecked(getESDTLocalRoles(
-                token_id_handle,
-            ) as u64)
+            managedGetKDARoles(
+                ticker_handle,
+                roles_handle,
+            );
+        }
+    }
+
+    fn managed_get_back_transfers(
+        &self,
+        kda_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    ) {
+        unsafe {
+            managedGetBackTransfers(kda_transfer_value_handle, call_value_handle);
         }
     }
 }

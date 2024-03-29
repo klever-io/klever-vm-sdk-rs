@@ -2,22 +2,22 @@ use num_bigint::BigUint;
 
 use crate::{
     tx_execution::is_system_sc_address, tx_mock::TxPanic, types::VMAddress,
-    world_mock::EsdtInstanceMetadata,
+    world_mock::KdaInstanceMetadata,
 };
 
 use super::TxCache;
 
 impl TxCache {
-    pub fn subtract_egld_balance(
+    pub fn subtract_klv_balance(
         &self,
         address: &VMAddress,
         call_value: &BigUint,
     ) -> Result<(), TxPanic> {
         self.with_account_mut(address, |account| {
-            if call_value > &account.egld_balance {
+            if call_value > &account.klv_balance {
                 return Err(TxPanic::vm_error("failed transfer (insufficient funds)"));
             }
-            account.egld_balance -= call_value;
+            account.klv_balance -= call_value;
             Ok(())
         })
     }
@@ -26,92 +26,92 @@ impl TxCache {
         self.with_account_mut(address, |account| {
             let gas_cost = BigUint::from(gas_limit) * BigUint::from(gas_price);
             assert!(
-                account.egld_balance >= gas_cost,
+                account.klv_balance >= gas_cost,
                 "Not enough balance to pay gas upfront"
             );
-            account.egld_balance -= &gas_cost;
+            account.klv_balance -= &gas_cost;
         });
     }
 
-    pub fn increase_egld_balance(&self, address: &VMAddress, amount: &BigUint) {
+    pub fn increase_klv_balance(&self, address: &VMAddress, amount: &BigUint) {
         self.with_account_mut(address, |account| {
-            account.egld_balance += amount;
+            account.klv_balance += amount;
         });
     }
 
-    pub fn subtract_esdt_balance(
+    pub fn subtract_kda_balance(
         &self,
         address: &VMAddress,
-        esdt_token_identifier: &[u8],
+        kda_token_identifier: &[u8],
         nonce: u64,
         value: &BigUint,
-    ) -> Result<EsdtInstanceMetadata, TxPanic> {
+    ) -> Result<KdaInstanceMetadata, TxPanic> {
         self.with_account_mut(address, |account| {
-            let esdt_data_map = &mut account.esdt;
-            let esdt_data = esdt_data_map
-                .get_mut_by_identifier(esdt_token_identifier)
+            let kda_data_map = &mut account.kda;
+            let kda_data = kda_data_map
+                .get_mut_by_identifier(kda_token_identifier)
                 .ok_or_else(err_insufficient_funds)?;
 
-            let esdt_instances = &mut esdt_data.instances;
-            let esdt_instance = esdt_instances
+            let kda_instances = &mut kda_data.instances;
+            let kda_instance = kda_instances
                 .get_mut_by_nonce(nonce)
                 .ok_or_else(err_insufficient_funds)?;
 
-            let esdt_balance = &mut esdt_instance.balance;
-            if &*esdt_balance < value {
+            let kda_balance = &mut kda_instance.balance;
+            if &*kda_balance < value {
                 return Err(err_insufficient_funds());
             }
 
-            *esdt_balance -= value;
+            *kda_balance -= value;
 
-            Ok(esdt_instance.metadata.clone())
+            Ok(kda_instance.metadata.clone())
         })
     }
 
-    pub fn increase_esdt_balance(
+    pub fn increase_kda_balance(
         &self,
         address: &VMAddress,
-        esdt_token_identifier: &[u8],
+        kda_token_identifier: &[u8],
         nonce: u64,
         value: &BigUint,
-        esdt_metadata: EsdtInstanceMetadata,
+        kda_metadata: KdaInstanceMetadata,
     ) {
         self.with_account_mut(address, |account| {
-            account.esdt.increase_balance(
-                esdt_token_identifier.to_vec(),
+            account.kda.increase_balance(
+                kda_token_identifier.to_vec(),
                 nonce,
                 value,
-                esdt_metadata,
+                kda_metadata,
             );
         });
     }
 
-    pub fn transfer_egld_balance(
+    pub fn transfer_klv_balance(
         &self,
         from: &VMAddress,
         to: &VMAddress,
         value: &BigUint,
     ) -> Result<(), TxPanic> {
         if !is_system_sc_address(from) {
-            self.subtract_egld_balance(from, value)?;
+            self.subtract_klv_balance(from, value)?;
         }
         if !is_system_sc_address(to) {
-            self.increase_egld_balance(to, value);
+            self.increase_klv_balance(to, value);
         }
         Ok(())
     }
 
-    pub fn transfer_esdt_balance(
+    pub fn transfer_kda_balance(
         &self,
         from: &VMAddress,
         to: &VMAddress,
-        esdt_token_identifier: &[u8],
+        kda_token_identifier: &[u8],
         nonce: u64,
         value: &BigUint,
     ) -> Result<(), TxPanic> {
         if !is_system_sc_address(from) && !is_system_sc_address(to) {
-            let metadata = self.subtract_esdt_balance(from, esdt_token_identifier, nonce, value)?;
-            self.increase_esdt_balance(to, esdt_token_identifier, nonce, value, metadata);
+            let metadata = self.subtract_kda_balance(from, kda_token_identifier, nonce, value)?;
+            self.increase_kda_balance(to, kda_token_identifier, nonce, value, metadata);
         }
         Ok(())
     }

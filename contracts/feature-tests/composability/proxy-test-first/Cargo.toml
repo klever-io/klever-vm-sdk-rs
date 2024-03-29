@@ -11,11 +11,11 @@ path = "src/proxy-test-first.rs"
 [dependencies]
 hex-literal = "0.3.1"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../../framework/base"
 features = ["alloc"]
 
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../../framework/scenario"

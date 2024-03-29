@@ -2,7 +2,7 @@
 
 This is a lottery smart contract designed to be used with the erc20 token.
 
-The lottery smart contract is designed to allow anyone to create their very own lottery, directly on the blockchain. Having said that, the purpose of this contract is just to have a bit of fun and show what’s possible on the current version of the MultiversX blockchain. We do not endorse gambling and this should never really be used with high sums of erc20 tokens.
+The lottery smart contract is designed to allow anyone to create their very own lottery, directly on the blockchain. Having said that, the purpose of this contract is just to have a bit of fun and show what’s possible on the current version of the Klever blockchain. We do not endorse gambling and this should never really be used with high sums of erc20 tokens.
 
 Now that that’s out of the way, there’s not much else to say in this section. It’s just a lottery! You buy tickets and hope to win. The difference between this and the traditional lottery is that you don’t pick some numbers, you just buy a ticket and at the end, one (or more) of the tickets are declared the “winning tickets”.  
 
@@ -104,7 +104,7 @@ pub struct LotteryInfo<BigUint:BigUintApi> {
 It basically contains the exact same fields as the arguments of the start function, plus an additional two fields:
 
 *current\_ticket\_number*: Could be called “tickets sold”, but this name makes more sense in the implementation.  
-*prize\_pool*: the accumulated eGLD up until now.
+*prize\_pool*: the accumulated KLV up until now.
 *queued\_tickets*: the number of tickets that are currently being processed
 
 ## 2) State-altering functions

@@ -12,10 +12,6 @@ path = "src/interactor_main.rs"
 [dependencies.rust-snippets-generator-test]
 path = ".."
 
-[dependencies.multiversx-sc-snippets]
-version = "0.43.3"
-path = "../../../../framework/snippets"
-
 # [workspace]
 
 

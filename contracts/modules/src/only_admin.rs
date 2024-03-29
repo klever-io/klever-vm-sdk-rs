@@ -1,6 +1,6 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait OnlyAdminModule {
     #[view(isAdmin)]
     fn is_admin(&self, address: ManagedAddress) -> bool {

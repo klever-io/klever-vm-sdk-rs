@@ -1,6 +1,6 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait MockSeedNftMinter {
     #[init]
     fn init(&self, nft_token_id: TokenIdentifier) {

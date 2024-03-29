@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::serde_raw::{TxESDTRaw, ValueSubTree};
+use crate::serde_raw::{TxKDARaw, ValueSubTree};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -15,11 +15,11 @@ pub struct TxTransferRaw {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub egld_value: Option<ValueSubTree>,
+    pub klv_value: Option<ValueSubTree>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub esdt_value: Vec<TxESDTRaw>,
+    pub kda_value: Vec<TxKDARaw>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]

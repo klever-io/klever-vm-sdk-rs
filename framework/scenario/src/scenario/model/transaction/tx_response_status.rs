@@ -18,7 +18,7 @@ impl TxResponseStatus {
 
     /// Creates a [`TxResponseStatus`] that signals an error.
     pub(crate) fn signal_error(message: &str) -> Self {
-        Self::new(4, message)
+        Self::new(57, message)
     }
 
     /// Checks if the transaction was successful.

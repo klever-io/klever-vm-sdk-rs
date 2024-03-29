@@ -1,0 +1,12 @@
+[package]
+name = "kda-transfer-with-fee-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies.kda-transfer-with-fee]
+path = ".."
+
+[dependencies.klever-sc-meta]
+version = "0.43.3"
+path = "../../../../framework/meta"

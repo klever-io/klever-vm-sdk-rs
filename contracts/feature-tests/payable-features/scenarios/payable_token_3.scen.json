@@ -1,6 +1,6 @@
 {
     "name": "payable",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -13,7 +13,7 @@
                 "address:an-account": {
                     "nonce": "0",
                     "balance": "1,000,000,000,000",
-                    "esdt": {
+                    "kda": {
                         "str:PAYABLE-FEATURES-TOKEN": "1,000,000,000,000",
                         "str:OTHER-TOKEN": "1,000,000,000,000"
                     }
@@ -33,8 +33,8 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
-                "message": "str:function expects single ESDT payment",
+                "status": "57",
+                "message": "str:function expects single KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -46,7 +46,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "egldValue": "5",
+                "klvValue": "5",
                 "function": "payable_token_3",
                 "arguments": [],
                 "gasLimit": "50,000,000",
@@ -54,8 +54,8 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
-                "message": "str:function expects single ESDT payment",
+                "status": "57",
+                "message": "str:function expects single KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -67,7 +67,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:PAYABLE-FEATURES-TOKEN",
                         "value": "100"
@@ -95,7 +95,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:OTHER-TOKEN",
                         "value": "100"
@@ -108,7 +108,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:bad call value token provided",
                 "logs": "*",
                 "gas": "*",

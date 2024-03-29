@@ -1,7 +1,7 @@
 use benchmark_common::ExampleStruct;
 use linked_list_repeat::ProxyTrait;
-use multiversx_sc::types::{MultiValueEncoded, TokenIdentifier};
-use multiversx_sc_scenario::{api::StaticApi, scenario_model::*, *};
+use klever_sc::types::{MultiValueEncoded, TokenIdentifier};
+use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
 
 const WASM_PATH_EXPR: &str = "file:output/linked-list-repeat.wasm";
 
@@ -21,7 +21,7 @@ fn setup() -> ScenarioWorld {
         .set_state_step(
             SetStateStep::new()
                 .put_account("address:owner", Account::new().nonce(1))
-                .new_address("address:owner", 1, "sc:llr"),
+                .new_address("address:owner", 2, "sc:llr"),
         )
         .sc_deploy(
             ScDeployStep::new()
@@ -75,12 +75,12 @@ fn linked_list_repeat_struct_blackbox_raw() {
     let mut contract = ContractInfo::<linked_list_repeat::Proxy<StaticApi>>::new("sc:llr");
 
     let mut example = ExampleStruct {
-        first_token_id: TokenIdentifier::from_esdt_bytes(b"str:TESTTOK-1234"),
+        first_token_id: TokenIdentifier::from_kda_bytes(b"str:TESTTOK-1234"),
         first_token_nonce: 0,
-        first_token_amount: multiversx_sc::types::BigUint::from(1_000_000_000_000_000_000u64),
-        second_token_id: TokenIdentifier::from_esdt_bytes(b"str:TESTTOK-2345"),
+        first_token_amount: klever_sc::types::BigUint::from(1_000_000_000_000_000_000u64),
+        second_token_id: TokenIdentifier::from_kda_bytes(b"str:TESTTOK-2345"),
         second_token_nonce: 0,
-        second_token_amount: multiversx_sc::types::BigUint::from(1_000_000_000_000_000_000u64),
+        second_token_amount: klever_sc::types::BigUint::from(1_000_000_000_000_000_000u64),
     };
     world.sc_call(
         ScCallStep::new()

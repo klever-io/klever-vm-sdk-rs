@@ -1,6 +1,6 @@
-use multiversx_chain_vm::tx_mock::{TxContextRef, TxFunctionName, TxPanic};
-use multiversx_chain_vm_executor::{BreakpointValue, ExecutorError, Instance, MemLength, MemPtr};
-use multiversx_sc::contract_base::CallableContract;
+use klever_chain_vm::tx_mock::{TxContextRef, TxFunctionName, TxPanic};
+use klever_chain_vm_executor::{BreakpointValue, ExecutorError, Instance, MemLength, MemPtr};
+use klever_sc::contract_base::CallableContract;
 use std::sync::Arc;
 
 use super::{catch_tx_panic, StaticVarStack};
@@ -81,6 +81,7 @@ impl Instance for ContractContainerRef {
             if call_successful {
                 Ok(())
             } else {
+                println!("func not found: {}", func_name);
                 Err(TxPanic::new(1, "invalid function (not found)"))
             }
         });

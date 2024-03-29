@@ -1,5 +1,5 @@
 use hex::FromHex;
-use multiversx_chain_vm::crypto_functions;
+use klever_chain_vm::crypto_functions;
 
 #[test]
 fn test_verify_ed25519_basic() {

@@ -1,7 +1,7 @@
 use crate::{
     tx_execution::BlockchainVMRef,
     types::VMAddress,
-    world_mock::{AccountData, AccountEsdt, BlockchainState, FailingExecutor},
+    world_mock::{AccountData, AccountKda, BlockchainState, FailingExecutor},
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
@@ -10,13 +10,14 @@ use std::{
     sync::{Arc, Mutex, MutexGuard},
 };
 
-use super::{BlockchainRng, BlockchainUpdate, TxCache, TxInput, TxManagedTypes, TxResult};
+use super::{BackTransfers, BlockchainRng, BlockchainUpdate, TxCache, TxInput, TxManagedTypes, TxResult};
 
 pub struct TxContext {
     pub vm_ref: BlockchainVMRef,
     pub tx_input_box: Box<TxInput>,
     pub tx_cache: Arc<TxCache>,
     pub managed_types: Mutex<TxManagedTypes>,
+    pub back_transfers: Mutex<BackTransfers>,
     pub tx_result_cell: Mutex<TxResult>,
     pub b_rng: Mutex<BlockchainRng>,
 }
@@ -29,6 +30,7 @@ impl TxContext {
             tx_input_box: Box::new(tx_input),
             tx_cache: Arc::new(tx_cache),
             managed_types: Mutex::new(TxManagedTypes::new()),
+            back_transfers: Mutex::default(),
             tx_result_cell: Mutex::new(TxResult::empty()),
             b_rng,
         }
@@ -40,13 +42,12 @@ impl TxContext {
         tx_cache.insert_account(AccountData {
             address: contract_address.clone(),
             nonce: 0,
-            egld_balance: BigUint::zero(),
+            klv_balance: BigUint::zero(),
             storage: HashMap::new(),
-            esdt: AccountEsdt::default(),
+            kda: AccountKda::default(),
             username: Vec::new(),
             contract_path: None,
             contract_owner: None,
-            developer_rewards: BigUint::zero(),
         });
 
         let tx_input = TxInput {
@@ -62,6 +63,7 @@ impl TxContext {
             tx_input_box: Box::new(tx_input),
             tx_cache: Arc::new(tx_cache),
             managed_types: Mutex::new(TxManagedTypes::new()),
+            back_transfers: Mutex::default(),
             tx_result_cell: Mutex::new(TxResult::empty()),
             b_rng,
         }
@@ -115,6 +117,10 @@ impl TxContext {
         self.managed_types.lock().unwrap()
     }
 
+    pub fn back_transfers_lock(&self) -> MutexGuard<BackTransfers> {
+        self.back_transfers.lock().unwrap()
+    }
+
     pub fn result_lock(&self) -> MutexGuard<TxResult> {
         self.tx_result_cell.lock().unwrap()
     }
@@ -141,13 +147,12 @@ impl TxContext {
         self.tx_cache.insert_account(AccountData {
             address: new_address.clone(),
             nonce: 0,
-            egld_balance: BigUint::zero(),
+            klv_balance: BigUint::zero(),
             storage: HashMap::new(),
-            esdt: AccountEsdt::default(),
+            kda: AccountKda::default(),
             username: Vec::new(),
             contract_path: Some(contract_path),
             contract_owner: Some(contract_owner),
-            developer_rewards: BigUint::zero(),
         });
     }
 

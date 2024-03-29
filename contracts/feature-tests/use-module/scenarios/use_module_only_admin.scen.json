@@ -20,7 +20,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "5",
+                    "creatorNonce": "6",
                     "newAddress": "sc:use_module"
                 }
             ]
@@ -96,7 +96,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Endpoint can only be called by admins",
                 "logs": "*",
                 "gas": "*",

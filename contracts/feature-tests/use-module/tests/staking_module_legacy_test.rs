@@ -1,8 +1,8 @@
 #![allow(deprecated)] // TODO: migrate tests
 
-use multiversx_sc::types::{EgldOrEsdtTokenIdentifier, ManagedVec};
-use multiversx_sc_modules::staking::StakingModule;
-use multiversx_sc_scenario::{
+use klever_sc::types::{TokenIdentifier, ManagedVec};
+use klever_sc_modules::staking::StakingModule;
+use klever_sc_scenario::{
     managed_address, managed_biguint, managed_token_id, rust_biguint,
     testing_framework::BlockchainStateWrapper,
 };
@@ -30,10 +30,10 @@ fn staking_module_test() {
         "wasm path",
     );
 
-    b_mock.set_esdt_balance(&alice, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
-    b_mock.set_esdt_balance(&bob, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
-    b_mock.set_esdt_balance(&carol, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
-    b_mock.set_esdt_balance(&eve, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
+    b_mock.set_kda_balance(&alice, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
+    b_mock.set_kda_balance(&bob, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
+    b_mock.set_kda_balance(&carol, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
+    b_mock.set_kda_balance(&eve, STAKING_TOKEN_ID, &rust_biguint!(INITIAL_BALANCE));
 
     // init module
     b_mock
@@ -44,7 +44,7 @@ fn staking_module_test() {
             whitelist.push(managed_address!(&carol));
 
             sc.init_staking_module(
-                &EgldOrEsdtTokenIdentifier::esdt(managed_token_id!(STAKING_TOKEN_ID)),
+                &TokenIdentifier::from(managed_token_id!(STAKING_TOKEN_ID)),
                 &managed_biguint!(REQUIRED_STAKE_AMOUNT),
                 &managed_biguint!(SLASH_AMOUNT),
                 QUORUM,
@@ -55,7 +55,7 @@ fn staking_module_test() {
 
     // try stake - not a board member
     b_mock
-        .execute_esdt_transfer(
+        .execute_kda_transfer(
             &eve,
             &staking_sc,
             STAKING_TOKEN_ID,
@@ -69,7 +69,7 @@ fn staking_module_test() {
 
     // stake half and try unstake
     b_mock
-        .execute_esdt_transfer(
+        .execute_kda_transfer(
             &alice,
             &staking_sc,
             STAKING_TOKEN_ID,
@@ -88,7 +88,7 @@ fn staking_module_test() {
 
     // bob and carol stake
     b_mock
-        .execute_esdt_transfer(
+        .execute_kda_transfer(
             &bob,
             &staking_sc,
             STAKING_TOKEN_ID,
@@ -100,7 +100,7 @@ fn staking_module_test() {
         )
         .assert_ok();
     b_mock
-        .execute_esdt_transfer(
+        .execute_kda_transfer(
             &carol,
             &staking_sc,
             STAKING_TOKEN_ID,
@@ -128,7 +128,7 @@ fn staking_module_test() {
 
     // alice stake over max amount and withdraw surplus
     b_mock
-        .execute_esdt_transfer(
+        .execute_kda_transfer(
             &alice,
             &staking_sc,
             STAKING_TOKEN_ID,
@@ -150,7 +150,7 @@ fn staking_module_test() {
             assert_eq!(alice_staked_amount, managed_biguint!(1_000_000));
         })
         .assert_ok();
-    b_mock.check_esdt_balance(&alice, STAKING_TOKEN_ID, &rust_biguint!(1_000_000));
+    b_mock.check_kda_balance(&alice, STAKING_TOKEN_ID, &rust_biguint!(1_000_000));
 
     // alice vote to slash bob
     b_mock
@@ -258,7 +258,7 @@ fn staking_module_test() {
             sc.unstake(managed_biguint!(400_000));
         })
         .assert_ok();
-    b_mock.check_esdt_balance(
+    b_mock.check_kda_balance(
         &alice,
         STAKING_TOKEN_ID,
         &rust_biguint!(INITIAL_BALANCE - SLASH_AMOUNT),

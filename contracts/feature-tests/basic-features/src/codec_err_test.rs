@@ -1,11 +1,11 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 use crate::types::CodecErrorTestType;
 
 mod encode_err_proxy {
-    multiversx_sc::imports!();
+    klever_sc::imports!();
     use crate::types::CodecErrorTestType;
 
-    #[multiversx_sc::proxy]
+    #[klever_sc::proxy]
     pub trait EncodeErrorProxy {
         #[init]
         fn init(&self, error_arg: CodecErrorTestType);
@@ -16,7 +16,7 @@ mod encode_err_proxy {
 }
 
 /// Test various serialization errors.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait CodecErrorTest {
     #[endpoint]
     fn codec_err_finish(&self) -> CodecErrorTestType {
@@ -73,7 +73,7 @@ pub trait CodecErrorTest {
         let _ = self.encode_err_proxy().init(CodecErrorTestType);
     }
 
-    /// Never actually calls any async/sync call, so it is appropriate in this contract.
+    /// Never actually do any call, so it is appropriate in this contract.
     /// It just covers contract call serialization errors.
     #[endpoint]
     fn codec_err_contract_call(&self) {

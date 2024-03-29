@@ -1,8 +1,8 @@
-use multiversx_sc::storage::{
+use klever_sc::storage::{
     mappers::{BiDiMapper, StorageMapper},
     StorageKey,
 };
-use multiversx_sc_scenario::api::SingleTxApi;
+use klever_sc_scenario::api::SingleTxApi;
 
 fn create_set_1() -> BiDiMapper<SingleTxApi, u64, u32> {
     let base_key = StorageKey::new(&b"my_bidi_set"[..]);

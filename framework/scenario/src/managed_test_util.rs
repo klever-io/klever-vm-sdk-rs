@@ -1,4 +1,4 @@
-use multiversx_sc::{
+use klever_sc::{
     codec::{test_util::check_top_encode, TopDecode, TopEncode},
     contract_base::ManagedSerializer,
     types::{heap::BoxedBytes, ManagedBuffer},

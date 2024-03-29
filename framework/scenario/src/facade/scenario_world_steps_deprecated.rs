@@ -50,14 +50,6 @@ impl ScenarioWorld {
         self.transfer_step(step)
     }
 
-    #[deprecated(
-        since = "0.39.0",
-        note = "Renamed, use `validator_reward_step` instead."
-    )]
-    pub fn mandos_validator_reward(&mut self, step: ValidatorRewardStep) -> &mut Self {
-        self.validator_reward_step(step)
-    }
-
     #[deprecated(since = "0.39.0", note = "Renamed, use `check_state_step` instead.")]
     pub fn mandos_check_state(&mut self, step: CheckStateStep) -> &mut Self {
         self.check_state_step(step)

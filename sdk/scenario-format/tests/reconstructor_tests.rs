@@ -1,4 +1,4 @@
-use multiversx_chain_scenario_format::{
+use klever_chain_scenario_format::{
     interpret_trait::InterpreterContext,
     reconstruct_trait::ReconstructorContext,
     serde_raw::ValueSubTree,
@@ -203,74 +203,6 @@ fn test_address() {
 }
 
 #[test]
-fn test_address_with_shard_id() {
-    let interpreter_context = InterpreterContext::default();
-    let reconstructor_context = ReconstructorContext::default();
-    let mut interpreted = interpret_string("address:#05", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str(
-            "0x5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f05 (address:#05)"
-                .to_string()
-        ),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    interpreted = interpret_string("address:a#bb", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str(
-            "0x615f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5fbb (address:a#bb)"
-                .to_string()
-        ),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    interpreted = interpret_string("address:an_address#99", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str("0x616e5f616464726573735f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f99 (address:an_address#99)".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    interpreted = interpret_string(
-        "address:1234567890123456789012345678901#66",
-        &interpreter_context,
-    );
-    assert_eq!(
-        ValueSubTree::Str("address:1234567890123456789012345678901#66".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    // trims excess
-    interpreted = interpret_string(
-        "address:12345678901234567890123456789012#66",
-        &interpreter_context,
-    );
-    assert_eq!(
-        ValueSubTree::Str("address:1234567890123456789012345678901#66".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-}
-
-#[test]
 fn test_scaddress() {
     let interpreter_context = InterpreterContext::default();
     let reconstructor_context = ReconstructorContext::default();
@@ -298,42 +230,6 @@ fn test_scaddress() {
     interpreted = interpret_string("sc:123456789012345678912sx", &interpreter_context);
     assert_eq!(
         ValueSubTree::Str("sc:123456789012345678912#73".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-}
-
-#[test]
-fn test_scaddress_with_shard_id() {
-    let interpreter_context = InterpreterContext::default();
-    let reconstructor_context = ReconstructorContext::default();
-    let mut interpreted = interpret_string("sc:a#44", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str("sc:a#44".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    interpreted = interpret_string("sc:123456789012345678912#88", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str("sc:123456789012345678912#88".to_string()),
-        reconstruct(
-            &interpreted,
-            &ExprReconstructorHint::AddressHint,
-            &reconstructor_context
-        ),
-    );
-
-    // trims excess
-    interpreted = interpret_string("sc:123456789012345678912x#88", &interpreter_context);
-    assert_eq!(
-        ValueSubTree::Str("sc:123456789012345678912#88".to_string()),
         reconstruct(
             &interpreted,
             &ExprReconstructorHint::AddressHint,

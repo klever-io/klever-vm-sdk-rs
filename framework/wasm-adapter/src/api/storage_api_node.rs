@@ -1,5 +1,5 @@
 use super::VmApiImpl;
-use multiversx_sc::api::{
+use klever_sc::api::{
     StorageReadApi, StorageReadApiImpl, StorageWriteApi, StorageWriteApiImpl,
 };
 

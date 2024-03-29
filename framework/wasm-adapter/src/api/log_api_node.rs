@@ -1,5 +1,5 @@
 use super::VmApiImpl;
-use multiversx_sc::api::{LogApi, LogApiImpl};
+use klever_sc::api::{LogApi, LogApiImpl};
 
 extern "C" {
     fn managedWriteLog(topicsHandle: i32, dataHandle: i32);

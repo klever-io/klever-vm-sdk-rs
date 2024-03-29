@@ -4,7 +4,7 @@ mod elliptic_curve_api_vh;
 mod managed_buffer_api_vh;
 mod managed_map_api_vh;
 
-use multiversx_sc::api::{HandleConstraints, ManagedTypeApi, ManagedTypeApiImpl};
+use klever_sc::api::{HandleConstraints, ManagedTypeApi, ManagedTypeApiImpl};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};
 

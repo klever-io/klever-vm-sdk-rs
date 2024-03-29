@@ -1,4 +1,4 @@
-use multiversx_sc_meta::{
+use klever_sc_meta::{
     template::{
         template_names_from_repo, ContractCreator, ContractCreatorTarget, RepoSource, RepoVersion,
     },
@@ -24,6 +24,7 @@ fn test_template_list() {
         [
             "adder".to_string(),
             "crypto-zombies".to_string(),
+            "dice".to_string(),
             "empty".to_string()
         ]
     );
@@ -150,7 +151,7 @@ pub fn cargo_test(target: &ContractCreatorTarget) {
     ];
     if BUILD_CONTRACTS {
         args.push("--features");
-        args.push("multiversx-sc-scenario/run-go-tests");
+        args.push("klever-sc-scenario/run-go-tests");
     }
 
     let exit_status = Command::new("cargo")

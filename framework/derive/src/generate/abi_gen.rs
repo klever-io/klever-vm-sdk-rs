@@ -53,7 +53,7 @@ fn generate_endpoint_snippet(
     let endpoint_type_tokens = endpoint_type.to_tokens();
 
     quote! {
-        let mut endpoint_abi = multiversx_sc::abi::EndpointAbi{
+        let mut endpoint_abi = klever_sc::abi::EndpointAbi{
             docs: &[ #(#endpoint_docs),* ],
             name: #endpoint_name,
             rust_method_name: #rust_method_name,
@@ -62,8 +62,8 @@ fn generate_endpoint_snippet(
             mutability: #mutability_tokens,
             endpoint_type: #endpoint_type_tokens,
             payable_in_tokens: &[ #(#payable_in_tokens),* ],
-            inputs: multiversx_sc::types::heap::Vec::new(),
-            outputs: multiversx_sc::types::heap::Vec::new(),
+            inputs: klever_sc::types::heap::Vec::new(),
+            outputs: klever_sc::types::heap::Vec::new(),
             labels: &[ #(#label_names),* ],
         };
         #(#input_snippets)*
@@ -104,20 +104,6 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     contract_abi.endpoints.push(endpoint_abi);
                 })
             },
-            PublicRole::CallbackPromise(callback_metadata) => {
-                let endpoint_def = generate_endpoint_snippet(
-                    m,
-                    &callback_metadata.callback_name.to_string(),
-                    false,
-                    false,
-                    EndpointMutabilityMetadata::Mutable,
-                    EndpointTypeMetadata::PromisesCallback,
-                );
-                Some(quote! {
-                    #endpoint_def
-                    contract_abi.promise_callbacks.push(endpoint_abi);
-                })
-            },
             _ => None,
         })
         .collect()
@@ -142,10 +128,10 @@ fn generate_event_snippet(m: &Method, event_name: &str) -> proc_macro2::TokenStr
         .collect();
 
     quote! {
-        let mut event_abi = multiversx_sc::abi::EventAbi{
+        let mut event_abi = klever_sc::abi::EventAbi{
             docs: &[ #(#event_docs),* ],
             identifier: #event_name,
-            inputs: multiversx_sc::types::heap::Vec::new(),
+            inputs: klever_sc::types::heap::Vec::new(),
         };
         #(#input_snippets)*
     }
@@ -169,15 +155,6 @@ fn generate_event_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenSt
         .collect()
 }
 
-fn has_callback(contract: &ContractTrait) -> bool {
-    contract.methods.iter().any(|m| {
-        matches!(
-            m.public_role,
-            PublicRole::Callback(_) | PublicRole::CallbackRaw
-        )
-    })
-}
-
 fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
     contract
 			.supertraits
@@ -185,7 +162,7 @@ fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::To
 			.map(|supertrait| {
 				let module_path = &supertrait.module_path;
 				quote! {
-					contract_abi.coalesce(<#module_path AbiProvider as multiversx_sc::contract_base::ContractAbiProvider>::abi());
+					contract_abi.coalesce(<#module_path AbiProvider as klever_sc::contract_base::ContractAbiProvider>::abi());
 				}
 			})
 			.collect()
@@ -199,7 +176,6 @@ fn generate_abi_method_body(
     let contract_name = &contract.trait_name.to_string();
     let endpoint_snippets = generate_endpoint_snippets(contract);
     let event_snippets = generate_event_snippets(contract);
-    let has_callbacks = has_callback(contract);
     let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
         generate_supertrait_snippets(contract)
     } else {
@@ -207,23 +183,21 @@ fn generate_abi_method_body(
     };
 
     quote! {
-        let mut contract_abi = multiversx_sc::abi::ContractAbi {
-            build_info: multiversx_sc::abi::BuildInfoAbi {
-                contract_crate: multiversx_sc::abi::ContractCrateBuildAbi {
+        let mut contract_abi = klever_sc::abi::ContractAbi {
+            build_info: klever_sc::abi::BuildInfoAbi {
+                contract_crate: klever_sc::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
                     git_version: "",
                 },
-                framework: multiversx_sc::abi::FrameworkBuildAbi::create(),
+                framework: klever_sc::abi::FrameworkBuildAbi::create(),
             },
             docs: &[ #(#contract_docs),* ],
             name: #contract_name,
-            constructors: multiversx_sc::types::heap::Vec::new(),
-            endpoints: multiversx_sc::types::heap::Vec::new(),
-            promise_callbacks: multiversx_sc::types::heap::Vec::new(),
-            events: multiversx_sc::types::heap::Vec::new(),
-            has_callback: #has_callbacks,
-            type_descriptions: <multiversx_sc::abi::TypeDescriptionContainerImpl as multiversx_sc::abi::TypeDescriptionContainer>::new(),
+            constructors: klever_sc::types::heap::Vec::new(),
+            endpoints: klever_sc::types::heap::Vec::new(),
+            events: klever_sc::types::heap::Vec::new(),
+            type_descriptions: <klever_sc::abi::TypeDescriptionContainerImpl as klever_sc::abi::TypeDescriptionContainer>::new(),
         };
         #(#endpoint_snippets)*
         #(#event_snippets)*
@@ -240,10 +214,10 @@ pub fn generate_abi_provider(
     quote! {
         pub struct AbiProvider {}
 
-        impl multiversx_sc::contract_base::ContractAbiProvider for AbiProvider {
-            type Api = multiversx_sc::api::uncallable::UncallableApi;
+        impl klever_sc::contract_base::ContractAbiProvider for AbiProvider {
+            type Api = klever_sc::api::uncallable::UncallableApi;
 
-            fn abi() -> multiversx_sc::abi::ContractAbi {
+            fn abi() -> klever_sc::abi::ContractAbi {
                 #abi_body
             }
         }

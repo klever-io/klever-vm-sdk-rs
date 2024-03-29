@@ -1,4 +1,4 @@
-use multiversx_sc::api::{use_raw_handle, HandleConstraints, ManagedMapApiImpl};
+use klever_sc::api::{use_raw_handle, HandleConstraints, ManagedMapApiImpl};
 
 use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
 

@@ -1,12 +1,12 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 use crate::{storage, zombie_factory, zombie_helper};
-use crypto_kitties_proxy::Kitty;
+// use crypto_kitties_proxy::Kitty;
 
 mod crypto_kitties_proxy {
-    multiversx_sc::imports!();
-    multiversx_sc::derive_imports!();
+    klever_sc::imports!();
+    klever_sc::derive_imports!();
 
     #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
     pub struct Kitty {
@@ -22,14 +22,14 @@ mod crypto_kitties_proxy {
         pub genes: u64,
     }
 
-    #[multiversx_sc::proxy]
+    #[klever_sc::proxy]
     pub trait CryptoKitties {
         #[endpoint]
         fn get_kitty(&self, id: usize) -> Kitty;
     }
 }
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait ZombieFeeding:
     storage::Storage + zombie_factory::ZombieFactory + zombie_helper::ZombieHelper
 {
@@ -61,31 +61,4 @@ pub trait ZombieFeeding:
         let my_zombie = self.zombies(&zombie_id).get();
         my_zombie.ready_time <= self.blockchain().get_block_timestamp()
     }
-
-    #[callback]
-    fn get_kitty_callback(
-        &self,
-        #[call_result] result: ManagedAsyncCallResult<Kitty>,
-        zombie_id: usize,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(kitty) => {
-                let kitty_dna = kitty.genes;
-                self.feed_and_multiply(zombie_id, kitty_dna, ManagedBuffer::from(b"kitty"));
-            },
-            ManagedAsyncCallResult::Err(_) => {},
-        }
-    }
-
-    #[endpoint]
-    fn feed_on_kitty(&self, zombie_id: usize, kitty_id: usize) {
-        let crypto_kitties_sc_address = self.crypto_kitties_sc_address().get();
-        self.kitty_proxy(crypto_kitties_sc_address)
-            .get_kitty(kitty_id)
-            .async_call()
-            .with_callback(self.callbacks().get_kitty_callback(zombie_id))
-            .call_and_exit();
-    }
-    #[proxy]
-    fn kitty_proxy(&self, to: ManagedAddress) -> crypto_kitties_proxy::Proxy<Self::Api>;
 }

@@ -1,5 +1,5 @@
-use multiversx_sc::types::{BigUint, ManagedVec};
-use multiversx_sc_scenario::{api::StaticApi, *};
+use klever_sc::types::{BigUint, ManagedVec};
+use klever_sc_scenario::{api::StaticApi, *};
 
 use basic_features::managed_vec_features::ManagedVecFeatures;
 

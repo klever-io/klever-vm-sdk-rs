@@ -1,62 +1,58 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 const NFT_AMOUNT: u32 = 1;
-const ROYALTIES_MAX: u32 = 10_000;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
-    pub token: EgldOrEsdtTokenIdentifier<M>,
+    pub token: TokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait NftModule {
     // endpoints - owner-only
 
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(issueToken)]
     fn issue_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(self.nft_token_id().is_empty(), "Token already issued");
 
-        let payment_amount = self.call_value().egld_value();
         self.send()
-            .esdt_system_sc_proxy()
+            .kda_system_sc_proxy()
             .issue_non_fungible(
-                payment_amount.clone_value(),
                 &token_name,
                 &token_ticker,
-                NonFungibleTokenProperties {
+                &PropertiesInfo {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
-                    can_transfer_create_role: true,
+                    can_mint: true,
+                    can_burn: true,
                     can_change_owner: false,
-                    can_upgrade: false,
-                    can_add_special_roles: true,
+                    can_add_roles: true,
+                    limit_transfer: false,
                 },
-            )
-            .async_call()
-            .with_callback(self.callbacks().issue_callback())
-            .call_and_exit()
+            );
     }
 
     #[only_owner]
     #[endpoint(setLocalRoles)]
-    fn set_local_roles(&self) {
+    fn set_local_roles(&self, address: ManagedAddress) {
         self.require_token_issued();
 
         self.send()
-            .esdt_system_sc_proxy()
+            .kda_system_sc_proxy()
             .set_special_roles(
-                &self.blockchain().get_sc_address(),
+                &address,
                 &self.nft_token_id().get(),
-                [EsdtLocalRole::NftCreate][..].iter().cloned(),
+                true,
+                false,
+                false,
+                true,
             )
-            .async_call()
-            .call_and_exit()
     }
 
     // endpoints
@@ -64,7 +60,7 @@ pub trait NftModule {
     #[payable("*")]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
-        let payment = self.call_value().egld_or_single_esdt();
+        let payment = self.call_value().klv_or_single_kda();
 
         self.require_token_issued();
         require!(
@@ -90,7 +86,7 @@ pub trait NftModule {
 
         let nft_token_id = self.nft_token_id().get();
         let caller = self.blockchain().get_caller();
-        self.send().direct_esdt(
+        self.send().direct_kda(
             &caller,
             &nft_token_id,
             nft_nonce,
@@ -98,7 +94,7 @@ pub trait NftModule {
         );
 
         let owner = self.blockchain().get_owner_address();
-        self.send().direct(
+        self.send().direct_kda(
             &owner,
             &payment.token_identifier,
             payment.token_nonce,
@@ -113,7 +109,7 @@ pub trait NftModule {
     fn get_nft_price(
         &self,
         nft_nonce: u64,
-    ) -> OptionalValue<MultiValue3<EgldOrEsdtTokenIdentifier, u64, BigUint>> {
+    ) -> OptionalValue<MultiValue3<TokenIdentifier, u64, BigUint>> {
         if self.price_tag(nft_nonce).is_empty() {
             // NFT was already sold
             OptionalValue::None
@@ -124,73 +120,9 @@ pub trait NftModule {
         }
     }
 
-    // callbacks
-
-    #[callback]
-    fn issue_callback(
-        &self,
-        #[call_result] result: ManagedAsyncCallResult<EgldOrEsdtTokenIdentifier>,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(token_id) => {
-                self.nft_token_id().set(&token_id.unwrap_esdt());
-            },
-            ManagedAsyncCallResult::Err(_) => {
-                let caller = self.blockchain().get_owner_address();
-                let returned = self.call_value().egld_or_single_esdt();
-                if returned.token_identifier.is_egld() && returned.amount > 0 {
-                    self.send()
-                        .direct(&caller, &returned.token_identifier, 0, &returned.amount);
-                }
-            },
-        }
-    }
-
     // private
 
-    #[allow(clippy::too_many_arguments)]
-    fn create_nft_with_attributes<T: TopEncode>(
-        &self,
-        name: ManagedBuffer,
-        royalties: BigUint,
-        attributes: T,
-        uri: ManagedBuffer,
-        selling_price: BigUint,
-        token_used_as_payment: EgldOrEsdtTokenIdentifier,
-        token_used_as_payment_nonce: u64,
-    ) -> u64 {
-        self.require_token_issued();
-        require!(royalties <= ROYALTIES_MAX, "Royalties cannot exceed 100%");
-
-        let nft_token_id = self.nft_token_id().get();
-
-        let mut serialized_attributes = ManagedBuffer::new();
-        if let core::result::Result::Err(err) = attributes.top_encode(&mut serialized_attributes) {
-            sc_panic!("Attributes encode error: {}", err.message_bytes());
-        }
-
-        let attributes_sha256 = self.crypto().sha256(&serialized_attributes);
-        let attributes_hash = attributes_sha256.as_managed_buffer();
-        let uris = ManagedVec::from_single_item(uri);
-        let nft_nonce = self.send().esdt_nft_create(
-            &nft_token_id,
-            &BigUint::from(NFT_AMOUNT),
-            &name,
-            &royalties,
-            attributes_hash,
-            &attributes,
-            &uris,
-        );
-
-        self.price_tag(nft_nonce).set(&PriceTag {
-            token: token_used_as_payment,
-            nonce: token_used_as_payment_nonce,
-            amount: selling_price,
-        });
-
-        nft_nonce
-    }
-
+    
     fn require_token_issued(&self) {
         require!(!self.nft_token_id().is_empty(), "Token not issued");
     }

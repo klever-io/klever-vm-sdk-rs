@@ -1,6 +1,6 @@
 use std::fmt;
 
-use super::{AsyncCallTxData, TxLog, TxPanic, TxResultCalls};
+use super::{CallTxData, TxLog, TxPanic, TxResultCalls};
 
 #[derive(Clone, Debug)]
 #[must_use]
@@ -18,7 +18,7 @@ pub struct TxResult {
     /// All async calls launched from the tx (legacy async, promises, transfer-execute).
     ///
     /// Is never cleared of its contents.
-    pub all_calls: Vec<AsyncCallTxData>,
+    pub all_calls: Vec<CallTxData>,
 }
 
 impl Default for TxResult {
@@ -121,7 +121,7 @@ impl TxResult {
     }
 
     pub fn assert_user_error(&self, expected_message: &str) {
-        self.assert_error(4, expected_message);
+        self.assert_error(57, expected_message);
     }
 }
 

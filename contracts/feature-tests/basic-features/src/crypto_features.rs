@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// All crypto functions provided by Arwen exposed here.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait CryptoFeatures {
     #[endpoint]
     fn compute_sha256(&self, input: ManagedBuffer) -> ManagedByteArray<Self::Api, 32> {

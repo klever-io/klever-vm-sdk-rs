@@ -11,7 +11,7 @@
                 "address:buyer": {
                     "nonce": "0",
                     "balance": "1000",
-                    "esdt": {
+                    "kda": {
                         "str:FUNG-123456": "1000",
                         "str:SEMIFUNG-123456": {
                             "instances": [
@@ -31,7 +31,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:nft-minter"
                 }
             ]
@@ -72,11 +72,11 @@
                 "sc:nft-minter": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:NFT-123456": {
                             "lastNonce": "0",
                             "roles": [
-                                "ESDTRoleNFTCreate"
+                                "KDARoleNFTCreate"
                             ]
                         }
                     },

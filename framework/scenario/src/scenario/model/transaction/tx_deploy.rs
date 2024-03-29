@@ -1,5 +1,5 @@
 use crate::{
-    multiversx_sc::types::CodeMetadata,
+    klever_sc::types::CodeMetadata,
     scenario::model::{AddressValue, BigUintValue, BytesValue, U64Value},
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -7,12 +7,12 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_egld_value, DEFAULT_GAS_EXPR};
+use super::{tx_interpret_util::interpret_klv_value, DEFAULT_GAS_EXPR};
 
 #[derive(Debug, Clone)]
 pub struct TxDeploy {
     pub from: AddressValue,
-    pub egld_value: BigUintValue,
+    pub klv_value: BigUintValue,
     pub code_metadata: CodeMetadata,
     pub contract_code: BytesValue,
     pub arguments: Vec<BytesValue>,
@@ -24,7 +24,7 @@ impl Default for TxDeploy {
     fn default() -> Self {
         Self {
             from: Default::default(),
-            egld_value: Default::default(),
+            klv_value: Default::default(),
             code_metadata: CodeMetadata::all(),
             contract_code: Default::default(),
             arguments: Default::default(),
@@ -38,7 +38,7 @@ impl InterpretableFrom<TxDeployRaw> for TxDeploy {
     fn interpret_from(from: TxDeployRaw, context: &InterpreterContext) -> Self {
         TxDeploy {
             from: AddressValue::interpret_from(from.from, context),
-            egld_value: interpret_egld_value(from.value, from.egld_value, context),
+            klv_value: interpret_klv_value(from.value, from.klv_value, context),
             code_metadata: CodeMetadata::empty(), // not yet modelled in scenarios
             contract_code: BytesValue::interpret_from(from.contract_code, context),
             arguments: from
@@ -57,7 +57,7 @@ impl IntoRaw<TxDeployRaw> for TxDeploy {
         TxDeployRaw {
             from: self.from.into_raw(),
             value: None,
-            egld_value: self.egld_value.into_raw_opt(),
+            klv_value: self.klv_value.into_raw_opt(),
             contract_code: self.contract_code.into_raw(),
             arguments: self
                 .arguments

@@ -2,12 +2,15 @@ use crate::codec::TopEncodeMulti;
 
 use crate::{
     api::CallTypeApi,
-    types::{EgldOrMultiEsdtPayment, ManagedAddress, ManagedBuffer},
+    types::{
+        BigUint, KdaTokenPayment, KlvOrMultiKdaPayment, ManagedAddress, ManagedBuffer, ManagedVec,
+        TokenIdentifier,
+    },
 };
 
-use super::{contract_call_no_payment::ContractCallNoPayment, ContractCall, ContractCallWithEgld};
+use super::{contract_call_no_payment::ContractCallNoPayment, ContractCall, ContractCallWithKlv};
 
-/// Holds data for calling another contract, with any type of payment: none, EGLD, Multi-ESDT.
+/// Holds data for calling another contract, with any type of payment: none, KLV, Multi-KDA.
 ///
 /// Gets created when chaining method `with_any_payment`.
 #[must_use]
@@ -16,7 +19,7 @@ where
     SA: CallTypeApi + 'static,
 {
     pub basic: ContractCallNoPayment<SA, OriginalResult>,
-    pub payment: EgldOrMultiEsdtPayment<SA>,
+    pub payment: KlvOrMultiKdaPayment<SA>,
 }
 
 impl<SA, OriginalResult> ContractCall<SA> for ContractCallWithAnyPayment<SA, OriginalResult>
@@ -26,13 +29,13 @@ where
 {
     type OriginalResult = OriginalResult;
 
-    fn into_normalized(self) -> ContractCallWithEgld<SA, Self::OriginalResult> {
+    fn into_normalized(self) -> ContractCallWithKlv<SA, Self::OriginalResult> {
         match self.payment {
-            EgldOrMultiEsdtPayment::Egld(egld_amount) => self.basic.with_egld_transfer(egld_amount),
-            EgldOrMultiEsdtPayment::MultiEsdt(multi_esdt_payment) => self
+            KlvOrMultiKdaPayment::Klv(klv_amount) => self.basic.with_klv_transfer(klv_amount),
+            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => self
                 .basic
                 .into_normalized()
-                .convert_to_esdt_transfer_call(multi_esdt_payment),
+                .convert_to_kda_transfer_call(multi_kda_payment),
         }
     }
 
@@ -43,11 +46,19 @@ where
 
     fn transfer_execute(self) {
         match self.payment {
-            EgldOrMultiEsdtPayment::Egld(egld_amount) => {
-                self.basic.transfer_execute_egld(egld_amount);
+            KlvOrMultiKdaPayment::Klv(klv_amount) => {
+                let mut kda_payments: ManagedVec<SA, KdaTokenPayment<SA>> = ManagedVec::new();
+
+                kda_payments.push(KdaTokenPayment {
+                    token_identifier: TokenIdentifier::from("KLV"),
+                    token_nonce: 0,
+                    amount: klv_amount,
+                });
+
+                self.basic.transfer_execute_kda(kda_payments);
             },
-            EgldOrMultiEsdtPayment::MultiEsdt(multi_esdt_payment) => {
-                self.basic.transfer_execute_esdt(multi_esdt_payment);
+            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
+                self.basic.transfer_execute_kda(multi_kda_payment);
             },
         }
     }
@@ -61,7 +72,7 @@ where
     pub fn new<N: Into<ManagedBuffer<SA>>>(
         to: ManagedAddress<SA>,
         endpoint_name: N,
-        payment: EgldOrMultiEsdtPayment<SA>,
+        payment: KlvOrMultiKdaPayment<SA>,
     ) -> Self {
         ContractCallWithAnyPayment {
             basic: ContractCallNoPayment::new(to, endpoint_name),

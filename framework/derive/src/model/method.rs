@@ -78,9 +78,6 @@ impl Method {
         match &self.public_role {
             PublicRole::Init(init_metadata) => init_metadata.payable.is_payable(),
             PublicRole::Endpoint(endpoint_metadata) => endpoint_metadata.payable.is_payable(),
-            PublicRole::Callback(_) | PublicRole::CallbackRaw | PublicRole::CallbackPromise(_) => {
-                true
-            },
             PublicRole::Private => false,
         }
     }
@@ -89,9 +86,6 @@ impl Method {
         match &self.public_role {
             PublicRole::Init(init_metadata) => init_metadata.payable.clone(),
             PublicRole::Endpoint(endpoint_metadata) => endpoint_metadata.payable.clone(),
-            PublicRole::Callback(_) | PublicRole::CallbackRaw | PublicRole::CallbackPromise(_) => {
-                MethodPayableMetadata::AnyToken
-            },
             PublicRole::Private => MethodPayableMetadata::NotPayable,
         }
     }

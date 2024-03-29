@@ -7,12 +7,12 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ]
                         }
                     },
@@ -22,10 +22,10 @@
                     "nonce": "0",
                     "balance": "0"
                 },
-                "0x000000000000000000010000000000000000000000000000000000000002ffff": {
+                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../../esdt-system-sc-mock/output/esdt-system-sc-mock.wasm"
+                    "code": "file:../../kda-system-sc-mock/output/kda-system-sc-mock.wasm"
                 }
             }
         },
@@ -58,12 +58,12 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ]
                         }
                     },
@@ -150,7 +150,7 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {
@@ -161,9 +161,9 @@
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ]
                         }
                     },
@@ -172,7 +172,7 @@
                 "address:an_account": {
                     "nonce": "*",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {
@@ -242,7 +242,7 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {
@@ -253,9 +253,9 @@
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ]
                         }
                     },
@@ -264,7 +264,7 @@
                 "address:an_account": {
                     "nonce": "*",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {
@@ -312,7 +312,7 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {
@@ -323,9 +323,9 @@
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ]
                         }
                     },
@@ -334,7 +334,7 @@
                 "address:an_account": {
                     "nonce": "*",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:TICKER-000000": {
                             "instances": [
                                 {

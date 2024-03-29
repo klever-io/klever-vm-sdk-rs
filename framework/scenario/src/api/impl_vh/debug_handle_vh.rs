@@ -1,5 +1,5 @@
-use multiversx_chain_vm::tx_mock::{TxContext, TxContextStack};
-use multiversx_sc::{
+use klever_chain_vm::tx_mock::{TxContext, TxContextStack};
+use klever_sc::{
     api::{use_raw_handle, HandleConstraints, RawHandle},
     codec::TryStaticCast,
     types::ManagedVecItem,
@@ -36,7 +36,7 @@ impl core::fmt::Debug for DebugHandle {
 }
 
 impl HandleConstraints for DebugHandle {
-    fn new(handle: multiversx_sc::api::RawHandle) -> Self {
+    fn new(handle: klever_sc::api::RawHandle) -> Self {
         Self {
             context: TxContextStack::static_peek(),
             raw_handle: handle,

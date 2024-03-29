@@ -1,5 +1,5 @@
-use multiversx_chain_vm::mem_conv;
-use multiversx_sc::api::{EndpointFinishApi, EndpointFinishApiImpl, HandleConstraints};
+use klever_chain_vm::mem_conv;
+use klever_sc::api::{EndpointFinishApi, EndpointFinishApiImpl, HandleConstraints};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};
 

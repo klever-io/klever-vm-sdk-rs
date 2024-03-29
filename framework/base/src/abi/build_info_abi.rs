@@ -14,7 +14,7 @@ pub struct ContractCrateBuildAbi {
     pub git_version: &'static str,
 }
 
-/// Gives the multiversx-sc metadata.
+/// Gives the klever-sc metadata.
 /// Should be instanced via the `create` associated function.
 #[derive(Clone, Default, Debug)]
 pub struct FrameworkBuildAbi {

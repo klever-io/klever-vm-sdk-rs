@@ -2,10 +2,9 @@ use super::{EndpointDynArgLoader, EndpointSingleArgLoader};
 use crate::{
     api::{
         EndpointArgumentApi, EndpointArgumentApiImpl, ErrorApi, ErrorApiImpl, ManagedTypeApi,
-        StaticVarApiImpl, VMApi,
+        StaticVarApiImpl,
     },
     codec::{DecodeError, TopDecodeMulti, TopDecodeMultiInput},
-    contract_base::CallbackArgApiWrapper,
     err_msg,
     io::{ArgErrorHandler, ArgId},
 };
@@ -162,7 +161,7 @@ where
     }
 }
 
-/// Used for loading all regular endpoint arguments. A call to this gets generated for all endpoints and callbacks.
+/// Used for loading all regular endpoint arguments. A call to this gets generated for all endpoints.
 #[inline(always)]
 pub fn load_endpoint_args<AA, N>(arg_names: N::ArgNames) -> N
 where
@@ -171,26 +170,4 @@ where
 {
     N::check_num_single_args(0);
     N::next_single_arg(0, arg_names)
-}
-
-#[inline(always)]
-pub fn load_callback_closure_args<AA, N>(arg_names: N::ArgNames) -> N
-where
-    AA: VMApi,
-    N: ArgNestedTuple<CallbackArgApiWrapper<AA>>,
-{
-    CallbackArgApiWrapper::<AA>::argument_api_impl().endpoint_init();
-    load_endpoint_args::<CallbackArgApiWrapper<AA>, N>(arg_names)
-}
-
-/// Currently used for the callback closure. No distinction there for single values.
-#[inline(always)]
-pub fn load_multi_args_custom_loader<AA, L, N>(loader: L, arg_names: N::ArgNames) -> N
-where
-    AA: EndpointArgumentApi + ManagedTypeApi + ErrorApi,
-    L: TopDecodeMultiInput,
-    N: ArgNestedTuple<AA>,
-{
-    init_arguments_static_data::<AA>();
-    N::next_multi_arg(loader, arg_names)
 }

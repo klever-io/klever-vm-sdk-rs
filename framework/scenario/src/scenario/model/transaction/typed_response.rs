@@ -1,5 +1,5 @@
 use super::{Log, TxResponse, TxResponseStatus};
-use multiversx_sc::codec::{PanicErrorHandler, TopDecodeMulti};
+use klever_sc::codec::{PanicErrorHandler, TopDecodeMulti};
 
 pub struct TypedResponse<T>
 where

@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::{scenario_model::*, *};
+use klever_sc_scenario::{scenario_model::*, *};
 
 const PF_PATH_EXPR: &str = "file:output/payable-features.wasm";
 
@@ -23,10 +23,10 @@ fn payable_multi() {
                     "address:an-account",
                     Account::new()
                         .balance("10000")
-                        .esdt_balance("str:TOK-000001", "1000")
-                        .esdt_balance("str:TOK-000002", "500")
-                        .esdt_balance("str:TOK-000003", "500")
-                        .esdt_nft_balance("str:SFT-123", 5u32, 10u32, Option::<()>::None) 
+                        .kda_balance("str:TOK-000001", "1000")
+                        .kda_balance("str:TOK-000002", "500")
+                        .kda_balance("str:TOK-000003", "500")
+                        .kda_nft_balance("str:SFT-123", 5u32, 10u32, Option::<()>::None) 
                 ),
         )
         .sc_call(
@@ -34,8 +34,8 @@ fn payable_multi() {
                 .from("address:an-account")
                 .to("sc:payable-features")
                 .function("echo_call_value")
-                .esdt_transfer("str:TOK-000001", 0, "100")
-                .esdt_transfer("str:TOK-000002", 0, "400")
+                .kda_transfer("str:TOK-000001", 0, "100")
+                .kda_transfer("str:TOK-000002", 0, "400")
                 .expect(
                     TxExpect::ok()
                         .result("0")

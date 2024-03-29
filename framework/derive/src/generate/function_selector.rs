@@ -25,16 +25,11 @@ pub fn generate_function_selector_body(contract: &ContractTrait) -> proc_macro2:
             PublicRole::Init(_) => Some(endpoint_match_arm(
                 m,
                 "init",
-                quote! { if !<Self::Api as multiversx_sc::api::VMApi>::external_view_init_override() },
+                quote! { if !<Self::Api as klever_sc::api::VMApi>::external_view_init_override() },
             )),
             PublicRole::Endpoint(endpoint_metadata) => Some(endpoint_match_arm(
                 m,
                 endpoint_metadata.public_name.to_string().as_str(),
-                quote! {},
-            )),
-            PublicRole::CallbackPromise(callback_metadata) => Some(endpoint_match_arm(
-                m,
-                callback_metadata.callback_name.to_string().as_str(),
                 quote! {},
             )),
             _ => None,
@@ -44,12 +39,8 @@ pub fn generate_function_selector_body(contract: &ContractTrait) -> proc_macro2:
         supertrait_gen::function_selector_module_calls(contract.supertraits.as_slice());
     quote! {
         if match fn_name {
-            "callBack" => {
-                self::EndpointWrappers::callback(self);
-                return true;
-            },
-            "init" if <Self::Api as multiversx_sc::api::VMApi>::external_view_init_override() => {
-                multiversx_sc::external_view_contract::external_view_contract_constructor::<Self::Api>();
+            "init" if <Self::Api as klever_sc::api::VMApi>::external_view_init_override() => {
+                klever_sc::external_view_contract::external_view_contract_constructor::<Self::Api>();
                 return true;
             },
             #(#match_arms)*

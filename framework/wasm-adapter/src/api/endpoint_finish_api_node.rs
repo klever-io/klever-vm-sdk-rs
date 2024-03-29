@@ -1,5 +1,5 @@
 use super::VmApiImpl;
-use multiversx_sc::api::{EndpointFinishApi, EndpointFinishApiImpl};
+use klever_sc::api::{EndpointFinishApi, EndpointFinishApiImpl};
 
 extern "C" {
     fn finish(dataOffset: *const u8, length: i32);

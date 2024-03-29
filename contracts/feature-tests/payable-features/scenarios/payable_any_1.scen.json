@@ -1,6 +1,6 @@
 {
     "name": "payable",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -13,7 +13,7 @@
                 "address:an-account": {
                     "nonce": "0",
                     "balance": "1,000,000,000,000",
-                    "esdt": {
+                    "kda": {
                         "str:PAYABLE-FEATURES-TOKEN": "1,000,000,000,000",
                         "str:OTHER-TOKEN": "1,000,000,000,000"
                     }
@@ -34,7 +34,7 @@
             "expect": {
                 "out": [
                     "0",
-                    "str:EGLD"
+                    "str:KLV"
                 ],
                 "status": "",
                 "logs": "*",
@@ -48,7 +48,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "egldValue": "5",
+                "klvValue": "5",
                 "function": "payable_any_1",
                 "arguments": [],
                 "gasLimit": "50,000,000",
@@ -57,7 +57,7 @@
             "expect": {
                 "out": [
                     "5",
-                    "str:EGLD"
+                    "str:KLV"
                 ],
                 "status": "",
                 "logs": "*",
@@ -71,7 +71,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:PAYABLE-FEATURES-TOKEN",
                         "value": "100"

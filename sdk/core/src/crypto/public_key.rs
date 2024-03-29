@@ -21,7 +21,7 @@ impl PublicKey {
     }
 
     pub fn to_address(&self) -> Result<String> {
-        let address = bech32::encode("erd", self.0.to_base32(), Variant::Bech32)?;
+        let address = bech32::encode("klv", self.0.to_base32(), Variant::Bech32)?;
         Ok(address)
     }
 

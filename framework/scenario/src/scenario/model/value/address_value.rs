@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::multiversx_sc::types::Address;
+use crate::klever_sc::types::Address;
 
 use crate::scenario_format::{
     interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -30,7 +30,7 @@ impl AddressValue {
         self.value.clone()
     }
 
-    pub fn to_vm_address(&self) -> multiversx_chain_vm::types::VMAddress {
+    pub fn to_vm_address(&self) -> klever_chain_vm::types::VMAddress {
         self.value.as_array().into()
     }
 }

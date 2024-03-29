@@ -24,8 +24,6 @@ pub trait ScenarioRunner: Send + Sync {
 
     fn run_transfer_step(&mut self, step: &TransferStep);
 
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep);
-
     fn run_check_state_step(&mut self, step: &CheckStateStep);
 
     fn run_dump_state_step(&mut self);
@@ -52,9 +50,6 @@ pub trait ScenarioRunner: Send + Sync {
                 },
                 Step::Transfer(transfer_step) => {
                     self.run_transfer_step(transfer_step);
-                },
-                Step::ValidatorReward(validator_reward_step) => {
-                    self.run_validator_reward_step(validator_reward_step);
                 },
                 Step::CheckState(check_state_step) => {
                     self.run_check_state_step(check_state_step);

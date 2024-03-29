@@ -1,19 +1,17 @@
 use crate::{
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     contract_base::BlockchainWrapper,
-    esdt::ESDTSystemSmartContractProxy,
     storage::StorageKey,
     storage_get, storage_get_len, storage_set,
     types::{
-        CallbackClosure, ContractCall, EsdtLocalRole, EsdtTokenPayment, ManagedAddress, ManagedRef,
+        KdaTokenPayment, ManagedAddress, ManagedRef,
         ManagedVec, TokenIdentifier,
-    },
+    }, kda::KDASystemSmartContractProxy,
 };
 
 use super::TokenMapperState;
 
 pub(crate) const TOKEN_ID_ALREADY_SET_ERR_MSG: &[u8] = b"Token ID already set";
-pub(crate) const PENDING_ERR_MSG: &[u8] = b"Issue was already called";
 pub(crate) const MUST_SET_TOKEN_ID_ERR_MSG: &[u8] = b"Must issue or set token ID first";
 pub(crate) const INVALID_TOKEN_ID_ERR_MSG: &[u8] = b"Invalid token ID";
 pub(crate) const INVALID_PAYMENT_TOKEN_ERR_MSG: &[u8] = b"Invalid payment token";
@@ -55,7 +53,7 @@ where
         }
     }
 
-    fn require_all_same_token(&self, payments: &ManagedVec<SA, EsdtTokenPayment<SA>>) {
+    fn require_all_same_token(&self, payments: &ManagedVec<SA, KdaTokenPayment<SA>>) {
         let actual_token_id = self.get_token_id_ref();
         for p in payments {
             if actual_token_id != &p.token_identifier {
@@ -64,34 +62,20 @@ where
         }
     }
 
-    fn set_local_roles(
-        &self,
-        roles: &[EsdtLocalRole],
-        opt_callback: Option<CallbackClosure<SA>>,
-    ) -> ! {
-        let own_sc_address = Self::get_sc_address();
-        self.set_local_roles_for_address(&own_sc_address, roles, opt_callback);
-    }
-
-    fn set_local_roles_for_address(
+    fn set_roles_for_address(
         &self,
         address: &ManagedAddress<SA>,
-        roles: &[EsdtLocalRole],
-        opt_callback: Option<CallbackClosure<SA>>,
-    ) -> ! {
+        allow_mint: bool,
+        allow_set_ito_price: bool,
+        allow_deposit: bool,
+        allow_transfer: bool,
+    ) {
         self.require_issued_or_set();
 
-        let system_sc_proxy = ESDTSystemSmartContractProxy::<SA>::new_proxy_obj();
+        let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id_ref();
-        let mut async_call = system_sc_proxy
-            .set_special_roles(address, token_id, roles[..].iter().cloned())
-            .async_call();
-
-        if let Some(cb) = opt_callback {
-            async_call = async_call.with_callback(cb);
-        }
-
-        async_call.call_and_exit()
+        system_sc_proxy
+            .set_special_roles(address, token_id, allow_mint, allow_set_ito_price, allow_deposit, allow_transfer);
     }
 
     fn get_sc_address() -> ManagedAddress<SA> {
@@ -110,7 +94,7 @@ pub(crate) fn store_token_id<
     if mapper.get_token_state().is_set() {
         SA::error_api_impl().signal_error(TOKEN_ID_ALREADY_SET_ERR_MSG);
     }
-    if !token_id.is_valid_esdt_identifier() {
+    if !token_id.is_valid_kda_identifier() {
         SA::error_api_impl().signal_error(INVALID_TOKEN_ID_ERR_MSG);
     }
     storage_set(
@@ -124,9 +108,6 @@ pub(crate) fn check_not_set<SA: StorageMapperApi + CallTypeApi, Mapper: StorageT
     let storage_value: TokenMapperState<SA> = storage_get(mapper.get_storage_key());
     match storage_value {
         TokenMapperState::NotSet => {},
-        TokenMapperState::Pending => {
-            SA::error_api_impl().signal_error(PENDING_ERR_MSG);
-        },
         TokenMapperState::Token(_) => {
             SA::error_api_impl().signal_error(TOKEN_ID_ALREADY_SET_ERR_MSG);
         },

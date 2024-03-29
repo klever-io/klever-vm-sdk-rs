@@ -1,16 +1,16 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-use multiversx_sc::types::String;
+use klever_sc::types::String;
 
 /// Legacy, deprecated macros. Will b removed once they get removed.
 ///
 /// Error conversions should be moved to corresponding new formatter-based error tests.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait MacroFeaturesLegacy {
     #[allow(deprecated)]
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
-        multiversx_sc::only_owner!(self, "Custom only owner message");
+        klever_sc::only_owner!(self, "Custom only owner message");
         Ok(())
     }
 

@@ -1,17 +1,17 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 mod deposit_info;
 
 use deposit_info::{DepositInfo, Fee};
 
 pub const SECONDS_PER_ROUND: u64 = 6;
-pub use multiversx_sc::api::{ED25519_KEY_BYTE_LEN, ED25519_SIGNATURE_BYTE_LEN};
+pub use klever_sc::api::{ED25519_KEY_BYTE_LEN, ED25519_SIGNATURE_BYTE_LEN};
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait DigitalCash {
     #[init]
     fn init(&self, fee: BigUint) {
@@ -25,10 +25,12 @@ pub trait DigitalCash {
     fn fund(&self, address: ManagedAddress, valability: u64) {
         require!(!self.deposit(&address).is_empty(), "fees not covered");
 
-        let esdt_payment = self.call_value().all_esdt_transfers().clone_value();
-        let egld_payment = self.call_value().egld_value().clone_value();
+        let mut kda_payment = self.call_value().all_kda_transfers().clone_value();
+        let klv_payment = self.call_value().klv_value().clone_value();
 
-        let num_tokens = (egld_payment != BigUint::zero()) as usize + esdt_payment.len();
+        kda_payment = kda_payment.into_iter().filter(|kda| kda.token_identifier != TokenIdentifier::klv()).collect();
+
+        let num_tokens = (klv_payment != BigUint::zero()) as usize + kda_payment.len();
 
         require!(num_tokens > 0, "amount must be greater than 0");
 
@@ -36,7 +38,7 @@ pub trait DigitalCash {
 
         self.deposit(&address).update(|deposit| {
             require!(
-                deposit.egld_funds == BigUint::zero() && deposit.esdt_funds.is_empty(),
+                deposit.klv_funds == BigUint::zero() && deposit.kda_funds.is_empty(),
                 "key already used"
             );
             require!(
@@ -47,8 +49,8 @@ pub trait DigitalCash {
             deposit.fees.num_token_to_transfer += num_tokens;
             deposit.valability = valability;
             deposit.expiration_round = self.get_expiration_round(valability);
-            deposit.esdt_funds = esdt_payment;
-            deposit.egld_funds = egld_payment;
+            deposit.kda_funds = kda_payment;
+            deposit.klv_funds = klv_payment;
         });
     }
 
@@ -65,15 +67,15 @@ pub trait DigitalCash {
             "withdrawal has not been available yet"
         );
 
-        let egld_funds = deposit.egld_funds + deposit.fees.value;
-        if egld_funds != BigUint::zero() {
+        let klv_funds = deposit.klv_funds + deposit.fees.value;
+        if klv_funds != BigUint::zero() {
             self.send()
-                .direct_egld(&deposit.depositor_address, &egld_funds);
+                .direct_klv(&deposit.depositor_address, &klv_funds);
         }
 
-        if !deposit.esdt_funds.is_empty() {
+        if !deposit.kda_funds.is_empty() {
             self.send()
-                .direct_multi(&deposit.depositor_address, &deposit.esdt_funds);
+                .direct_multi(&deposit.depositor_address, &deposit.kda_funds);
         }
 
         self.deposit(&address).clear();
@@ -105,19 +107,19 @@ pub trait DigitalCash {
             self.collected_fees()
                 .update(|collected_fees| *collected_fees += fee_cost);
 
-            if deposit.egld_funds != BigUint::zero() {
+            if deposit.klv_funds != BigUint::zero() {
                 self.send()
-                    .direct_egld(&caller_address, &deposit.egld_funds);
+                    .direct_klv(&caller_address, &deposit.klv_funds);
             }
 
-            if !deposit.esdt_funds.is_empty() {
+            if !deposit.kda_funds.is_empty() {
                 self.send()
-                    .direct_multi(&caller_address, &deposit.esdt_funds);
+                    .direct_multi(&caller_address, &deposit.kda_funds);
             }
 
             if deposit.fees.value > 0 {
                 self.send()
-                    .direct_egld(&deposit.depositor_address, &deposit.fees.value);
+                    .direct_klv(&deposit.depositor_address, &deposit.fees.value);
             }
         });
 
@@ -130,7 +132,7 @@ pub trait DigitalCash {
         let caller_address = self.blockchain().get_caller();
         let fees = self.collected_fees().get();
 
-        self.send().direct_egld(&caller_address, &fees);
+        self.send().direct_klv(&caller_address, &fees);
         self.collected_fees().clear();
     }
 
@@ -147,16 +149,16 @@ pub trait DigitalCash {
     }
 
     #[endpoint]
-    #[payable("EGLD")]
+    #[payable("KLV")]
     fn deposit_fees(&self, address: ManagedAddress) {
-        let payment = self.call_value().egld_value().clone_value();
+        let payment = self.call_value().klv_value().clone_value();
         let caller_address = self.blockchain().get_caller();
 
         if self.deposit(&address).is_empty() {
             let new_deposit = DepositInfo {
                 depositor_address: caller_address,
-                esdt_funds: ManagedVec::new(),
-                egld_funds: BigUint::zero(),
+                kda_funds: ManagedVec::new(),
+                klv_funds: BigUint::zero(),
                 valability: 0,
                 expiration_round: 0,
                 fees: Fee {
@@ -191,7 +193,7 @@ pub trait DigitalCash {
         let num_tokens = forwarded_deposit.get_num_tokens();
         self.deposit(&forward_address).update(|deposit| {
             require!(
-                deposit.egld_funds == BigUint::zero() && deposit.esdt_funds.is_empty(),
+                deposit.klv_funds == BigUint::zero() && deposit.kda_funds.is_empty(),
                 "key already used"
             );
             require!(
@@ -202,8 +204,8 @@ pub trait DigitalCash {
             deposit.fees.num_token_to_transfer += num_tokens;
             deposit.valability = forwarded_deposit.valability;
             deposit.expiration_round = self.get_expiration_round(forwarded_deposit.valability);
-            deposit.esdt_funds = forwarded_deposit.esdt_funds;
-            deposit.egld_funds = forwarded_deposit.egld_funds;
+            deposit.kda_funds = forwarded_deposit.kda_funds;
+            deposit.klv_funds = forwarded_deposit.klv_funds;
         });
 
         let forward_fee = &fee * num_tokens as u64;
@@ -214,7 +216,7 @@ pub trait DigitalCash {
             .update(|collected_fees| *collected_fees += forward_fee);
 
         if forwarded_deposit.fees.value > 0 {
-            self.send().direct_egld(
+            self.send().direct_klv(
                 &forwarded_deposit.depositor_address,
                 &forwarded_deposit.fees.value,
             );
@@ -229,7 +231,7 @@ pub trait DigitalCash {
     fn get_amount(
         &self,
         address: ManagedAddress,
-        token: EgldOrEsdtTokenIdentifier,
+        token: TokenIdentifier,
         nonce: u64,
     ) -> BigUint {
         require!(!self.deposit(&address).is_empty(), "non-existent key");
@@ -239,12 +241,12 @@ pub trait DigitalCash {
         require!(!self.deposit(&address).is_empty(), "non-existent key");
 
         let deposit = self.deposit(&address).get();
-        if token.is_egld() {
-            amount = deposit.egld_funds;
+        if token.is_klv() {
+            amount = deposit.klv_funds;
         } else {
-            for esdt in deposit.esdt_funds.into_iter() {
-                if esdt.token_identifier == token && esdt.token_nonce == nonce {
-                    amount = esdt.amount;
+            for kda in deposit.kda_funds.into_iter() {
+                if kda.token_identifier == token && kda.token_nonce == nonce {
+                    amount = kda.amount;
                 }
             }
         }

@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
@@ -10,17 +10,11 @@ fn test_go() {
 }
 
 #[test]
-fn test_esdt_generation_go() {
-    world().run("scenarios/test_esdt_generation.scen.json");
+fn test_kda_generation_go() {
+    world().run("scenarios/test_kda_generation.scen.json");
 }
 
 #[test]
 fn test_multiple_sc_go() {
     world().run("scenarios/test_multiple_sc.scen.json");
-}
-
-#[test]
-#[ignore = "not supported"]
-fn trace_deploy_go() {
-    world().run("scenarios/trace-deploy.scen.json");
 }

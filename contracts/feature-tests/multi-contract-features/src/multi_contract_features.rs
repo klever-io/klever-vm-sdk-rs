@@ -1,8 +1,8 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait MultiContractFeatures {
     #[init]
     fn default_init(&self, sample_value: BigUint) {

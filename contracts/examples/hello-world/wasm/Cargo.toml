@@ -1,0 +1,26 @@
+[package]
+name = "hello-world-wasm"
+version = "0.0.0"
+authors = []
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+
+[dependencies.hello-world]
+path = ".."
+
+[dependencies.klever-sc-wasm-adapter]
+version = "0.43.3"
+path = "../../../../framework/wasm-adapter"
+
+[workspace]
+members = ["."]

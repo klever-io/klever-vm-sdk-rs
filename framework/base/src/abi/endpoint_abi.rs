@@ -31,7 +31,6 @@ pub enum EndpointTypeAbi {
     #[default]
     Init,
     Endpoint,
-    PromisesCallback,
 }
 
 #[derive(Clone, Default, Debug)]

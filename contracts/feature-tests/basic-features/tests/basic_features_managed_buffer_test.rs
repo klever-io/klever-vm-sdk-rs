@@ -1,5 +1,5 @@
-use multiversx_sc::types::{ManagedAddress, ManagedBuffer};
-use multiversx_sc_scenario::{api::StaticApi, *};
+use klever_sc::types::{ManagedAddress, ManagedBuffer};
+use klever_sc_scenario::{api::StaticApi, *};
 
 use basic_features::managed_buffer_features::ManagedBufferFeatures;
 

@@ -7,8 +7,8 @@ use crate::{
     },
     err_msg,
     types::{
-        BigUint, EgldOrEsdtTokenIdentifier, EgldOrEsdtTokenPayment, EgldOrMultiEsdtPayment,
-        EsdtTokenPayment, ManagedRef, ManagedVec, TokenIdentifier,
+        BigUint, KdaTokenPayment,
+        KlvOrMultiKdaPayment, ManagedRef, ManagedVec, TokenIdentifier,
     },
 };
 
@@ -30,114 +30,129 @@ where
         }
     }
 
-    /// Retrieves the EGLD call value from the VM.
-    /// Will return 0 in case of an ESDT transfer (cannot have both EGLD and ESDT transfer simultaneously).
-    pub fn egld_value(&self) -> ManagedRef<'static, A, BigUint<A>> {
+    /// Retrieves the KLV call value from the VM.
+    pub fn klv_value(&self) -> ManagedRef<'static, A, BigUint<A>> {
         let mut call_value_handle: A::BigIntHandle =
-            use_raw_handle(A::static_var_api_impl().get_call_value_egld_handle());
+            use_raw_handle(A::static_var_api_impl().get_call_value_klv_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
-            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_EGLD);
-            A::static_var_api_impl().set_call_value_egld_handle(call_value_handle.get_raw_handle());
-            A::call_value_api_impl().load_egld_value(call_value_handle.clone());
+            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_KLV);
+            A::static_var_api_impl().set_call_value_klv_handle(call_value_handle.get_raw_handle());
+            A::call_value_api_impl().load_klv_value(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
     }
 
-    /// Returns all ESDT transfers that accompany this SC call.
-    /// Will return 0 results if nothing was transfered, or just EGLD.
+    /// Returns all KDA transfers that accompany this SC call.
+    /// Will return 0 results if nothing was transfered, or just KLV.
     /// Fully managed underlying types, very efficient.
-    pub fn all_esdt_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, EsdtTokenPayment<A>>> {
+    pub fn all_kda_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, KdaTokenPayment<A>>> {
         let mut call_value_handle: A::ManagedBufferHandle =
-            use_raw_handle(A::static_var_api_impl().get_call_value_multi_esdt_handle());
+            use_raw_handle(A::static_var_api_impl().get_call_value_multi_kda_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
-            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_ESDT);
+            call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_KDA);
             A::static_var_api_impl()
-                .set_call_value_multi_esdt_handle(call_value_handle.get_raw_handle());
-            A::call_value_api_impl().load_all_esdt_transfers(call_value_handle.clone());
+                .set_call_value_multi_kda_handle(call_value_handle.get_raw_handle());
+            A::call_value_api_impl().load_all_kda_transfers(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
     }
 
-    /// Verify and casts the received multi ESDT transfer in to an array.
+    /// Verify and casts the received multi KDA transfer in to an array.
     ///
     /// Can be used to extract all payments in one line like this:
     ///
-    /// `let [payment_a, payment_b, payment_c] = self.call_value().multi_esdt();`.
-    pub fn multi_esdt<const N: usize>(&self) -> [EsdtTokenPayment<A>; N] {
-        self.all_esdt_transfers()
+    /// `let [payment_a, payment_b, payment_c] = self.call_value().multi_kda();`.
+    pub fn multi_kda<const N: usize>(&self) -> [KdaTokenPayment<A>; N] {
+        self.all_kda_transfers()
             .to_array_of_refs::<N>()
             .unwrap_or_else(|| {
-                A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_ESDT_TRANSFERS.as_bytes())
+                A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_KDA_TRANSFERS.as_bytes())
             })
     }
 
-    /// Expects precisely one ESDT token transfer, fungible or not.
+    /// Expects precisely one KDA token transfer, fungible or not.
     ///
-    /// Will return the received ESDT payment.
+    /// Will return the received KDA payment.
     ///
-    /// The amount cannot be 0, since that would not qualify as an ESDT transfer.
-    pub fn single_esdt(&self) -> EsdtTokenPayment<A> {
-        let [payments] = self.multi_esdt();
+    /// The amount cannot be 0, since that would not qualify as an KDA transfer.
+    pub fn single_kda(&self) -> KdaTokenPayment<A> {
+        let [payments] = self.multi_kda();
         payments
     }
 
-    /// Expects precisely one fungible ESDT token transfer.
+    /// Expects precisely one fungible KDA token transfer.
     ///
-    /// Returns the token ID and the amount for fungible ESDT transfers.
+    /// Returns the token ID and the amount for fungible KDA transfers.
     ///
-    /// The amount cannot be 0, since that would not qualify as an ESDT transfer.
-    pub fn single_fungible_esdt(&self) -> (TokenIdentifier<A>, BigUint<A>) {
-        let payment = self.single_esdt();
+    /// The amount cannot be 0, since that would not qualify as an KDA transfer.
+    pub fn single_fungible_kda(
+        &self,
+    ) -> (
+        TokenIdentifier<A>,
+        BigUint<A>,
+    ) {
+        let payment = self.single_kda();
         if payment.token_nonce != 0 {
             A::error_api_impl().signal_error(err_msg::FUNGIBLE_TOKEN_EXPECTED_ERR_MSG.as_bytes());
         }
-        (payment.token_identifier, payment.amount)
+        (
+            payment.token_identifier,
+            payment.amount,
+        )
     }
 
-    /// Accepts and returns either an EGLD payment, or a single ESDT token.
+    /// Accepts and returns either an KLV payment, or a single KDA token.
     ///
-    /// Will halt execution if more than one ESDT transfer was received.
+    /// Will halt execution if more than one KDA transfer was received.
     ///
-    /// In case no transfer of value happen, it will return a payment of 0 EGLD.
-    pub fn egld_or_single_esdt(&self) -> EgldOrEsdtTokenPayment<A> {
-        let esdt_transfers = self.all_esdt_transfers();
-        match esdt_transfers.len() {
-            0 => EgldOrEsdtTokenPayment {
-                token_identifier: EgldOrEsdtTokenIdentifier::egld(),
+    /// In case no transfer of value happen, it will return a payment of 0 KLV.
+    pub fn klv_or_single_kda(&self) -> KdaTokenPayment<A> {
+        let kda_transfers = self.all_kda_transfers();
+        match kda_transfers.len() {
+            0 => KdaTokenPayment {
+                token_identifier: TokenIdentifier::klv(),
                 token_nonce: 0,
-                amount: self.egld_value().clone_value(),
+                amount: self.klv_value().clone_value(),
             },
-            1 => esdt_transfers.get(0).into(),
-            _ => A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_ESDT_TRANSFERS.as_bytes()),
+            1 => kda_transfers.get(0).into(),
+            _ => A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_KDA_TRANSFERS.as_bytes()),
         }
     }
 
-    /// Accepts and returns either an EGLD payment, or a single fungible ESDT token.
+    /// Accepts and returns either an KLV payment, or a single fungible KDA token.
     ///
-    /// Will halt execution if more than one ESDT transfer was received, or if the received ESDT is non- or semi-fungible.
+    /// Will halt execution if more than one KDA transfer was received, or if the received KDA is non- or semi-fungible.
     ///
-    /// Works similar to `egld_or_single_esdt`,
+    /// Works similar to `klv_or_single_kda`,
     /// but checks the nonce to be 0 and returns a tuple of just token identifier and amount, for convenience.
     ///
-    /// In case no transfer of value happen, it will return a payment of 0 EGLD.
-    pub fn egld_or_single_fungible_esdt(&self) -> (EgldOrEsdtTokenIdentifier<A>, BigUint<A>) {
-        let payment = self.egld_or_single_esdt();
+    /// In case no transfer of value happen, it will return a payment of 0 KLV.
+    pub fn klv_or_single_fungible_kda(
+        &self,
+    ) -> (
+        TokenIdentifier<A>,
+        BigUint<A>,
+    ) {
+        let payment = self.klv_or_single_kda();
         if payment.token_nonce != 0 {
             A::error_api_impl().signal_error(err_msg::FUNGIBLE_TOKEN_EXPECTED_ERR_MSG.as_bytes());
         }
 
-        (payment.token_identifier, payment.amount)
+        (
+            payment.token_identifier,
+            payment.amount,
+        )
     }
 
     /// Accepts any sort of patyment, which is either:
-    /// - EGLD (can be zero in case of no payment whatsoever);
-    /// - Multi-ESDT (one or more ESDT transfers).
-    pub fn any_payment(&self) -> EgldOrMultiEsdtPayment<A> {
-        let esdt_transfers = self.all_esdt_transfers();
-        if esdt_transfers.is_empty() {
-            EgldOrMultiEsdtPayment::Egld(self.egld_value().clone_value())
+    /// - KLV (can be zero in case of no payment whatsoever);
+    /// - Multi-KDA (one or more KDA transfers).
+    pub fn any_payment(&self) -> KlvOrMultiKdaPayment<A> {
+        let kda_transfers = self.all_kda_transfers();
+        if kda_transfers.is_empty() {
+            KlvOrMultiKdaPayment::Klv(self.klv_value().clone_value())
         } else {
-            EgldOrMultiEsdtPayment::MultiEsdt(esdt_transfers.clone_value())
+            KlvOrMultiKdaPayment::MultiKda(kda_transfers.clone_value())
         }
     }
 }

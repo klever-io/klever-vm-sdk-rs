@@ -1,4 +1,4 @@
-use multiversx_chain_scenario_format::{
+use klever_chain_scenario_format::{
     interpret_trait::InterpreterContext, value_interpreter::interpret_string,
 };
 
@@ -61,31 +61,6 @@ fn test_address() {
 }
 
 #[test]
-fn test_address_with_shard_id() {
-    let context = InterpreterContext::default();
-    assert_eq!(
-        b"_______________________________\x05".to_vec(),
-        interpret_string("address:#05", &context)
-    );
-    assert_eq!(
-        b"a______________________________\xbb".to_vec(),
-        interpret_string("address:a#bb", &context)
-    );
-    assert_eq!(
-        b"an_address_____________________\x99".to_vec(),
-        interpret_string("address:an_address#99", &context)
-    );
-    assert_eq!(
-        b"1234567890123456789012345678901\x66".to_vec(),
-        interpret_string("address:1234567890123456789012345678901#66", &context)
-    );
-    assert_eq!(
-        b"1234567890123456789012345678901\x66".to_vec(),
-        interpret_string("address:12345678901234567890123456789012#66", &context)
-    );
-}
-
-#[test]
 fn test_sc_address() {
     let context = InterpreterContext::default();
     assert_eq!(
@@ -100,24 +75,6 @@ fn test_sc_address() {
     assert_eq!(
         b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x001234567890123456789012".to_vec(),
         interpret_string("sc:12345678901234567890120sx", &context)
-    );
-}
-
-#[test]
-fn test_sc_address_with_shard_id() {
-    let context = InterpreterContext::default();
-    assert_eq!(
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00a____________________\x44".to_vec(),
-        interpret_string("sc:a#44", &context)
-    );
-    assert_eq!(
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00123456789012345678901\x88".to_vec(),
-        interpret_string("sc:12345678901234567890120#88", &context)
-    );
-    // trims excess
-    assert_eq!(
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00123456789012345678901\x88".to_vec(),
-        interpret_string("sc:12345678901234567890120x#88", &context)
     );
 }
 
@@ -276,18 +233,18 @@ fn test_bech32() {
     let context = InterpreterContext::default();
     // alice
     assert_eq!(
-        hex::decode("0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1").unwrap(),
+        hex::decode("485d212a35410fdef731419f9380a9a2984d885388a807c297d3c2cb2c467cde").unwrap(),
         interpret_string(
-            "bech32:erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th",
+            "bech32:klv1fpwjz234gy8aaae3gx0e8q9f52vymzzn3z5q0s5h60pvktzx0n0qwvtux5",
             &context
         )
     );
 
     // system SC
     assert_eq!(
-        hex::decode("000000000000000000010000000000000000000000000000000000000002ffff").unwrap(),
+        hex::decode("0000000000000000050045f737bf95f66403cad1f77d53d613f7791e827ac3e6").unwrap(),
         interpret_string(
-            "bech32:erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u",
+            "bech32:klv1qqqqqqqqqqqqqpgqghmn00u47ejq8jk37a7484sn7au3aqn6c0nqqtwsgw",
             &context
         )
     );

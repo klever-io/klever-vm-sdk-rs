@@ -1,0 +1,13 @@
+[package]
+name = "lottery-kda-meta"
+version = "0.0.0"
+authors = ["Andrei Marinica <andrei.marinica@multiversx.com>"]
+edition = "2021"
+publish = false
+
+[dependencies.lottery-kda]
+path = ".."
+
+[dependencies.klever-sc-meta]
+version = "0.43.3"
+path = "../../../../framework/meta"

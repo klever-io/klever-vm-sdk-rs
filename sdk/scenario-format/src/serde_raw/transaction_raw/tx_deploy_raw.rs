@@ -13,7 +13,7 @@ pub struct TxDeployRaw {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub egld_value: Option<ValueSubTree>,
+    pub klv_value: Option<ValueSubTree>,
 
     pub contract_code: ValueSubTree,
 

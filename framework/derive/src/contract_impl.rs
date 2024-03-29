@@ -2,8 +2,8 @@ use super::generate::{abi_gen, snippets};
 use crate::{
     generate::{
         auto_impl::generate_auto_impls, auto_impl_proxy::generate_all_proxy_trait_imports,
-        callback_gen::*, contract_gen::*, endpoints_mod_gen::generate_endpoints_mod,
-        function_selector::generate_function_selector_body, proxy_callback_gen::*, proxy_gen,
+        contract_gen::*, endpoints_mod_gen::generate_endpoints_mod,
+        function_selector::generate_function_selector_body, proxy_gen,
         supertrait_gen,
     },
     model::ContractTrait,
@@ -24,9 +24,7 @@ pub fn contract_implementation(
     let auto_impls = generate_auto_impls(contract);
     let endpoints_mod = generate_endpoints_mod(contract, is_contract_main);
     let function_selector_body = generate_function_selector_body(contract);
-    let (callback_selector_body, callback_body) = generate_callback_selector_and_main(contract);
-    let (callbacks_def, callbacks_impl, callback_proxies_obj) = generate_callback_proxies(contract);
-
+    
     // this definition is common to release and debug mode
     let supertraits_main = supertrait_gen::main_supertrait_decl(contract.supertraits.as_slice());
     let main_definition = quote! {
@@ -34,7 +32,7 @@ pub fn contract_implementation(
 
         #(#module_original_attributes)*
         pub trait #trait_name_ident:
-        multiversx_sc::contract_base::ContractBase
+        klever_sc::contract_base::ContractBase
         + Sized
         #(#supertraits_main)*
         where
@@ -42,25 +40,21 @@ pub fn contract_implementation(
             #(#method_impls)*
 
             #(#auto_impl_defs)*
-
-            #callbacks_def
         }
     };
 
     let auto_impl_trait = quote! {
-        pub trait AutoImpl: multiversx_sc::contract_base::ContractBase {}
+        pub trait AutoImpl: klever_sc::contract_base::ContractBase {}
 
         impl<C> #trait_name_ident for C
         where
         C: AutoImpl #(#supertraits_main)*
         {
             #(#auto_impls)*
-
-            #callbacks_impl
         }
 
-        impl<A> AutoImpl for multiversx_sc::contract_base::UniversalContractObj<A> where
-            A: multiversx_sc::api::VMApi
+        impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where
+            A: klever_sc::api::VMApi
         {
         }
     };
@@ -69,7 +63,7 @@ pub fn contract_implementation(
         supertrait_gen::endpoint_wrapper_supertrait_decl(contract.supertraits.as_slice());
     let endpoint_wrappers = quote! {
         pub trait EndpointWrappers:
-            multiversx_sc::contract_base::ContractBase
+            klever_sc::contract_base::ContractBase
             + #trait_name_ident
             #(#endpoint_wrapper_supertrait_decl)*
         {
@@ -78,18 +72,10 @@ pub fn contract_implementation(
             fn call(&self, fn_name: &str) -> bool {
                 #function_selector_body
             }
-
-            fn callback_selector(&self, mut ___cb_closure___: multiversx_sc::types::CallbackClosureForDeser<Self::Api>) -> multiversx_sc::types::CallbackSelectorResult<Self::Api> {
-                #callback_selector_body
-            }
-
-            fn callback(&self) {
-                #callback_body
-            }
         }
 
-        impl<A> EndpointWrappers for multiversx_sc::contract_base::UniversalContractObj<A> where
-            A: multiversx_sc::api::VMApi
+        impl<A> EndpointWrappers for klever_sc::contract_base::UniversalContractObj<A> where
+            A: klever_sc::api::VMApi
         {
         }
     };
@@ -146,7 +132,5 @@ pub fn contract_implementation(
         #proxy_trait
 
         #proxy_obj_code
-
-        #callback_proxies_obj
     }
 }

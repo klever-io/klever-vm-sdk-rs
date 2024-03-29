@@ -16,7 +16,7 @@
                     "comment": "we can comment on individual account initializations",
                     "nonce": "0",
                     "balance": "0xe8d4a51000",
-                    "esdt": {
+                    "kda": {
                         "str:1-MyToken": "400,000,000,000",
                         "str:2-AnotherToken": {
                             "instances": [
@@ -59,11 +59,11 @@
                             ],
                             "lastNonce": "7",
                             "roles": [
-                                "ESDTRoleLocalMint",
-                                "ESDTRoleLocalBurn",
-                                "ESDTRoleNFTCreate",
-                                "ESDTRoleNFTAddQuantity",
-                                "ESDTRoleNFTBurn"
+                                "KDARoleLocalMint",
+                                "KDARoleLocalBurn",
+                                "KDARoleNFTCreate",
+                                "KDARoleNFTAddQuantity",
+                                "KDARoleNFTBurn"
                             ],
                             "frozen": "false"
                         },
@@ -130,12 +130,12 @@
                             ]
                         }
                     },
-                    "username": "str:myusername.elrond"
+                    "username": "str:myusername.klever"
                 },
                 "address:smart_contract_address": {
                     "nonce": "0x00",
                     "balance": "23,000",
-                    "username": "str:mysmartcontract.elrond",
+                    "username": "str:mysmartcontract.klever",
                     "storage": {
                         "0x19efaebcc296cffac396adb4a60d54c05eff43926a6072498a618e943908efe1": "-5",
                         "``32_byte_key_____________________": "``string___interpreted___as__bytes",
@@ -153,8 +153,7 @@
                         }
                     },
                     "code": "file:smart-contract.wasm",
-                    "owner": "address:alice",
-                    "developerRewards": "100"
+                    "owner": "address:alice"
                 }
             },
             "newAddresses": [
@@ -247,7 +246,7 @@
             "tx": {
                 "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
                 "to": "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:MyToken",
                         "value": "250,000,000,000"
@@ -298,7 +297,7 @@
             "comment": "another",
             "tx": {
                 "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
-                "egldValue": "123,456,000",
+                "klvValue": "123,456,000",
                 "contractCode": "``new contract code here",
                 "arguments": [
                     "0x1234123400000000000000000000000000000000000000000000000000000004",
@@ -336,22 +335,13 @@
             "tx": {
                 "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
                 "to": "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "egldValue": "1234",
-                "esdtValue": [
+                "klvValue": "1234",
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:MyToken",
                         "value": "250,000,000,000"
                     }
                 ]
-            }
-        },
-        {
-            "step": "validatorReward",
-            "id": "4",
-            "comment": "system send out validator rewards",
-            "tx": {
-                "to": "sc:delegation",
-                "egldValue": "555,000,000"
             }
         },
         {
@@ -375,7 +365,7 @@
                     "comment": "we can comment on individual account checks",
                     "nonce": "1",
                     "balance": "0xe8d4951000",
-                    "esdt": {
+                    "kda": {
                         "str:1-MyToken": "400,000,000,000",
                         "str:2-AnotherToken": "400,000,000,000",
                         "str:3-AnotherTokenThatIsFrozen": {
@@ -408,13 +398,13 @@
                         "str:6-ZERO": "0",
                         "+": ""
                     },
-                    "username": "str:check.elrond",
+                    "username": "str:check.klever",
                     "storage": {},
                     "code": "",
                     "owner": "*"
                 },
                 "address:account_with_defaults": {
-                    "esdt": "*",
+                    "kda": "*",
                     "storage": "*",
                     "code": "*",
                     "owner": "*"
@@ -422,7 +412,7 @@
                 "address:smart_contract_address": {
                     "nonce": "0x00",
                     "balance": "23,000",
-                    "username": "str:mysmartcontract.elrond",
+                    "username": "str:mysmartcontract.klever",
                     "storage": {
                         "0x19efaebcc296cffac396adb4a60d54c05eff43926a6072498a618e943908efe1": "-5",
                         "``32_byte_key_____________________": "``string___interpreted___as__bytes",
@@ -443,8 +433,7 @@
                 "address:smart_contract_address_2": {
                     "storage": "*",
                     "code": "*",
-                    "owner": "*",
-                    "asyncCallData": "``func@arg1@arg2"
+                    "owner": "*"
                 },
                 "str:account_with_defaults___________": {
                     "storage": "*",
@@ -461,11 +450,11 @@
         {
             "step": "transfer",
             "id": "multi-transfer",
-            "comment": "test ESDT multi-transfer",
+            "comment": "test KDA multi-transfer",
             "tx": {
                 "from": "address:A",
                 "to": "address:B",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:TOK-123456",
                         "value": "100"

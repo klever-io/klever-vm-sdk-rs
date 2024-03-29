@@ -1,9 +1,9 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 use crate::types::*;
 
 /// Storage tests: direct load from storage to the heap.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait StorageLoadFeatures {
     #[endpoint]
     #[storage_get("vec_u8")]

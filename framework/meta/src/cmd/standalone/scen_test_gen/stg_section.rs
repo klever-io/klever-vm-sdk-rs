@@ -139,12 +139,12 @@ fn another_func() {
 
 #[test]
 fn test_1() {
-    multiversx_sc_scenario::run_rs("scenarios/test1.scen.json");
+    klever_sc_scenario::run_rs("scenarios/test1.scen.json");
 }
   
 #[test]
 fn test_2() {
-    multiversx_sc_scenario::run_rs("scenarios/test2.scen.json");
+    klever_sc_scenario::run_rs("scenarios/test2.scen.json");
 }
 
 "#;

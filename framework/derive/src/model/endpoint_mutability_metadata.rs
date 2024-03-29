@@ -9,13 +9,13 @@ impl EndpointMutabilityMetadata {
     pub fn to_tokens(&self) -> proc_macro2::TokenStream {
         match self {
             EndpointMutabilityMetadata::Mutable => {
-                quote! { multiversx_sc::abi::EndpointMutabilityAbi::Mutable }
+                quote! { klever_sc::abi::EndpointMutabilityAbi::Mutable }
             },
             EndpointMutabilityMetadata::Readonly => {
-                quote! { multiversx_sc::abi::EndpointMutabilityAbi::Readonly }
+                quote! { klever_sc::abi::EndpointMutabilityAbi::Readonly }
             },
             EndpointMutabilityMetadata::_Pure => {
-                quote! { multiversx_sc::abi::EndpointMutabilityAbi::Pure }
+                quote! { klever_sc::abi::EndpointMutabilityAbi::Pure }
             },
         }
     }

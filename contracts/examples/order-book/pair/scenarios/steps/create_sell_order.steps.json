@@ -7,9 +7,9 @@
             "tx": {
                 "from": "address:user2",
                 "to": "sc:pair",
-                "esdtValue": [
+                "kdaValue": [
                     {
-                        "tokenIdentifier": "str:WEGLD-abcdef",
+                        "tokenIdentifier": "str:WKLV-abcdef",
                         "value": "200,000"
                     }
                 ],

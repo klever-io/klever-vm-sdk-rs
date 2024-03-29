@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
@@ -9,8 +9,8 @@ fn world() -> ScenarioWorld {
         basic_features::ContractBuilder,
     );
     blockchain.register_contract(
-        "file:../esdt-system-sc-mock/output/esdt-system-sc-mock.wasm",
-        esdt_system_sc_mock::ContractBuilder,
+        "file:../kda-system-sc-mock/output/kda-system-sc-mock.wasm",
+        kda_system_sc_mock::ContractBuilder,
     );
 
     blockchain
@@ -146,11 +146,6 @@ fn echo_ignore_rs() {
 }
 
 #[test]
-fn echo_managed_async_result_empty_rs() {
-    world().run("scenarios/echo_managed_async_result_empty.scen.json");
-}
-
-#[test]
 fn echo_managed_bytes_rs() {
     world().run("scenarios/echo_managed_bytes.scen.json");
 }
@@ -208,16 +203,6 @@ fn events_rs() {
 #[test]
 fn get_caller_rs() {
     world().run("scenarios/get_caller.scen.json");
-}
-
-#[test]
-fn get_cumulated_validator_rewards_rs() {
-    world().run("scenarios/get_cumulated_validator_rewards.scen.json");
-}
-
-#[test]
-fn get_shard_of_address_rs() {
-    world().run("scenarios/get_shard_of_address.scen.json");
 }
 
 #[test]

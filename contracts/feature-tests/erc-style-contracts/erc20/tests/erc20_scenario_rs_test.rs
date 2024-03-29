@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
@@ -74,8 +74,8 @@ fn not_payable_rs() {
 }
 
 #[test]
-fn not_payable_esdt_rs() {
-    world().run("scenarios/not_payable_esdt.scen.json");
+fn not_payable_kda_rs() {
+    world().run("scenarios/not_payable_kda.scen.json");
 }
 
 #[test]

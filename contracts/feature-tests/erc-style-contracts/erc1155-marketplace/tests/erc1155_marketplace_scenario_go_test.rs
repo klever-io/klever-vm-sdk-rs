@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
@@ -10,23 +10,23 @@ fn auction_batch_go() {
 }
 
 #[test]
-fn auction_single_token_egld_go() {
-    world().run("scenarios/auction_single_token_egld.scen.json");
+fn auction_single_token_klv_go() {
+    world().run("scenarios/auction_single_token_klv.scen.json");
 }
 
 #[test]
-fn bid_first_egld_go() {
-    world().run("scenarios/bid_first_egld.scen.json");
+fn bid_first_klv_go() {
+    world().run("scenarios/bid_first_klv.scen.json");
 }
 
 #[test]
-fn bid_second_egld_go() {
-    world().run("scenarios/bid_second_egld.scen.json");
+fn bid_second_klv_go() {
+    world().run("scenarios/bid_second_klv.scen.json");
 }
 
 #[test]
-fn bid_third_egld_go() {
-    world().run("scenarios/bid_third_egld.scen.json");
+fn bid_third_klv_go() {
+    world().run("scenarios/bid_third_klv.scen.json");
 }
 
 #[test]

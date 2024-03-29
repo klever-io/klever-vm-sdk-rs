@@ -8,15 +8,15 @@ publish = false
 name = "format-tests"
 path = "src/format_tests.rs"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../framework/base"
 
-[dependencies.multiversx-sc-scenario]
+[dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"
 
-[dependencies.multiversx-chain-vm]
+[dependencies.klever-chain-vm]
 version = "0.5.2"
 path = "../../../vm"
 

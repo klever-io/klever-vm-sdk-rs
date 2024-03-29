@@ -1,6 +1,6 @@
-use multiversx_sc::{
+use klever_sc::{
     api::{BlockchainApi, BlockchainApiImpl, HandleConstraints, ManagedBufferApiImpl, RawHandle},
-    types::{Address, EsdtLocalRoleFlags, H256},
+    types::{Address, H256},
 };
 
 use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
@@ -34,17 +34,6 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
 
     fn load_owner_address_managed(&self, dest: Self::ManagedBufferHandle) {
         self.with_vm_hooks(|vh| vh.managed_owner_address(dest.get_raw_handle_unchecked()));
-    }
-
-    fn get_shard_of_address_legacy(&self, _address: &Address) -> u32 {
-        panic!("legacy BlockchainApi functionality no longer supported")
-    }
-
-    fn get_shard_of_address(&self, address_handle: Self::ManagedBufferHandle) -> u32 {
-        self.assert_live_handle(&address_handle);
-        self.with_temp_address_ptr(address_handle, |address_ptr| {
-            self.with_vm_hooks(|vh| vh.get_shard_of_address(address_ptr))
-        }) as u32
     }
 
     fn is_smart_contract_legacy(&self, _address: &Address) -> bool {
@@ -138,25 +127,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         });
     }
 
-    fn get_current_esdt_nft_nonce(
-        &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> u64 {
-        self.assert_live_handle(&address_handle);
-        self.assert_live_handle(&token_id_handle);
-        let token_id_len = self.mb_len(token_id_handle.clone());
-        let result = self.with_temp_address_ptr(address_handle, |address_ptr| {
-            self.with_temp_buffer_ptr(token_id_handle, token_id_len, |token_id_ptr| {
-                self.with_vm_hooks(|vh| {
-                    vh.get_current_esdt_nft_nonce(address_ptr, token_id_ptr, token_id_len as isize)
-                })
-            })
-        });
-        result as u64
-    }
-
-    fn load_esdt_balance(
+    fn load_kda_balance(
         &self,
         address_handle: Self::ManagedBufferHandle,
         token_id_handle: Self::ManagedBufferHandle,
@@ -169,7 +140,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         self.with_temp_address_ptr(address_handle, |address_ptr| {
             self.with_temp_buffer_ptr(token_id_handle, token_id_len, |token_id_ptr| {
                 self.with_vm_hooks(|vh| {
-                    vh.big_int_get_esdt_external_balance(
+                    vh.big_int_get_kda_external_balance(
                         address_ptr,
                         token_id_ptr,
                         token_id_len as isize,
@@ -181,79 +152,101 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         });
     }
 
-    fn managed_get_esdt_token_data(
+    fn managed_get_user_kda(
+            &self,
+            address_handle: RawHandle,
+            ticker_handle: RawHandle,
+            nonce: u64,
+            balance_handle: RawHandle,
+            frozen_handle: RawHandle,
+            last_claim_handle: RawHandle,
+            buckets_handle: RawHandle,
+            mime_handle: RawHandle,
+            metadata_handle: RawHandle,
+        ) {
+            self.with_vm_hooks(|vh| {
+                vh.managed_get_user_kda(
+                    address_handle,
+                    ticker_handle,
+                    nonce as i64,
+                    balance_handle,
+                    frozen_handle,
+                    last_claim_handle,
+                    buckets_handle,
+                    mime_handle,
+                    metadata_handle,
+                );
+            });
+    }
+
+    fn managed_get_kda_token_data(
         &self,
         address_handle: RawHandle,
-        token_id_handle: RawHandle,
+        ticker_handle: RawHandle,
         nonce: u64,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
+        precision_handle: RawHandle,
+        id_handle: RawHandle,
         name_handle: RawHandle,
-        attributes_handle: RawHandle,
         creator_handle: RawHandle,
-        royalties_handle: RawHandle,
+        logo_handle: RawHandle,
         uris_handle: RawHandle,
+        initial_supply_handle: RawHandle,
+        circulating_supply_handle: RawHandle,
+        max_supply_handle: RawHandle,
+        minted_handle: RawHandle,
+        burned_handle: RawHandle,
+        royalties_handle: RawHandle,
+        properties_handle: RawHandle,
+        attributes_handle: RawHandle,
+        roles_handle: RawHandle,
+        issue_date_handle: RawHandle,
     ) {
         self.with_vm_hooks(|vh| {
-            vh.managed_get_esdt_token_data(
+            vh.managed_get_kda_token_data(
                 address_handle,
-                token_id_handle,
+                ticker_handle,
                 nonce as i64,
-                value_handle,
-                properties_handle,
-                hash_handle,
+                precision_handle,
+                id_handle,
                 name_handle,
-                attributes_handle,
                 creator_handle,
-                royalties_handle,
+                logo_handle,
                 uris_handle,
+                initial_supply_handle,
+                circulating_supply_handle,
+                max_supply_handle,
+                minted_handle,
+                burned_handle,
+                royalties_handle,
+                properties_handle,
+                attributes_handle,
+                roles_handle,
+                issue_date_handle,
             )
         });
     }
 
-    fn check_esdt_frozen(
+    fn managed_get_kda_roles(
         &self,
-        address_handle: Self::ManagedBufferHandle,
-        token_id_handle: Self::ManagedBufferHandle,
-        nonce: u64,
-    ) -> bool {
-        self.assert_live_handle(&address_handle);
-        self.assert_live_handle(&token_id_handle);
-        let result = self.with_vm_hooks(|vh| {
-            vh.managed_is_esdt_frozen(
-                address_handle.get_raw_handle_unchecked(),
-                token_id_handle.get_raw_handle_unchecked(),
-                nonce as i64,
+        ticker_handle: RawHandle,
+        roles_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_kda_roles(
+                ticker_handle,
+                roles_handle,
             )
         });
-        i32_to_bool(result)
     }
 
-    fn check_esdt_paused(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        self.assert_live_handle(&token_id_handle);
-        let result = self.with_vm_hooks(|vh| {
-            vh.managed_is_esdt_paused(token_id_handle.get_raw_handle_unchecked())
-        });
-        i32_to_bool(result)
-    }
-
-    fn check_esdt_limited_transfer(&self, token_id_handle: Self::ManagedBufferHandle) -> bool {
-        self.assert_live_handle(&token_id_handle);
-        let result = self.with_vm_hooks(|vh| {
-            vh.managed_is_esdt_limited_transfer(token_id_handle.get_raw_handle_unchecked())
-        });
-        i32_to_bool(result)
-    }
-
-    fn load_esdt_local_roles(
+    fn managed_get_back_transfers(
         &self,
-        token_id_handle: Self::ManagedBufferHandle,
-    ) -> EsdtLocalRoleFlags {
-        self.assert_live_handle(&token_id_handle);
-        let result = self.with_vm_hooks(|vh| {
-            vh.get_esdt_local_roles(token_id_handle.get_raw_handle_unchecked())
+        kda_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_back_transfers(kda_transfer_value_handle, call_value_handle)
         });
-        unsafe { EsdtLocalRoleFlags::from_bits_unchecked(result as u64) }
     }
+
 }

@@ -1,12 +1,12 @@
 use crate::{
     tx_mock::{
-        async_call_tx_input, async_callback_tx_input, async_promise_tx_input, merge_results,
-        AsyncCallTxData, BlockchainUpdate, Promise, TxCache, TxContext, TxContextStack, TxInput,
+        call_tx_input, callback_tx_input, promise_tx_input, merge_results,
+        CallTxData, BlockchainUpdate, Promise, TxCache, TxContext, TxContextStack, TxInput,
         TxPanic, TxResult, TxResultCalls,
     },
     types::VMAddress,
     with_shared::Shareable,
-    world_mock::{AccountData, AccountEsdt, BlockchainState},
+    world_mock::{AccountData, AccountKda, BlockchainState},
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
@@ -85,6 +85,7 @@ impl BlockchainVMRef {
     where
         F: FnOnce(),
     {
+        // TODO: adjust the gas limit/price to bandwith consumption
         state.subtract_tx_gas(&tx_input.from, tx_input.gas_limit, tx_input.gas_price);
 
         let (tx_result, blockchain_updates) = state.with_shared(|state_arc| {
@@ -101,11 +102,11 @@ impl BlockchainVMRef {
 
     pub fn execute_async_call_and_callback(
         &self,
-        async_data: AsyncCallTxData,
+        async_data: CallTxData,
         state: &mut Shareable<BlockchainState>,
     ) -> (TxResult, TxResult) {
         if state.accounts.contains_key(&async_data.to) {
-            let async_input = async_call_tx_input(&async_data);
+            let async_input = call_tx_input(&async_data);
 
             let async_result = self.sc_call_with_async_and_callback(
                 async_input,
@@ -114,7 +115,7 @@ impl BlockchainVMRef {
             );
 
             let callback_input =
-                async_callback_tx_input(&async_data, &async_result, &self.builtin_functions);
+                callback_tx_input(&async_data, &async_result, &self.builtin_functions);
             let callback_result = self.execute_sc_call_lambda(
                 callback_input,
                 state,
@@ -188,14 +189,14 @@ impl BlockchainVMRef {
         state: &mut Shareable<BlockchainState>,
     ) -> (TxResult, TxResult) {
         if state.accounts.contains_key(&promise.call.to) {
-            let async_input = async_call_tx_input(&promise.call);
+            let async_input = call_tx_input(&promise.call);
             let async_result = self.sc_call_with_async_and_callback(
                 async_input,
                 state,
                 execute_current_tx_context_input,
             );
 
-            let callback_input = async_promise_tx_input(address, promise, &async_result);
+            let callback_input = promise_tx_input(address, promise, &async_result);
             let callback_result = self.execute_sc_call_lambda(
                 callback_input,
                 state,
@@ -221,22 +222,21 @@ impl BlockchainVMRef {
     /// When calling a contract that is unknown to the state, we insert a ghost account.
     fn insert_ghost_account(
         &self,
-        async_data: &AsyncCallTxData,
+        async_data: &CallTxData,
         state: &mut Shareable<BlockchainState>,
     ) -> Result<BlockchainUpdate, TxPanic> {
         state.with_shared(|state_arc| {
             let tx_cache = TxCache::new(state_arc);
-            tx_cache.subtract_egld_balance(&async_data.from, &async_data.call_value)?;
+            tx_cache.subtract_klv_balance(&async_data.from, &async_data.call_value)?;
             tx_cache.insert_account(AccountData {
                 address: async_data.to.clone(),
                 nonce: 0,
-                egld_balance: async_data.call_value.clone(),
-                esdt: AccountEsdt::default(),
+                klv_balance: async_data.call_value.clone(),
+                kda: AccountKda::default(),
                 username: Vec::new(),
                 storage: HashMap::new(),
                 contract_path: None,
                 contract_owner: None,
-                developer_rewards: BigUint::zero(),
             });
             Ok(tx_cache.into_blockchain_updates())
         })

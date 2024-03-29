@@ -13,7 +13,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:crypto_bubbles_owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:crypto_bubbles"
                 }
             ]

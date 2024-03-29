@@ -1,5 +1,5 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode)]
 pub struct TokenAmountPair<M: ManagedTypeApi> {
@@ -9,11 +9,11 @@ pub struct TokenAmountPair<M: ManagedTypeApi> {
 
 static NOT_ENOUGH_STAKE_ERR_MSG: &[u8] = b"Not enough stake";
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait StakingModule {
     fn init_staking_module(
         &self,
-        staking_token: &EgldOrEsdtTokenIdentifier,
+        staking_token: &TokenIdentifier,
         staking_amount: &BigUint,
         slash_amount: &BigUint,
         slash_quorum: usize,
@@ -47,7 +47,7 @@ pub trait StakingModule {
     #[payable("*")]
     #[endpoint]
     fn stake(&self) {
-        let (payment_token, payment_amount) = self.call_value().egld_or_single_fungible_esdt();
+        let (payment_token, payment_amount) = self.call_value().klv_or_single_fungible_kda();
         let staking_token = self.staking_token().get();
         require!(payment_token == staking_token, "Invalid payment token");
 
@@ -81,7 +81,7 @@ pub trait StakingModule {
 
         let staking_token = self.staking_token().get();
         self.send()
-            .direct(&caller, &staking_token, 0, &unstake_amount);
+            .direct_kda(&caller, &staking_token, 0, &unstake_amount);
     }
 
     #[endpoint(voteSlashMember)]
@@ -146,7 +146,7 @@ pub trait StakingModule {
     }
 
     #[storage_mapper("staking_module:stakingToken")]
-    fn staking_token(&self) -> SingleValueMapper<EgldOrEsdtTokenIdentifier>;
+    fn staking_token(&self) -> SingleValueMapper<TokenIdentifier>;
 
     #[storage_mapper("staking_module:requiredStakeAmount")]
     fn required_stake_amount(&self) -> SingleValueMapper<BigUint>;

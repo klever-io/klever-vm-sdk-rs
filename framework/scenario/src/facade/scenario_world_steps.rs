@@ -1,9 +1,9 @@
-use multiversx_sc::types::{heap::Address, ContractCall};
+use klever_sc::types::{heap::Address, ContractCall};
 
 use crate::{
     api::StaticApi,
     facade::ScenarioWorld,
-    multiversx_sc::codec::{CodecFrom, TopEncodeMulti},
+    klever_sc::codec::{CodecFrom, TopEncodeMulti},
     scenario::{model::*, ScenarioRunner},
 };
 
@@ -194,12 +194,6 @@ impl ScenarioWorld {
     /// Adds a simple transfer step, then executes it.
     pub fn transfer_step(&mut self, step: TransferStep) -> &mut Self {
         self.run_transfer_step(&step);
-        self
-    }
-
-    /// Adds a validator reward step, then executes it.
-    pub fn validator_reward_step(&mut self, step: ValidatorRewardStep) -> &mut Self {
-        self.run_validator_reward_step(&step);
         self
     }
 

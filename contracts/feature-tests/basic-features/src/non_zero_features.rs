@@ -1,9 +1,9 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 use core::num::NonZeroUsize;
 
-/// Exposes various methods of various types provided by multiversx-sc.
-#[multiversx_sc::module]
+/// Exposes various methods of various types provided by klever-sc.
+#[klever_sc::module]
 pub trait TypeFeatures {
     #[view]
     fn non_zero_usize_iter(&self, how_many: usize) -> MultiValueEncoded<NonZeroUsize> {

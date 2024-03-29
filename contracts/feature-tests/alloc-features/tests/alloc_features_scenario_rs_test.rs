@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
@@ -14,11 +14,6 @@ fn world() -> ScenarioWorld {
 #[test]
 fn boxed_bytes_zeros_rs() {
     world().run("scenarios/boxed_bytes_zeros.scen.json");
-}
-
-#[test]
-fn echo_async_result_empty_rs() {
-    world().run("scenarios/echo_async_result_empty.scen.json");
 }
 
 #[test]

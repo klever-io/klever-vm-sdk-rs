@@ -1,7 +1,7 @@
-use multiversx_sc::types::{
+use klever_sc::types::{
     BigInt, BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, ManagedVec,
 };
-use multiversx_sc_scenario::{api::StaticApi, managed_test_util::check_managed_top_encode_decode};
+use klever_sc_scenario::{api::StaticApi, managed_test_util::check_managed_top_encode_decode};
 
 #[test]
 fn test_big_uint_serialization() {

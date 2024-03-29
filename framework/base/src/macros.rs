@@ -1,4 +1,4 @@
-// Note: Simple macros cannot be placed in multiversx-sc-derive,
+// Note: Simple macros cannot be placed in klever-sc-derive,
 // because Rust "cannot export macro_rules! macros from a `proc-macro` crate type currently".
 
 /// Getting all imports needed for a smart contract.
@@ -10,9 +10,10 @@ macro_rules! imports {
             DivAssign, Mul, MulAssign, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
             SubAssign,
         };
-        use multiversx_sc::{
+        use klever_sc::{
             abi::TypeAbi,
-            api::{ErrorApiImpl, ManagedTypeApi},
+            api::{ErrorApiImpl, ManagedTypeApi, BuyType, ClaimType, DepositType, ITOStatus, ITOWhitelistStatus, SellType, StakingType,
+                VoteType, WithdrawType},
             arrayvec::ArrayVec,
             codec::{
                 multi_types::*, DecodeError, IntoMultiValue, NestedDecode, NestedEncode, TopDecode,
@@ -20,7 +21,7 @@ macro_rules! imports {
             },
             contract_base::{ContractBase, ProxyObjBase},
             err_msg,
-            esdt::*,
+            kda::*,
             io::*,
             non_zero_usize,
             non_zero_util::*,
@@ -38,7 +39,7 @@ macro_rules! imports {
 #[macro_export]
 macro_rules! derive_imports {
     () => {
-        use multiversx_sc::{
+        use klever_sc::{
             codec,
             codec::derive::{
                 NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
@@ -53,7 +54,7 @@ macro_rules! derive_imports {
 #[macro_export]
 macro_rules! sc_error {
     ($s:expr) => {
-        multiversx_sc::types::SCResult::Err(multiversx_sc::types::StaticSCError::from($s)).into()
+        klever_sc::types::SCResult::Err(klever_sc::types::StaticSCError::from($s)).into()
     };
 }
 
@@ -64,9 +65,9 @@ macro_rules! sc_error {
 /// Example:
 ///
 /// ```rust
-/// # use multiversx_sc::require_old;
-/// # use multiversx_sc::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract: multiversx_sc::contract_base::ContractBase
+/// # use klever_sc::require_old;
+/// # use klever_sc::types::{*, SCResult::Ok};
+/// # pub trait ExampleContract: klever_sc::contract_base::ContractBase
 /// # {
 /// fn only_accept_positive_old(&self, x: i32) -> SCResult<()> {
 ///     require_old!(x > 0, "only positive values accepted");
@@ -78,7 +79,7 @@ macro_rules! sc_error {
 macro_rules! require_old {
     ($expression:expr, $error_msg:expr) => {
         if (!($expression)) {
-            return multiversx_sc::sc_error!($error_msg);
+            return klever_sc::sc_error!($error_msg);
         }
     };
 }
@@ -87,12 +88,12 @@ macro_rules! require_old {
 macro_rules! sc_panic {
     ($msg:tt, $($arg:expr),+ $(,)?) => {{
         let mut ___buffer___ =
-            multiversx_sc::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
-        multiversx_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
-        multiversx_sc::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message(___buffer___.into_managed_buffer());
+            klever_sc::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+        klever_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
+        klever_sc::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message(___buffer___.into_managed_buffer());
     }};
     ($msg:expr $(,)?) => {
-        multiversx_sc::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message($msg);
+        klever_sc::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message($msg);
     };
 }
 
@@ -105,8 +106,8 @@ macro_rules! sc_panic {
 /// Examples:
 ///
 /// ```rust
-/// # use multiversx_sc::{types::ManagedBuffer, require};
-/// # pub trait ExampleContract: multiversx_sc::contract_base::ContractBase
+/// # use klever_sc::{types::ManagedBuffer, require};
+/// # pub trait ExampleContract: klever_sc::contract_base::ContractBase
 /// # {
 /// fn only_accept_positive(&self, x: i32) {
 ///     require!(x > 0, "only positive values accepted");
@@ -125,7 +126,7 @@ macro_rules! sc_panic {
 macro_rules! require {
     ($expression:expr, $($msg_tokens:tt),+  $(,)?) => {
         if (!($expression)) {
-            multiversx_sc::sc_panic!($($msg_tokens),+);
+            klever_sc::sc_panic!($($msg_tokens),+);
         }
     };
 }
@@ -134,10 +135,10 @@ macro_rules! require {
 macro_rules! sc_print {
     ($msg:tt, $($arg:expr),* $(,)?) => {{
         let mut ___buffer___ =
-            <<Self::Api as multiversx_sc::api::PrintApi>::PrintApiImpl as multiversx_sc::api::PrintApiImpl>::Buffer::default();
-        multiversx_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),*);
-        <<Self::Api as multiversx_sc::api::PrintApi>::PrintApiImpl as multiversx_sc::api::PrintApiImpl>::print_buffer(
-            &<Self::Api as multiversx_sc::api::PrintApi>::print_api_impl(),
+            <<Self::Api as klever_sc::api::PrintApi>::PrintApiImpl as klever_sc::api::PrintApiImpl>::Buffer::default();
+        klever_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),*);
+        <<Self::Api as klever_sc::api::PrintApi>::PrintApiImpl as klever_sc::api::PrintApiImpl>::print_buffer(
+            &<Self::Api as klever_sc::api::PrintApi>::print_api_impl(),
             ___buffer___,
         );
     }};
@@ -147,12 +148,12 @@ macro_rules! sc_print {
 macro_rules! sc_format {
     ($msg:tt, $($arg:expr),+ $(,)?) => {{
         let mut ___buffer___ =
-            multiversx_sc::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
-        multiversx_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
+            klever_sc::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+        klever_sc::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
         ___buffer___.into_managed_buffer()
     }};
     ($msg:expr $(,)?) => {{
-        multiversx_sc::types::ManagedBuffer::new_from_bytes($msg.as_bytes())
+        klever_sc::types::ManagedBuffer::new_from_bytes($msg.as_bytes())
     }};
 }
 
@@ -165,9 +166,9 @@ macro_rules! sc_format {
 macro_rules! sc_try {
     ($s:expr) => {
         match $s {
-            multiversx_sc::types::SCResult::Ok(t) => t,
-            multiversx_sc::types::SCResult::Err(e) => {
-                return multiversx_sc::types::SCResult::Err(e);
+            klever_sc::types::SCResult::Ok(t) => t,
+            klever_sc::types::SCResult::Err(e) => {
+                return klever_sc::types::SCResult::Err(e);
             },
         }
     };
@@ -178,10 +179,10 @@ macro_rules! sc_try {
 /// It can only be used in a function that returns `SCResult<_>` where _ can be any type.
 ///
 /// ```rust
-/// # use multiversx_sc::*;
-/// # use multiversx_sc::api::BlockchainApi;
-/// # use multiversx_sc::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract: multiversx_sc::contract_base::ContractBase
+/// # use klever_sc::*;
+/// # use klever_sc::api::BlockchainApi;
+/// # use klever_sc::types::{*, SCResult::Ok};
+/// # pub trait ExampleContract: klever_sc::contract_base::ContractBase
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
 ///     only_owner!(self, "Caller must be owner");

@@ -68,21 +68,6 @@ pub struct BuildArgs {
     /// Generate a twiggy dominators report after building.
     #[arg(long = "twiggy-dominators", verbatim_doc_comment)]
     pub twiggy_dominators: bool,
-
-    /// Backwards compatibility with mxpy, delete when github actions are fixed.
-    #[deprecated]
-    #[arg(long = "target", verbatim_doc_comment)]
-    pub target: Option<String>,
-
-    /// Backwards compatibility with mxpy, delete when github actions are fixed.
-    #[deprecated]
-    #[arg(long, verbatim_doc_comment)]
-    pub release: bool,
-
-    /// Backwards compatibility with mxpy, delete when github actions are fixed.
-    #[deprecated]
-    #[arg(long = "out-dir", verbatim_doc_comment)]
-    pub out_dir: Option<String>,
 }
 
 impl Default for BuildArgs {
@@ -103,9 +88,6 @@ impl Default for BuildArgs {
             twiggy_paths: false,
             twiggy_monos: false,
             twiggy_dominators: false,
-            target: None,
-            release: false,
-            out_dir: None,
         }
     }
 }

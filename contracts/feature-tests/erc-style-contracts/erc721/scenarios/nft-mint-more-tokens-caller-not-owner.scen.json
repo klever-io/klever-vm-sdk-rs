@@ -30,7 +30,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Endpoint can only be called by owner",
                 "gas": "*",
                 "refund": "*"

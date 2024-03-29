@@ -1,10 +1,10 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 use benchmark_common::ExampleStruct;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait LinkedListRepeat: benchmark_common::BenchmarkCommon {
     #[init]
     fn init(&self) {}

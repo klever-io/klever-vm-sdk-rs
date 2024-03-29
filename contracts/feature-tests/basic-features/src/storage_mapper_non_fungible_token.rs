@@ -1,5 +1,5 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct RgbColor {
@@ -8,21 +8,14 @@ pub struct RgbColor {
     b: u8,
 }
 
-#[multiversx_sc::module]
-pub trait NonFungibleTokenMapperFeatures:
-    multiversx_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
-{
-    #[payable("EGLD")]
+#[klever_sc::module]
+pub trait NonFungibleTokenMapperFeatures {
+    #[payable("KLV")]
     #[endpoint]
-    fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().egld_value();
-        self.non_fungible_token_mapper().issue_and_set_all_roles(
-            EsdtTokenType::Meta,
-            payment.clone_value(),
-            ManagedBuffer::new(),
-            token_ticker,
-            0,
-            None,
+    fn issue(&self, token_ticker: ManagedBuffer) {
+        self.non_fungible_token_mapper().issue(     
+            &ManagedBuffer::new(),
+            &token_ticker,
         );
     }
 
@@ -32,51 +25,18 @@ pub trait NonFungibleTokenMapperFeatures:
     }
 
     #[endpoint]
-    fn mapper_nft_create(
+    fn mapper_nft_mint(
         &self,
         amount: BigUint,
-        attributes: RgbColor,
-    ) -> EsdtTokenPayment<Self::Api> {
+    ) {
         self.non_fungible_token_mapper()
-            .nft_create(amount, &attributes)
-    }
-
-    #[endpoint]
-    fn mapper_nft_create_and_send(
-        &self,
-        to: ManagedAddress,
-        amount: BigUint,
-        attributes: RgbColor,
-    ) -> EsdtTokenPayment<Self::Api> {
-        self.non_fungible_token_mapper()
-            .nft_create_and_send(&to, amount, &attributes)
-    }
-
-    #[endpoint]
-    fn mapper_nft_add_quantity(
-        &self,
-        token_nonce: u64,
-        amount: BigUint,
-    ) -> EsdtTokenPayment<Self::Api> {
-        self.non_fungible_token_mapper()
-            .nft_add_quantity(token_nonce, amount)
-    }
-
-    #[endpoint]
-    fn mapper_nft_add_quantity_and_send(
-        &self,
-        to: ManagedAddress,
-        token_nonce: u64,
-        amount: BigUint,
-    ) -> EsdtTokenPayment<Self::Api> {
-        self.non_fungible_token_mapper()
-            .nft_add_quantity_and_send(&to, token_nonce, amount)
+            .nft_mint(&amount);
     }
 
     #[endpoint]
     fn mapper_nft_burn(&self, token_nonce: u64, amount: BigUint) {
         self.non_fungible_token_mapper()
-            .nft_burn(token_nonce, &amount);
+            .nft_burn(token_nonce,  &amount);
     }
 
     #[endpoint]

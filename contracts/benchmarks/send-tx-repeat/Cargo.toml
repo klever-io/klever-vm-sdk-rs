@@ -8,10 +8,10 @@ publish = false
 [lib]
 path = "src/send_tx_repeat.rs"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../framework/base"
 
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"

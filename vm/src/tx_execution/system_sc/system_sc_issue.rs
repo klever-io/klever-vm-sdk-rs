@@ -85,7 +85,7 @@ fn register_and_set_roles(
 
     tx_cache.with_account_mut(&tx_input.from, |account| {
         account
-            .esdt
+            .kda
             .register_and_set_roles(&token_identifier, token_type);
     });
     tx_cache.set_new_token_identifiers(new_token_identifiers);
