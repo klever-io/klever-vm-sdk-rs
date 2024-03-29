@@ -11,4 +11,5 @@ files_include = [
     "common/rand/src",
     "wasm/Cargo.toml",
     "Cargo.toml",
+    "kleverkapp.json",
 ]
