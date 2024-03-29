@@ -15,16 +15,20 @@ pub trait CallValueApi: HandleTypeInfo {
 pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
     fn check_not_payable(&self);
 
-    /// Retrieves the EGLD call value from the VM.
-    /// Will return 0 in case of an ESDT transfer (cannot have both EGLD and ESDT transfer simultaneously).
-    fn load_egld_value(&self, dest_handle: Self::BigIntHandle);
+    /// Retrieves the KLV call value from the VM.
+    fn load_klv_value(&self, dest_handle: Self::BigIntHandle);
 
-    /// Loads all ESDT call values into a managed vec. Overwrites destination.
-    fn load_all_esdt_transfers(&self, dest_handle: Self::ManagedBufferHandle);
 
-    /// Gets the total number of ESDT transfers (Fungible/SFT/NFT).
+    /// Retrieves the call value from the VM by Token Name.
+    /// Will return 0 in case of not existent.
+    fn load_kda_value(&self, dest_handle: Self::BigIntHandle, token_id_handle: Self::ManagedBufferHandle);
+
+    /// Loads all KDA call values into a managed vec. Overwrites destination.
+    fn load_all_kda_transfers(&self, dest_handle: Self::ManagedBufferHandle);
+
+    /// Gets the total number of KDA transfers (Fungible/SFT/NFT).
     ///
-    /// It is redundant, since the number can also be retrieved from `load_all_esdt_transfers`,
+    /// It is redundant, since the number can also be retrieved from `load_all_kda_transfers`,
     /// but it is easier and cheaper to call when the content of those transfers is of no interest.
-    fn esdt_num_transfers(&self) -> usize;
+    fn kda_num_transfers(&self) -> usize;
 }

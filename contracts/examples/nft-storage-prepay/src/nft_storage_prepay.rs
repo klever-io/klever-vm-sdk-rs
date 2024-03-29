@@ -1,8 +1,8 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait NftStoragePrepay {
     #[init]
     fn init(&self, cost_per_byte: BigUint) {
@@ -42,15 +42,15 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.send().direct_egld(&owner, &total_reserved);
+        self.send().direct_klv(&owner, &total_reserved);
     }
 
     // endpoints
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint(depositPaymentForStorage)]
     fn deposit_payment_for_storage(&self) {
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().klv_value();
         let caller = self.blockchain().get_caller();
         self.deposit(&caller)
             .update(|deposit| *deposit += &*payment);
@@ -71,7 +71,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.send().direct_egld(&caller, &amount);
+        self.send().direct_klv(&caller, &amount);
     }
 
     // views

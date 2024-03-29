@@ -1,7 +1,7 @@
 {
     "name": "map-repeat",
     "traceGas": true,
-    "gasSchedule": "v4",
+
     "steps": [
         {
             "step": "setState",
@@ -14,7 +14,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:contract"
                 }
             ]

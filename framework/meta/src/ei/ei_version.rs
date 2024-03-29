@@ -9,7 +9,7 @@ pub enum EIVersion {
 
     /// New hooks added in Q4 2021.
     ///
-    /// Added a few more managed type & ESDT utilities.
+    /// Added a few more managed type & KDA utilities.
     V1_1,
 
     /// New hooks added in Q2 2022. This is the EI version of VM 1.4.
@@ -20,7 +20,7 @@ pub enum EIVersion {
     /// - more managed type conversions
     /// - more managed crypto hooks
     /// - big floats
-    /// - some managed ESDT properties.
+    /// - some managed KDA properties.
     #[default]
     V1_2,
 

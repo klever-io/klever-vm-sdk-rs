@@ -1,6 +1,6 @@
 {
     "name": "pause-and-unpause",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "externalSteps",

@@ -22,7 +22,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Only the token creator may mint more tokens",
                 "logs": "*",
                 "gas": "*",

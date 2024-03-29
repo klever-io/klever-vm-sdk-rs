@@ -1,10 +1,10 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-use multiversx_sc_modules::pause;
+use klever_sc_modules::pause;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait CheckPauseContract: pause::PauseModule {
     #[init]
     fn init(&self) {}

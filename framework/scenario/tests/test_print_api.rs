@@ -1,5 +1,5 @@
-use multiversx_sc::types::BigUint;
-use multiversx_sc_scenario::{api::StaticApi, display_util::BigUintPrinter};
+use klever_sc::types::BigUint;
+use klever_sc_scenario::{api::StaticApi, display_util::BigUintPrinter};
 
 #[test]
 fn test_print_api() {

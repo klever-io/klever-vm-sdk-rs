@@ -1,5 +1,5 @@
 use crate::api::VmApiImpl;
-use multiversx_sc::{
+use klever_sc::{
     api::{EndpointArgumentApi, EndpointArgumentApiImpl},
     types::heap::BoxedBytes,
 };
@@ -21,7 +21,7 @@ extern "C" {
     fn smallIntGetSignedArgument(id: i32) -> i64;
 
     // callback closure directly from the VM
-    fn managedGetCallbackClosure(callbackClosureHandle: i32);
+    // fn managedGetCallbackClosure(callbackClosureHandle: i32);
 }
 
 impl EndpointArgumentApi for VmApiImpl {
@@ -88,10 +88,10 @@ impl EndpointArgumentApiImpl for VmApiImpl {
         unsafe { smallIntGetSignedArgument(arg_index) }
     }
 
-    #[inline]
-    fn load_callback_closure_buffer(&self, dest: Self::ManagedBufferHandle) {
-        unsafe {
-            managedGetCallbackClosure(dest);
-        }
-    }
+    // #[inline]
+    // fn load_callback_closure_buffer(&self, dest: Self::ManagedBufferHandle) {
+    //     unsafe {
+    //         managedGetCallbackClosure(dest);
+    //     }
+    // }
 }

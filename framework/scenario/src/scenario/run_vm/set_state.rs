@@ -1,10 +1,10 @@
 use crate::scenario::model::SetStateStep;
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     types::VMAddress,
     world_mock::{
-        AccountData, AccountEsdt, BlockInfo as CrateBlockInfo, BlockchainState, EsdtData,
-        EsdtInstance, EsdtInstanceMetadata, EsdtInstances, EsdtRoles,
+        AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData,
+        KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
     },
 };
 
@@ -23,11 +23,11 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
             .iter()
             .map(|(k, v)| (k.value.clone(), v.value.clone()))
             .collect();
-        let esdt = AccountEsdt::new_from_raw_map(
+        let kda = AccountKda::new_from_raw_map(
             account
-                .esdt
+                .kda
                 .iter()
-                .map(|(k, v)| (k.value.clone(), convert_mandos_esdt_to_world_mock(v)))
+                .map(|(k, v)| (k.value.clone(), convert_mandos_kda_to_world_mock(v)))
                 .collect(),
         );
 
@@ -38,12 +38,12 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .as_ref()
                 .map(|nonce| nonce.value)
                 .unwrap_or_default(),
-            egld_balance: account
+            klv_balance: account
                 .balance
                 .as_ref()
                 .map(|balance| balance.value.clone())
                 .unwrap_or_default(),
-            esdt,
+            kda,
             username: account
                 .username
                 .as_ref()
@@ -58,11 +58,6 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .owner
                 .as_ref()
                 .map(|address_value| address_value.to_vm_address()),
-            developer_rewards: account
-                .developer_rewards
-                .as_ref()
-                .map(|rewards| rewards.value.clone())
-                .unwrap_or_default(),
         });
     }
     for new_address in set_state_step.new_addresses.iter() {
@@ -87,39 +82,39 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
     }
 }
 
-fn convert_mandos_esdt_to_world_mock(mandos_esdt: &crate::scenario::model::Esdt) -> EsdtData {
-    match mandos_esdt {
-        crate::scenario::model::Esdt::Short(short_esdt) => {
-            let balance = short_esdt.value.clone();
-            let mut esdt_data = EsdtData::default();
-            esdt_data.instances.add(0, balance);
-            esdt_data
+fn convert_mandos_kda_to_world_mock(mandos_kda: &crate::scenario::model::Kda) -> KdaData {
+    match mandos_kda {
+        crate::scenario::model::Kda::Short(short_kda) => {
+            let balance = short_kda.value.clone();
+            let mut kda_data = KdaData::default();
+            kda_data.instances.add(0, balance);
+            kda_data
         },
-        crate::scenario::model::Esdt::Full(full_esdt) => EsdtData {
-            instances: EsdtInstances::new_from_hash(
-                full_esdt
+        crate::scenario::model::Kda::Full(full_kda) => KdaData {
+            instances: KdaInstances::new_from_hash(
+                full_kda
                     .instances
                     .iter()
                     .map(|mandos_instance| {
                         let mock_instance =
-                            convert_scenario_esdt_instance_to_world_mock(mandos_instance);
+                            convert_scenario_kda_instance_to_world_mock(mandos_instance);
                         (mock_instance.nonce, mock_instance)
                     })
                     .collect(),
             ),
-            last_nonce: full_esdt
+            last_nonce: full_kda
                 .last_nonce
                 .as_ref()
                 .map(|last_nonce| last_nonce.value)
                 .unwrap_or_default(),
-            roles: EsdtRoles::new(
-                full_esdt
+            roles: KdaRoles::new(
+                full_kda
                     .roles
                     .iter()
                     .map(|role| role.as_bytes().to_vec())
                     .collect(),
             ),
-            frozen: if let Some(u64_value) = &full_esdt.frozen {
+            frozen: if let Some(u64_value) = &full_kda.frozen {
                 u64_value.value > 0
             } else {
                 false
@@ -128,41 +123,44 @@ fn convert_mandos_esdt_to_world_mock(mandos_esdt: &crate::scenario::model::Esdt)
     }
 }
 
-fn convert_scenario_esdt_instance_to_world_mock(
-    scenario_esdt: &crate::scenario::model::EsdtInstance,
-) -> EsdtInstance {
-    EsdtInstance {
-        nonce: scenario_esdt
+fn convert_scenario_kda_instance_to_world_mock(
+    scenario_kda: &crate::scenario::model::KdaInstance,
+) -> KdaInstance {
+    KdaInstance {
+        nonce: scenario_kda
             .nonce
             .as_ref()
             .map(|nonce| nonce.value)
             .unwrap_or_default(),
-        balance: scenario_esdt
+        balance: scenario_kda
             .balance
             .as_ref()
             .map(|value| value.value.clone())
             .unwrap_or_default(),
-        metadata: EsdtInstanceMetadata {
+        metadata: KdaInstanceMetadata {
             name: Vec::new(),
-            creator: scenario_esdt
+            creator: scenario_kda
                 .creator
                 .as_ref()
                 .map(|creator| VMAddress::from_slice(creator.value.as_slice())),
-            royalties: scenario_esdt
+            royalties: scenario_kda
                 .royalties
                 .as_ref()
                 .map(|royalties| royalties.value)
                 .unwrap_or_default(),
-            hash: scenario_esdt.hash.as_ref().map(|hash| hash.value.clone()),
-            uri: scenario_esdt
+            hash: scenario_kda.hash.as_ref().map(|hash| hash.value.clone()),
+            uri: scenario_kda
                 .uri
                 .iter()
                 .map(|uri| uri.value.clone())
                 .collect(),
-            attributes: scenario_esdt
+            attributes: scenario_kda
                 .attributes
                 .as_ref()
                 .map(|attributes| attributes.value.clone())
+                .unwrap_or_default(),
+            can_burn: scenario_kda.can_burn.as_ref()
+                .map(|m| m.clone())
                 .unwrap_or_default(),
         },
     }

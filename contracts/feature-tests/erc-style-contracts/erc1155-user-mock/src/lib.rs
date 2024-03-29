@@ -1,8 +1,8 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Erc1155UserMock {
     #[init]
     fn init(&self) {}

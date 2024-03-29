@@ -1,6 +1,6 @@
 use std::ffi::c_void;
 
-use multiversx_chain_vm_executor::{MemLength, MemPtr, VMHooks};
+use klever_chain_vm_executor::{MemLength, MemPtr, VMHooks};
 
 use crate::mem_conv;
 
@@ -42,14 +42,6 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_owner_address");
     }
 
-    fn get_shard_of_address(&self, address_offset: MemPtr) -> i32 {
-        unsafe {
-            mem_conv::with_bytes(address_offset, 32, |address_bytes| {
-                self.handler.get_shard_of_address(address_bytes)
-            })
-        }
-    }
-
     fn is_smart_contract(&self, address_offset: MemPtr) -> i32 {
         unsafe {
             bool_to_i32(mem_conv::with_bytes(address_offset, 32, |address_bytes| {
@@ -74,7 +66,7 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_block_hash")
     }
 
-    fn get_esdt_balance(
+    fn get_kda_balance(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
@@ -82,163 +74,55 @@ impl VMHooks for VMHooksDispatcher {
         nonce: i64,
         result_offset: MemPtr,
     ) -> i32 {
-        panic!("Unavailable: get_esdt_balance")
+        panic!("Unavailable: get_kda_balance")
     }
 
-    fn get_esdt_nft_name_length(
+    fn get_kda_nft_name_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
         token_id_len: MemLength,
         nonce: i64,
     ) -> i32 {
-        panic!("Unavailable: get_esdt_nft_name_length")
+        panic!("Unavailable: get_kda_nft_name_length")
     }
 
-    fn get_esdt_nft_attribute_length(
+    fn get_kda_nft_uri_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
         token_id_len: MemLength,
         nonce: i64,
     ) -> i32 {
-        panic!("Unavailable: get_esdt_nft_attribute_length")
+        panic!("Unavailable: get_kda_nft_uri_length")
     }
 
-    fn get_esdt_nft_uri_length(
+    fn get_kda_token_data(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
         token_id_len: MemLength,
         nonce: i64,
-    ) -> i32 {
-        panic!("Unavailable: get_esdt_nft_uri_length")
-    }
-
-    fn get_esdt_token_data(
-        &self,
-        address_offset: MemPtr,
-        token_id_offset: MemPtr,
-        token_id_len: MemLength,
-        nonce: i64,
-        value_handle: i32,
-        properties_offset: MemPtr,
-        hash_offset: MemPtr,
+        precision_offset: i32,
+        id_offset: MemPtr,
         name_offset: MemPtr,
-        attributes_offset: MemPtr,
         creator_offset: MemPtr,
-        royalties_handle: i32,
-        uris_offset: MemPtr,
+        logo_offset: MemPtr,
+        initial_supply_offset: MemPtr,
+        circulating_supply_offset: MemPtr,
+        max_supply_offset: MemPtr,
+        minted_offset: MemPtr,
+        burned_offset: MemPtr,
+        royalties_offset: MemPtr,
+        properties_offset: MemPtr,
+        attributes_offset: MemPtr,
+        roles_offset: MemPtr,
     ) -> i32 {
-        panic!("Unavailable: get_esdt_token_data")
-    }
-
-    fn get_esdt_local_roles(&self, token_id_handle: i32) -> i64 {
-        self.handler.get_esdt_local_roles_bits(token_id_handle) as i64
+        panic!("Unavailable: get_kda_token_data")
     }
 
     fn validate_token_identifier(&self, token_id_handle: i32) -> i32 {
         panic!("Unavailable: validate_token_identifier")
-    }
-
-    fn transfer_value(
-        &self,
-        dest_offset: MemPtr,
-        value_offset: MemPtr,
-        data_offset: MemPtr,
-        length: MemLength,
-    ) -> i32 {
-        panic!("Unavailable: transfer_value")
-    }
-
-    fn transfer_value_execute(
-        &self,
-        dest_offset: MemPtr,
-        value_offset: MemPtr,
-        gas_limit: i64,
-        function_offset: MemPtr,
-        function_length: MemLength,
-        num_arguments: i32,
-        arguments_length_offset: MemPtr,
-        data_offset: MemPtr,
-    ) -> i32 {
-        panic!("Unavailable: transfer_value_execute")
-    }
-
-    fn transfer_esdt_execute(
-        &self,
-        dest_offset: MemPtr,
-        token_id_offset: MemPtr,
-        token_id_len: MemLength,
-        value_offset: MemPtr,
-        gas_limit: i64,
-        function_offset: MemPtr,
-        function_length: MemLength,
-        num_arguments: i32,
-        arguments_length_offset: MemPtr,
-        data_offset: MemPtr,
-    ) -> i32 {
-        panic!("Unavailable: transfer_esdt_execute")
-    }
-
-    fn transfer_esdt_nft_execute(
-        &self,
-        dest_offset: MemPtr,
-        token_id_offset: MemPtr,
-        token_id_len: MemLength,
-        value_offset: MemPtr,
-        nonce: i64,
-        gas_limit: i64,
-        function_offset: MemPtr,
-        function_length: MemLength,
-        num_arguments: i32,
-        arguments_length_offset: MemPtr,
-        data_offset: MemPtr,
-    ) -> i32 {
-        panic!("Unavailable: transfer_esdt_nft_execute")
-    }
-
-    fn multi_transfer_esdt_nft_execute(
-        &self,
-        dest_offset: MemPtr,
-        num_token_transfers: i32,
-        token_transfers_args_length_offset: MemPtr,
-        token_transfer_data_offset: MemPtr,
-        gas_limit: i64,
-        function_offset: MemPtr,
-        function_length: MemLength,
-        num_arguments: i32,
-        arguments_length_offset: MemPtr,
-        data_offset: MemPtr,
-    ) -> i32 {
-        panic!("Unavailable: multi_transfer_esdt_nft_execute")
-    }
-
-    fn create_async_call(
-        &self,
-        dest_offset: MemPtr,
-        value_offset: MemPtr,
-        data_offset: MemPtr,
-        data_length: MemLength,
-        success_offset: MemPtr,
-        success_length: MemLength,
-        error_offset: MemPtr,
-        error_length: MemLength,
-        gas: i64,
-        extra_gas_for_callback: i64,
-    ) -> i32 {
-        panic!("Unavailable: create_async_call")
-    }
-
-    fn set_async_context_callback(
-        &self,
-        callback: MemPtr,
-        callback_length: MemLength,
-        data: MemPtr,
-        data_length: MemLength,
-        gas: i64,
-    ) -> i32 {
-        panic!("Unavailable: set_async_context_callback")
     }
 
     fn upgrade_contract(
@@ -279,16 +163,6 @@ impl VMHooks for VMHooksDispatcher {
         data_offset: MemPtr,
     ) {
         panic!("Unavailable: delete_contract");
-    }
-
-    fn async_call(
-        &self,
-        dest_offset: MemPtr,
-        value_offset: MemPtr,
-        data_offset: MemPtr,
-        length: MemLength,
-    ) {
-        panic!("Unavailable: async_call");
     }
 
     fn get_argument_length(&self, id: i32) -> i32 {
@@ -368,57 +242,49 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_call_value")
     }
 
-    fn get_esdt_value(&self, result_offset: MemPtr) -> i32 {
-        panic!("Unavailable: get_esdt_value")
+    fn get_kda_value(&self, result_offset: MemPtr) -> i32 {
+        panic!("Unavailable: get_kda_value")
     }
 
-    fn get_esdt_value_by_index(&self, result_offset: MemPtr, index: i32) -> i32 {
-        panic!("Unavailable: get_esdt_value_by_index")
+    fn get_kda_value_by_index(&self, result_offset: MemPtr, index: i32) -> i32 {
+        panic!("Unavailable: get_kda_value_by_index")
     }
 
-    fn get_esdt_token_name(&self, result_offset: MemPtr) -> i32 {
-        panic!("Unavailable: get_esdt_token_name")
+    fn get_kda_token_name(&self, result_offset: MemPtr) -> i32 {
+        panic!("Unavailable: get_kda_token_name")
     }
 
-    fn get_esdt_token_name_by_index(&self, result_offset: MemPtr, index: i32) -> i32 {
-        panic!("Unavailable: get_esdt_token_name_by_index")
+    fn get_kda_token_name_by_index(&self, result_offset: MemPtr, index: i32) -> i32 {
+        panic!("Unavailable: get_kda_token_name_by_index")
     }
 
-    fn get_esdt_token_nonce(&self) -> i64 {
-        panic!("Unavailable: get_esdt_token_nonce")
+    fn get_kda_token_nonce(&self) -> i64 {
+        panic!("Unavailable: get_kda_token_nonce")
     }
 
-    fn get_esdt_token_nonce_by_index(&self, index: i32) -> i64 {
-        panic!("Unavailable: get_esdt_token_nonce_by_index")
+    fn get_kda_token_nonce_by_index(&self, index: i32) -> i64 {
+        panic!("Unavailable: get_kda_token_nonce_by_index")
     }
 
-    fn get_current_esdt_nft_nonce(
+    fn get_kda_token_type(&self) -> i32 {
+        panic!("Unavailable: get_kda_token_type")
+    }
+
+    fn get_kda_token_type_by_index(&self, index: i32) -> i32 {
+        panic!("Unavailable: get_kda_token_type_by_index")
+    }
+
+    fn get_num_kda_transfers(&self) -> i32 {
+        self.handler.kda_num_transfers() as i32
+    }
+
+    fn get_call_value_by_token_name(
         &self,
-        address_offset: MemPtr,
-        token_id_offset: MemPtr,
-        token_id_len: MemLength,
-    ) -> i64 {
-        unsafe {
-            mem_conv::with_bytes(address_offset, 32, |address_bytes| {
-                mem_conv::with_bytes(token_id_offset, token_id_len, |token_id_bytes| {
-                    self.handler
-                        .get_current_esdt_nft_nonce(address_bytes, token_id_bytes)
-                        as i64
-                })
-            })
-        }
-    }
-
-    fn get_esdt_token_type(&self) -> i32 {
-        panic!("Unavailable: get_esdt_token_type")
-    }
-
-    fn get_esdt_token_type_by_index(&self, index: i32) -> i32 {
-        panic!("Unavailable: get_esdt_token_type_by_index")
-    }
-
-    fn get_num_esdt_transfers(&self) -> i32 {
-        self.handler.esdt_num_transfers() as i32
+        call_value_offset: MemPtr,
+        token_name_offset: MemPtr,
+        token_name_length: MemLength,
+    ) -> i32 {
+        panic!("Unavailable: get_call_value_by_token_name")
     }
 
     fn get_call_value_token_name(
@@ -653,98 +519,110 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: managed_get_return_data");
     }
 
-    fn managed_get_multi_esdt_call_value(&self, multi_call_value_handle: i32) {
+    fn managed_get_kda_call_value(&self, call_value_handle: i32, token_name_handle: i32) {
         self.handler
-            .load_all_esdt_transfers(multi_call_value_handle)
+            .load_kda_value(call_value_handle, token_name_handle)
     }
 
-    fn managed_get_esdt_balance(
+    fn managed_get_multi_kda_call_value(&self, multi_call_value_handle: i32) {
+        self.handler
+            .load_all_kda_transfers(multi_call_value_handle)
+    }
+
+    fn managed_get_kda_balance(
         &self,
         address_handle: i32,
         token_id_handle: i32,
         nonce: i64,
         value_handle: i32,
     ) {
-        panic!("Unavailable: managed_get_esdt_balance");
+        panic!("Unavailable: managed_get_kda_balance");
     }
 
-    fn managed_get_esdt_token_data(
+    fn managed_get_user_kda(
         &self,
         address_handle: i32,
         token_id_handle: i32,
         nonce: i64,
-        value_handle: i32,
-        properties_handle: i32,
-        hash_handle: i32,
-        name_handle: i32,
-        attributes_handle: i32,
-        creator_handle: i32,
-        royalties_handle: i32,
-        uris_handle: i32,
-    ) {
-        self.handler.managed_get_esdt_token_data(
+        balance_handle: i32,
+        frozen_handle: i32,
+        last_claim_handle: i32,
+        buckets_handle: i32,
+        mime_handle: i32,
+        metadata_handle: i32,
+    ){
+        self.handler.managed_get_user_kda(
             address_handle,
             token_id_handle,
             nonce as u64,
-            value_handle,
-            properties_handle,
-            hash_handle,
-            name_handle,
-            attributes_handle,
-            creator_handle,
-            royalties_handle,
-            uris_handle,
+            balance_handle,
+            frozen_handle,
+            last_claim_handle,
+            buckets_handle,
+            mime_handle,
+            metadata_handle,
         );
     }
 
-    fn managed_async_call(
+    fn managed_get_kda_token_data(
         &self,
-        dest_handle: i32,
-        value_handle: i32,
-        function_handle: i32,
-        arguments_handle: i32,
+        address_handle: i32,
+        token_id_handle: i32,
+        nonce: i64,
+        precision_handle: i32,
+        id_handle: i32,
+        name_handle: i32,
+        creator_handle: i32,
+        logo_handle: i32,
+        uris_handle: i32,
+        initial_supply_handle: i32,
+        circulating_supply_handle: i32,
+        max_supply_handle: i32,
+        minted_handle: i32,
+        burned_handle: i32,
+        royalties_handle: i32,
+        properties_handle: i32,
+        attributes_handle: i32,
+        roles_handle: i32,
+        issue_date_handle: i32,
     ) {
-        self.handler
-            .async_call_raw(dest_handle, value_handle, function_handle, arguments_handle)
+        self.handler.managed_get_kda_token_data(
+            address_handle,
+            token_id_handle,
+            nonce as u64,
+            precision_handle,
+            id_handle,
+            name_handle,
+            creator_handle,
+            logo_handle,
+            uris_handle,
+            initial_supply_handle,
+            circulating_supply_handle,
+            max_supply_handle,
+            minted_handle,
+            burned_handle,
+            royalties_handle,
+            properties_handle,
+            attributes_handle,
+            roles_handle,
+            issue_date_handle,
+        );
     }
 
-    fn managed_create_async_call(
+    fn managed_get_kda_roles(
         &self,
-        dest_handle: i32,
-        value_handle: i32,
-        function_handle: i32,
-        arguments_handle: i32,
-        success_offset: MemPtr,
-        success_length: MemLength,
-        error_offset: MemPtr,
-        error_length: MemLength,
-        gas: i64,
-        extra_gas_for_callback: i64,
-        callback_closure_handle: i32,
-    ) -> i32 {
-        unsafe {
-            mem_conv::with_bytes(success_offset, success_length, |success_callback| {
-                mem_conv::with_bytes(error_offset, error_length, |error_callback| {
-                    self.handler.create_async_call_raw(
-                        dest_handle,
-                        value_handle,
-                        function_handle,
-                        arguments_handle,
-                        success_callback,
-                        error_callback,
-                        gas as u64,
-                        extra_gas_for_callback as u64,
-                        callback_closure_handle,
-                    );
-                })
-            })
-        }
-        0
+        token_id_handle: i32,
+        roles_handle: i32,
+    ) {
+        self.handler.managed_get_kda_roles(
+            token_id_handle,
+            roles_handle,
+        );
     }
 
-    fn managed_get_callback_closure(&self, callback_closure_handle: i32) {
+    fn managed_get_back_transfers(&self, kda_transfer_value_handle: i32, call_value_handle: i32) {
         self.handler
-            .load_callback_closure_buffer(callback_closure_handle)
+            .managed_get_back_transfers(kda_transfer_value_handle, call_value_handle);
     }
 
     fn managed_upgrade_from_source_contract(
@@ -878,7 +756,7 @@ impl VMHooks for VMHooksDispatcher {
         0
     }
 
-    fn managed_multi_transfer_esdt_nft_execute(
+    fn managed_multi_transfer_kda_nft_execute(
         &self,
         dst_handle: i32,
         token_transfers_handle: i32,
@@ -886,7 +764,7 @@ impl VMHooks for VMHooksDispatcher {
         function_handle: i32,
         arguments_handle: i32,
     ) -> i32 {
-        self.handler.multi_transfer_esdt_nft_execute(
+        self.handler.multi_transfer_kda_nft_execute(
             dst_handle,
             token_transfers_handle,
             gas_limit as u64,
@@ -894,39 +772,6 @@ impl VMHooks for VMHooksDispatcher {
             arguments_handle,
         );
         0
-    }
-
-    fn managed_transfer_value_execute(
-        &self,
-        dst_handle: i32,
-        value_handle: i32,
-        gas_limit: i64,
-        function_handle: i32,
-        arguments_handle: i32,
-    ) -> i32 {
-        self.handler.transfer_value_execute(
-            dst_handle,
-            value_handle,
-            gas_limit as u64,
-            function_handle,
-            arguments_handle,
-        );
-        0
-    }
-
-    fn managed_is_esdt_frozen(&self, address_handle: i32, token_id_handle: i32, nonce: i64) -> i32 {
-        bool_to_i32(
-            self.handler
-                .check_esdt_frozen(address_handle, token_id_handle, nonce as u64),
-        )
-    }
-
-    fn managed_is_esdt_limited_transfer(&self, _token_id_handle: i32) -> i32 {
-        bool_to_i32(false)
-    }
-
-    fn managed_is_esdt_paused(&self, _token_id_handle: i32) -> i32 {
-        bool_to_i32(false)
     }
 
     fn managed_buffer_to_hex(&self, source_handle: i32, dest_handle: i32) {
@@ -1066,15 +911,15 @@ impl VMHooks for VMHooksDispatcher {
     }
 
     fn big_int_get_call_value(&self, destination_handle: i32) {
-        self.handler.load_egld_value(destination_handle);
+        self.handler.load_klv_value(destination_handle);
     }
 
-    fn big_int_get_esdt_call_value(&self, destination: i32) {
-        panic!("Unavailable: big_int_get_esdt_call_value");
+    fn big_int_get_kda_call_value(&self, destination: i32) {
+        panic!("Unavailable: big_int_get_kda_call_value");
     }
 
-    fn big_int_get_esdt_call_value_by_index(&self, destination_handle: i32, index: i32) {
-        panic!("Unavailable: big_int_get_esdt_call_value_by_index");
+    fn big_int_get_kda_call_value_by_index(&self, destination_handle: i32, index: i32) {
+        panic!("Unavailable: big_int_get_kda_call_value_by_index");
     }
 
     fn big_int_get_external_balance(&self, address_offset: MemPtr, result: i32) {
@@ -1085,7 +930,7 @@ impl VMHooks for VMHooksDispatcher {
         }
     }
 
-    fn big_int_get_esdt_external_balance(
+    fn big_int_get_kda_external_balance(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
@@ -1096,7 +941,7 @@ impl VMHooks for VMHooksDispatcher {
         unsafe {
             mem_conv::with_bytes(address_offset, 32, |address_bytes| {
                 mem_conv::with_bytes(token_id_offset, token_id_len, |token_id_bytes| {
-                    self.handler.big_int_get_esdt_external_balance(
+                    self.handler.big_int_get_kda_external_balance(
                         address_bytes,
                         token_id_bytes,
                         nonce as u64,

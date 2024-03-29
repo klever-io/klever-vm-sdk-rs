@@ -1,11 +1,11 @@
 use std::sync::{Arc, MutexGuard};
 
-use multiversx_chain_vm_executor::BreakpointValue;
+use klever_chain_vm_executor::BreakpointValue;
 
 use crate::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{
-        async_call_tx_input, AsyncCallTxData, BlockchainUpdate, TxCache, TxContext, TxFunctionName,
+        call_tx_input, CallTxData, BackTransfers, BlockchainUpdate, TxCache, TxContext, TxFunctionName,
         TxInput, TxManagedTypes, TxPanic, TxResult,
     },
     types::{VMAddress, VMCodeMetadata},
@@ -39,7 +39,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     fn halt_with_error(&self, status: u64, message: &str) -> ! {
         *self.0.result_lock() = TxResult::from_panic_obj(&TxPanic::new(status, message));
         let breakpoint = match status {
-            4 => BreakpointValue::SignalError,
+            57 => BreakpointValue::SignalError,
             _ => BreakpointValue::ExecutionFailed,
         };
         std::panic::panic_any(breakpoint);
@@ -79,6 +79,10 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         &self.0.blockchain_ref().current_block_info
     }
 
+    fn back_transfers_lock(&self) -> MutexGuard<BackTransfers> {
+        self.0.back_transfers_lock()
+    }
+
     fn account_data(&self, address: &VMAddress) -> AccountData {
         self.0.with_account(address, |account| account.clone())
     }
@@ -90,31 +94,15 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
             .unwrap_or_else(|| panic!("Account is not a smart contract, it has no code"))
     }
 
-    fn perform_async_call(
-        &self,
-        to: VMAddress,
-        egld_value: num_bigint::BigUint,
-        func_name: TxFunctionName,
-        arguments: Vec<Vec<u8>>,
-    ) -> ! {
-        let async_call_data = self.create_async_call_data(to, egld_value, func_name, arguments);
-        // the cell is no longer needed, since we end in a panic
-        let mut tx_result = self.result_lock();
-        tx_result.all_calls.push(async_call_data.clone());
-        tx_result.pending_calls.async_call = Some(async_call_data);
-        drop(tx_result); // this avoid to poison the mutex
-        std::panic::panic_any(BreakpointValue::AsyncCall);
-    }
-
     fn perform_execute_on_dest_context(
         &self,
         to: VMAddress,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
-        let async_call_data = self.create_async_call_data(to, egld_value, func_name, arguments);
-        let tx_input = async_call_tx_input(&async_call_data);
+        let call_data = self.create_call_data(to, klv_value, func_name, arguments);
+        let tx_input = call_tx_input(&call_data);
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
             tx_input,
@@ -132,7 +120,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
 
     fn perform_deploy(
         &self,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
         _code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
@@ -142,8 +130,8 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         let tx_input = TxInput {
             from: contract_address.clone(),
             to: VMAddress::zero(),
-            egld_value,
-            esdt_values: Vec::new(),
+            klv_value,
+            kda_values: Vec::new(),
             func_name: TxFunctionName::EMPTY,
             args,
             gas_limit: 1000,
@@ -166,7 +154,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
                 new_address,
                 self.sync_call_post_processing(tx_result, blockchain_updates),
             ),
-            10 => self.vm_error(&tx_result.result_message), // TODO: not sure it's the right condition, it catches insufficient funds
+            62 => self.vm_error(&tx_result.result_message), // TODO: not sure it's the right condition, it catches insufficient funds
             _ => self.vm_error(vm_err_msg::ERROR_SIGNALLED_BY_SMARTCONTRACT),
         }
     }
@@ -174,12 +162,13 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     fn perform_transfer_execute(
         &self,
         to: VMAddress,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) {
-        let async_call_data = self.create_async_call_data(to, egld_value, func_name, arguments);
-        let tx_input = async_call_tx_input(&async_call_data);
+        let call_data = self.create_call_data(to, klv_value, func_name, arguments);
+        let tx_input = call_tx_input(&call_data);
+
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
             tx_input,
@@ -189,30 +178,30 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
 
         match tx_result.result_status {
             0 => {
-                self.0.result_lock().all_calls.push(async_call_data);
+                self.0.result_lock().all_calls.push(call_data);
 
                 let _ = self.sync_call_post_processing(tx_result, blockchain_updates);
             },
-            10 => self.vm_error(&tx_result.result_message), // TODO: not sure it's the right condition, it catches insufficient funds
+            62 => self.vm_error(&tx_result.result_message), // TODO: not sure it's the right condition, it catches insufficient funds
             _ => self.vm_error(vm_err_msg::ERROR_SIGNALLED_BY_SMARTCONTRACT),
         }
     }
 }
 
 impl DebugApiVMHooksHandler {
-    fn create_async_call_data(
+    fn create_call_data(
         &self,
         to: VMAddress,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
-    ) -> AsyncCallTxData {
+    ) -> CallTxData {
         let contract_address = &self.0.input_ref().to;
         let tx_hash = self.tx_hash();
-        AsyncCallTxData {
+        CallTxData {
             from: contract_address.clone(),
             to,
-            call_value: egld_value,
+            call_value: klv_value,
             endpoint_name: func_name,
             arguments,
             tx_hash,
@@ -235,6 +224,17 @@ impl DebugApiVMHooksHandler {
         if key.starts_with(STORAGE_RESERVED_PREFIX) {
             self.vm_error("cannot write to storage under reserved key");
         }
+    }
+
+    fn is_back_transfer(&self, tx_input: &TxInput) -> bool {
+        let caller_address = &self.0.input_ref().from;
+        if !caller_address.is_smart_contract_address() {
+            return false;
+        }
+
+        let builtin_functions = &self.0.vm_ref.builtin_functions;
+        let token_transfers = builtin_functions.extract_token_transfers(tx_input);
+        &token_transfers.real_recipient == caller_address
     }
 }
 

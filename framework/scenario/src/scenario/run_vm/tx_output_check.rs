@@ -1,6 +1,6 @@
 use crate::scenario::model::{CheckLogs, Checkable, TxExpect};
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     display_util::{address_hex, verbose_hex, verbose_hex_list},
     tx_mock::{TxLog, TxResult},
 };

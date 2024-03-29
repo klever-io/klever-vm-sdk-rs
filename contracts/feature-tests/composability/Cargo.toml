@@ -8,30 +8,12 @@ publish = false
 [dev-dependencies.builtin-func-features]
 path = "builtin-func-features"
 
-[dev-dependencies.forwarder]
-path = "forwarder"
-
-[dev-dependencies.forwarder-queue]
-path = "forwarder-queue"
-
-[dev-dependencies.forwarder-raw]
-path = "forwarder-raw"
-
-[dev-dependencies.promises-features]
-path = "promises-features"
-
 [dev-dependencies.proxy-test-first]
 path = "proxy-test-first"
 
 [dev-dependencies.proxy-test-second]
 path = "proxy-test-second"
 
-[dev-dependencies.recursive-caller]
-path = "recursive-caller"
-
-[dev-dependencies.vault]
-path = "vault"
-
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"

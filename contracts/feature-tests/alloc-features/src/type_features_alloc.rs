@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// Various features of heap-allocated types.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait AllocTypeFeatures {
     // H256
 

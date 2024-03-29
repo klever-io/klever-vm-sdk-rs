@@ -10,8 +10,7 @@ use crate::{
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
     storage::{self},
     types::{
-        BigUint, EgldOrEsdtTokenIdentifier, EsdtLocalRoleFlags, EsdtTokenData, EsdtTokenType,
-        ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, TokenIdentifier,
+        convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType, LastClaim, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, PropertiesInfo, RolesInfo, RoyaltiesData, TokenIdentifier, UserKDA
     },
 };
 
@@ -90,21 +89,6 @@ where
 
     #[deprecated(
         since = "0.41.0",
-        note = "Please use method `get_shard_of_address` instead."
-    )]
-    #[cfg(feature = "alloc")]
-    #[inline]
-    pub fn get_shard_of_address_legacy(&self, address: &crate::types::Address) -> u32 {
-        A::blockchain_api_impl().get_shard_of_address_legacy(address)
-    }
-
-    #[inline]
-    pub fn get_shard_of_address(&self, address: &ManagedAddress<A>) -> u32 {
-        A::blockchain_api_impl().get_shard_of_address(address.get_handle())
-    }
-
-    #[deprecated(
-        since = "0.41.0",
         note = "Please use method `is_smart_contract` instead."
     )]
     #[cfg(feature = "alloc")]
@@ -135,13 +119,8 @@ where
     }
 
     #[inline]
-    pub fn get_sc_balance(&self, token: &EgldOrEsdtTokenIdentifier<A>, nonce: u64) -> BigUint<A> {
-        token.map_ref_or_else(
-            || self.get_balance(&self.get_sc_address()),
-            |token_identifier| {
-                self.get_esdt_balance(&self.get_sc_address(), token_identifier, nonce)
-            },
-        )
+    pub fn get_sc_balance(&self, token_identifier: &TokenIdentifier<A>, nonce: u64) -> BigUint<A> {
+        self.get_kda_balance(&self.get_sc_address(), token_identifier, nonce)
     }
 
     #[deprecated(
@@ -255,24 +234,19 @@ where
     }
 
     #[inline]
-    pub fn get_current_esdt_nft_nonce(
-        &self,
-        address: &ManagedAddress<A>,
-        token_id: &TokenIdentifier<A>,
-    ) -> u64 {
-        A::blockchain_api_impl()
-            .get_current_esdt_nft_nonce(address.get_handle(), token_id.get_handle())
-    }
-
-    #[inline]
-    pub fn get_esdt_balance(
+    pub fn get_kda_balance(
         &self,
         address: &ManagedAddress<A>,
         token_id: &TokenIdentifier<A>,
         nonce: u64,
     ) -> BigUint<A> {
+        // KLV balance is not stored in KDA data.
+        // It is stored in the account data, so we need to handle balance retrieval separately.
+        if token_id.is_klv() {
+            return self.get_balance(address)
+        }
         let result_handle: A::BigIntHandle = use_raw_handle(A::static_var_api_impl().next_handle());
-        A::blockchain_api_impl().load_esdt_balance(
+        A::blockchain_api_impl().load_kda_balance(
             address.get_handle(),
             token_id.get_handle(),
             nonce,
@@ -281,64 +255,192 @@ where
         BigUint::from_handle(result_handle)
     }
 
-    pub fn get_esdt_token_data(
+    pub fn get_user_kda(
         &self,
         address: &ManagedAddress<A>,
-        token_id: &TokenIdentifier<A>,
+        ticker: &TokenIdentifier<A>,
         nonce: u64,
-    ) -> EsdtTokenData<A> {
+    ) -> UserKDA<A>{
+        let managed_api_impl = A::managed_type_impl();
+
+        let balance_handle = managed_api_impl.bi_new_zero();
+        let frozen_handle = managed_api_impl.bi_new_zero();
+        let last_claim_handle = managed_api_impl.mb_new_empty();
+        let buckets_handle = managed_api_impl.mb_new_empty();
+        let mime_handle = managed_api_impl.mb_new_empty();
+        let metadata_handle = managed_api_impl.mb_new_empty();
+        
+        A::blockchain_api_impl().managed_get_user_kda(
+            address.get_handle().get_raw_handle(),
+            ticker.get_handle().get_raw_handle(),
+            nonce,
+            balance_handle.get_raw_handle(),
+            frozen_handle.get_raw_handle(),
+            last_claim_handle.get_raw_handle(),
+            buckets_handle.get_raw_handle(),
+            mime_handle.get_raw_handle(),
+            metadata_handle.get_raw_handle(),
+        );
+
+        let mut balance = BigUint::from_raw_handle(balance_handle.get_raw_handle());
+        // KLV balance is not stored in KDA data.
+        // It is stored in the account data, so we need to handle balance retrieval separately.
+        if ticker.is_klv() {
+            balance = self.get_balance(address)
+        }
+
+        UserKDA { 
+            balance: balance,
+            frozen_balance: BigUint::from_raw_handle(frozen_handle.get_raw_handle()),
+            last_claim: LastClaim::from(ManagedBuffer::from_raw_handle(
+                last_claim_handle.get_raw_handle(),
+            )),
+            buckets: ManagedVec::from_raw_handle(buckets_handle.get_raw_handle()),
+            mime: ManagedBuffer::from_raw_handle(mime_handle.get_raw_handle()),
+            metadata: ManagedBuffer::from_raw_handle(metadata_handle.get_raw_handle()),
+        }
+    }
+
+    pub fn get_kda_token_data(
+        &self,
+        address: &ManagedAddress<A>,
+        ticker: &TokenIdentifier<A>,
+        nonce: u64,
+    ) -> KdaTokenData<A> {
         // initializing outputs
         // the current version of VM does not set/overwrite them if the token is missing,
         // which is why we need to initialize them explicitly
         let managed_api_impl = A::managed_type_impl();
-        let value_handle = managed_api_impl.bi_new_zero();
-        let properties_handle = managed_api_impl.mb_new_empty(); // TODO: replace with const_handles::MBUF_TEMPORARY_1 after VM fix
-        let hash_handle = managed_api_impl.mb_new_empty();
-        let name_handle = managed_api_impl.mb_new_empty();
-        let attributes_handle = managed_api_impl.mb_new_empty();
-        let creator_handle = managed_api_impl.mb_new_empty();
-        let royalties_handle = managed_api_impl.bi_new_zero();
-        let uris_handle = managed_api_impl.mb_new_empty();
 
-        A::blockchain_api_impl().managed_get_esdt_token_data(
+        let id_handle = managed_api_impl.mb_new_empty();
+        let name_handle = managed_api_impl.mb_new_empty();
+        let creator_handle = managed_api_impl.mb_new_empty();
+        let logo_handle = managed_api_impl.mb_new_empty();
+        let uris_handle = managed_api_impl.mb_new_empty();
+        let initial_supply_handle = managed_api_impl.bi_new_zero();
+        let circulating_supply_handle = managed_api_impl.bi_new_zero();
+        let max_supply_handle = managed_api_impl.bi_new_zero();
+        let minted_handle = managed_api_impl.bi_new_zero();
+        let burned_handle = managed_api_impl.bi_new_zero();
+        let precision_handle = managed_api_impl.bi_new_zero();
+        let royalties_handle = managed_api_impl.mb_new_empty();
+        let properties_handle = managed_api_impl.bi_new_zero();
+        let attributes_handle = managed_api_impl.bi_new_zero();
+        let issue_date_handle = managed_api_impl.bi_new_zero();
+        let roles_handle = managed_api_impl.mb_new_empty();
+
+        A::blockchain_api_impl().managed_get_kda_token_data(
             address.get_handle().get_raw_handle(),
-            token_id.get_handle().get_raw_handle(),
+            ticker.get_handle().get_raw_handle(),
             nonce,
-            value_handle.get_raw_handle(),
-            properties_handle.get_raw_handle(),
-            hash_handle.get_raw_handle(),
+            precision_handle.get_raw_handle(),
+            id_handle.get_raw_handle(),
             name_handle.get_raw_handle(),
-            attributes_handle.get_raw_handle(),
             creator_handle.get_raw_handle(),
-            royalties_handle.get_raw_handle(),
+            logo_handle.get_raw_handle(),
             uris_handle.get_raw_handle(),
+            initial_supply_handle.get_raw_handle(),
+            circulating_supply_handle.get_raw_handle(),
+            max_supply_handle.get_raw_handle(),
+            minted_handle.get_raw_handle(),
+            burned_handle.get_raw_handle(),
+            royalties_handle.get_raw_handle(),
+            properties_handle.get_raw_handle(),
+            attributes_handle.get_raw_handle(),
+            roles_handle.get_raw_handle(),
+            issue_date_handle.get_raw_handle(),
         );
 
-        let token_type = if nonce == 0 {
-            EsdtTokenType::Fungible
-        } else {
-            EsdtTokenType::NonFungible
-        };
-
         if managed_api_impl.mb_len(creator_handle.clone()) == 0 {
+            // write 32bytes 0 if no creator handle is set
             managed_api_impl.mb_overwrite(creator_handle.clone(), &[0u8; 32][..]);
         }
 
-        // here we trust Arwen that it always gives us a properties buffer of length 2
-        let mut properties_bytes = [0u8; 2];
-        let _ = managed_api_impl.mb_load_slice(properties_handle, 0, &mut properties_bytes[..]);
-        let frozen = esdt_is_frozen(&properties_bytes);
+        let properties_bi = BigUint::<A>::from_raw_handle(properties_handle.get_raw_handle());
 
-        EsdtTokenData {
-            token_type,
-            amount: BigUint::from_raw_handle(value_handle.get_raw_handle()),
-            frozen,
-            hash: ManagedBuffer::from_raw_handle(hash_handle.get_raw_handle()),
+        // get tokenType from properties bits 30 and 31
+        let properties_value = match properties_bi.to_u64() {
+            Some(value) => value,
+            None => A::error_api_impl().signal_error(b"Invalid value for Properties Handler.")
+        };
+
+        let type_value = (properties_value >> 30) & 0b11;
+        let token_type = match type_value {
+            0 => KdaTokenType::Fungible,
+            1 => KdaTokenType::NonFungible,
+            2 => KdaTokenType::SemiFungible,
+            _ => KdaTokenType::Invalid,
+        };
+
+        KdaTokenData {
+            asset_type: token_type,
+            id: ManagedBuffer::from_raw_handle(id_handle.get_raw_handle()),
             name: ManagedBuffer::from_raw_handle(name_handle.get_raw_handle()),
-            attributes: ManagedBuffer::from_raw_handle(attributes_handle.get_raw_handle()),
-            creator: ManagedAddress::from_raw_handle(creator_handle.get_raw_handle()),
-            royalties: BigUint::from_raw_handle(royalties_handle.get_raw_handle()),
+            ticker: ManagedBuffer::from_raw_handle(ticker.get_handle().get_raw_handle()),
+            owner_address: ManagedAddress::from_raw_handle(creator_handle.get_raw_handle()),
+            logo: ManagedBuffer::from_raw_handle(logo_handle.get_raw_handle()),
+            precision: BigUint::from_raw_handle(precision_handle.get_raw_handle()),
+            initial_supply: BigUint::from_raw_handle(initial_supply_handle.get_raw_handle()),
+            circulating_supply: BigUint::from_raw_handle(
+                circulating_supply_handle.get_raw_handle(),
+            ),
+            max_supply: BigUint::from_raw_handle(max_supply_handle.get_raw_handle()),
+            minted_value: BigUint::from_raw_handle(minted_handle.get_raw_handle()),
+            burned_value: BigUint::from_raw_handle(burned_handle.get_raw_handle()),
+            issue_date: BigUint::from_raw_handle(issue_date_handle.get_raw_handle()),
+            royalties: RoyaltiesData::from(ManagedBuffer::from_raw_handle(
+                royalties_handle.get_raw_handle(),
+            )),
+            properties: PropertiesInfo::from(properties_value),
+            attributes: AttributesInfo::from(BigUint::<A>::from_raw_handle(
+                attributes_handle.get_raw_handle(),
+            )),
             uris: ManagedVec::from_raw_handle(uris_handle.get_raw_handle()),
+            roles: convert_buff_to_roles(ManagedBuffer::from_raw_handle(roles_handle.get_raw_handle())),
+        }
+    }
+
+    pub fn get_kda_roles(
+        &self,
+        ticker: &TokenIdentifier<A>,
+    ) -> ManagedVec<A, RolesInfo<A>> {
+        // initializing outputs
+        // the current version of VM does not set/overwrite them if the token is missing,
+        // which is why we need to initialize them explicitly
+        let managed_api_impl = A::managed_type_impl();
+        let roles_handle = managed_api_impl.mb_new_empty();
+
+        A::blockchain_api_impl().managed_get_kda_roles(
+            ticker.get_handle().get_raw_handle(),
+            roles_handle.get_raw_handle(),
+        );
+
+        convert_buff_to_roles(ManagedBuffer::from_raw_handle(roles_handle.get_raw_handle()))
+    }
+
+    pub fn get_kda_properties(
+        &self,
+        ticker: &TokenIdentifier<A>,
+    ) -> PropertiesInfo {
+        let kda_data = self.get_kda_token_data(&self.get_sc_address(), ticker, 0);
+        kda_data.properties
+    }
+
+    /// Retrieves back-transfers from the VM, after a contract call.
+    pub fn get_back_transfers(&self) -> BackTransfers<A> {
+        let kda_transfer_value_handle: A::BigIntHandle =
+            use_raw_handle(A::static_var_api_impl().next_handle());
+        let call_value_handle: A::BigIntHandle =
+            use_raw_handle(A::static_var_api_impl().next_handle());
+
+        A::blockchain_api_impl().managed_get_back_transfers(
+            kda_transfer_value_handle.get_raw_handle(),
+            call_value_handle.get_raw_handle(),
+        );
+
+        BackTransfers {
+            klv_amount: BigUint::from_raw_handle(call_value_handle.get_raw_handle()),
+            kda_payments: ManagedVec::from_raw_handle(kda_transfer_value_handle.get_raw_handle()),
         }
     }
 
@@ -349,69 +451,7 @@ where
         token_nonce: u64,
     ) -> T {
         let own_sc_address = self.get_sc_address();
-        let token_data = self.get_esdt_token_data(&own_sc_address, token_id, token_nonce);
+        let token_data = self.get_kda_token_data(&own_sc_address, token_id, token_nonce);
         token_data.decode_attributes()
     }
-
-    #[inline]
-    pub fn is_esdt_frozen(
-        &self,
-        address: &ManagedAddress<A>,
-        token_id: &TokenIdentifier<A>,
-        nonce: u64,
-    ) -> bool {
-        A::blockchain_api_impl().check_esdt_frozen(
-            address.get_handle(),
-            token_id.get_handle(),
-            nonce,
-        )
-    }
-
-    #[inline]
-    pub fn is_esdt_paused(&self, token_id: &TokenIdentifier<A>) -> bool {
-        A::blockchain_api_impl().check_esdt_paused(token_id.get_handle())
-    }
-
-    #[inline]
-    pub fn is_esdt_limited_transfer(&self, token_id: &TokenIdentifier<A>) -> bool {
-        A::blockchain_api_impl().check_esdt_limited_transfer(token_id.get_handle())
-    }
-
-    #[inline]
-    pub fn get_esdt_local_roles(&self, token_id: &TokenIdentifier<A>) -> EsdtLocalRoleFlags {
-        A::blockchain_api_impl().load_esdt_local_roles(token_id.get_handle())
-    }
-}
-
-impl<A> BlockchainWrapper<A>
-where
-    A: BlockchainApi + StorageReadApi + ManagedTypeApi + ErrorApi,
-{
-    /// Retrieves validator rewards, as set by the protocol.
-    #[inline]
-    pub fn get_cumulated_validator_rewards(&self) -> BigUint<A> {
-        let temp_handle_1: A::ManagedBufferHandle = use_raw_handle(const_handles::MBUF_TEMPORARY_1);
-        let temp_handle_2: A::ManagedBufferHandle = use_raw_handle(const_handles::MBUF_TEMPORARY_2);
-
-        // prepare key
-        A::managed_type_impl().mb_overwrite(
-            temp_handle_1.clone(),
-            storage::protected_keys::ELROND_REWARD_KEY,
-        );
-
-        // load value
-        A::storage_read_api_impl()
-            .storage_load_managed_buffer_raw(temp_handle_1, temp_handle_2.clone());
-        let result_handle: A::BigIntHandle = use_raw_handle(A::static_var_api_impl().next_handle());
-
-        // convert value to BigUint
-        A::managed_type_impl().mb_to_big_int_unsigned(temp_handle_2, result_handle.clone());
-
-        //wrap
-        BigUint::from_handle(result_handle)
-    }
-}
-
-fn esdt_is_frozen(properties_bytes: &[u8; 2]) -> bool {
-    properties_bytes[0] > 0 // token is frozen if the first byte is 1
 }

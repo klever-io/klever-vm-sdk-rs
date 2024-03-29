@@ -1,4 +1,4 @@
-use multiversx_sc::api::{CallTypeApi, StorageMapperApi, VMApi};
+use klever_sc::api::{CallTypeApi, StorageMapperApi, VMApi};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};
 

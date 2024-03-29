@@ -1,14 +1,14 @@
 pub const PANIC_OCCURRED: &str = "panic occurred";
 pub const MEM_ALLOC_ERROR: &str = "memory allocation error";
 
-pub const NON_PAYABLE_FUNC_ESDT: &str = "function does not accept ESDT payment";
+pub const NON_PAYABLE_FUNC_KDA: &str = "function does not accept KDA payment";
 pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
 pub const BAD_TOKEN_TICKER_FORMAT: &[u8] = b"bad token ticker format";
-pub const SINGLE_ESDT_EXPECTED: &str = "function expects single ESDT payment";
-pub const TOO_MANY_ESDT_TRANSFERS: &str = "too many ESDT transfers";
-pub const ESDT_INVALID_TOKEN_INDEX: &str = "invalid token index";
-pub const INCORRECT_NUM_ESDT_TRANSFERS: &str = "incorrect number of ESDT transfers";
-pub static FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible ESDT token expected";
+pub const SINGLE_KDA_EXPECTED: &str = "function expects single KDA payment";
+pub const TOO_MANY_KDA_TRANSFERS: &str = "too many KDA transfers";
+pub const KDA_INVALID_TOKEN_INDEX: &str = "invalid token index";
+pub const INCORRECT_NUM_KDA_TRANSFERS: &str = "incorrect number of KDA transfers";
+pub static FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible KDA token expected";
 
 pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";

@@ -2,7 +2,7 @@
     "steps": [
         {
             "step": "setState",
-            "comment": "«dns#87» is not arbitrary, it is the address that «coolname0001.elrond» maps to",
+            "comment": "«dns#87» is not arbitrary, it is the address that «coolname0001.klever maps to",
             "accounts": {
                 "address:a_user": {
                     "nonce": "0",
@@ -20,7 +20,7 @@
                     "storage": {
                         "str:registration_cost": "1000"
                     },
-                    "code": "file:../test-wasm/elrond-wasm-sc-dns.wasm"
+                    "code": "file:../test-wasm/klever-wasm-sc-dns.wasm"
                 }
             }
         },
@@ -30,11 +30,11 @@
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:use_module",
-                "egldValue": "1000",
+                "klvValue": "1000",
                 "function": "dnsRegister",
                 "arguments": [
                     "sc:dns#87",
-                    "str:coolname0001.elrond"
+                    "str:coolname0001.klever"
                 ],
                 "gasLimit": "70,000,000",
                 "gasPrice": "0"
@@ -53,7 +53,7 @@
                 "sc:use_module": {
                     "nonce": "0",
                     "balance": "*",
-                    "username": "str:coolname0001.elrond",
+                    "username": "str:coolname0001.klever",
                     "storage": {},
                     "code": "file:../output/use-module.wasm"
                 },

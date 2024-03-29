@@ -1,6 +1,6 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 mod abi_enum;
 mod abi_test_type;
@@ -15,11 +15,11 @@ use only_nested::*;
 ///
 /// Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,
 /// including Rust docs.
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait AbiTester {
     /// Contract constructor.
     #[init]
-    #[payable("EGLD")]
+    #[payable("KLV")]
     fn init(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {}
 
     /// Example endpoint docs.
@@ -93,17 +93,12 @@ pub trait AbiTester {
     }
 
     #[endpoint]
-    fn esdt_local_role(&self) -> EsdtLocalRole {
-        EsdtLocalRole::None
-    }
-
-    #[endpoint]
-    fn esdt_token_payment(&self) -> EsdtTokenPayment<Self::Api> {
+    fn kda_token_payment(&self) -> KdaTokenPayment<Self::Api> {
         unreachable!()
     }
 
     #[endpoint]
-    fn esdt_token_data(&self) -> EsdtTokenData<Self::Api> {
+    fn kda_token_data(&self) -> KdaTokenData<Self::Api> {
         unreachable!()
     }
 
@@ -151,13 +146,13 @@ pub trait AbiTester {
     }
 
     #[endpoint]
-    #[payable("EGLD")]
-    fn payable_egld(&self) {}
+    #[payable("KLV")]
+    fn payable_klv(&self) {}
 
     #[endpoint]
     #[payable("TOKEN-FOR-ABI")]
     fn payable_some_token(&self) {
-        let (token, payment) = self.call_value().single_fungible_esdt();
+        let (token, payment) = self.call_value().single_fungible_kda();
         self.payable_event(&token, &payment);
     }
 

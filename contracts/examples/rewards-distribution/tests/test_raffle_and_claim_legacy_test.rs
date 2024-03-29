@@ -1,10 +1,10 @@
 #![allow(deprecated)] // TODO: migrate tests
 
-use multiversx_sc::{
+use klever_sc::{
     codec::multi_types::MultiValue2,
-    types::{BigUint, EgldOrEsdtTokenIdentifier, MultiValueEncoded, OperationCompletionStatus},
+    types::{BigUint, TokenIdentifier, MultiValueEncoded, OperationCompletionStatus},
 };
-use multiversx_sc_scenario::{
+use klever_sc_scenario::{
     managed_token_id, rust_biguint,
     testing_framework::{BlockchainStateWrapper, TxTokenTransfer},
     DebugApi,
@@ -113,7 +113,7 @@ fn test_raffle_and_claim() {
             for nonce in 1u64..=nft_count {
                 let amount = sc.compute_claimable_amount(
                     raffle_id,
-                    &EgldOrEsdtTokenIdentifier::egld(),
+                    &TokenIdentifier::klv(),
                     0,
                     nonce,
                 );
@@ -162,14 +162,14 @@ fn test_raffle_and_claim() {
 
     let expected_rewards = [114_999, 114_999, 114_999, 828_000, 114_999, 114_999];
     wrapper
-        .execute_esdt_multi_transfer(&alice, &rewards_distribution_sc, &nft_payments, |sc| {
+        .execute_kda_multi_transfer(&alice, &rewards_distribution_sc, &nft_payments, |sc| {
             // get and check the claimable reward amounts for each NFT (sample the few first values)
             let raffle_id = 0;
             assert_eq!(nft_nonces.len(), expected_rewards.len());
             for (nonce, expected_reward) in std::iter::zip(nft_nonces, expected_rewards) {
                 let rewards = sc.compute_claimable_amount(
                     raffle_id,
-                    &EgldOrEsdtTokenIdentifier::egld(),
+                    &TokenIdentifier::klv(),
                     0,
                     nonce,
                 );
@@ -181,15 +181,15 @@ fn test_raffle_and_claim() {
             let reward_id_range_end = 0;
             let mut reward_tokens: MultiValueEncoded<
                 DebugApi,
-                MultiValue2<EgldOrEsdtTokenIdentifier<DebugApi>, u64>,
+                MultiValue2<TokenIdentifier<DebugApi>, u64>,
             > = MultiValueEncoded::new();
-            reward_tokens.push((EgldOrEsdtTokenIdentifier::egld(), 0).into());
+            reward_tokens.push((TokenIdentifier::klv(), 0).into());
             sc.claim_rewards(reward_id_range_start, reward_id_range_end, reward_tokens);
 
             // check that the flags which mark claimed rewards were set
             for nonce in nft_nonces {
                 let was_claimed = sc
-                    .was_claimed(raffle_id, &EgldOrEsdtTokenIdentifier::egld(), 0, nonce)
+                    .was_claimed(raffle_id, &TokenIdentifier::klv(), 0, nonce)
                     .get();
                 assert!(was_claimed);
             }
@@ -198,22 +198,22 @@ fn test_raffle_and_claim() {
 
     // confirm the received amount matches the sum of the queried rewards
     let alice_balance_after_claim: u64 = expected_rewards.iter().sum();
-    wrapper.check_egld_balance(&alice, &rust_biguint!(alice_balance_after_claim));
+    wrapper.check_klv_balance(&alice, &rust_biguint!(alice_balance_after_claim));
 
     // a second claim with the same nfts should succeed, but return no more rewards
     wrapper
-        .execute_esdt_multi_transfer(&alice, &rewards_distribution_sc, &nft_payments, |sc| {
+        .execute_kda_multi_transfer(&alice, &rewards_distribution_sc, &nft_payments, |sc| {
             let reward_id_range_start = 0;
             let reward_id_range_end = 0;
             let mut reward_tokens: MultiValueEncoded<
                 DebugApi,
-                MultiValue2<EgldOrEsdtTokenIdentifier<DebugApi>, u64>,
+                MultiValue2<TokenIdentifier<DebugApi>, u64>,
             > = MultiValueEncoded::new();
-            reward_tokens.push((EgldOrEsdtTokenIdentifier::egld(), 0).into());
+            reward_tokens.push((TokenIdentifier::klv(), 0).into());
             sc.claim_rewards(reward_id_range_start, reward_id_range_end, reward_tokens);
         })
         .assert_ok();
 
     // check that a second claim does not modify the balance
-    wrapper.check_egld_balance(&alice, &rust_biguint!(alice_balance_after_claim));
+    wrapper.check_klv_balance(&alice, &rust_biguint!(alice_balance_after_claim));
 }

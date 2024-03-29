@@ -6,7 +6,7 @@
             "comment": "any large(r) file will do, so we can get a more realistic case",
             "accounts": {
                 "sc:contract-address": {
-                    "code": "file:set-check-esdt.scen.json"
+                    "code": "file:set-check-kda.scen.json"
                 }
             },
             "newAddresses": [
@@ -21,7 +21,7 @@
             "step": "checkState",
             "accounts": {
                 "sc:contract-address": {
-                    "code": "file:set-check-esdt.scen.json"
+                    "code": "file:set-check-kda.scen.json"
                 }
             }
         },

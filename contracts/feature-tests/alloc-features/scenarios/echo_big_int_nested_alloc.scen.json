@@ -1,6 +1,6 @@
 {
     "name": "echo_big_int",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",

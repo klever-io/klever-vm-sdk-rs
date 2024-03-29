@@ -41,19 +41,19 @@ impl StaticVarApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn set_call_value_egld_handle(&self, _handle: RawHandle) {
+    fn set_call_value_klv_handle(&self, _handle: RawHandle) {
         unreachable!()
     }
 
-    fn get_call_value_egld_handle(&self) -> RawHandle {
+    fn get_call_value_klv_handle(&self) -> RawHandle {
         unreachable!()
     }
 
-    fn set_call_value_multi_esdt_handle(&self, _handle: RawHandle) {
+    fn set_call_value_multi_kda_handle(&self, _handle: RawHandle) {
         unreachable!()
     }
 
-    fn get_call_value_multi_esdt_handle(&self) -> RawHandle {
+    fn get_call_value_multi_kda_handle(&self) -> RawHandle {
         unreachable!()
     }
 }

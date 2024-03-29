@@ -5,7 +5,7 @@ use crate::{
 
 pub fn generate_endpoints_mod(
     contract_trait: &ContractTrait,
-    is_contract_main: bool,
+    _is_contract_main: bool,
 ) -> proc_macro2::TokenStream {
     let endpoint_aliases_decl: Vec<proc_macro2::TokenStream> = contract_trait
         .supertraits
@@ -30,21 +30,6 @@ pub fn generate_endpoints_mod(
 
     let endpoints = generate_wasm_endpoints(contract_trait);
 
-    let wasm_callback_fn = if is_contract_main {
-        quote! {
-            pub fn callBack<A>()
-            where
-                A: multiversx_sc::api::VMApi ,
-            {
-                super::EndpointWrappers::callback(
-                    &multiversx_sc::contract_base::UniversalContractObj::<A>::new(),
-                );
-            }
-        }
-    } else {
-        quote! {}
-    };
-
     quote! {
         #(#endpoint_aliases_decl)*
 
@@ -56,7 +41,8 @@ pub fn generate_endpoints_mod(
 
             #(#endpoints)*
 
-            #wasm_callback_fn
+            // #wasm_callback_fn
+            // quote! { }
         }
     }
 }
@@ -70,10 +56,6 @@ fn generate_wasm_endpoints(contract_trait: &ContractTrait) -> Vec<proc_macro2::T
             PublicRole::Endpoint(endpoint_metadata) => {
                 let endpoint_ident = &endpoint_metadata.public_name;
                 Some(generate_wasm_endpoint(m, &quote! { #endpoint_ident }))
-            },
-            PublicRole::CallbackPromise(callback_metadata) => {
-                let callback_name = &callback_metadata.callback_name;
-                Some(generate_wasm_endpoint(m, &quote! { #callback_name }))
             },
             _ => None,
         })
@@ -89,10 +71,10 @@ fn generate_wasm_endpoint(
     quote! {
         pub fn #fn_ident<A>()
         where
-            A: multiversx_sc::api::VMApi,
+            A: klever_sc::api::VMApi,
         {
             super::EndpointWrappers::#call_method_ident(
-                &multiversx_sc::contract_base::UniversalContractObj::<A>::new(),
+                &klever_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
     }

@@ -1,12 +1,12 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 pub mod erc1155_user_proxy;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Erc1155 {
     #[init]
     fn init(&self) {}
@@ -52,7 +52,7 @@ pub trait Erc1155 {
         self.try_reserve_fungible(&from, &type_id, &amount);
 
         if self.blockchain().is_smart_contract(&to) {
-            self.peform_async_call_single_transfer(from, to, type_id, amount, data);
+            self.perform_call_single_transfer(from, to, type_id, amount, data);
         } else {
             self.increase_balance(&to, &type_id, &amount);
         }
@@ -69,7 +69,7 @@ pub trait Erc1155 {
         self.try_reserve_non_fungible(&from, &type_id, &nft_id);
 
         if self.blockchain().is_smart_contract(&to) {
-            self.peform_async_call_single_transfer(from, to, type_id, nft_id, data);
+            self.perform_call_single_transfer(from, to, type_id, nft_id, data);
         } else {
             let amount = BigUint::from(1u32);
             self.increase_balance(&to, &type_id, &amount);
@@ -101,7 +101,7 @@ pub trait Erc1155 {
         );
         require!(
             type_ids.len() == values.len(),
-            "Id and value lenghts do not match"
+            "Id and value lengths do not match"
         );
 
         // storage edits are rolled back in case of SCError,
@@ -127,7 +127,7 @@ pub trait Erc1155 {
         }
 
         if is_receiver_smart_contract {
-            self.peform_async_call_batch_transfer(from, to, type_ids, values, &data);
+            self.perform_call_batch_transfer(from, to, type_ids, values, &data);
         }
     }
 
@@ -340,7 +340,7 @@ pub trait Erc1155 {
         }
     }
 
-    fn peform_async_call_single_transfer(
+    fn perform_call_single_transfer(
         &self,
         from: ManagedAddress,
         to: ManagedAddress,
@@ -352,17 +352,19 @@ pub trait Erc1155 {
 
         self.erc1155_user_proxy(to.clone())
             .on_erc1155_received(caller, from.clone(), type_id.clone(), value.clone(), data)
-            .async_call()
-            .with_callback(self.callbacks().transfer_callback(
-                from,
-                to,
-                [type_id].to_vec(),
-                [value].to_vec(),
-            ))
-            .call_and_exit()
+            .execute_on_dest_context::<IgnoreValue>();
+
+        let biguint_one = BigUint::from(1u32);
+        
+        if self.is_fungible(&type_id).get() {
+            self.increase_balance(&to, &type_id, &value);
+        } else {
+            self.increase_balance(&to, &type_id, &biguint_one);
+            self.token_owner(&type_id, &value).set(&to);
+        }
     }
 
-    fn peform_async_call_batch_transfer(
+    fn perform_call_batch_transfer(
         &self,
         from: ManagedAddress,
         to: ManagedAddress,
@@ -380,40 +382,17 @@ pub trait Erc1155 {
                 values.to_vec(),
                 data,
             )
-            .async_call()
-            .with_callback(self.callbacks().transfer_callback(
-                from,
-                to,
-                type_ids.to_vec(),
-                values.to_vec(),
-            ))
-            .call_and_exit()
-    }
-
-    // callbacks
-
-    #[callback]
-    fn transfer_callback(
-        &self,
-        from: ManagedAddress,
-        to: ManagedAddress,
-        type_ids: Vec<BigUint>,
-        values: Vec<BigUint>,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-    ) {
-        // in case of success, transfer to the intended address, otherwise, return tokens to original owner
-        let dest_address = match result {
-            ManagedAsyncCallResult::Ok(()) => to,
-            ManagedAsyncCallResult::Err(_) => from,
-        };
+            .execute_on_dest_context::<IgnoreValue>();
+        
+        
         let biguint_one = BigUint::from(1u32);
 
         for (type_id, value) in type_ids.iter().zip(values.iter()) {
             if self.is_fungible(type_id).get() {
-                self.increase_balance(&dest_address, type_id, value);
+                self.increase_balance(&to, type_id, value);
             } else {
-                self.increase_balance(&dest_address, type_id, &biguint_one);
-                self.token_owner(type_id, value).set(&dest_address);
+                self.increase_balance(&to, type_id, &biguint_one);
+                self.token_owner(type_id, value).set(&to);
             }
         }
     }

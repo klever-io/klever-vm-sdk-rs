@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-use crate::serde_raw::{EsdtRaw, ValueSubTree};
+use crate::serde_raw::{KdaRaw, ValueSubTree};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -20,7 +20,7 @@ pub struct AccountRaw {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
-    pub esdt: BTreeMap<String, EsdtRaw>,
+    pub kda: BTreeMap<String, KdaRaw>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,8 +37,4 @@ pub struct AccountRaw {
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<ValueSubTree>,
-
-    #[serde(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub developer_rewards: Option<ValueSubTree>,
 }

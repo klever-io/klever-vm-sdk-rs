@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
@@ -130,11 +130,6 @@ fn echo_ignore_go() {
 }
 
 #[test]
-fn echo_managed_async_result_empty_go() {
-    world().run("scenarios/echo_managed_async_result_empty.scen.json");
-}
-
-#[test]
 fn echo_managed_bytes_go() {
     world().run("scenarios/echo_managed_bytes.scen.json");
 }
@@ -192,17 +187,6 @@ fn events_go() {
 #[test]
 fn get_caller_go() {
     world().run("scenarios/get_caller.scen.json");
-}
-
-#[test]
-fn get_cumulated_validator_rewards_go() {
-    world().run("scenarios/get_cumulated_validator_rewards.scen.json");
-}
-
-#[test]
-#[ignore = "TODO: missing support from scenario-go"]
-fn get_shard_of_address_go() {
-    world().run("scenarios/get_shard_of_address.scen.json");
 }
 
 #[test]

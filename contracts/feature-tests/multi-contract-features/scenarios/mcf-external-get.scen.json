@@ -8,12 +8,12 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:mcf"
                 },
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "1",
+                    "creatorNonce": "2",
                     "newAddress": "sc:mcf-view"
                 }
             ]

@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::multiversx_sc::{
+use crate::klever_sc::{
     api::ManagedTypeApi,
     codec::{CodecFrom, EncodeErrorHandler, TopEncode, TopEncodeOutput},
     contract_base::ProxyObjBase,

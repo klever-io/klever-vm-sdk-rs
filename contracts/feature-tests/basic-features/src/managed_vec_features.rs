@@ -1,6 +1,6 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait ManagedVecFeatures {
     #[endpoint]
     fn managed_vec_new(&self) -> ManagedVec<BigUint> {

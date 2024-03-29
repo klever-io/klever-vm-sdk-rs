@@ -95,38 +95,17 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
         "TokenIdentifier",
         RustTypeString {
             type_name: "TokenIdentifier".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "TokenIdentifier::from_esdt_bytes(&b\"\"[..])".to_string(),
+            default_value_expr: "TokenIdentifier::from_kda_bytes(&b\"\"[..])".to_string(),
             contains_custom_types: false,
         },
     );
+    
     m.insert(
-        "EgldOrEsdtTokenIdentifier",
+        "KdaTokenPayment",
         RustTypeString {
-            type_name: "EgldOrEsdtTokenIdentifier".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "EgldOrEsdtTokenIdentifier::esdt(&b\"\"[..])".to_string(),
-            contains_custom_types: false,
-        },
-    );
-
-    m.insert(
-        "EsdtTokenPayment",
-        RustTypeString {
-            type_name: "EsdtTokenPayment".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "EsdtTokenPayment::new(
-            TokenIdentifier::from_esdt_bytes(&b\"\"[..]),
-            0u64,
-            BigUint::from(0u128),
-        )"
-            .to_string(),
-            contains_custom_types: false,
-        },
-    );
-    m.insert(
-        "EgldOrEsdtTokenPayment",
-        RustTypeString {
-            type_name: "EgldOrEsdtTokenPayment".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "EgldOrEsdtTokenPayment::new(
-            EgldOrEsdtTokenIdentifier::esdt(&b\"\"[..]),
+            type_name: "KdaTokenPayment".to_string() + STATIC_API_SUFFIX,
+            default_value_expr: "KdaTokenPayment::new(
+            TokenIdentifier::from_kda_bytes(&b\"\"[..]),
             0u64,
             BigUint::from(0u128),
         )"

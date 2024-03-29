@@ -1,6 +1,6 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait ManagedBufferFeatures {
     #[endpoint]
     fn mbuffer_new(&self) -> ManagedBuffer {

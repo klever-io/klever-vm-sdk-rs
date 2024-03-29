@@ -33,7 +33,7 @@ pub fn external_view_contract_constructor_abi() -> EndpointAbi {
         docs: &[
             "The external view init prepares a contract that looks in another contract's storage.",
             "It takes a single argument, the other contract's address",
-            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `multiversx_sc::external_view_contract`.",
+            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `klever_sc::external_view_contract`.",
             ],
         name: "init",
         rust_method_name: EXTERNAL_VIEW_CONSTRUCTOR_FLAG,

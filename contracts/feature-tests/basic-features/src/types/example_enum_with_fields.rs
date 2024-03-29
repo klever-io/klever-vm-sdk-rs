@@ -1,6 +1,6 @@
-multiversx_sc::derive_imports!();
+klever_sc::derive_imports!();
 
-/// Copied from multiversx-sc serialization tests.
+/// Copied from klever-sc serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub enum ExampleEnumWithFields {
     Unit,

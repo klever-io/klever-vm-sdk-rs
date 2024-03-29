@@ -3,7 +3,6 @@
 /target/
 */target/
 
-# The mxpy output
 output
 
 # Used for debugging the ABI generator test

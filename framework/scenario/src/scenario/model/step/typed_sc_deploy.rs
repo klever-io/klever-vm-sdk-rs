@@ -1,10 +1,10 @@
 use std::marker::PhantomData;
 
-use multiversx_sc::{codec::PanicErrorHandler, types::ContractDeploy};
+use klever_sc::{codec::PanicErrorHandler, types::ContractDeploy};
 
 use crate::{
     api::StaticApi,
-    multiversx_sc::{
+    klever_sc::{
         codec::{CodecFrom, TopEncodeMulti},
         types::{Address, CodeMetadata},
     },
@@ -44,11 +44,11 @@ impl<OriginalResult> TypedScDeploy<OriginalResult> {
         self
     }
 
-    pub fn egld_value<A>(mut self, amount: A) -> Self
+    pub fn klv_value<A>(mut self, amount: A) -> Self
     where
         BigUintValue: From<A>,
     {
-        self.sc_deploy_step = self.sc_deploy_step.egld_value(amount);
+        self.sc_deploy_step = self.sc_deploy_step.klv_value(amount);
         self
     }
 

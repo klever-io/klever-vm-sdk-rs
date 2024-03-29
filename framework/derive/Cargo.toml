@@ -1,16 +1,16 @@
 [package]
-name = "multiversx-sc-derive"
+name = "klever-sc-derive"
 version = "0.43.3"
 edition = "2021"
 
-authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "MultiversX <contact@multiversx.com>"]
+authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "MultiversX smart contract API procedural macros"
-keywords = ["multiversx", "blockchain", "contract"]
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "Klever smart contract API procedural macros"
+keywords = ["klever", "blockchain", "contract"]
 categories = ["cryptography::cryptocurrencies", "development-tools::procedural-macro-helpers"]
 
 [dependencies]
@@ -24,5 +24,5 @@ radix_trie = "0.2.1"
 default = ["syn/full", "syn/parsing", "syn/extra-traits"]
 
 [lib]
-name = "multiversx_sc_derive"
+name = "klever_sc_derive"
 proc-macro = true

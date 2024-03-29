@@ -1,7 +1,7 @@
 {
     "name": "adder",
     "comment": "add then check",
-    "gasSchedule": "v3",
+    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "setState",
@@ -14,7 +14,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "1",
+                    "creatorNonce": "2",
                     "newAddress": "sc:adder"
                 }
             ]

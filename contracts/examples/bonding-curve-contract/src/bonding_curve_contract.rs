@@ -1,16 +1,16 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 use function_selector::FunctionSelector;
-use multiversx_sc_modules::{
+use klever_sc_modules::{
     bonding_curve,
     bonding_curve::utils::{events, owner_endpoints, storage, user_endpoints},
 };
 pub mod function_selector;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Contract:
     bonding_curve::BondingCurveModule
     + storage::StorageModule

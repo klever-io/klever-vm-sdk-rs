@@ -1,4 +1,4 @@
-use multiversx_sc::abi::{ContractAbi, EndpointAbi};
+use klever_sc::abi::{ContractAbi, EndpointAbi};
 use std::{
     collections::{BTreeSet, HashMap, HashSet},
     fs,
@@ -39,7 +39,7 @@ impl OutputContractBuilder {
         let mut collected_endpoints = Vec::new();
         if external_view {
             collected_endpoints.push(
-                multiversx_sc::external_view_contract::external_view_contract_constructor_abi(),
+                klever_sc::external_view_contract::external_view_contract_constructor_abi(),
             )
         }
         (
@@ -58,7 +58,6 @@ impl OutputContractBuilder {
                     allocator: parse_allocator(&cms.allocator),
                     stack_size: parse_stack_size(&cms.stack_size),
                     features: cms.features.clone(),
-                    kill_legacy_callback: cms.kill_legacy_callback,
                 },
                 ..Default::default()
             },
@@ -151,28 +150,19 @@ fn collect_add_endpoints(
 fn build_contract_abi(builder: OutputContractBuilder, original_abi: &ContractAbi) -> ContractAbi {
     let mut constructors = Vec::new();
     let mut endpoints = Vec::new();
-    let mut promise_callbacks = Vec::new();
     for endpoint_abi in builder.collected_endpoints {
         match endpoint_abi.endpoint_type {
-            multiversx_sc::abi::EndpointTypeAbi::Init => constructors.push(endpoint_abi),
-            multiversx_sc::abi::EndpointTypeAbi::Endpoint => endpoints.push(endpoint_abi),
-            multiversx_sc::abi::EndpointTypeAbi::PromisesCallback => {
-                promise_callbacks.push(endpoint_abi)
-            },
+            klever_sc::abi::EndpointTypeAbi::Init => constructors.push(endpoint_abi),
+            klever_sc::abi::EndpointTypeAbi::Endpoint => endpoints.push(endpoint_abi),
         }
     }
-    let has_callback = original_abi.has_callback
-        && !builder.settings.external_view
-        && !builder.settings.kill_legacy_callback;
     ContractAbi {
         build_info: original_abi.build_info.clone(),
         docs: original_abi.docs,
         name: original_abi.name,
         constructors,
         endpoints,
-        promise_callbacks,
         events: original_abi.events.clone(),
-        has_callback,
         type_descriptions: original_abi.type_descriptions.clone(),
     }
 }

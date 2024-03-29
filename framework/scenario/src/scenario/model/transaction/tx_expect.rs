@@ -7,9 +7,9 @@ use crate::{
     },
     scenario_model::Checkable,
 };
-use multiversx_chain_vm::tx_mock::result_values_to_string;
+use klever_chain_vm::tx_mock::result_values_to_string;
 
-const USER_ERROR_CODE: u64 = 4;
+const USER_ERROR_CODE: u64 = 57;
 
 #[derive(Debug, Clone)]
 pub struct TxExpect {

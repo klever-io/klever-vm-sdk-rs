@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct TokenIdPair<M: ManagedTypeApi> {
@@ -9,7 +9,7 @@ pub struct TokenIdPair<M: ManagedTypeApi> {
     second_token_id: TokenIdentifier<M>,
 }
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Factory {
     #[init]
     fn init(&self, pair_template_address: ManagedAddress) {

@@ -1,16 +1,16 @@
 [package]
-name = "multiversx-chain-scenario-format"
+name = "klever-chain-scenario-format"
 version = "0.20.0"
 edition = "2021"
 
-authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "MultiversX <contact@multiversx.com>"]
+authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "Parser/writer of the MultiversX transaction scenario format"
-keywords = ["multiversx", "blockchain", "contract"]
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "Parser/writer of the Klever transaction scenario format"
+keywords = ["klever", "blockchain", "contract"]
 categories = ["cryptography::cryptocurrencies", "development-tools"]
 
 [dependencies]

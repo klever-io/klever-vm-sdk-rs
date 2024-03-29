@@ -1,10 +1,6 @@
 pub mod account;
 pub mod account_storage;
 pub mod address;
-pub mod esdt;
-pub mod hyperblock;
-pub mod network_config;
-pub mod network_economics;
-pub mod network_status;
+pub mod kda;
 pub mod transaction;
 pub mod vm;

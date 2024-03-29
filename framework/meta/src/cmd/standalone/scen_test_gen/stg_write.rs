@@ -5,12 +5,12 @@ use super::stg_section::ScenarioTestFn;
 pub type WriteTestFn = fn(&str) -> String;
 
 pub const WORLD_FN_DECLARATION: &str = "fn world() ->";
-pub const DEFAULT_SETUP_GO: &str = "use multiversx_sc_scenario::*;
+pub const DEFAULT_SETUP_GO: &str = "use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
 }";
-pub const DEFAULT_SETUP_RS: &str = "use multiversx_sc_scenario::*;
+pub const DEFAULT_SETUP_RS: &str = "use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     todo!()

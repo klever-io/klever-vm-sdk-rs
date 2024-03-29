@@ -1,20 +1,20 @@
 use crate::model::{
-    CallbackMetadata, EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method,
+    EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method,
     PublicRole,
 };
 
 use super::{
     attributes::{
-        is_callback_raw, is_init, is_only_admin, is_only_owner, is_only_user_account,
-        CallbackAttribute, EndpointAttribute, ExternalViewAttribute, LabelAttribute,
-        OutputNameAttribute, PromisesCallbackAttribute, ViewAttribute,
+        is_init, is_only_admin, is_only_owner, is_only_user_account, is_upgrade,
+        EndpointAttribute, ExternalViewAttribute, LabelAttribute,
+        OutputNameAttribute, ViewAttribute,
     },
     MethodAttributesPass1,
 };
 
 fn check_single_role(method: &Method) {
     assert!(matches!(method.public_role, PublicRole::Private),
-		"Can only annotate with one of the following arguments: `#[init]`, `#[endpoint]`, `#[view]`, `#[callback]`, `#[callback_raw]`."
+		"Can only annotate with one of the following arguments: `#[init]`, `#[endpoint]`, `#[view]`, `#[upgrade]`."
 	);
 }
 
@@ -27,6 +27,28 @@ pub fn process_init_attribute(
         check_single_role(&*method);
         method.public_role = PublicRole::Init(InitMetadata {
             payable: pass_1_data.payable.clone(),
+        });
+        true
+    } else {
+        false
+    }
+}
+
+pub fn process_upgrade_attribute(
+    attr: &syn::Attribute,
+    first_pass_data: &MethodAttributesPass1,
+    method: &mut Method,
+) -> bool {
+    let has_attr = is_upgrade(attr);
+    if has_attr {
+        check_single_role(&*method);
+        method.public_role = PublicRole::Endpoint(EndpointMetadata {
+            public_name: proc_macro2::Ident::new("upgrade", proc_macro2::Span::call_site()),
+            payable: first_pass_data.payable.clone(),
+            only_owner: false,
+            only_admin: false,
+            only_user_account: false,
+            mutability: EndpointMutabilityMetadata::Mutable,
         });
         true
     } else {
@@ -134,46 +156,6 @@ pub fn process_external_view_attribute(
                 only_admin: pass_1_data.only_admin,
                 only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Readonly,
-            });
-        })
-        .is_some()
-}
-
-pub fn process_callback_raw_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
-    if is_callback_raw(attr) {
-        check_single_role(&*method);
-        method.public_role = PublicRole::CallbackRaw;
-        true
-    } else {
-        false
-    }
-}
-
-pub fn process_callback_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
-    CallbackAttribute::parse(attr)
-        .map(|callback_attr| {
-            check_single_role(&*method);
-            let callback_ident = match callback_attr.callback_name {
-                Some(ident) => ident,
-                None => method.name.clone(),
-            };
-            method.public_role = PublicRole::Callback(CallbackMetadata {
-                callback_name: callback_ident,
-            });
-        })
-        .is_some()
-}
-
-pub fn process_promises_callback_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
-    PromisesCallbackAttribute::parse(attr)
-        .map(|callback_attr| {
-            check_single_role(&*method);
-            let callback_ident = match callback_attr.callback_name {
-                Some(ident) => ident,
-                None => method.name.clone(),
-            };
-            method.public_role = PublicRole::CallbackPromise(CallbackMetadata {
-                callback_name: callback_ident,
             });
         })
         .is_some()

@@ -17,7 +17,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:You have nothing to claim",
                 "gas": "*",
                 "refund": "*"
@@ -70,8 +70,8 @@
                 "address:buyer1": {
                     "nonce": "4",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "135",
+                    "kda": {
+                        "str:KLV-135790": "135",
                         "str:MFFT-123456": "10",
                         "str:MFSFT-246802": {
                             "instances": [
@@ -87,8 +87,8 @@
                 "address:buyer2": {
                     "nonce": "3",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "19995",
+                    "kda": {
+                        "str:KLV-135790": "19995",
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -115,8 +115,8 @@
                 "address:artist1": {
                     "nonce": "12",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "60",
+                    "kda": {
+                        "str:KLV-135790": "60",
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -148,8 +148,8 @@
                 "address:artist2": {
                     "nonce": "6",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "10",
+                    "kda": {
+                        "str:KLV-135790": "10",
                         "str:MFSFT-246802": {
                             "instances": [
                                 {

@@ -8,6 +8,6 @@ authors = ["Alin Cruceat <alin.cruceat@multiversx.com>"]
 [dependencies.check-pause]
 path = ".."
 
-[dependencies.multiversx-sc-meta]
+[dependencies.klever-sc-meta]
 version = "0.43.3"
 path = "../../../../framework/meta"

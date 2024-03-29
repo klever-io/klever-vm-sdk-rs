@@ -1,6 +1,6 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait UniqueIdMapperFeatures {
     #[endpoint]
     fn init_unique_id_mapper(&self, len: usize) {

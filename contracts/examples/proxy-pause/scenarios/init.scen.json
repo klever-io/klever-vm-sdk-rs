@@ -1,6 +1,6 @@
 {
     "name": "init",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -19,7 +19,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "1",
+                    "creatorNonce": "2",
                     "newAddress": "sc:proxy-pause"
                 }
             ]

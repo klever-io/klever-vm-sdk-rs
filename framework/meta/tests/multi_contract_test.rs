@@ -1,5 +1,5 @@
-use multiversx_sc::abi::{ContractAbi, EndpointAbi};
-use multiversx_sc_meta::cmd::contract::output_contract::{
+use klever_sc::abi::{ContractAbi, EndpointAbi};
+use klever_sc_meta::cmd::contract::output_contract::{
     MultiContractConfigSerde, OutputContractGlobalConfig,
 };
 

@@ -1,8 +1,8 @@
-use super::{AsyncCallTxData, Promise};
+use super::{CallTxData, Promise};
 
 #[derive(Clone, Default, Debug)]
 pub struct TxResultCalls {
-    pub async_call: Option<AsyncCallTxData>,
+    pub async_call: Option<CallTxData>,
     pub promises: Vec<Promise>,
 }
 

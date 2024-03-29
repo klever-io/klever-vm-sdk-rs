@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cargo install multiversx-sc-meta
+cargo install klever-sc-meta
 
 TARGET_DIR=$PWD/target
 

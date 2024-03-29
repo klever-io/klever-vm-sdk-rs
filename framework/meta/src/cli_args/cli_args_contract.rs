@@ -8,7 +8,7 @@ use super::{BuildArgs, BuildDbgArgs, CliArgsToRaw, TwiggyArgs};
     version,
     about,
     after_help = "
-The MultiversX smart contract Meta crate can be used in two ways:
+The Klever smart contract Meta crate can be used in two ways:
     A. Import it into a contract's specific meta-crate. 
        There it will receive access to the contract ABI generator. 
        Based on that it is able to build the contract and apply various tools.

@@ -1,5 +1,5 @@
-use multiversx_sc::types::{LockableStaticBuffer, StaticBufferRef};
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc::types::{LockableStaticBuffer, StaticBufferRef};
+use klever_sc_scenario::api::StaticApi;
 
 #[test]
 fn test_try_extend_from_slice() {

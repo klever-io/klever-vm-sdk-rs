@@ -1,8 +1,8 @@
-use multiversx_sc_meta::cmd::standalone::scen_test_gen::{
+use klever_sc_meta::cmd::standalone::scen_test_gen::{
     format_test_fn_go, process_code, DEFAULT_SETUP_GO,
 };
 
-const GO_TEST_1: &str = r#"use multiversx_sc_scenario::*;
+const GO_TEST_1: &str = r#"use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
@@ -14,7 +14,7 @@ fn test_1_go() {
 }
 "#;
 
-const GO_TEST_0_1_2: &str = r#"use multiversx_sc_scenario::*;
+const GO_TEST_0_1_2: &str = r#"use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()

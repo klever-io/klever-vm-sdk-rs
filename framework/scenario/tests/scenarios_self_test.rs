@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 // These tests don't really test any contract, but the testing framework itslef.
 
@@ -68,13 +68,13 @@ fn set_check_code() {
 
 #[test]
 #[should_panic]
-fn set_check_esdt_err_rs() {
-    world().run("tests/scenarios-self/set-check/set-check-esdt.err1.json");
+fn set_check_kda_err_rs() {
+    world().run("tests/scenarios-self/set-check/set-check-kda.err1.json");
 }
 
 #[test]
-fn set_check_esdt_rs() {
-    world().run("tests/scenarios-self/set-check/set-check-esdt.scen.json");
+fn set_check_kda_rs() {
+    world().run("tests/scenarios-self/set-check/set-check-kda.scen.json");
 }
 
 #[test]
@@ -135,38 +135,28 @@ fn set_check_username_rs() {
 }
 
 #[test]
-fn builtin_func_esdt_transfer() {
-    world().run("tests/scenarios-self/builtin-func-esdt-transfer.scen.json");
+#[should_panic]
+fn kda_non_zero_balance_check_err_rs() {
+    world().run("tests/scenarios-self/kda-non-zero-balance-check-err.scen.json");
 }
 
 #[test]
 #[should_panic]
-fn esdt_non_zero_balance_check_err_rs() {
-    world().run("tests/scenarios-self/esdt-non-zero-balance-check-err.scen.json");
+fn kda_zero_balance_check_err_rs() {
+    world().run("tests/scenarios-self/kda-zero-balance-check-err.scen.json");
 }
 
 #[test]
-#[should_panic]
-fn esdt_zero_balance_check_err_rs() {
-    world().run("tests/scenarios-self/esdt-zero-balance-check-err.scen.json");
+fn multi_transfer_kda_rs() {
+    world().run("tests/scenarios-self/multi-transfer-kda.scen.json");
 }
 
 #[test]
-fn multi_transfer_esdt_rs() {
-    world().run("tests/scenarios-self/multi-transfer-esdt.scen.json");
+fn transfer_klv_rs() {
+    world().run("tests/scenarios-self/transfer-klv.scen.json");
 }
 
 #[test]
-fn transfer_egld_rs() {
-    world().run("tests/scenarios-self/transfer-egld.scen.json");
-}
-
-#[test]
-fn transfer_esdt_rs() {
-    world().run("tests/scenarios-self/transfer-esdt.scen.json");
-}
-
-#[test]
-fn validator_reward_rs() {
-    world().run("tests/scenarios-self/validatorReward.scen.json");
+fn transfer_kda_rs() {
+    world().run("tests/scenarios-self/transfer-kda.scen.json");
 }

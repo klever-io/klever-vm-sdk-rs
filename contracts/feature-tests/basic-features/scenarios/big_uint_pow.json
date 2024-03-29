@@ -1,6 +1,6 @@
 {
     "name": "pow",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",

@@ -1,8 +1,8 @@
-use multiversx_sc::storage::{
+use klever_sc::storage::{
     mappers::{QueueMapper, StorageClearable, StorageMapper},
     StorageKey,
 };
-use multiversx_sc_scenario::api::SingleTxApi;
+use klever_sc_scenario::api::SingleTxApi;
 
 fn create_queue() -> QueueMapper<SingleTxApi, u64> {
     let base_key = StorageKey::new(&b"my_queue"[..]);

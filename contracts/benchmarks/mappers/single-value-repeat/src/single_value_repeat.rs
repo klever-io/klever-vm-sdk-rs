@@ -2,9 +2,9 @@
 
 use benchmark_common::ExampleStruct;
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait SingleValueRepeat: benchmark_common::BenchmarkCommon {
     #[init]
     fn init(&self) {}

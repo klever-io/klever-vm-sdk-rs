@@ -80,6 +80,10 @@ impl TxCache {
     }
 
     pub fn increase_acount_nonce(&self, address: &VMAddress) {
+        // Smart contracts don't have nonces.
+        if address.is_smart_contract_address() {
+            return;
+        }
         self.with_account_mut(address, |account| {
             account.nonce += 1;
         });
@@ -89,7 +93,7 @@ impl TxCache {
     pub fn get_new_address(&self, creator_address: &VMAddress) -> VMAddress {
         let current_nonce = self.with_account(creator_address, |account| account.nonce);
         self.blockchain_ref()
-            .get_new_address(creator_address.clone(), current_nonce - 1)
+            .get_new_address(creator_address.clone(), current_nonce)
             .unwrap_or_else(|| {
                 panic!("Missing new address. Only explicit new deploy addresses supported")
             })

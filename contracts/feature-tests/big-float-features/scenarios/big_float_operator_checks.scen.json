@@ -1,5 +1,5 @@
 {
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -31,7 +31,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "10",
+                "status": "62",
                 "message": "str:this big Float operation is not permitted while doing float.Add"
             }
         },
@@ -51,7 +51,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "10",
+                "status": "62",
                 "message": "str:exponent is either too small or too big"
             }
         },
@@ -71,7 +71,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "10",
+                "status": "62",
                 "message": "str:this big Float operation is not permitted while doing float.Sub"
             }
         }

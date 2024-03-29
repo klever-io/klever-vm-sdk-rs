@@ -1,5 +1,5 @@
-use multiversx_chain_vm::tx_mock::{TxFunctionName, TxResult};
-use multiversx_sc::contract_base::{CallableContract, ContractBase};
+use klever_chain_vm::tx_mock::{TxFunctionName, TxResult};
+use klever_sc::contract_base::{CallableContract, ContractBase};
 
 use crate::{
     debug_executor::contract_instance_wrapped_execution,

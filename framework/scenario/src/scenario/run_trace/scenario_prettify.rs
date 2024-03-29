@@ -1,6 +1,6 @@
 use super::ScenarioTrace;
 use crate::{
-    multiversx_sc::types::Address, scenario::model::*, scenario_format::serde_raw::ValueSubTree,
+    klever_sc::types::Address, scenario::model::*, scenario_format::serde_raw::ValueSubTree,
 };
 use std::collections::HashMap;
 
@@ -75,7 +75,6 @@ impl ScenarioTrace {
                         transfer_step.tx.to.clone(),
                     );
                 },
-                Step::ValidatorReward(_) => todo!(),
                 Step::CheckState(check_state_step) => {
                     let acc_map_keys = check_state_step
                         .accounts

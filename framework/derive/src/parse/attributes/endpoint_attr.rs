@@ -16,12 +16,12 @@ pub fn is_only_user_account(attr: &syn::Attribute) -> bool {
     is_attribute_with_no_args(attr, ATTR_ONLY_USER_ACCOUNT)
 }
 
-pub fn is_callback_raw(attr: &syn::Attribute) -> bool {
-    is_attribute_with_no_args(attr, ATTR_CALLBACK_RAW_DECL)
-}
-
 pub fn is_proxy(attr: &syn::Attribute) -> bool {
     is_attribute_with_no_args(attr, ATTR_PROXY)
+}
+
+pub fn is_upgrade(attr: &syn::Attribute) -> bool {
+    is_attribute_with_no_args(attr, ATTR_UPGRADE)
 }
 
 #[derive(Clone, Debug)]
@@ -76,46 +76,6 @@ impl ExternalViewAttribute {
             }),
             Some(None) => Some(ExternalViewAttribute { view_name: None }),
             _ => panic!("unexpected external view argument tokens"),
-        }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct CallbackAttribute {
-    pub callback_name: Option<syn::Ident>,
-}
-
-impl CallbackAttribute {
-    pub fn parse(attr: &syn::Attribute) -> Option<Self> {
-        match is_attr_with_one_opt_token_tree_arg(attr, ATTR_CALLBACK_DECL) {
-            None => None,
-            Some(Some(proc_macro2::TokenTree::Ident(ident))) => Some(Self {
-                callback_name: Some(ident),
-            }),
-            Some(None) => Some(Self {
-                callback_name: None,
-            }),
-            _ => panic!("unexpected endpoint argument tokens"),
-        }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct PromisesCallbackAttribute {
-    pub callback_name: Option<syn::Ident>,
-}
-
-impl PromisesCallbackAttribute {
-    pub fn parse(attr: &syn::Attribute) -> Option<Self> {
-        match is_attr_with_one_opt_token_tree_arg(attr, ATTR_CALLBACK_PROMISES_DECL) {
-            None => None,
-            Some(Some(proc_macro2::TokenTree::Ident(ident))) => Some(Self {
-                callback_name: Some(ident),
-            }),
-            Some(None) => Some(Self {
-                callback_name: None,
-            }),
-            _ => panic!("unexpected endpoint argument tokens"),
         }
     }
 }

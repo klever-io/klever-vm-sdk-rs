@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-/// Various macros provided by multiversx-sc.
-#[multiversx_sc::module]
+/// Various macros provided by klever-sc.
+#[klever_sc::module]
 pub trait Macros {
     #[only_owner]
     #[endpoint]

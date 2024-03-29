@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use super::OutputContractSettings;
 use crate::cli_args::BuildArgs;
-use multiversx_sc::abi::ContractAbi;
+use klever_sc::abi::ContractAbi;
 
 /// Represents a contract created by the framework when building.
 ///
@@ -110,8 +110,8 @@ impl OutputContract {
         format!("{}.wat", self.output_name_base(build_args))
     }
 
-    pub fn mxsc_file_output_name(&self, build_args: &BuildArgs) -> String {
-        format!("{}.mxsc.json", self.output_name_base(build_args))
+    pub fn kleversc_file_output_name(&self, build_args: &BuildArgs) -> String {
+        format!("{}.kleversc.json", self.output_name_base(build_args))
     }
 
     pub fn imports_json_output_name(&self, build_args: &BuildArgs) -> String {
@@ -145,15 +145,12 @@ impl OutputContract {
             .collect()
     }
 
-    /// Yields "init" + all endpoint names + "callBack" (if it exists).
+    /// Yields "init" + all endpoint names
     ///
     /// Should correspond to all wasm exported functions.
     pub fn all_exported_function_names(&self) -> Vec<String> {
         let mut result = vec!["init".to_string()];
         result.append(&mut self.endpoint_names());
-        if self.abi.has_callback {
-            result.push("callBack".to_string());
-        }
         result
     }
 }

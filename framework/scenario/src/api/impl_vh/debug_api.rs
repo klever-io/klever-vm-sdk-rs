@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     executor::{BreakpointValue, VMHooks},
     tx_mock::{TxContext, TxContextRef, TxContextStack, TxPanic},
     vm_hooks::{DebugApiVMHooksHandler, VMHooksDispatcher},
 };
-use multiversx_sc::err_msg;
+use klever_sc::err_msg;
 
 use crate::debug_executor::{StaticVarData, StaticVarStack};
 

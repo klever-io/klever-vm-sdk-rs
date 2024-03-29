@@ -13,7 +13,6 @@ pub struct Account {
     pub code_hash: Option<String>,
     pub root_hash: Option<String>,
     pub code_metadata: Option<String>,
-    pub developer_reward: Option<String>,
     pub owner_address: Option<String>,
 }
 

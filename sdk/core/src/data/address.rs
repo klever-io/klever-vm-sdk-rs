@@ -31,7 +31,7 @@ impl Address {
     }
 
     pub fn to_bech32_string(&self) -> Result<String> {
-        let address = bech32::encode("erd", self.0.to_base32(), Variant::Bech32)?;
+        let address = bech32::encode("klv", self.0.to_base32(), Variant::Bech32)?;
         Ok(address)
     }
 
@@ -89,13 +89,13 @@ pub mod tests {
     #[test]
     fn test_decode_address() {
         let addr = Address::from_bech32_string(
-            "erd1qqqqqqqqqqqqqpgqyfjjn43spw7teklwtpz4x5waygq2mluyj9ts0mdwn6",
+            "klv1qqqqqqqqqqqqqpgqzeguleyrttewslc8gehmkesxk64mptrk0n0q9u6zxk",
         )
         .unwrap();
         let encode = hex::encode(addr.to_bytes());
         assert_eq!(
             encode,
-            "00000000000000000500226529d6300bbcbcdbee58455351dd2200adff849157"
+            "000000000000000005001651cfe4835af2e87f07466fbb6606b6abb0ac767cde"
         );
     }
 }

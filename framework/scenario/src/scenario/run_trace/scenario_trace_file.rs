@@ -61,10 +61,6 @@ impl ScenarioRunner for ScenarioTraceFile {
         self.with_tracer(|tracer| tracer.run_transfer_step(step));
     }
 
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        self.with_tracer(|tracer| tracer.run_validator_reward_step(step));
-    }
-
     fn run_check_state_step(&mut self, step: &CheckStateStep) {
         self.with_tracer(|tracer| tracer.run_check_state_step(step));
     }

@@ -1,0 +1,16 @@
+[package]
+name = "first-contract-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies.first-contract]
+path = ".."
+
+[dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../../../../framework/base"
+
+[dependencies.klever-sc-meta]
+version = "0.43.3"
+path = "../../../../../../framework/meta"

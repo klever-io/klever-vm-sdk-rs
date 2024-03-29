@@ -1,10 +1,10 @@
-use multiversx_chain_scenario_format::interpret_trait::InterpretableFrom;
-use multiversx_chain_vm::world_mock::BlockchainState;
+use klever_chain_scenario_format::interpret_trait::InterpretableFrom;
+use klever_chain_vm::world_mock::BlockchainState;
 
 use crate::{
     api::DebugApi,
     debug_executor::ContractContainer,
-    multiversx_sc::{
+    klever_sc::{
         api,
         contract_base::{CallableContractBuilder, ContractAbiProvider},
     },
@@ -185,7 +185,7 @@ impl ScenarioWorld {
         Abi: ContractAbiProvider,
         B: CallableContractBuilder,
     {
-        let multi_contract_config = multiversx_sc_meta::multi_contract_config::<Abi>(
+        let multi_contract_config = klever_sc_meta::multi_contract_config::<Abi>(
             self.current_dir
                 .join("multicontract.toml")
                 .to_str()

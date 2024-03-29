@@ -1,7 +1,7 @@
 use std::sync::{Mutex, MutexGuard};
 
 use crate::{
-    tx_mock::{TxFunctionName, TxInput, TxLog, TxManagedTypes, TxResult},
+    tx_mock::{BackTransfers, TxFunctionName, TxInput, TxLog, TxManagedTypes, TxResult},
     types::{VMAddress, VMCodeMetadata},
     vm_hooks::{
         VMHooksBigFloat, VMHooksBigInt, VMHooksBlockchain, VMHooksCallValue, VMHooksCrypto,
@@ -68,6 +68,10 @@ impl VMHooksHandlerSource for StaticApiVMHooksHandler {
         panic!("cannot access the block info in the StaticApi")
     }
 
+    fn back_transfers_lock(&self) -> MutexGuard<BackTransfers> {
+        panic!("cannot access the back transfers in the StaticApi")
+    }
+
     fn account_data(&self, _address: &VMAddress) -> AccountData {
         panic!("cannot access account data in the StaticApi")
     }
@@ -76,20 +80,10 @@ impl VMHooksHandlerSource for StaticApiVMHooksHandler {
         panic!("cannot access account data in the StaticApi")
     }
 
-    fn perform_async_call(
-        &self,
-        _to: VMAddress,
-        _egld_value: num_bigint::BigUint,
-        _func_name: TxFunctionName,
-        _args: Vec<Vec<u8>>,
-    ) -> ! {
-        panic!("cannot launch contract calls in the StaticApi")
-    }
-
     fn perform_execute_on_dest_context(
         &self,
         _to: VMAddress,
-        _egld_value: num_bigint::BigUint,
+        _klv_value: num_bigint::BigUint,
         _func_name: TxFunctionName,
         _args: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
@@ -98,7 +92,7 @@ impl VMHooksHandlerSource for StaticApiVMHooksHandler {
 
     fn perform_deploy(
         &self,
-        _egld_value: num_bigint::BigUint,
+        _klv_value: num_bigint::BigUint,
         _contract_code: Vec<u8>,
         _code_metadata: VMCodeMetadata,
         _args: Vec<Vec<u8>>,
@@ -109,7 +103,7 @@ impl VMHooksHandlerSource for StaticApiVMHooksHandler {
     fn perform_transfer_execute(
         &self,
         _to: VMAddress,
-        _egld_value: num_bigint::BigUint,
+        _klv_value: num_bigint::BigUint,
         _func_name: TxFunctionName,
         _arguments: Vec<Vec<u8>>,
     ) {

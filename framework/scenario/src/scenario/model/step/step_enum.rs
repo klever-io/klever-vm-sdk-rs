@@ -5,12 +5,12 @@ use crate::scenario_format::{
 
 use crate::scenario::model::{
     Account, AddressKey, BlockInfo, BytesValue, CheckAccounts, NewAddress, TxCall, TxDeploy,
-    TxExpect, TxQuery, TxTransfer, TxValidatorReward,
+    TxExpect, TxQuery, TxTransfer,
 };
 
 use super::{
     CheckStateStep, DumpStateStep, ScCallStep, ScDeployStep, ScQueryStep, SetStateStep,
-    TransferStep, ValidatorRewardStep,
+    TransferStep,
 };
 
 #[derive(Debug, Clone)]
@@ -27,7 +27,6 @@ pub enum Step {
     ScQuery(ScQueryStep),
     ScDeploy(ScDeployStep),
     Transfer(TransferStep),
-    ValidatorReward(ValidatorRewardStep),
     CheckState(CheckStateStep),
     DumpState(DumpStateStep),
 }
@@ -129,17 +128,6 @@ impl InterpretableFrom<StepRaw> for Step {
                 comment,
                 tx: Box::new(TxTransfer::interpret_from(tx, context)),
             }),
-            StepRaw::ValidatorReward {
-                id,
-                tx_id,
-                comment,
-                tx,
-            } => Step::ValidatorReward(ValidatorRewardStep {
-                id,
-                tx_id,
-                comment,
-                tx: Box::new(TxValidatorReward::interpret_from(tx, context)),
-            }),
             StepRaw::CheckState { comment, accounts } => Step::CheckState(CheckStateStep {
                 comment,
                 accounts: CheckAccounts::interpret_from(accounts, context),
@@ -198,12 +186,6 @@ impl IntoRaw<StepRaw> for Step {
                 expect: s.expect.map(|expect| expect.into_raw()),
             },
             Step::Transfer(s) => StepRaw::Transfer {
-                id: s.id,
-                tx_id: s.tx_id,
-                comment: s.comment,
-                tx: s.tx.into_raw(),
-            },
-            Step::ValidatorReward(s) => StepRaw::ValidatorReward {
                 id: s.id,
                 tx_id: s.tx_id,
                 comment: s.comment,

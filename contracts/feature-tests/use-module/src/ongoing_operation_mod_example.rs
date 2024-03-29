@@ -1,11 +1,11 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-use multiversx_sc_modules::ongoing_operation::{
+use klever_sc_modules::ongoing_operation::{
     self, CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
 
 /// Example of a module using the ongoing operation pattern
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait OngoingOperationModExample: ongoing_operation::OngoingOperationModule {
     #[endpoint(countTo100)]
     fn count_to_100(&self) -> OperationCompletionStatus {

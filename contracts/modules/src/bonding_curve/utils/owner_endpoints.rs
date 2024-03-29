@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
-use multiversx_sc::contract_base::ManagedSerializer;
+use klever_sc::contract_base::ManagedSerializer;
 
 use crate::bonding_curve::{
     curves::curve_function::CurveFunction,
@@ -13,36 +13,8 @@ use crate::bonding_curve::{
 
 use super::structs::CurveArguments;
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
-    #[endpoint(setLocalRoles)]
-    fn set_local_roles(
-        &self,
-        address: ManagedAddress,
-        token_identifier: TokenIdentifier,
-        roles: MultiValueEncoded<EsdtLocalRole>,
-    ) {
-        self.send()
-            .esdt_system_sc_proxy()
-            .set_special_roles(&address, &token_identifier, roles.into_iter())
-            .async_call()
-            .call_and_exit()
-    }
-
-    #[endpoint(unsetLocalRoles)]
-    fn unset_local_roles(
-        &self,
-        address: ManagedAddress,
-        token_identifier: TokenIdentifier,
-        roles: MultiValueEncoded<EsdtLocalRole>,
-    ) {
-        self.send()
-            .esdt_system_sc_proxy()
-            .unset_special_roles(&address, &token_identifier, roles.into_iter())
-            .async_call()
-            .call_and_exit()
-    }
-
     fn set_bonding_curve<T>(
         &self,
         identifier: TokenIdentifier,
@@ -92,13 +64,13 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             + PartialEq
             + Default,
     {
-        let (identifier, nonce, amount) = self.call_value().single_esdt().into_tuple();
+        let (identifier, nonce, amount) = self.call_value().single_kda().into_tuple();
         let caller = self.blockchain().get_caller();
-        let mut set_payment = EgldOrEsdtTokenIdentifier::egld();
+        let mut set_payment = TokenIdentifier::klv();
 
         if self.bonding_curve(&identifier).is_empty() {
             match payment_token {
-                OptionalValue::Some(token) => set_payment = EgldOrEsdtTokenIdentifier::esdt(token),
+                OptionalValue::Some(token) => set_payment = token,
                 OptionalValue::None => {
                     sc_panic!("Expected provided accepted_payment for the token");
                 },
@@ -145,13 +117,13 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             "You have nothing to claim"
         );
 
-        let mut tokens_to_claim = ManagedVec::<Self::Api, EsdtTokenPayment<Self::Api>>::new();
-        let mut egld_to_claim = BigUint::zero();
+        let mut tokens_to_claim = ManagedVec::<Self::Api, KdaTokenPayment<Self::Api>>::new();
+        let mut klv_to_claim = BigUint::zero();
         let serializer = ManagedSerializer::new();
         for token in self.owned_tokens(&caller).iter() {
             let nonces = self.token_details(&token).get().token_nonces;
             for nonce in &nonces {
-                tokens_to_claim.push(EsdtTokenPayment::new(
+                tokens_to_claim.push(KdaTokenPayment::new(
                     token.clone(),
                     nonce,
                     self.nonce_amount(&token, nonce).get(),
@@ -163,16 +135,15 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             let bonding_curve: BondingCurve<Self::Api, T> =
                 serializer.top_decode_from_managed_buffer(&self.bonding_curve(&token).get());
 
-            if let Some(esdt_token_identifier) =
-                bonding_curve.payment.token_identifier.into_esdt_option()
+            if !bonding_curve.payment.token_identifier.is_klv()
             {
-                tokens_to_claim.push(EsdtTokenPayment::new(
-                    esdt_token_identifier,
+                tokens_to_claim.push(KdaTokenPayment::new(
+                    bonding_curve.payment.token_identifier,
                     bonding_curve.payment.token_nonce,
                     bonding_curve.payment.amount,
                 ));
             } else {
-                egld_to_claim += bonding_curve.payment.amount;
+                klv_to_claim += bonding_curve.payment.amount;
             }
 
             self.token_details(&token).clear();
@@ -180,8 +151,8 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         }
         self.owned_tokens(&caller).clear();
         self.send().direct_multi(&caller, &tokens_to_claim);
-        if egld_to_claim > BigUint::zero() {
-            self.send().direct_egld(&caller, &egld_to_claim);
+        if klv_to_claim > BigUint::zero() {
+            //self.send().direct_klv(&caller, &klv_to_claim);
         }
     }
 
@@ -189,7 +160,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         &self,
         identifier: &TokenIdentifier,
         amount: BigUint,
-        payment_token_identifier: EgldOrEsdtTokenIdentifier,
+        payment_token_identifier: TokenIdentifier,
     ) where
         T: CurveFunction<Self::Api>
             + TopEncode
@@ -211,7 +182,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
                 available_supply: amount.clone(),
                 balance: amount,
             };
-            payment = EgldOrEsdtTokenPayment::new(payment_token_identifier, 0, BigUint::zero());
+            payment = KdaTokenPayment::new(payment_token_identifier, 0, BigUint::zero());
             sell_availability = false;
         } else {
             let bonding_curve: BondingCurve<Self::Api, T> =

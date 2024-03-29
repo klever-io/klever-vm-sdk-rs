@@ -54,7 +54,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "10",
+                "status": "62",
                 "message": "str:invalid signature",
                 "logs": "*",
                 "gas": "*",

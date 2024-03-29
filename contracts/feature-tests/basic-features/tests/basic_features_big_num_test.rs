@@ -1,5 +1,5 @@
-use multiversx_sc::types::{BigInt, BigUint, ManagedBuffer};
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc::types::{BigInt, BigUint, ManagedBuffer};
+use klever_sc_scenario::api::StaticApi;
 
 use basic_features::{big_num_methods::BigIntMethods, big_num_operators::BigIntOperators};
 

@@ -1,5 +1,5 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 use crate::bonding_curve::{
     curves::{curve_function::CurveFunction, linear_function::LinearFunction},
@@ -33,7 +33,7 @@ impl<M: ManagedTypeApi> CurveFunction<M> for FunctionSelector<M> {
                 &(&sum * &sum * sum / 3u32) + &arguments.balance + initial_cost.clone()
             },
             FunctionSelector::None => {
-                M::error_api_impl().signal_error(b"Bonding Curve function is not assiged")
+                M::error_api_impl().signal_error(b"Bonding Curve function is not assigned")
             },
         }
     }

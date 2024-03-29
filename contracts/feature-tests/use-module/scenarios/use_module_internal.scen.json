@@ -12,7 +12,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "5",
+                    "creatorNonce": "6",
                     "newAddress": "sc:use_module"
                 }
             ]

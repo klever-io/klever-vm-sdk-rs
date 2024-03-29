@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::serde_raw::{CheckBytesValueRaw, CheckEsdtMapRaw, CheckStorageRaw};
+use crate::serde_raw::{CheckBytesValueRaw, CheckKdaMapRaw, CheckStorageRaw};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -18,8 +18,8 @@ pub struct CheckAccountRaw {
     pub balance: CheckBytesValueRaw,
 
     #[serde(default)]
-    #[serde(skip_serializing_if = "CheckEsdtMapRaw::is_unspecified")]
-    pub esdt: CheckEsdtMapRaw,
+    #[serde(skip_serializing_if = "CheckKdaMapRaw::is_unspecified")]
+    pub kda: CheckKdaMapRaw,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
@@ -35,12 +35,4 @@ pub struct CheckAccountRaw {
     #[serde(default)]
     #[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
     pub owner: CheckBytesValueRaw,
-
-    #[serde(default)]
-    #[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
-    pub developer_rewards: CheckBytesValueRaw,
-
-    #[serde(default)]
-    #[serde(skip_serializing_if = "CheckBytesValueRaw::is_unspecified")]
-    pub async_call_data: CheckBytesValueRaw,
 }

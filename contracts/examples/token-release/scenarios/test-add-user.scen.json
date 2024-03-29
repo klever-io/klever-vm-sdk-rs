@@ -1,6 +1,6 @@
 {
     "name": "token release add user test",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "externalSteps",
@@ -58,31 +58,31 @@
                 "address:user1": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:FIRSTTOKEN-123456": "10"
+                    "kda": {
+                        "str:FIRSTTOKEN-1234": "10"
                     },
                     "storage": {}
                 },
                 "address:user2": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:FIRSTTOKEN-123456": "0"
+                    "kda": {
+                        "str:FIRSTTOKEN-1234": "0"
                     },
                     "storage": {}
                 },
                 "sc:token_release_contract": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:FIRSTTOKEN-123456": {
+                    "kda": {
+                        "str:FIRSTTOKEN-1234": {
                             "roles": [
-                                "ESDTRoleLocalMint"
+                                "KDARoleLocalMint"
                             ]
                         }
                     },
                     "storage": {
-                        "str:tokenIdentifier": "str:FIRSTTOKEN-123456",
+                        "str:tokenIdentifier": "str:FIRSTTOKEN-1234",
                         "str:setupPeriodStatus": "1",
                         "str:tokenTotalSupply": "10,000",
                         "str:usersInGroup|nested:str:MyFirstGroup": "2",

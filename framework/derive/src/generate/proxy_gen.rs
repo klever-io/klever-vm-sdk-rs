@@ -69,11 +69,11 @@ pub fn generate_proxy_method_sig(
 pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2::TokenStream {
     let mut token_count = 0;
     let mut token_expr =
-        quote! { multiversx_sc::types::EgldOrEsdtTokenIdentifier::<Self::Api>::egld() };
+        quote! { klever_sc::types::TokenIdentifier::<Self::Api>::klv() };
     let mut nonce_count = 0;
     let mut nonce_expr = quote! { 0u64 };
     let mut payment_count = 0;
-    let mut payment_expr = quote! { multiversx_sc::types::BigUint::<Self::Api>::zero() };
+    let mut payment_expr = quote! { klever_sc::types::BigUint::<Self::Api>::zero() };
     let mut multi_count = 0;
     let mut multi_expr_opt = None;
 
@@ -84,7 +84,7 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
             ArgPaymentMetadata::NotPayment => {
                 let pat = &arg.pat;
                 arg_push_snippets.push(quote! {
-                    multiversx_sc::types::ContractCall::proxy_arg(&mut ___contract_call___, &#pat);
+                    klever_sc::types::ContractCall::proxy_arg(&mut ___contract_call___, &#pat);
                 });
             },
             ArgPaymentMetadata::PaymentToken => {
@@ -133,18 +133,18 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
         assert!(multi_count == 0, "#[payment_multi] cannot coexist with any other payment annotation in the same endpoint");
 
         if token_count == 0 && nonce_count == 0 {
-            contract_call_type = quote! { multiversx_sc::types::ContractCallWithEgld };
+            contract_call_type = quote! { klever_sc::types::ContractCallWithKlv };
             contract_call_init = quote! {
-                let mut ___contract_call___ = multiversx_sc::types::ContractCallWithEgld::new(
+                let mut ___contract_call___ = klever_sc::types::ContractCallWithKlv::new(
                     ___address___,
                     #endpoint_name,
                     #payment_expr,
                 );
             };
         } else {
-            contract_call_type = quote! { multiversx_sc::types::ContractCallWithEgldOrSingleEsdt };
+            contract_call_type = quote! { klever_sc::types::ContractCallWithKlvOrSingleKda };
             contract_call_init = quote! {
-                let mut ___contract_call___ = multiversx_sc::types::ContractCallWithEgldOrSingleEsdt::new(
+                let mut ___contract_call___ = klever_sc::types::ContractCallWithKlvOrSingleKda::new(
                     ___address___,
                     #endpoint_name,
                     #token_expr,
@@ -155,18 +155,18 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
         }
     } else if multi_count > 0 {
         let multi_expr = multi_expr_opt.unwrap();
-        contract_call_type = quote! { multiversx_sc::types::ContractCallWithMultiEsdt };
+        contract_call_type = quote! { klever_sc::types::ContractCallWithMultiKda };
         contract_call_init = quote! {
-            let mut ___contract_call___ = multiversx_sc::types::ContractCallWithMultiEsdt::new(
+            let mut ___contract_call___ = klever_sc::types::ContractCallWithMultiKda::new(
                 ___address___,
                 #endpoint_name,
                 #multi_expr.clone_value(),
             );
         };
     } else {
-        contract_call_type = quote! { multiversx_sc::types::ContractCallNoPayment };
+        contract_call_type = quote! { klever_sc::types::ContractCallNoPayment };
         contract_call_init = quote! {
-            let mut ___contract_call___ = multiversx_sc::types::ContractCallNoPayment::new(
+            let mut ___contract_call___ = klever_sc::types::ContractCallNoPayment::new(
                 ___address___,
                 #endpoint_name,
             );
@@ -191,7 +191,7 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
 
 pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
     let msig =
-        generate_proxy_method_sig(init_method, quote! { multiversx_sc::types::ContractDeploy });
+        generate_proxy_method_sig(init_method, quote! { klever_sc::types::ContractDeploy });
 
     let mut payment_count = 0;
     let mut multi_count = 0;
@@ -222,7 +222,7 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
                 payment_count += 1;
                 let pat = &arg.pat;
                 quote! {
-                    ___contract_deploy___ = ___contract_deploy___.with_egld_transfer(#pat);
+                    ___contract_deploy___ = ___contract_deploy___.with_klv_transfer(#pat);
                 }
             },
             ArgPaymentMetadata::PaymentMulti => {
@@ -239,7 +239,7 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
         payment_count <= 1,
         "No more than one payment argument allowed in call proxy"
     );
-    assert!(token_count == 0, "No ESDT payment allowed in #[init]");
+    assert!(token_count == 0, "No KDA payment allowed in #[init]");
     assert!(nonce_count == 0, "No SFT/NFT payment allowed in #[init]");
 
     let sig = quote! {
@@ -247,7 +247,7 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
         #[allow(clippy::type_complexity)]
         #msig {
             let ___opt_address___ = self.extract_opt_address();
-            let mut ___contract_deploy___ = multiversx_sc::types::new_contract_deploy(
+            let mut ___contract_deploy___ = klever_sc::types::new_contract_deploy(
                 ___opt_address___,
             );
             #(#arg_push_snippets)*
@@ -279,7 +279,7 @@ pub fn proxy_trait(contract: &ContractTrait) -> proc_macro2::TokenStream {
     let proxy_methods_impl = generate_method_impl(contract);
     quote! {
         pub trait ProxyTrait:
-            multiversx_sc::contract_base::ProxyObjBase
+            klever_sc::contract_base::ProxyObjBase
             + Sized
             #(#proxy_supertrait_decl)*
         {
@@ -303,7 +303,7 @@ fn equivalent_encode_path_gen(ty: &syn::Type) -> syn::Path {
     let owned_type = convert_to_owned_type(ty);
     syn::parse_str(
         format!(
-            "multiversx_sc::codec::CodecInto<{}>",
+            "klever_sc::codec::CodecInto<{}>",
             owned_type.to_token_stream()
         )
         .as_str(),

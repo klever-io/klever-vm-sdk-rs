@@ -1,11 +1,11 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 pub mod curves;
 pub mod utils;
 use utils::{events, owner_endpoints, storage, user_endpoints};
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait BondingCurveModule:
     storage::StorageModule
     + events::EventsModule

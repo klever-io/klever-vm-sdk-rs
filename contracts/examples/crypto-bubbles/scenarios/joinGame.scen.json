@@ -34,7 +34,7 @@
             "tx": {
                 "from": "address:acc1",
                 "to": "sc:crypto_bubbles",
-                "egldValue": "0x200",
+                "klvValue": "0x200",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"
@@ -76,7 +76,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:crypto_bubbles",
-                "egldValue": "0x150",
+                "klvValue": "0x150",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"
@@ -118,7 +118,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:crypto_bubbles",
-                "egldValue": "0x2000",
+                "klvValue": "0x2000",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"

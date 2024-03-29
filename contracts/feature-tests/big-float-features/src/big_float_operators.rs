@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// Checks that BigFloat operators work as expected.
-#[multiversx_sc::module]
+#[klever_sc::module]
 #[allow(clippy::redundant_clone)]
 pub trait BigFloatOperators {
     #[endpoint]

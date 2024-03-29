@@ -1,15 +1,15 @@
-use crate::multiversx_sc::{
+use crate::klever_sc::{
     codec::{top_encode_to_vec_u8_or_panic, TopEncode},
     types::heap::Address,
 };
-use multiversx_chain_vm::tx_mock::TxTokenTransfer;
+use klever_chain_vm::tx_mock::TxTokenTransfer;
 use num_traits::Zero;
 
 pub struct ScCallMandos {
     pub(crate) from: Address,
     pub(crate) to: Address,
-    pub(crate) egld_value: num_bigint::BigUint,
-    pub(crate) esdt: Vec<TxTokenTransfer>,
+    pub(crate) klv_value: num_bigint::BigUint,
+    pub(crate) kda: Vec<TxTokenTransfer>,
     pub(crate) function: String,
     pub(crate) arguments: Vec<Vec<u8>>,
     pub(crate) gas_limit: u64,
@@ -21,8 +21,8 @@ impl ScCallMandos {
         ScCallMandos {
             from: from.clone(),
             to: to.clone(),
-            egld_value: num_bigint::BigUint::zero(),
-            esdt: Vec::new(),
+            klv_value: num_bigint::BigUint::zero(),
+            kda: Vec::new(),
             function: function.to_owned(),
             arguments: Vec::new(),
             gas_limit: u64::MAX,
@@ -30,20 +30,20 @@ impl ScCallMandos {
         }
     }
 
-    pub fn add_egld_value(&mut self, egld_value: &num_bigint::BigUint) {
-        self.egld_value = egld_value.clone();
+    pub fn add_klv_value(&mut self, klv_value: &num_bigint::BigUint) {
+        self.klv_value = klv_value.clone();
     }
 
-    pub fn add_esdt_transfer(
+    pub fn add_kda_transfer(
         &mut self,
         token_id: &[u8],
         nonce: u64,
-        esdt_value: &num_bigint::BigUint,
+        kda_value: &num_bigint::BigUint,
     ) {
-        self.esdt.push(TxTokenTransfer {
+        self.kda.push(TxTokenTransfer {
             token_identifier: token_id.to_vec(),
             nonce,
-            value: esdt_value.clone(),
+            value: kda_value.clone(),
         });
     }
 

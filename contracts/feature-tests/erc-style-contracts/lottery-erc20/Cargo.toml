@@ -11,11 +11,11 @@ path = "src/lottery.rs"
 [dependencies.erc20]
 path = "../erc20"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../../framework/base"
 features = ["alloc"]
 
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../../framework/scenario"

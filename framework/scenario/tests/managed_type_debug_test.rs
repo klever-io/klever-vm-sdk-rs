@@ -1,11 +1,11 @@
-use multiversx_sc::{
+use klever_sc::{
     hex_literal::hex,
     types::{
-        BigInt, BigUint, EgldOrEsdtTokenIdentifier, ManagedAddress, ManagedBuffer,
-        ManagedByteArray, ManagedVec, TokenIdentifier,
+        BigInt, BigUint, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedVec,
+        TokenIdentifier,
     },
 };
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc_scenario::api::StaticApi;
 
 #[test]
 fn test_big_uint_format() {
@@ -27,7 +27,7 @@ fn test_big_int_format_2() {
 
 #[test]
 fn test_managed_buffer() {
-    let _ = multiversx_sc::hex_literal::hex!("abcd");
+    let _ = klever_sc::hex_literal::hex!("abcd");
     let s = format!("{:?}", ManagedBuffer::<StaticApi>::from(&[0x12, 0x34]));
     assert_eq!("ManagedBuffer { handle: -100, hex-value: \"1234\" }", s);
 }
@@ -72,15 +72,13 @@ fn test_managed_vec_format_biguint() {
 }
 
 #[test]
-fn test_managed_vec_format_egld_or_esdt() {
-    let mut mv = ManagedVec::<StaticApi, EgldOrEsdtTokenIdentifier<StaticApi>>::new();
-    mv.push(EgldOrEsdtTokenIdentifier::egld());
-    mv.push(EgldOrEsdtTokenIdentifier::esdt(TokenIdentifier::from(
-        "MYTOKEN-5678",
-    )));
+fn test_managed_vec_format_klv_or_kda() {
+    let mut mv = ManagedVec::<StaticApi, TokenIdentifier<StaticApi>>::new();
+    mv.push(TokenIdentifier::klv());
+    mv.push(TokenIdentifier::from("MYTOKEN-5678"));
     let s = format!("{:?}", &mv);
     assert_eq!(
-        "[EgldOrEsdtTokenIdentifier::Egld, EgldOrEsdtTokenIdentifier::Esdt(\"MYTOKEN-5678\")]",
+        "[TokenIdentifier(\"KLV\"), TokenIdentifier(\"MYTOKEN-5678\")]",
         s
     );
 }

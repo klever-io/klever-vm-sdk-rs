@@ -1,19 +1,19 @@
 [package]
-name = "multiversx-sc-meta"
+name = "klever-sc-meta"
 version = "0.43.3"
 edition = "2021"
 
 authors = [
     "Andrei Marinica <andrei.marinica@multiversx.com>",
-    "MultiversX <contact@multiversx.com>",
+    "Klever <contact@klever.io>",
 ]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "MultiversX smart contract meta-programming tools and build system"
-keywords = ["multiversx", "blockchain", "contract", "debug"]
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "Klever smart contract meta-programming tools and build system"
+keywords = ["klever", "blockchain", "contract", "debug"]
 categories = ["cryptography::cryptocurrencies", "development-tools::debugging"]
 
 [[bin]]
@@ -44,7 +44,7 @@ lazy_static = "1.4.0"
 convert_case = "0.6.0"
 hex = "0.4"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "=0.43.3"
 path = "../base"
 features = ["alloc", "num-bigint", "promises"]

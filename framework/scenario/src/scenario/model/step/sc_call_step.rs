@@ -1,12 +1,12 @@
-use multiversx_sc::types::H256;
+use klever_sc::types::H256;
 
 use crate::{
     api::StaticApi,
-    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxESDT, TxExpect, U64Value},
+    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxKDA, TxExpect, U64Value},
     scenario_model::TxResponse,
 };
 
-use crate::multiversx_sc::{
+use crate::klever_sc::{
     codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
     types::{ContractCall, ManagedArgBuffer},
 };
@@ -59,32 +59,32 @@ impl ScCallStep {
         self
     }
 
-    pub fn egld_value<A>(mut self, amount: A) -> Self
+    pub fn klv_value<A>(mut self, amount: A) -> Self
     where
         BigUintValue: From<A>,
     {
-        if !self.tx.esdt_value.is_empty() && self.tx.egld_value.value > 0u32.into() {
-            panic!("Cannot transfer both EGLD and ESDT");
+        if !self.tx.kda_value.is_empty() && self.tx.klv_value.value > 0u32.into() {
+            panic!("Cannot transfer both KLV and KDA");
         }
 
-        self.tx.egld_value = BigUintValue::from(amount);
+        self.tx.klv_value = BigUintValue::from(amount);
         self
     }
 
-    pub fn esdt_transfer<T, N, A>(mut self, token_id: T, token_nonce: N, amount: A) -> Self
+    pub fn kda_transfer<T, N, A>(mut self, token_id: T, token_nonce: N, amount: A) -> Self
     where
         BytesValue: From<T>,
         U64Value: From<N>,
         BigUintValue: From<A>,
     {
-        if self.tx.egld_value.value > 0u32.into() {
-            panic!("Cannot transfer both EGLD and ESDT");
+        if self.tx.klv_value.value > 0u32.into() {
+            panic!("Cannot transfer both KLV and KDA");
         }
 
-        self.tx.esdt_value.push(TxESDT {
-            esdt_token_identifier: BytesValue::from(token_id),
+        self.tx.kda_value.push(TxKDA {
+            kda_token_identifier: BytesValue::from(token_id),
             nonce: U64Value::from(token_nonce),
-            esdt_value: BigUintValue::from(amount),
+            kda_value: BigUintValue::from(amount),
         });
 
         self
@@ -119,15 +119,15 @@ impl ScCallStep {
     where
         CC: ContractCall<StaticApi>,
     {
-        let (to_str, function, egld_value_expr, scenario_args) =
+        let (to_str, function, klv_value_expr, scenario_args) =
             process_contract_call(contract_call);
         self = self.to(to_str.as_str());
 
         if self.tx.function.is_empty() {
             self = self.function(function.as_str());
         }
-        if self.tx.egld_value.value == 0u32.into() {
-            self = self.egld_value(egld_value_expr);
+        if self.tx.klv_value.value == 0u32.into() {
+            self = self.klv_value(klv_value_expr);
         }
         for arg in scenario_args {
             self = self.argument(arg.as_str());
@@ -218,9 +218,9 @@ where
             .into_vec(),
     )
     .unwrap();
-    let egld_value_expr = BigUintValue::from(normalized_cc.egld_payment);
+    let klv_value_expr = BigUintValue::from(normalized_cc.klv_payment);
     let scenario_args = convert_call_args(&normalized_cc.basic.arg_buffer);
-    (to_str, function, egld_value_expr, scenario_args)
+    (to_str, function, klv_value_expr, scenario_args)
 }
 
 pub fn convert_call_args(arg_buffer: &ManagedArgBuffer<StaticApi>) -> Vec<String> {

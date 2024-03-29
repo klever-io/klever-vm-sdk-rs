@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
@@ -36,23 +36,23 @@ fn payable_any_4_rs() {
 }
 
 #[test]
-fn payable_egld_1_rs() {
-    world().run("scenarios/payable_egld_1.scen.json");
+fn payable_klv_1_rs() {
+    world().run("scenarios/payable_klv_1.scen.json");
 }
 
 #[test]
-fn payable_egld_2_rs() {
-    world().run("scenarios/payable_egld_2.scen.json");
+fn payable_klv_2_rs() {
+    world().run("scenarios/payable_klv_2.scen.json");
 }
 
 #[test]
-fn payable_egld_3_rs() {
-    world().run("scenarios/payable_egld_3.scen.json");
+fn payable_klv_3_rs() {
+    world().run("scenarios/payable_klv_3.scen.json");
 }
 
 #[test]
-fn payable_egld_4_rs() {
-    world().run("scenarios/payable_egld_4.scen.json");
+fn payable_klv_4_rs() {
+    world().run("scenarios/payable_klv_4.scen.json");
 }
 
 #[test]

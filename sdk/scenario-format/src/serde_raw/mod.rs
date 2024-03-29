@@ -1,6 +1,6 @@
 mod account_data_raw;
 mod block_info_raw;
-mod esdt_data_raw;
+mod kda_data_raw;
 mod log_raw;
 mod logs_raw;
 mod new_address_raw;
@@ -15,7 +15,7 @@ mod value_raw_check_list;
 
 pub use account_data_raw::*;
 pub use block_info_raw::*;
-pub use esdt_data_raw::*;
+pub use kda_data_raw::*;
 pub use log_raw::*;
 pub use logs_raw::*;
 pub use new_address_raw::*;

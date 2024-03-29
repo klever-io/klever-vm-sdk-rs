@@ -56,53 +56,6 @@ pub fn generate_call_method_arg_load(m: &Method) -> proc_macro2::TokenStream {
     let (var_names, var_types, var_names_str) =
         generate_arg_nested_tuples(m.method_args.as_slice(), |arg| arg.is_endpoint_arg());
     quote! {
-        let #var_names = multiversx_sc::io::load_endpoint_args::<Self::Api, #var_types>(#var_names_str);
-    }
-}
-
-pub fn load_call_result_args_snippet(m: &Method) -> proc_macro2::TokenStream {
-    // if no `#[call_result]` present, ignore altogether
-    let has_call_result = m
-        .method_args
-        .iter()
-        .any(|arg| arg.metadata.callback_call_result);
-    if !has_call_result {
-        return quote! {};
-    }
-
-    let (call_result_var_names, call_result_var_types, call_result_var_names_str) =
-        generate_arg_nested_tuples(m.method_args.as_slice(), |arg| {
-            arg.metadata.callback_call_result
-        });
-    quote! {
-        let #call_result_var_names = multiversx_sc::io::load_endpoint_args::<Self::Api,#call_result_var_types>(
-            #call_result_var_names_str,
-        );
-    }
-}
-
-pub fn load_legacy_cb_closure_args_snippet(m: &Method) -> proc_macro2::TokenStream {
-    let (closure_var_names, closure_var_types, closure_var_names_str) =
-        generate_arg_nested_tuples(m.method_args.as_slice(), |arg| {
-            arg.is_endpoint_arg() && !arg.metadata.callback_call_result
-        });
-    quote! {
-        let #closure_var_names = multiversx_sc::io::load_multi_args_custom_loader::<Self::Api, _, #closure_var_types>(
-            ___cb_closure___.into_arg_loader(),
-            #closure_var_names_str,
-        );
-    }
-}
-
-pub fn load_cb_closure_args_snippet(m: &Method) -> proc_macro2::TokenStream {
-    let (closure_var_names, closure_var_types, closure_var_names_str) =
-        generate_arg_nested_tuples(m.method_args.as_slice(), |arg| {
-            arg.is_endpoint_arg() && !arg.metadata.callback_call_result
-        });
-    quote! {
-        let #closure_var_names = multiversx_sc::io::load_callback_closure_args::<
-            Self::Api,
-            #closure_var_types,
-        >(#closure_var_names_str);
+        let #var_names = klever_sc::io::load_endpoint_args::<Self::Api, #var_types>(#var_names_str);
     }
 }

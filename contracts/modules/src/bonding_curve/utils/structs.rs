@@ -1,7 +1,7 @@
 use crate::bonding_curve::curves::curve_function::CurveFunction;
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, PartialEq, Eq, Clone)]
 pub struct CurveArguments<M: ManagedTypeApi> {
@@ -23,7 +23,7 @@ pub struct BondingCurve<
     pub curve: T,
     pub arguments: CurveArguments<M>,
     pub sell_availability: bool,
-    pub payment: EgldOrEsdtTokenPayment<M>,
+    pub payment: KdaTokenPayment<M>,
 }
 
 impl<
@@ -31,11 +31,11 @@ impl<
         T: CurveFunction<M> + TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi,
     > BondingCurve<M, T>
 {
-    pub fn payment_token(&self) -> EgldOrEsdtTokenIdentifier<M> {
+    pub fn payment_token(&self) -> TokenIdentifier<M> {
         self.payment.token_identifier.clone()
     }
-    pub fn payment_is_egld(&self) -> bool {
-        self.payment.token_identifier.is_egld()
+    pub fn payment_is_klv(&self) -> bool {
+        self.payment.token_identifier.is_klv()
     }
 }
 

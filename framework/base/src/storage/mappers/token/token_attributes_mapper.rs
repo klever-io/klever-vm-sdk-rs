@@ -1,3 +1,5 @@
+// TODO: review attributes mapper
+
 use core::marker::PhantomData;
 
 use crate::codec::{NestedDecode, NestedEncode, TopDecode, TopEncode};

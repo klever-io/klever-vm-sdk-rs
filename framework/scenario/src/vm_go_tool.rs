@@ -1,7 +1,7 @@
 use colored::Colorize;
 use std::{io::ErrorKind, path::Path, process::Command};
 
-const RUNNER_TOOL_NAME: &str = "run-scenarios";
+const RUNNER_TOOL_NAME: &str = "operator";
 const RUNNER_TOOL_NAME_LEGACY: &str = "mandos-test";
 
 /// Just marks that the tool was not found.
@@ -31,7 +31,12 @@ pub fn run_vm_go_tool(absolute_path: &Path) {
 }
 
 fn run_scenario_tool(tool_name: &str, path: &Path) -> Result<(), ToolNotFound> {
-    let result = Command::new(tool_name).arg(path).output();
+    // append command arg to path
+    let result = Command::new(tool_name)
+        .arg("sc")
+        .arg("run-scenarios")
+        .arg(format!("--path={}", path.to_str().unwrap()))
+        .output();
 
     if let Err(error) = &result {
         if error.kind() == ErrorKind::NotFound {

@@ -20,6 +20,8 @@ vm/**/Cargo.lock
 
 # VSCode config
 .vscode
+.DS_Store
+.idea
 
 # Others
 my-vm-tests.sh
@@ -32,11 +34,10 @@ examples-wasm.zip
 
 tags
 
-# MultiversX IDE
+# Klever IDE
 **/node_modules
 **/output/**
 **/testnet/**
-**/mxpy.data-storage.json
 **/*.interaction.json
 
 # Python scripts

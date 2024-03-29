@@ -1,6 +1,6 @@
 mod account_data;
 mod block_info;
-mod esdt_data;
+mod kda_data;
 mod new_address;
 mod scenario;
 mod step;
@@ -11,7 +11,7 @@ mod value;
 
 pub use account_data::*;
 pub use block_info::*;
-pub use esdt_data::*;
+pub use kda_data::*;
 pub use new_address::*;
 pub use scenario::*;
 pub use step::*;

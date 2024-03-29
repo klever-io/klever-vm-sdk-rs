@@ -1,6 +1,6 @@
 use core::cmp::Ordering;
 
-use multiversx_sc::api::{BigIntApiImpl, Sign};
+use klever_sc::api::{BigIntApiImpl, Sign};
 
 extern "C" {
     fn bigIntNew(value: i64) -> i32;

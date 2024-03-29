@@ -1,6 +1,6 @@
 {
     "name": "payable",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -13,7 +13,7 @@
                 "address:an-account": {
                     "nonce": "0",
                     "balance": "10000",
-                    "esdt": {
+                    "kda": {
                         "str:TOK-123456": "1000",
                         "str:OTHERTOK-123456": "500",
                         "str:SFT-123": {
@@ -34,7 +34,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:TOK-123456",
                         "value": "100"

@@ -1,6 +1,6 @@
 {
     "name": "panic",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -31,7 +31,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "0x04",
+                "status": "57",
                 "message": "str:panic occurred: example panic message 123",
                 "logs": "*",
                 "gas": "*",

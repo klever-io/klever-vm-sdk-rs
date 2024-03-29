@@ -10,9 +10,9 @@
             "tx": {
                 "from": "address:buyer1",
                 "to": "sc:bonding-curve-contract",
-                "esdtValue": [
+                "kdaValue": [
                     {
-                        "tokenIdentifier": "str:EGLD-135790",
+                        "tokenIdentifier": "str:KLV-135790",
                         "value": "100"
                     }
                 ],
@@ -36,9 +36,9 @@
             "tx": {
                 "from": "address:buyer2",
                 "to": "sc:bonding-curve-contract",
-                "esdtValue": [
+                "kdaValue": [
                     {
-                        "tokenIdentifier": "str:EGLD-135790",
+                        "tokenIdentifier": "str:KLV-135790",
                         "value": "10000"
                     }
                 ],
@@ -52,7 +52,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:cannot subtract because result would be negative",
                 "gas": "*",
                 "refund": "*"
@@ -63,9 +63,9 @@
             "tx": {
                 "from": "address:buyer2",
                 "to": "sc:bonding-curve-contract",
-                "esdtValue": [
+                "kdaValue": [
                     {
-                        "tokenIdentifier": "str:EGLD-135790",
+                        "tokenIdentifier": "str:KLV-135790",
                         "value": "10000"
                     }
                 ],
@@ -89,9 +89,9 @@
             "tx": {
                 "from": "address:buyer1",
                 "to": "sc:bonding-curve-contract",
-                "esdtValue": [
+                "kdaValue": [
                     {
-                        "tokenIdentifier": "str:EGLD-135790",
+                        "tokenIdentifier": "str:KLV-135790",
                         "value": "100"
                     }
                 ],
@@ -122,8 +122,8 @@
                 "address:buyer1": {
                     "nonce": "2",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "135",
+                    "kda": {
+                        "str:KLV-135790": "135",
                         "str:MFFT-123456": "10",
                         "str:MFSFT-246802": {
                             "instances": [
@@ -139,8 +139,8 @@
                 "address:buyer2": {
                     "nonce": "2",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "19951",
+                    "kda": {
+                        "str:KLV-135790": "19951",
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -171,7 +171,7 @@
                 "address:artist1": {
                     "nonce": "11",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -191,7 +191,7 @@
                 "address:artist2": {
                     "nonce": "4",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFSFT-246802": {
                             "instances": [
                                 {
@@ -214,9 +214,9 @@
                 "sc:bonding-curve-contract": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFFT-123456": "690",
-                        "str:EGLD-135790": "114",
+                        "str:KLV-135790": "114",
                         "str:MFSFT-246802": {
                             "instances": [
                                 {
@@ -243,9 +243,9 @@
                         }
                     },
                     "storage": {
-                        "str:bonding_curve|nested:str:MFFT-123456": "u8:0|biguint:1|biguint:1|biguint:700|biguint:690|u8:1|nested:str:EGLD-135790|u64:0|biguint:55",
-                        "str:bonding_curve|nested:str:MFSFT-246802": "u8:0|biguint:0|biguint:1|biguint:2500|biguint:2495|u8:0|nested:str:EGLD-135790|u64:0|biguint:10",
-                        "str:bonding_curve|nested:str:MFNFT-567890": "u8:1|biguint:1|biguint:7|biguint:2|u8:1|nested:str:EGLD-135790|u64:0|biguint:49",
+                        "str:bonding_curve|nested:str:MFFT-123456": "u8:0|biguint:1|biguint:1|biguint:700|biguint:690|u8:1|nested:str:KLV-135790|u64:0|biguint:55",
+                        "str:bonding_curve|nested:str:MFSFT-246802": "u8:0|biguint:0|biguint:1|biguint:2500|biguint:2495|u8:0|nested:str:KLV-135790|u64:0|biguint:10",
+                        "str:bonding_curve|nested:str:MFNFT-567890": "u8:1|biguint:1|biguint:7|biguint:2|u8:1|nested:str:KLV-135790|u64:0|biguint:49",
                         "str:token_details|nested:str:MFFT-123456": "u32:1|u64:0|address:artist1",
                         "str:token_details|nested:str:MFSFT-246802": "u32:2|u64:1|u64:17|address:artist2",
                         "str:token_details|nested:str:MFNFT-567890": "u32:2|u64:8|u64:9|address:artist1",

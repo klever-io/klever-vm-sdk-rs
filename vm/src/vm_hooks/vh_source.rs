@@ -1,7 +1,7 @@
 use std::{fmt::Debug, sync::MutexGuard};
 
 use crate::{
-    tx_mock::{TxFunctionName, TxInput, TxLog, TxManagedTypes, TxResult},
+    tx_mock::{BackTransfers, TxFunctionName, TxInput, TxLog, TxManagedTypes, TxResult},
     types::{VMAddress, VMCodeMetadata, H256},
     world_mock::{AccountData, BlockInfo},
 };
@@ -13,7 +13,7 @@ pub trait VMHooksHandlerSource: Debug {
     fn halt_with_error(&self, status: u64, message: &str) -> !;
 
     fn vm_error(&self, message: &str) -> ! {
-        self.halt_with_error(10, message)
+        self.halt_with_error(62, message)
     }
 
     fn input_ref(&self) -> &TxInput;
@@ -47,6 +47,8 @@ pub trait VMHooksHandlerSource: Debug {
 
     fn get_current_block_info(&self) -> &BlockInfo;
 
+    fn back_transfers_lock(&self) -> MutexGuard<BackTransfers>;
+
     /// For ownership reasons, needs to return a clone.
     ///
     /// Can be optimized, but is not a priority right now.
@@ -61,25 +63,17 @@ pub trait VMHooksHandlerSource: Debug {
 
     fn account_code(&self, address: &VMAddress) -> Vec<u8>;
 
-    fn perform_async_call(
-        &self,
-        to: VMAddress,
-        egld_value: num_bigint::BigUint,
-        func_name: TxFunctionName,
-        args: Vec<Vec<u8>>,
-    ) -> !;
-
     fn perform_execute_on_dest_context(
         &self,
         to: VMAddress,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         args: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>>;
 
     fn perform_deploy(
         &self,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
         code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
@@ -88,7 +82,7 @@ pub trait VMHooksHandlerSource: Debug {
     fn perform_transfer_execute(
         &self,
         to: VMAddress,
-        egld_value: num_bigint::BigUint,
+        klv_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     );

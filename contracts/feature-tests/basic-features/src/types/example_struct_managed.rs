@@ -1,9 +1,9 @@
-use multiversx_sc::{
+use klever_sc::{
     api::ManagedTypeApi,
     types::{BigUint, ManagedBuffer},
 };
 
-multiversx_sc::derive_imports!();
+klever_sc::derive_imports!();
 
 #[derive(
     NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Debug, Clone,

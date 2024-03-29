@@ -68,9 +68,6 @@ path = "src/{SNIPPETS_SOURCE_FILE_NAME}"
 [dependencies.{contract_crate_name}]
 path = ".."
 
-[dependencies.multiversx-sc-snippets]
-version = "0.43.3"
-
 # [workspace]
 
 "#

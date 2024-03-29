@@ -1,6 +1,6 @@
 use bip39::Mnemonic;
 
-use multiversx_sdk::{crypto::public_key::PublicKey, data::address::Address, wallet::Wallet};
+use klever_vm_sdk::{crypto::public_key::PublicKey, data::address::Address, wallet::Wallet};
 
 #[test]
 fn test_private_key_from_mnemonic() {
@@ -18,7 +18,7 @@ fn test_private_key_from_mnemonic() {
         public_key.to_string()
     );
     assert_eq!(
-        "erd1mlh7q3fcgrjeq0et65vaaxcw6m5ky8jhu296pdxpk9g32zga6uhsemxx2a",
+        "klv1mlh7q3fcgrjeq0et65vaaxcw6m5ky8jhu296pdxpk9g32zga6uhszma5cr",
         address.to_string()
     );
 
@@ -34,7 +34,7 @@ fn test_private_key_from_mnemonic() {
         public_key.to_string()
     );
     assert_eq!(
-        "erd147877pc2tqv88yfvewhmdfuth845uqpsskky8kaalglzp6unem0qpwh982",
+        "klv147877pc2tqv88yfvewhmdfuth845uqpsskky8kaalglzp6unem0q6wvh45",
         address.to_string()
     );
 }
@@ -45,6 +45,6 @@ fn test_load_from_pem() {
     let addr = wallet.address();
     assert_eq!(
         addr.to_bech32_string().unwrap(),
-        "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"
+        "klv1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8sslccgef"
     );
 }

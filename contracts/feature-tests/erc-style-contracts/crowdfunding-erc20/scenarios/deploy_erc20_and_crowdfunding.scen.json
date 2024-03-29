@@ -16,12 +16,12 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:erc20_owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:erc20"
                 },
                 {
                     "creatorAddress": "address:crowdfunding_owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:crowdfunding"
                 }
             ]

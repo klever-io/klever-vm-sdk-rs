@@ -1,7 +1,7 @@
 use num_bigint::BigUint;
 use num_traits::Zero;
 
-use super::AccountEsdt;
+use super::AccountKda;
 use crate::{display_util::key_hex, types::VMAddress};
 use std::{collections::HashMap, fmt, fmt::Write};
 
@@ -11,13 +11,12 @@ pub type AccountStorage = HashMap<Vec<u8>, Vec<u8>>;
 pub struct AccountData {
     pub address: VMAddress,
     pub nonce: u64,
-    pub egld_balance: BigUint,
-    pub esdt: AccountEsdt,
+    pub klv_balance: BigUint,
+    pub kda: AccountKda,
     pub storage: AccountStorage,
     pub username: Vec<u8>,
     pub contract_path: Option<Vec<u8>>,
     pub contract_owner: Option<VMAddress>,
-    pub developer_rewards: BigUint,
 }
 
 impl AccountData {
@@ -25,13 +24,12 @@ impl AccountData {
         AccountData {
             address,
             nonce: 0,
-            egld_balance: BigUint::zero(),
-            esdt: AccountEsdt::default(),
+            klv_balance: BigUint::zero(),
+            kda: AccountKda::default(),
             storage: AccountStorage::default(),
             username: vec![],
             contract_path: None,
             contract_owner: None,
-            developer_rewards: BigUint::zero(),
         }
     }
 }
@@ -58,17 +56,15 @@ impl fmt::Display for AccountData {
             "AccountData {{
 		nonce: {},
 		balance: {},
-		esdt: [{} ],
+		kda: [{} ],
 		username: {},
 		storage: [{} ],
-		developerRewards: {},
 	}}",
             self.nonce,
-            self.egld_balance,
-            self.esdt,
+            self.klv_balance,
+            self.kda,
             String::from_utf8(self.username.clone()).unwrap(),
             storage_buf,
-            self.developer_rewards
         )
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "echo tuple into multiresult",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",

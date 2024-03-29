@@ -8,14 +8,14 @@ publish = false
 [lib]
 path = "src/rewards_distribution.rs"
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../framework/base"
 
-[dependencies.multiversx-sc-modules]
+[dependencies.klever-sc-modules]
 version = "0.43.3"
 path = "../../../contracts/modules"
 
-[dev-dependencies.multiversx-sc-scenario]
+[dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"

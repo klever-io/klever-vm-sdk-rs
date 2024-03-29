@@ -25,12 +25,12 @@ pub mod whitebox_legacy;
 pub use whitebox_legacy as testing_framework;
 
 pub use api::DebugApi;
-pub use multiversx_chain_vm;
+pub use klever_chain_vm;
 
 /// Re-exporting for convenience.
 pub use num_bigint;
 
-pub use multiversx_sc;
+pub use klever_sc;
 
 /// Exposing the scenario model. Might be moved in the future,
 /// but the export will hopefully remain the same.
@@ -40,7 +40,7 @@ pub use crate::scenario::model as scenario_model;
 pub use crate::scenario as mandos_system;
 
 // Re-exporting the whole mandos crate for easier use in tests.
-pub use multiversx_chain_scenario_format as scenario_format;
+pub use klever_chain_scenario_format as scenario_format;
 
 pub use facade::{ContractInfo, ScenarioWorld, WhiteboxContract};
 

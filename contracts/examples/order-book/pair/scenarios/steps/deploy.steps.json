@@ -6,7 +6,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:pair"
                 }
             ]
@@ -18,7 +18,7 @@
                 "from": "address:owner",
                 "contractCode": "file:../../output/order-book-pair.wasm",
                 "arguments": [
-                    "str:WEGLD-abcdef",
+                    "str:WKLV-abcdef",
                     "str:BUSD-abcdef"
                 ],
                 "gasLimit": "100,000,000",

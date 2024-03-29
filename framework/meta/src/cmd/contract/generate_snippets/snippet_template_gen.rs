@@ -1,6 +1,6 @@
 use std::{fs::File, io::Write};
 
-use multiversx_sc::abi::ContractAbi;
+use klever_sc::abi::ContractAbi;
 
 use super::snippet_gen_common::write_newline;
 
@@ -12,11 +12,11 @@ pub(crate) fn write_snippet_imports(file: &mut File, contract_crate_name: &str) 
 use {contract_crate_name}::ProxyTrait as _;
 use {contract_crate_name}::*;
 
-use multiversx_sc_snippets::{{
+use klever_sc_snippets::{{
     env_logger,
     erdrs::wallet::Wallet,
-    multiversx_sc::{{codec::multi_types::*, types::*}},
-    multiversx_sc_scenario::{{
+    klever_sc::{{codec::multi_types::*, types::*}},
+    klever_sc_scenario::{{
         api::StaticApi,
         bech32,
         scenario_format::interpret_trait::{{InterpretableFrom, InterpreterContext}},
@@ -39,7 +39,7 @@ pub(crate) fn write_snippet_constants(file: &mut File) {
 const PEM: &str = \"alice.pem\";
 const SC_ADDRESS: &str = \"\";
 
-const SYSTEM_SC_BECH32: &str = \"erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u\";
+const SYSTEM_SC_BECH32: &str = \"klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u\";
 const DEFAULT_ADDRESS_EXPR: &str =
     \"0x0000000000000000000000000000000000000000000000000000000000000000\";
 const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;"

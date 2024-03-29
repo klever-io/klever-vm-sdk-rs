@@ -1,4 +1,4 @@
-use multiversx_sc::types::H256;
+use klever_sc::types::H256;
 
 use crate::{
     api::StaticApi,
@@ -10,7 +10,7 @@ use crate::{
     scenario_model::TxResponse,
 };
 
-use crate::multiversx_sc::types::{CodeMetadata, ContractDeploy};
+use crate::klever_sc::types::{CodeMetadata, ContractDeploy};
 
 use super::{convert_call_args, TypedScDeploy};
 
@@ -52,11 +52,11 @@ impl ScDeployStep {
         self
     }
 
-    pub fn egld_value<V>(mut self, expr: V) -> Self
+    pub fn klv_value<V>(mut self, expr: V) -> Self
     where
         BigUintValue: From<V>,
     {
-        self.tx.egld_value = BigUintValue::from(expr);
+        self.tx.klv_value = BigUintValue::from(expr);
         self
     }
 

@@ -16,7 +16,7 @@ pub fn set_special_role(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Bloc
     let role = tx_input.args[2].clone();
 
     tx_cache.with_account_mut(&address, |account| {
-        account.esdt.set_special_role(&token_identifier, &role);
+        account.kda.set_special_role(&token_identifier, &role);
     });
 
     (TxResult::empty(), tx_cache.into_blockchain_updates())

@@ -26,7 +26,7 @@
             "tx": {
                 "from": "address:acc1",
                 "to": "sc:crypto_bubbles",
-                "egldValue": "0x4000000",
+                "klvValue": "0x4000000",
                 "function": "topUp",
                 "arguments": [],
                 "gasLimit": "0x100000",
@@ -69,11 +69,12 @@
                 "logs": [
                     {
                         "address": "*",
-                        "endpoint": "str:transferValueOnly",
+                        "endpoint": "str:KleverTransfer",
                         "topics": [
-                            "sc:crypto_bubbles",
-                            "address:acc1",
-                            "0x4000000"
+                            "str:KLV",
+                            "",
+                            "0x4000000",
+                            "address:acc1"
                         ],
                         "data": ""
                     },

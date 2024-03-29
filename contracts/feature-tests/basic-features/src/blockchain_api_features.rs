@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// Contains all events that can be emitted by the contract.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait BlockchainApiFeatures {
     #[endpoint]
     fn get_caller(&self) -> ManagedAddress {
@@ -11,11 +11,6 @@ pub trait BlockchainApiFeatures {
     #[endpoint]
     fn get_owner_address(&self) -> ManagedAddress {
         self.blockchain().get_owner_address()
-    }
-
-    #[endpoint]
-    fn get_shard_of_address(&self, address: &ManagedAddress) -> u32 {
-        self.blockchain().get_shard_of_address(address)
     }
 
     #[endpoint]
@@ -36,10 +31,5 @@ pub trait BlockchainApiFeatures {
     #[endpoint]
     fn get_gas_left(&self) -> u64 {
         self.blockchain().get_gas_left()
-    }
-
-    #[endpoint]
-    fn get_cumulated_validator_rewards(&self) -> BigUint {
-        self.blockchain().get_cumulated_validator_rewards()
     }
 }

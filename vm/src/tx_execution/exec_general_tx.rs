@@ -12,6 +12,8 @@ use crate::{
 
 use super::{is_system_sc_address, BlockchainVMRef};
 
+const KLV_IDENTIFIER: [u8; 3] = [b'K', b'L', b'V'];
+
 fn should_execute_sc_call(tx_input: &TxInput) -> bool {
     // execute whitebox calls no matter what
     if tx_input.func_name == TxFunctionName::WHITEBOX_CALL {
@@ -39,7 +41,7 @@ impl BlockchainVMRef {
         F: FnOnce(),
     {
         if let Err(err) =
-            tx_cache.transfer_egld_balance(&tx_input.from, &tx_input.to, &tx_input.egld_value)
+            tx_cache.transfer_klv_balance(&tx_input.from, &tx_input.to, &tx_input.klv_value)
         {
             return (TxResult::from_panic_obj(&err), BlockchainUpdate::empty());
         }
@@ -47,7 +49,7 @@ impl BlockchainVMRef {
         // skip for transactions coming directly from scenario json, which should all be coming from user wallets
         // TODO: reorg context logic
         let add_transfer_log =
-            tx_input.from.is_smart_contract_address() && !tx_input.egld_value.is_zero();
+            tx_input.from.is_smart_contract_address() && !tx_input.klv_value.is_zero();
         let transfer_value_log = if add_transfer_log {
             Some(TxLog {
                 address: VMAddress::zero(), // TODO: figure out the real VM behavior
@@ -55,7 +57,7 @@ impl BlockchainVMRef {
                 topics: vec![
                     tx_input.from.to_vec(),
                     tx_input.to.to_vec(),
-                    tx_input.egld_value.to_bytes_be(),
+                    tx_input.klv_value.to_bytes_be(),
                 ],
                 data: Vec::new(),
             })
@@ -64,13 +66,26 @@ impl BlockchainVMRef {
         };
 
         // TODO: temporary, will convert to explicit builtin function first
-        for esdt_transfer in tx_input.esdt_values.iter() {
-            let transfer_result = tx_cache.transfer_esdt_balance(
+        for kda_transfer in tx_input.kda_values.iter() {
+            // if kda_transfer.token_identifier is "KLV", transfer as KLV
+            if kda_transfer.token_identifier.eq(&KLV_IDENTIFIER) {
+                let transfer_result = tx_cache.transfer_klv_balance(
+                    &tx_input.from,
+                    &tx_input.to,
+                    &kda_transfer.value,
+                );
+                if let Err(err) = transfer_result {
+                    return (TxResult::from_panic_obj(&err), BlockchainUpdate::empty());
+                }
+                continue;
+            }
+
+            let transfer_result = tx_cache.transfer_kda_balance(
                 &tx_input.from,
                 &tx_input.to,
-                &esdt_transfer.token_identifier,
-                esdt_transfer.nonce,
-                &esdt_transfer.value,
+                &kda_transfer.token_identifier,
+                kda_transfer.nonce,
+                &kda_transfer.value,
             );
             if let Err(err) = transfer_result {
                 return (TxResult::from_panic_obj(&err), BlockchainUpdate::empty());
@@ -117,7 +132,7 @@ impl BlockchainVMRef {
 
         if let Err(err) = tx_context_sh
             .tx_cache
-            .subtract_egld_balance(&tx_input_ref.from, &tx_input_ref.egld_value)
+            .subtract_klv_balance(&tx_input_ref.from, &tx_input_ref.klv_value)
         {
             return (
                 TxResult::from_panic_obj(&err),
@@ -128,7 +143,7 @@ impl BlockchainVMRef {
         tx_context_sh.create_new_contract(&new_address, contract_path, tx_input_ref.from.clone());
         tx_context_sh
             .tx_cache
-            .increase_egld_balance(&new_address, &tx_input_ref.egld_value);
+            .increase_klv_balance(&new_address, &tx_input_ref.klv_value);
 
         TxContextStack::execute_on_vm_stack(&mut tx_context_sh, f);
 

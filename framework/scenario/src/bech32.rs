@@ -1,5 +1,5 @@
 use bech32::{FromBase32, ToBase32, Variant};
-use multiversx_sc::types::heap::Address;
+use klever_sc::types::heap::Address;
 
 pub fn decode(bech32_address: &str) -> Address {
     let (_, dest_address_bytes_u5, _) = bech32::decode(bech32_address).unwrap();
@@ -12,6 +12,6 @@ pub fn decode(bech32_address: &str) -> Address {
 }
 
 pub fn encode(address: &Address) -> String {
-    bech32::encode("erd", address.as_bytes().to_base32(), Variant::Bech32)
+    bech32::encode("klv", address.as_bytes().to_base32(), Variant::Bech32)
         .expect("bech32 encode error")
 }

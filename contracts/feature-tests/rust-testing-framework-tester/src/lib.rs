@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 pub mod dummy_module;
 
@@ -16,7 +16,7 @@ pub struct StructWithManagedTypes<M: ManagedTypeApi> {
     pub buffer: ManagedBuffer<M>,
 }
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[init]
     fn init(&self) -> ManagedBuffer {
@@ -42,31 +42,31 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     }
 
     #[endpoint]
-    fn get_egld_balance(&self) -> BigUint {
+    fn get_klv_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&EgldOrEsdtTokenIdentifier::egld(), 0)
+            .get_sc_balance(&TokenIdentifier::klv(), 0)
     }
 
     #[endpoint]
-    fn get_esdt_balance(&self, token_id: TokenIdentifier, nonce: u64) -> BigUint {
+    fn get_kda_balance(&self, token_id: TokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&EgldOrEsdtTokenIdentifier::esdt(token_id), nonce)
+            .get_sc_balance(&token_id, nonce)
     }
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint]
-    fn receive_egld(&self) -> BigUint {
-        self.call_value().egld_value().clone_value()
+    fn receive_klv(&self) -> BigUint {
+        self.call_value().klv_value().clone_value()
     }
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint]
-    fn recieve_egld_half(&self) {
+    fn recieve_klv_half(&self) {
         let caller = self.blockchain().get_caller();
-        let payment_amount = &*self.call_value().egld_value() / 2u32;
-        self.send().direct(
+        let payment_amount = &*self.call_value().klv_value() / 2u32;
+        self.send().direct_kda(
             &caller,
-            &EgldOrEsdtTokenIdentifier::egld(),
+            &TokenIdentifier::klv(),
             0,
             &payment_amount,
         );
@@ -74,8 +74,8 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[payable("*")]
     #[endpoint]
-    fn receive_esdt(&self) -> (TokenIdentifier, BigUint) {
-        let payment = self.call_value().single_esdt();
+    fn receive_kda(&self) -> (TokenIdentifier, BigUint) {
+        let payment = self.call_value().single_kda();
         (payment.token_identifier, payment.amount)
     }
 
@@ -87,19 +87,19 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[payable("*")]
     #[endpoint]
-    fn receive_esdt_half(&self) {
+    fn receive_kda_half(&self) {
         let caller = self.blockchain().get_caller();
-        let payment = self.call_value().single_esdt();
+        let payment = self.call_value().single_kda();
         let amount = payment.amount / 2u32;
 
         self.send()
-            .direct_esdt(&caller, &payment.token_identifier, 0, &amount);
+            .direct_kda(&caller, &payment.token_identifier, 0, &amount);
     }
 
     #[payable("*")]
     #[endpoint]
-    fn receive_multi_esdt(&self) -> ManagedVec<EsdtTokenPayment<Self::Api>> {
-        self.call_value().all_esdt_transfers().clone_value()
+    fn receive_multi_kda(&self) -> ManagedVec<KdaTokenPayment<Self::Api>> {
+        self.call_value().all_kda_transfers().clone_value()
     }
 
     #[payable("*")]
@@ -111,35 +111,17 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
         nft_nonce: u64,
         amount: BigUint,
     ) {
-        self.send().direct_esdt(&to, &token_id, nft_nonce, &amount);
+        self.send().direct_kda(&to, &token_id, nft_nonce, &amount);
     }
 
     #[endpoint]
-    fn mint_esdt(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
-        self.send().esdt_local_mint(&token_id, nonce, &amount);
+    fn mint_kda(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
+        self.send().kda_mint(&token_id, nonce, &amount);
     }
 
     #[endpoint]
-    fn burn_esdt(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
-        self.send().esdt_local_burn(&token_id, nonce, &amount);
-    }
-
-    #[endpoint]
-    fn create_nft(
-        &self,
-        token_id: TokenIdentifier,
-        amount: BigUint,
-        attributes: NftDummyAttributes,
-    ) -> u64 {
-        self.send().esdt_nft_create(
-            &token_id,
-            &amount,
-            &ManagedBuffer::new(),
-            &BigUint::zero(),
-            &ManagedBuffer::new(),
-            &attributes,
-            &ManagedVec::new(),
-        )
+    fn burn_kda(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
+        self.send().kda_burn(&token_id, nonce, &amount);
     }
 
     #[endpoint]
@@ -191,17 +173,13 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
         let mut args = ManagedArgBuffer::new();
         args.push_arg(&value);
 
-        self.send_raw().async_call_raw(
+        self.send_raw().execute_on_dest_context_raw(
+            0,
             &other_sc_address,
             &BigUint::zero(),
             &ManagedBuffer::new_from_bytes(b"add"),
             &args,
         );
-    }
-
-    #[callback_raw]
-    fn callback_raw(&self, _ignore: IgnoreValue) {
-        self.callback_executed().set(true);
     }
 
     #[endpoint(getTotalValue)]

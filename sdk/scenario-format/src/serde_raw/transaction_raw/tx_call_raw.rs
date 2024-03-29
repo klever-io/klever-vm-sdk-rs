@@ -16,11 +16,11 @@ pub struct TxCallRaw {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub egld_value: Option<ValueSubTree>,
+    pub klv_value: Option<ValueSubTree>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub esdt_value: Vec<TxESDTRaw>,
+    pub kda_value: Vec<TxKDARaw>,
 
     pub function: String,
 

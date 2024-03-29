@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 // contract to help with snippet generation tests
 // contains endpoints with various types combinations
@@ -11,11 +11,6 @@ multiversx_sc::derive_imports!();
 // cargo run snippets
 // Add --overwrite if you want to overwrite existing snippets
 
-// Additionally, we also have to update the interact-rs snippets manually to add relative paths:
-// [dependencies.multiversx-sc-snippets]
-// version = "0.43.3"
-// path = "../../../../framework/snippets"
-
 #[derive(
     TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, ManagedVecItem, Debug, Clone,
 )]
@@ -23,7 +18,7 @@ pub struct MyCoolStruct<M: ManagedTypeApi> {
     pub awesome: BigUint<M>,
 }
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait PayableFeatures {
     #[init]
     fn init(&self) {}
@@ -72,16 +67,16 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
-    fn esdt_token_payment(&self, _arg: OptionalValue<EsdtTokenPayment>) -> EsdtTokenPayment {
-        EsdtTokenPayment::new(
-            TokenIdentifier::from_esdt_bytes(b"COOL-123456"),
+    fn kda_token_payment(&self, _arg: OptionalValue<KdaTokenPayment>) -> KdaTokenPayment {
+        KdaTokenPayment::new(
+            TokenIdentifier::from_kda_bytes(b"COOL-123456"),
             0,
             BigUint::from(1_000u64),
         )
     }
 
     #[endpoint]
-    fn egld_or_esdt_payment(&self, arg: EgldOrEsdtTokenPayment) -> EgldOrEsdtTokenIdentifier {
+    fn klv_or_kda_payment(&self, arg: KdaTokenPayment) -> TokenIdentifier {
         arg.token_identifier
     }
 

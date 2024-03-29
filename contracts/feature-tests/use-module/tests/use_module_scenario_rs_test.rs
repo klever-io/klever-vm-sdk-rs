@@ -1,7 +1,7 @@
 mod user_builtin {
-    multiversx_sc::imports!();
+    klever_sc::imports!();
 
-    #[multiversx_sc::proxy]
+    #[klever_sc::proxy]
     pub trait UserBuiltin {
         #[endpoint(SetUserName)]
         fn set_user_name(&self, name: &BoxedBytes) -> BigUint;
@@ -9,43 +9,37 @@ mod user_builtin {
 }
 
 mod dns_mock {
-    multiversx_sc::imports!();
+    klever_sc::imports!();
 
-    #[multiversx_sc::contract]
+    #[klever_sc::contract]
     pub trait DnsMock {
         #[proxy]
         fn user_builtin_proxy(&self, to: ManagedAddress) -> super::user_builtin::Proxy<Self::Api>;
 
-        #[payable("EGLD")]
+        #[payable("KLV")]
         #[endpoint]
         fn register(&self, name: BoxedBytes) {
-            let _payment = self.call_value().egld_value();
+            let _payment = self.call_value().klv_value();
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
                 .set_user_name(&name)
-                .async_call()
-                .call_and_exit()
+                .execute_on_dest_context::<IgnoreValue>();
         }
     }
 }
 
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract("file:output/use-module.wasm", use_module::ContractBuilder);
 
     blockchain.register_contract(
-        "file:test-wasm/elrond-wasm-sc-dns.wasm",
+        "file:test-wasm/klever-wasm-sc-dns.wasm",
         dns_mock::ContractBuilder,
     );
 
     blockchain
-}
-
-#[test]
-fn use_module_claim_developer_rewards_rs() {
-    world().run("scenarios/use_module_claim_developer_rewards.scen.json");
 }
 
 #[test]

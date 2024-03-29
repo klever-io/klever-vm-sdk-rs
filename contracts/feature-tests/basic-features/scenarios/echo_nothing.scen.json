@@ -1,6 +1,6 @@
 {
     "name": "echo_nothing",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",

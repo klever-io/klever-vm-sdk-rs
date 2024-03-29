@@ -1,4 +1,4 @@
-use multiversx_chain_vm_executor::{CompilationOptions, Instance};
+use klever_chain_vm_executor::{CompilationOptions, Instance};
 
 use crate::{
     display_util::address_hex,

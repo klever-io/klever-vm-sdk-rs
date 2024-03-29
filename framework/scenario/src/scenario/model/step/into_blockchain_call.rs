@@ -3,11 +3,11 @@
 use super::{ScCallStep, ScDeployStep, ScQueryStep, TypedScCall, TypedScDeploy, TypedScQuery};
 use crate::{
     api::StaticApi,
-    multiversx_sc::{
+    klever_sc::{
         codec::TopEncodeMulti,
         types::{
-            ContractCall, ContractCallNoPayment, ContractCallWithEgld,
-            ContractCallWithEgldOrSingleEsdt, ContractCallWithMultiEsdt, ContractDeploy,
+            ContractCall, ContractCallNoPayment, ContractCallWithKlv,
+            ContractCallWithKlvOrSingleKda, ContractCallWithMultiKda, ContractDeploy,
         },
     },
 };
@@ -46,9 +46,9 @@ macro_rules! impl_into_blockchain_call_cc {
 }
 
 impl_into_blockchain_call_cc! {ContractCallNoPayment}
-impl_into_blockchain_call_cc! {ContractCallWithEgld}
-impl_into_blockchain_call_cc! {ContractCallWithEgldOrSingleEsdt}
-impl_into_blockchain_call_cc! {ContractCallWithMultiEsdt}
+impl_into_blockchain_call_cc! {ContractCallWithKlv}
+impl_into_blockchain_call_cc! {ContractCallWithKlvOrSingleKda}
+impl_into_blockchain_call_cc! {ContractCallWithMultiKda}
 
 impl<OriginalResult> IntoBlockchainCall for ContractDeploy<StaticApi, OriginalResult> {
     type BlockchainCall = TypedScDeploy<OriginalResult>;

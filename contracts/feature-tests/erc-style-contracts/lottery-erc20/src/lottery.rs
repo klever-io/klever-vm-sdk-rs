@@ -1,6 +1,6 @@
 #![no_std]
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 mod lottery_info;
 mod random;
@@ -13,7 +13,7 @@ use status::Status;
 const PERCENTAGE_TOTAL: u16 = 100;
 const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Lottery {
     #[proxy]
     fn erc20_proxy(&self, to: ManagedAddress) -> erc20::Proxy<Self::Api>;
@@ -211,12 +211,25 @@ pub trait Lottery {
         let lottery_contract_address = self.blockchain().get_sc_address();
         self.erc20_proxy(erc20_address)
             .transfer_from(caller.clone(), lottery_contract_address, token_amount)
-            .async_call()
-            .with_callback(
-                self.callbacks()
-                    .transfer_from_callback(lottery_name, &caller),
-            )
-            .call_and_exit()
+            .execute_on_dest_context::<IgnoreValue>();
+
+        let mut info = self.get_lottery_info(lottery_name);
+        let mut entries = self.get_number_of_entries_for_user(lottery_name, &caller);
+
+        self.set_ticket_holder(lottery_name, info.current_ticket_number, &caller);
+
+        entries += 1;
+        info.current_ticket_number += 1;
+
+        let ticket_price = info.ticket_price.clone();
+        info.prize_pool += ticket_price;
+
+        self.set_number_of_entries_for_user(lottery_name, &caller, entries);
+
+        info.queued_tickets -= 1;
+
+        self.set_lottery_info(lottery_name, &info);
+
     }
 
     fn reserve_ticket(&self, lottery_name: &BoxedBytes) {
@@ -275,15 +288,13 @@ pub trait Lottery {
         prev_winners.push(winning_ticket_id);
         self.set_prev_winners(lottery_name, &prev_winners);
 
-        self.set_lottery_info(lottery_name, &info);
-
         let erc20_address = self.get_erc20_contract_address();
 
         self.erc20_proxy(erc20_address)
             .transfer(winner_address, prize)
-            .async_call()
-            .with_callback(self.callbacks().distribute_prizes_callback(lottery_name))
-            .call_and_exit()
+            .execute_on_dest_context::<IgnoreValue>();
+            
+        self.distribute_prizes(lottery_name);
     }
 
     fn get_random_winning_ticket_id(&self, prev_winners: &[u32], total_tickets: u32) -> u32 {
@@ -322,54 +333,6 @@ pub trait Lottery {
         }
 
         sum
-    }
-
-    #[callback]
-    fn transfer_from_callback(
-        &self,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-        cb_lottery_name: &BoxedBytes,
-        cb_sender: &ManagedAddress,
-    ) {
-        let mut info = self.get_lottery_info(cb_lottery_name);
-
-        match result {
-            ManagedAsyncCallResult::Ok(()) => {
-                let mut entries = self.get_number_of_entries_for_user(cb_lottery_name, cb_sender);
-
-                self.set_ticket_holder(cb_lottery_name, info.current_ticket_number, cb_sender);
-
-                entries += 1;
-                info.current_ticket_number += 1;
-
-                let ticket_price = info.ticket_price.clone();
-                info.prize_pool += ticket_price;
-
-                self.set_number_of_entries_for_user(cb_lottery_name, cb_sender, entries);
-            },
-            ManagedAsyncCallResult::Err(_) => {
-                // payment error, return ticket to pool
-                info.tickets_left += 1;
-            },
-        }
-
-        info.queued_tickets -= 1;
-
-        self.set_lottery_info(cb_lottery_name, &info);
-    }
-
-    #[callback]
-    fn distribute_prizes_callback(
-        &self,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-        cb_lottery_name: &BoxedBytes,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(()) => self.distribute_prizes(cb_lottery_name),
-            ManagedAsyncCallResult::Err(_) => {
-                // nothing we can do if an error occurs in the erc20 contract
-            },
-        }
     }
 
     // storage
@@ -425,8 +388,6 @@ pub trait Lottery {
     #[view(erc20ContractManagedAddress)]
     #[storage_get("erc20ContractAddress")]
     fn get_erc20_contract_address(&self) -> ManagedAddress;
-
-    // temporary storage between "determine_winner" proxy callbacks
 
     #[storage_get("previousWinners")]
     fn get_prev_winners(&self, lottery_name: &BoxedBytes) -> Vec<u32>;

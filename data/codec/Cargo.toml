@@ -1,23 +1,23 @@
 [package]
-name = "multiversx-sc-codec"
+name = "klever-sc-codec"
 version = "0.18.1"
 edition = "2021"
 
-authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "MultiversX <contact@multiversx.com>"]
+authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "Lightweight binary serializer/deserializer, written especially for MultiversX smart contracts"
-keywords = ["multiversx", "wasm", "webassembly", "blockchain", "contract"]
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "Lightweight binary serializer/deserializer, written especially for Klever smart contracts"
+keywords = ["klever", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
 [features]
-derive = ["multiversx-sc-codec-derive"]
+derive = ["klever-sc-codec-derive"]
 alloc = []
 
-[dependencies.multiversx-sc-codec-derive]
+[dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
 version = "=0.18.1"
 optional = true
@@ -26,6 +26,6 @@ optional = true
 arrayvec = { version = "0.7.1", default-features = false }
 num-bigint = { version = "0.4.2", optional = true } # can only be used in std contexts
 
-[dev-dependencies.multiversx-sc-codec-derive]
+[dev-dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
 version = "=0.18.1"

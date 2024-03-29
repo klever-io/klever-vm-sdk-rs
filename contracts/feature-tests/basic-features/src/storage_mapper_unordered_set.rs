@@ -1,7 +1,7 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 /// Storage mapper test.
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait UnorderedSetMapperFeatures {
     #[view]
     #[storage_mapper("set_mapper")]

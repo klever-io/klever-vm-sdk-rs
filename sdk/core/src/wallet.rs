@@ -17,7 +17,7 @@ use crate::{
     data::{address::Address, transaction::Transaction},
 };
 
-const EGLD_COIN_TYPE: u32 = 508;
+const KLV_COIN_TYPE: u32 = 508;
 const HARDENED: u32 = 0x80000000;
 
 type HmacSha521 = Hmac<Sha512>;
@@ -71,7 +71,7 @@ impl Wallet {
 
         for child_idx in [
             44 | HARDENED,
-            EGLD_COIN_TYPE | HARDENED,
+            KLV_COIN_TYPE | HARDENED,
             account | HARDENED, // account
             HARDENED,
             address_index | HARDENED, // addressIndex

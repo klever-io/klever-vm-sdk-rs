@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, Clone)]
 pub enum SampleEnum {
@@ -15,7 +15,7 @@ pub struct Structure<M: ManagedTypeApi> {
     pub field3: ManagedBuffer<M>,
 }
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait LargeStorageBenchmark {
     #[init]
     fn init(&self) {}

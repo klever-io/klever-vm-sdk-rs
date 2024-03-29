@@ -3,8 +3,8 @@
 #[derive(Clone, Debug)]
 pub enum MethodPayableMetadata {
     NotPayable,
-    Egld,
-    SingleEsdtToken(String),
+    Klv,
+    SingleKdaToken(String),
     AnyToken,
 }
 
@@ -13,18 +13,18 @@ impl MethodPayableMetadata {
         !matches!(self, MethodPayableMetadata::NotPayable)
     }
 
-    pub fn no_esdt(&self) -> bool {
+    pub fn no_kda(&self) -> bool {
         matches!(
             self,
-            MethodPayableMetadata::NotPayable | MethodPayableMetadata::Egld
+            MethodPayableMetadata::NotPayable | MethodPayableMetadata::Klv
         )
     }
 
     pub fn abi_strings(&self) -> Vec<String> {
         match self {
             MethodPayableMetadata::NotPayable => Vec::new(),
-            MethodPayableMetadata::Egld => vec!["EGLD".to_string()],
-            MethodPayableMetadata::SingleEsdtToken(s) => vec![s.clone()],
+            MethodPayableMetadata::Klv => vec!["KLV".to_string()],
+            MethodPayableMetadata::SingleKdaToken(s) => vec![s.clone()],
             MethodPayableMetadata::AnyToken => vec!["*".to_string()],
         }
     }

@@ -1,10 +1,10 @@
-use crate::codec::{multi_types::IgnoreValue, TopDecodeMulti, TopEncodeMulti};
+use crate::codec::{TopDecodeMulti, TopEncodeMulti};
 
 use crate::{
     api::CallTypeApi, contract_base::ExitCodecErrorHandler, err_msg, types::ManagedBuffer,
 };
 
-use super::{AsyncCall, ContractCallNoPayment, ContractCallWithEgld, ManagedArgBuffer};
+use super::{ContractCallNoPayment, ContractCallWithKlv, ManagedArgBuffer};
 
 /// Defines a contract call object, which is the basis for all calls to other contracts.
 ///
@@ -15,10 +15,10 @@ where
 {
     type OriginalResult: TopEncodeMulti;
 
-    /// Converts any ESDT transfers into builtin function calls,
-    /// thus reducing it to a simple transaction with optional EGLD value.
+    /// Converts any KDA transfers into builtin function calls,
+    /// thus reducing it to a simple transaction with optional KLV value.
     #[doc(hidden)]
-    fn into_normalized(self) -> ContractCallWithEgld<SA, Self::OriginalResult>;
+    fn into_normalized(self) -> ContractCallWithKlv<SA, Self::OriginalResult>;
 
     /// Mutable access to the common base.
     #[doc(hidden)]
@@ -30,6 +30,18 @@ where
         let h = ExitCodecErrorHandler::<SA>::from(err_msg::CONTRACT_CALL_ENCODE_ERROR);
         let Ok(()) =
             endpoint_arg.multi_encode_or_handle_err(&mut self.get_mut_basic().arg_buffer, h);
+    }
+
+    /// Serializes and pushes a value to the arguments buffer.
+    ///
+    /// Accepts multi-values, so it might effectively be adding more than one raw argument.
+    ///
+    /// Warning: this method serializes any serializable type,
+    /// but does no type checking against the destination endpoint ABI.
+    /// Only use for raw calls, built without a proxy.
+    fn argument<T: TopEncodeMulti>(mut self, arg: &T) -> Self {
+        self.proxy_arg(arg);
+        self
     }
 
     /// For cases where we build the contract call by hand.
@@ -56,19 +68,6 @@ where
         self.into_normalized().to_call_data_string()
     }
 
-    /// Converts to a legacy async call.
-    #[inline]
-    fn async_call(self) -> AsyncCall<SA> {
-        self.into_normalized().async_call()
-    }
-
-    /// Converts to an async promise.
-    #[inline]
-    #[cfg(feature = "promises")]
-    fn async_call_promise(self) -> super::AsyncCallPromises<SA> {
-        self.into_normalized().async_call_promise()
-    }
-
     /// Executes immediately, synchronously, and returns contract call result.
     /// Only works if the target contract is in the same shard.
     #[inline]
@@ -77,19 +76,6 @@ where
         RequestedResult: TopDecodeMulti,
     {
         self.into_normalized().execute_on_dest_context()
-    }
-
-    /// Executes immediately, synchronously.
-    ///
-    /// The result (if any) is ignored.
-    ///
-    /// Deprecated and will be removed soon. Use `execute_on_dest_context::<IgnoreValue>(...)` instead.
-    #[deprecated(
-        since = "0.36.1",
-        note = "Redundant method, use `let _: IgnoreValue = contract_call.execute_on_dest_context(...)` instead"
-    )]
-    fn execute_on_dest_context_ignore_result(self) {
-        let _ = self.execute_on_dest_context::<IgnoreValue>();
     }
 
     /// Executes immediately, synchronously, and returns contract call result.
@@ -116,7 +102,6 @@ where
 
     /// Immediately launches a transfer-execute call.
     ///
-    /// This is similar to an async call, but there is no callback
-    /// and there can be more than one such call per transaction.
+    /// can be more than one such call per transaction.
     fn transfer_execute(self);
 }

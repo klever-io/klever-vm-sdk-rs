@@ -1,13 +1,15 @@
-use crate::{
-    types::{EsdtLocalRole, EsdtLocalRoleFlags, RawHandle, VMAddress},
-    vm_hooks::VMHooksHandlerSource,
-    world_mock::{EsdtData, EsdtInstance},
-};
 use num_bigint::BigInt;
-use num_traits::Zero;
+
+use crate::{
+    types::{RawHandle, VMAddress},
+    vm_hooks::VMHooksHandlerSource,
+    world_mock::{KdaData, KdaInstance},
+};
+// use num_bigint::BigInt;
+// use num_traits::Zero;
 
 // The Go VM doesn't do it, but if we change that, we can enable it easily here too via this constant.
-const ESDT_TOKEN_DATA_FUNC_RESETS_VALUES: bool = false;
+const KDA_TOKEN_DATA_FUNC_RESETS_VALUES: bool = false;
 
 pub trait VMHooksBlockchain: VMHooksHandlerSource {
     fn is_contract_address(&self, address_bytes: &[u8]) -> bool {
@@ -35,10 +37,6 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         );
     }
 
-    fn get_shard_of_address(&self, address_bytes: &[u8]) -> i32 {
-        (address_bytes[address_bytes.len() - 1] % 3).into()
-    }
-
     fn is_smart_contract(&self, address_bytes: &[u8]) -> bool {
         VMAddress::from_slice(address_bytes).is_smart_contract_address()
     }
@@ -49,7 +47,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             "get balance not yet implemented for accounts other than the contract itself"
         );
         self.m_types_lock()
-            .bi_overwrite(dest, self.current_account_data().egld_balance.into());
+            .bi_overwrite(dest, self.current_account_data().klv_balance.into());
     }
 
     fn get_tx_hash(&self, dest: RawHandle) {
@@ -107,19 +105,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         );
     }
 
-    fn get_current_esdt_nft_nonce(&self, address_bytes: &[u8], token_id_bytes: &[u8]) -> u64 {
-        assert!(
-            self.is_contract_address(address_bytes),
-            "get_current_esdt_nft_nonce not yet implemented for accounts other than the contract itself"
-        );
-
-        self.current_account_data()
-            .esdt
-            .get_by_identifier_or_default(token_id_bytes)
-            .last_nonce
-    }
-
-    fn big_int_get_esdt_external_balance(
+    fn big_int_get_kda_external_balance(
         &self,
         address_bytes: &[u8],
         token_id_bytes: &[u8],
@@ -128,166 +114,281 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     ) {
         assert!(
             self.is_contract_address(address_bytes),
-            "get_esdt_balance not yet implemented for accounts other than the contract itself"
+            "get_kda_balance not yet implemented for accounts other than the contract itself"
         );
 
-        let esdt_balance = self
+        let kda_balance = self
             .current_account_data()
-            .esdt
-            .get_esdt_balance(token_id_bytes, nonce);
-        self.m_types_lock().bi_overwrite(dest, esdt_balance.into());
+            .kda
+            .get_kda_balance(token_id_bytes, nonce);
+        self.m_types_lock().bi_overwrite(dest, kda_balance.into());
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn managed_get_esdt_token_data(
+    fn set_user_kda_values(
+        &self,
+        _address_handle: RawHandle,
+        _ticker_handle: RawHandle,
+        _nonce: u64,
+        _balance_handle: RawHandle,
+        _frozen_handle: RawHandle,
+        _last_claim_handle: RawHandle,
+        _buckets_handle: RawHandle,
+        _mime_handle: RawHandle,
+        _metadata_handle: RawHandle,
+    ) {
+        // TODO: implement
+        todo!()
+    }
+
+    fn reset_user_kda_values(
+        &self,
+        _address_handle: RawHandle,
+        _ticker_handle: RawHandle,
+        _nonce: u64,
+        _balance_handle: RawHandle,
+        _frozen_handle: RawHandle,
+        _last_claim_handle: RawHandle,
+        _buckets_handle: RawHandle,
+        _mime_handle: RawHandle,
+        _metadata_handle: RawHandle,
+    ) {
+        todo!()
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn managed_get_user_kda(
         &self,
         address_handle: RawHandle,
-        token_id_handle: RawHandle,
+        ticker_handle: RawHandle,
         nonce: u64,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
-        name_handle: RawHandle,
-        attributes_handle: RawHandle,
-        creator_handle: RawHandle,
-        royalties_handle: RawHandle,
-        uris_handle: RawHandle,
-    ) {
+        balance_handle: RawHandle,
+        frozen_handle: RawHandle,
+        last_claim_handle: RawHandle,
+        buckets_handle: RawHandle,
+        mime_handle: RawHandle,
+        metadata_handle: RawHandle,
+    ){
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
-        let token_id_bytes = self.m_types_lock().mb_get(token_id_handle).to_vec();
+        let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
         let account = self.account_data(&address);
 
-        if let Some(esdt_data) = account.esdt.get_by_identifier(token_id_bytes.as_slice()) {
-            if let Some(instance) = esdt_data.instances.get_by_nonce(nonce) {
-                self.set_esdt_data_values(
-                    esdt_data,
+        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+            if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
+                self.set_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+            }
+            else {
+                self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+            }
+        }
+        else {
+            self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn managed_get_kda_token_data(
+        &self,
+        address_handle: RawHandle,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        precision_handle: RawHandle,
+        id_handle: RawHandle,
+        name_handle: RawHandle,
+        creator_handle: RawHandle,
+        logo_handle: RawHandle,
+        uris_handle: RawHandle,
+        initial_supply_handle: RawHandle,
+        circulating_supply_handle: RawHandle,
+        max_supply_handle: RawHandle,
+        minted_handle: RawHandle,
+        burned_handle: RawHandle,
+        royalties_handle: RawHandle,
+        properties_handle: RawHandle,
+        attributes_handle: RawHandle,
+        roles_handle: RawHandle,
+        issue_date_handle: RawHandle,
+    ) {
+        let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
+        let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
+        let account = self.account_data(&address);
+
+        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+            if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
+                self.set_kda_data_values(
+                    kda_data,
                     instance,
-                    value_handle,
-                    properties_handle,
-                    hash_handle,
+                    precision_handle,
+                    id_handle,
                     name_handle,
-                    attributes_handle,
                     creator_handle,
-                    royalties_handle,
+                    logo_handle,
                     uris_handle,
+                    initial_supply_handle,
+                    circulating_supply_handle,
+                    max_supply_handle,
+                    minted_handle,
+                    burned_handle,
+                    royalties_handle,
+                    properties_handle,
+                    attributes_handle,
+                    roles_handle,
+                    issue_date_handle,
                 )
             } else {
                 // missing nonce
-                self.reset_esdt_data_values(
-                    value_handle,
-                    properties_handle,
-                    hash_handle,
+                self.reset_kda_data_values(
+                    precision_handle,
+                    id_handle,
                     name_handle,
-                    attributes_handle,
                     creator_handle,
-                    royalties_handle,
+                    logo_handle,
                     uris_handle,
+                    initial_supply_handle,
+                    circulating_supply_handle,
+                    max_supply_handle,
+                    minted_handle,
+                    burned_handle,
+                    royalties_handle,
+                    properties_handle,
+                    attributes_handle,
+                    roles_handle,
+                    issue_date_handle,
                 );
             }
         } else {
             // missing token identifier
-            self.reset_esdt_data_values(
-                value_handle,
-                properties_handle,
-                hash_handle,
+            self.reset_kda_data_values(
+                precision_handle,
+                id_handle,
                 name_handle,
-                attributes_handle,
                 creator_handle,
-                royalties_handle,
+                logo_handle,
                 uris_handle,
+                initial_supply_handle,
+                circulating_supply_handle,
+                max_supply_handle,
+                minted_handle,
+                burned_handle,
+                royalties_handle,
+                properties_handle,
+                attributes_handle,
+                roles_handle,
+                issue_date_handle,
             );
         }
     }
 
-    fn check_esdt_frozen(
+    fn managed_get_kda_roles(
         &self,
-        address_handle: RawHandle,
-        token_id_handle: RawHandle,
-        _nonce: u64,
-    ) -> bool {
-        let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
-        let token_id_bytes = self.m_types_lock().mb_get(token_id_handle).to_vec();
-        let account = self.account_data(&address);
-        if let Some(esdt_data) = account.esdt.get_by_identifier(token_id_bytes.as_slice()) {
-            return esdt_data.frozen;
-        }
-
-        false
-    }
-
-    fn get_esdt_local_roles_bits(&self, token_id_handle: RawHandle) -> u64 {
-        let token_id_bytes = self.m_types_lock().mb_get(token_id_handle).to_vec();
-        let account = self.current_account_data();
-        let mut result = EsdtLocalRoleFlags::NONE;
-        if let Some(esdt_data) = account.esdt.get_by_identifier(token_id_bytes.as_slice()) {
-            for role_name in esdt_data.roles.get() {
-                result |= EsdtLocalRole::from(role_name.as_slice()).to_flag();
-            }
-        }
-        result.bits()
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    fn set_esdt_data_values(
-        &self,
-        esdt_data: &EsdtData,
-        instance: &EsdtInstance,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
-        name_handle: RawHandle,
-        attributes_handle: RawHandle,
-        creator_handle: RawHandle,
-        royalties_handle: RawHandle,
-        uris_handle: RawHandle,
+        _token_id_handle: i32,
+        _roles_handle: i32,
     ) {
+        todo!()
+    }
+
+    fn managed_get_back_transfers(
+        &self,
+        kda_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    ) {
+        let back_transfers = self.back_transfers_lock();
         let mut m_types = self.m_types_lock();
-        m_types.bi_overwrite(value_handle, instance.balance.clone().into());
-        if esdt_data.frozen {
-            m_types.mb_set(properties_handle, vec![1, 0]);
-        } else {
-            m_types.mb_set(properties_handle, vec![0, 0]);
-        }
-        m_types.mb_set(
-            hash_handle,
-            instance.metadata.hash.clone().unwrap_or_default(),
+        m_types.bi_overwrite(call_value_handle, back_transfers.call_value.clone().into());
+        m_types.mb_set_vec_of_kda_payments(
+            kda_transfer_value_handle,
+            &back_transfers.kda_transfers,
         );
-        m_types.mb_set(name_handle, instance.metadata.name.clone());
-        m_types.mb_set(attributes_handle, instance.metadata.attributes.clone());
-        if let Some(creator) = &instance.metadata.creator {
-            m_types.mb_set(creator_handle, creator.to_vec());
-        } else {
-            m_types.mb_set(creator_handle, vec![0u8; 32]);
-        };
-        m_types.bi_overwrite(
-            royalties_handle,
-            num_bigint::BigInt::from(instance.metadata.royalties),
-        );
-        m_types.mb_set_vec_of_bytes(uris_handle, instance.metadata.uri.clone());
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn reset_esdt_data_values(
+    fn set_kda_data_values(
         &self,
-        value_handle: RawHandle,
-        properties_handle: RawHandle,
-        hash_handle: RawHandle,
-        name_handle: RawHandle,
-        attributes_handle: RawHandle,
-        creator_handle: RawHandle,
-        royalties_handle: RawHandle,
-        uris_handle: RawHandle,
+        _kda_data: &KdaData,
+        instance: &KdaInstance,
+        _precision_handle: RawHandle,
+        _id_handle: RawHandle,
+        _name_handle: RawHandle,
+        _creator_handle: RawHandle,
+        _logo_handle: RawHandle,
+        _uris_handle: RawHandle,
+        _initial_supply_handle: RawHandle,
+        _circulating_supply_handle: RawHandle,
+        _max_supply_handle: RawHandle,
+        _minted_handle: RawHandle,
+        _burned_handle: RawHandle,
+        _royalties_handle: RawHandle,
+        _properties_handle: RawHandle,
+        _attributes_handle: RawHandle,
+        _roles_handle: RawHandle,
+        _issue_date_handle: RawHandle,
     ) {
-        if ESDT_TOKEN_DATA_FUNC_RESETS_VALUES {
-            let mut m_types = self.m_types_lock();
-            m_types.bi_overwrite(value_handle, BigInt::zero());
-            m_types.mb_set(properties_handle, vec![0, 0]);
-            m_types.mb_set(hash_handle, vec![]);
-            m_types.mb_set(name_handle, vec![]);
-            m_types.mb_set(attributes_handle, vec![]);
-            m_types.mb_set(creator_handle, vec![0u8; 32]);
-            m_types.bi_overwrite(royalties_handle, BigInt::zero());
-            m_types.bi_overwrite(uris_handle, BigInt::zero());
+        // TODO: maybe need to add other fields here
+        let mut m_types = self.m_types_lock();
+        let mut prop: u64 = 0;
+
+        if instance.metadata.can_burn {
+            prop += 1 << 4;
+        }
+
+        m_types.bi_overwrite(_properties_handle, BigInt::from(prop));
+
+    
+        // if kda_data.frozen {
+        //     m_types.mb_set(properties_handle, vec![1, 0]);
+        // } else {
+        //     m_types.mb_set(properties_handle, vec![0, 0]);
+        // }
+        // m_types.mb_set(
+        //     hash_handle,
+        //     instance.metadata.hash.clone().unwrap_or_default(),
+        // );
+        // m_types.mb_set(name_handle, instance.metadata.name.clone());
+        // m_types.mb_set(attributes_handle, instance.metadata.attributes.clone());
+        // if let Some(creator) = &instance.metadata.creator {
+        //     m_types.mb_set(creator_handle, creator.to_vec());
+        // } else {
+        //     m_types.mb_set(creator_handle, vec![0u8; 32]);
+        // };
+        // m_types.bi_overwrite(
+        //     royalties_handle,
+        //     num_bigint::BigInt::from(instance.metadata.royalties),
+        // );
+        // m_types.mb_set_vec_of_bytes(uris_handle, instance.metadata.uri.clone());
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn reset_kda_data_values(
+        &self,
+        _precision_handle: RawHandle,
+        _id_handle: RawHandle,
+        _name_handle: RawHandle,
+        _creator_handle: RawHandle,
+        _logo_handle: RawHandle,
+        _uris_handle: RawHandle,
+        _initial_supply_handle: RawHandle,
+        _circulating_supply_handle: RawHandle,
+        _max_supply_handle: RawHandle,
+        _minted_handle: RawHandle,
+        _burned_handle: RawHandle,
+        _royalties_handle: RawHandle,
+        _properties_handle: RawHandle,
+        _attributes_handle: RawHandle,
+        _roles_handle: RawHandle,
+        _issue_date_handle: RawHandle,
+    ) {
+        if KDA_TOKEN_DATA_FUNC_RESETS_VALUES {
+            todo!()
+            // TODO: implement
+            // let mut m_types = self.m_types_lock();
+            // m_types.bi_overwrite(value_handle, BigInt::zero());
+            // m_types.mb_set(properties_handle, vec![0, 0]);
+            // m_types.mb_set(hash_handle, vec![]);
+            // m_types.mb_set(name_handle, vec![]);
+            // m_types.mb_set(attributes_handle, vec![]);
+            // m_types.mb_set(creator_handle, vec![0u8; 32]);
+            // m_types.bi_overwrite(royalties_handle, BigInt::zero());
+            // m_types.bi_overwrite(uris_handle, BigInt::zero());
         }
     }
 }

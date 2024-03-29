@@ -7,7 +7,7 @@
             "tx": {
                 "from": "address:user1",
                 "to": "sc:pair",
-                "esdtValue": [
+                "kdaValue": [
                     {
                         "tokenIdentifier": "str:BUSD-abcdef",
                         "value": "2,000,000"

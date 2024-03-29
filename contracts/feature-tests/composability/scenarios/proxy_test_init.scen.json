@@ -1,5 +1,5 @@
 {
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -17,7 +17,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "sc:proxy-first",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:proxy-second"
                 }
             ]
@@ -28,7 +28,7 @@
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:proxy-first",
-                "egldValue": "100",
+                "klvValue": "100",
                 "function": "deploySecondContract",
                 "arguments": [
                     "file:../proxy-test-second/output/proxy-test-second.wasm"

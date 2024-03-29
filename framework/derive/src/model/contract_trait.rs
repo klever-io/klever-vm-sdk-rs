@@ -1,4 +1,4 @@
-use super::{Method, PublicRole, Supertrait, TraitProperties};
+use super::{Method, Supertrait, TraitProperties};
 
 /// Models a contract or module trait.
 pub struct ContractTrait {
@@ -14,18 +14,4 @@ pub struct ContractTrait {
 
     pub methods: Vec<Method>,
     pub trait_attributes: TraitProperties,
-}
-
-impl ContractTrait {
-    pub fn callback_count(&self) -> usize {
-        self.methods
-            .iter()
-            .filter(|m| {
-                matches!(
-                    m.public_role,
-                    PublicRole::Callback(_) | PublicRole::CallbackPromise(_)
-                )
-            })
-            .count()
-    }
 }

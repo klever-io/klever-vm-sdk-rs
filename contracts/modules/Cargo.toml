@@ -1,21 +1,21 @@
 [package]
-name = "multiversx-sc-modules"
+name = "klever-sc-modules"
 version = "0.43.3"
 edition = "2021"
 
-authors = ["MultiversX <contact@multiversx.com>"]
+authors = ["Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/multiversx/mx-sdk-rs"
-homepage = "https://multiversx.com/"
-documentation = "https://docs.multiversx.com/"
-description = "MultiversX WebAssembly standard smart contract modules"
-keywords = ["multiversx", "wasm", "webassembly", "blockchain", "contract"]
+repository = "https://github.com/klever-io/klever-vm-sdk-rs"
+homepage = "https://klever.io/"
+documentation = "https://docs.klever.finance/"
+description = "Klever WebAssembly standard smart contract modules"
+keywords = ["klever", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
 [features]
-alloc = ["multiversx-sc/alloc"]
+alloc = ["klever-sc/alloc"]
 
-[dependencies.multiversx-sc]
+[dependencies.klever-sc]
 version = "0.43.3"
 path = "../../framework/base"

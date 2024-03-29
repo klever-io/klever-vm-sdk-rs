@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::serde_raw::{
     AccountRaw, BlockInfoRaw, CheckAccountsRaw, NewAddressRaw, TxCallRaw, TxDeployRaw, TxExpectRaw,
-    TxQueryRaw, TxTransferRaw, TxValidatorRewardRaw, ValueSubTree,
+    TxQueryRaw, TxTransferRaw, ValueSubTree,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -136,22 +136,6 @@ pub enum StepRaw {
         comment: Option<String>,
 
         tx: TxTransferRaw,
-    },
-
-    #[serde(rename_all = "camelCase")]
-    ValidatorReward {
-        #[serde(default)]
-        id: String,
-
-        #[serde(default)]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        tx_id: Option<String>,
-
-        #[serde(default)]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        comment: Option<String>,
-
-        tx: TxValidatorRewardRaw,
     },
 
     CheckState {

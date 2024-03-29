@@ -1,4 +1,4 @@
-use multiversx_chain_vm::tx_mock::TxFunctionName;
+use klever_chain_vm::tx_mock::TxFunctionName;
 
 use super::{value_set_big_uint::*, BytesValue, CheckValue, U64Value};
 use num_bigint::BigUint;

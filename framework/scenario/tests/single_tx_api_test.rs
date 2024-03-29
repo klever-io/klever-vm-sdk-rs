@@ -1,5 +1,5 @@
-use multiversx_sc::contract_base::StorageRawWrapper;
-use multiversx_sc_scenario::api::SingleTxApi;
+use klever_sc::contract_base::StorageRawWrapper;
+use klever_sc_scenario::api::SingleTxApi;
 
 #[test]
 fn single_tx_api_test() {

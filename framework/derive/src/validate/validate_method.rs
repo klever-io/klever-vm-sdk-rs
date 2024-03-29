@@ -13,7 +13,6 @@ pub fn validate_contract(contract_trait: &ContractTrait) {
 pub fn validate_method(m: &Method) {
     validate_method_name(m);
     validate_payment_args(m);
-    validate_callback_call_result_arg(m);
 }
 
 fn validate_method_name(m: &Method) {
@@ -69,15 +68,9 @@ fn validate_payment_args(m: &Method) {
         m.name
     );
     if !m.is_payable() {
-        assert!(num_payment_amount == 0, "`#[payment]` only allowed in payable endpoints, payable init or callbacks (method: `{}`)", m.name);
+        assert!(num_payment_amount == 0, "`#[payment]` only allowed in payable endpoints or payable init (method: `{}`)", m.name);
 
-        assert!(num_payment_token == 0, "`#[payment_token]` only allowed in payable endpoints, payable init or callbacks (method: `{}`)", m.name);
-    }
-    if let PublicRole::Init(init_metadata) = &m.public_role {
-        assert!(
-            init_metadata.payable.no_esdt(),
-            "only EGLD payments currently allowed in constructors"
-        );
+        assert!(num_payment_token == 0, "`#[payment_token]` only allowed in payable endpoints or payable init (method: `{}`)", m.name);
     }
     validate_payment_args_not_reference(m);
 }
@@ -91,25 +84,5 @@ pub fn validate_payment_args_not_reference(m: &Method) {
             },
             _ => panic!("Unsupported payment argument type"),
         }
-    }
-}
-
-fn validate_callback_call_result_arg(m: &Method) {
-    let num_call_result = m
-        .method_args
-        .iter()
-        .filter(|&arg| arg.metadata.callback_call_result)
-        .count();
-
-    if matches!(&m.public_role, PublicRole::Callback(_)) {
-        assert!(
-            num_call_result <= 1,
-            "only one `#[call_result]` argument allowed"
-        );
-    } else {
-        assert!(
-            num_call_result <= 1,
-            "`#[call_result]` argument only allowed in `#[callback]` methods"
-        );
     }
 }

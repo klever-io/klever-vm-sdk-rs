@@ -1,5 +1,5 @@
 use crate::api::VmApiImpl;
-use multiversx_sc::{
+use klever_sc::{
     api::{PrintApi, PrintApiImpl},
     formatter::FormatBufferIgnore,
 };

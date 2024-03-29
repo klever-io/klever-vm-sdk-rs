@@ -1,6 +1,6 @@
 use crate::{
     scenario::model::{
-        AddressValue, BigUintValue, BytesKey, BytesValue, Esdt, EsdtObject, U64Value,
+        AddressValue, BigUintValue, BytesKey, BytesValue, Kda, KdaObject, U64Value,
     },
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -15,12 +15,11 @@ pub struct Account {
     pub comment: Option<String>,
     pub nonce: Option<U64Value>,
     pub balance: Option<BigUintValue>,
-    pub esdt: BTreeMap<BytesKey, Esdt>,
+    pub kda: BTreeMap<BytesKey, Kda>,
     pub username: Option<BytesValue>,
     pub storage: BTreeMap<BytesKey, BytesValue>,
     pub code: Option<BytesValue>,
     pub owner: Option<AddressValue>,
-    pub developer_rewards: Option<BigUintValue>,
 }
 
 impl Account {
@@ -44,19 +43,19 @@ impl Account {
         self
     }
 
-    pub fn esdt_balance<K, V>(mut self, token_id_expr: K, balance_expr: V) -> Self
+    pub fn kda_balance<K, V>(mut self, token_id_expr: K, balance_expr: V) -> Self
     where
         BytesKey: From<K>,
         BigUintValue: From<V>,
     {
         let token_id = BytesKey::from(token_id_expr);
-        let esdt_data_ref = self.get_esdt_data_or_create(&token_id);
-        esdt_data_ref.set_balance(0u64, balance_expr);
+        let kda_data_ref = self.get_kda_data_or_create(&token_id);
+        kda_data_ref.set_balance(0u64, balance_expr);
 
         self
     }
 
-    pub fn esdt_nft_balance<K, N, V, T>(
+    pub fn kda_nft_balance<K, N, V, T>(
         mut self,
         token_id_expr: K,
         nonce_expr: N,
@@ -72,56 +71,56 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let esdt_obj_ref = self
-            .get_esdt_data_or_create(&token_id)
-            .get_mut_esdt_object();
-        esdt_obj_ref.set_balance(nonce_expr.clone(), balance_expr);
+        let kda_obj_ref = self
+            .get_kda_data_or_create(&token_id)
+            .get_mut_kda_object();
+        kda_obj_ref.set_balance(nonce_expr.clone(), balance_expr);
 
         if let Some(attributes_expr) = opt_attributes_expr {
-            esdt_obj_ref.set_token_attributes(nonce_expr, attributes_expr);
+            kda_obj_ref.set_token_attributes(nonce_expr, attributes_expr);
         }
 
         self
     }
 
-    pub fn esdt_nft_last_nonce<K, N>(mut self, token_id_expr: K, last_nonce_expr: N) -> Self
+    pub fn kda_nft_last_nonce<K, N>(mut self, token_id_expr: K, last_nonce_expr: N) -> Self
     where
         BytesKey: From<K>,
         U64Value: From<N>,
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let esdt_obj_ref = self
-            .get_esdt_data_or_create(&token_id)
-            .get_mut_esdt_object();
-        esdt_obj_ref.set_last_nonce(last_nonce_expr);
+        let kda_obj_ref = self
+            .get_kda_data_or_create(&token_id)
+            .get_mut_kda_object();
+        kda_obj_ref.set_last_nonce(last_nonce_expr);
 
         self
     }
 
     // TODO: Find a better way to pass roles
-    pub fn esdt_roles<K>(mut self, token_id_expr: K, roles: Vec<String>) -> Self
+    pub fn kda_roles<K>(mut self, token_id_expr: K, roles: Vec<String>) -> Self
     where
         BytesKey: From<K>,
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let esdt_obj_ref = self
-            .get_esdt_data_or_create(&token_id)
-            .get_mut_esdt_object();
-        esdt_obj_ref.set_roles(roles);
+        let kda_obj_ref = self
+            .get_kda_data_or_create(&token_id)
+            .get_mut_kda_object();
+        kda_obj_ref.set_roles(roles);
 
         self
     }
 
-    fn get_esdt_data_or_create(&mut self, token_id: &BytesKey) -> &mut Esdt {
-        if !self.esdt.contains_key(token_id) {
+    fn get_kda_data_or_create(&mut self, token_id: &BytesKey) -> &mut Kda {
+        if !self.kda.contains_key(token_id) {
             let _ = self
-                .esdt
-                .insert(token_id.clone(), Esdt::Full(EsdtObject::default()));
+                .kda
+                .insert(token_id.clone(), Kda::Full(KdaObject::default()));
         }
 
-        self.esdt.get_mut(token_id).unwrap()
+        self.kda.get_mut(token_id).unwrap()
     }
 
     pub fn code<V>(mut self, code_expr: V) -> Self
@@ -149,13 +148,13 @@ impl InterpretableFrom<AccountRaw> for Account {
             balance: from
                 .balance
                 .map(|b| BigUintValue::interpret_from(b, context)),
-            esdt: from
-                .esdt
+            kda: from
+                .kda
                 .into_iter()
                 .map(|(k, v)| {
                     (
                         BytesKey::interpret_from(k, context),
-                        Esdt::interpret_from(v, context),
+                        Kda::interpret_from(v, context),
                     )
                 })
                 .collect(),
@@ -174,9 +173,6 @@ impl InterpretableFrom<AccountRaw> for Account {
                 .collect(),
             code: from.code.map(|c| BytesValue::interpret_from(c, context)),
             owner: from.owner.map(|v| AddressValue::interpret_from(v, context)),
-            developer_rewards: from
-                .developer_rewards
-                .map(|b| BigUintValue::interpret_from(b, context)),
         }
     }
 }
@@ -187,8 +183,8 @@ impl IntoRaw<AccountRaw> for Account {
             comment: self.comment,
             nonce: self.nonce.map(|n| n.original),
             balance: self.balance.map(|n| n.original),
-            esdt: self
-                .esdt
+            kda: self
+                .kda
                 .into_iter()
                 .map(|(k, v)| (k.original, v.into_raw()))
                 .collect(),
@@ -200,7 +196,6 @@ impl IntoRaw<AccountRaw> for Account {
                 .collect(),
             code: self.code.map(|n| n.original),
             owner: self.owner.map(|n| n.original),
-            developer_rewards: self.developer_rewards.map(|n| n.original),
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::api::VmApiImpl;
 pub use alloc::alloc::Layout;
-use multiversx_sc::{
+use klever_sc::{
     api::{ErrorApi, ErrorApiImpl},
     types::{ManagedBuffer, ManagedType},
 };
@@ -10,7 +10,7 @@ pub use core::panic::PanicInfo;
 
 /// Default panic handler for all contracts.
 pub fn panic_fmt(_: &PanicInfo) -> ! {
-    crate::error_hook::signal_error(multiversx_sc::err_msg::PANIC_OCCURRED.as_bytes())
+    crate::error_hook::signal_error(klever_sc::err_msg::PANIC_OCCURRED.as_bytes())
 }
 
 /// Panic handler that formats and sends the original message.

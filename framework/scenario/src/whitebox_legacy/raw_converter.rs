@@ -1,18 +1,18 @@
 use std::collections::BTreeMap;
 
 use crate::{
-    multiversx_sc::types::heap::Address,
+    klever_sc::types::heap::Address,
     scenario_format::serde_raw::{
-        AccountRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw, CheckEsdtDataRaw,
-        CheckEsdtInstanceRaw, CheckEsdtInstancesRaw, CheckEsdtMapContentsRaw, CheckEsdtMapRaw,
-        CheckEsdtRaw, CheckLogsRaw, CheckStorageDetailsRaw, CheckStorageRaw, CheckValueListRaw,
-        EsdtFullRaw, EsdtInstanceRaw, EsdtRaw, TxCallRaw, TxESDTRaw, TxExpectRaw, TxQueryRaw,
+        AccountRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw, CheckKdaDataRaw,
+        CheckKdaInstanceRaw, CheckKdaInstancesRaw, CheckKdaMapContentsRaw, CheckKdaMapRaw,
+        CheckKdaRaw, CheckLogsRaw, CheckStorageDetailsRaw, CheckStorageRaw, CheckValueListRaw,
+        KdaFullRaw, KdaInstanceRaw, KdaRaw, TxCallRaw, TxKDARaw, TxExpectRaw, TxQueryRaw,
         ValueSubTree,
     },
 };
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     types::VMAddress,
-    world_mock::{AccountData, EsdtData},
+    world_mock::{AccountData, KdaData},
 };
 use num_traits::Zero;
 
@@ -21,19 +21,18 @@ use super::{ScCallMandos, ScQueryMandos, TxExpectMandos};
 pub(crate) const STAR_STR: &str = "*";
 
 pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
-    let balance_raw = Some(rust_biguint_as_raw(&acc.egld_balance));
-    let developer_rewards_raw = Some(rust_biguint_as_raw(&acc.developer_rewards));
+    let balance_raw = Some(rust_biguint_as_raw(&acc.klv_balance));
     let code_raw = acc
         .contract_path
         .clone()
         .map(|c| ValueSubTree::Str(String::from_utf8(c).unwrap()));
 
-    let mut all_esdt_raw = BTreeMap::new();
-    for (token_id, esdt_data) in acc.esdt.iter() {
+    let mut all_kda_raw = BTreeMap::new();
+    for (token_id, kda_data) in acc.kda.iter() {
         let token_id_raw = bytes_to_scenario_string_or_hex(token_id);
-        let esdt_raw = esdt_data_as_raw(esdt_data);
+        let kda_raw = kda_data_as_raw(kda_data);
 
-        let _ = all_esdt_raw.insert(token_id_raw, esdt_raw);
+        let _ = all_kda_raw.insert(token_id_raw, kda_raw);
     }
 
     let mut storage_raw = BTreeMap::new();
@@ -48,31 +47,30 @@ pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
         balance: balance_raw,
         code: code_raw,
         comment: None,
-        esdt: all_esdt_raw,
+        kda: all_kda_raw,
         nonce: Some(u64_as_raw(acc.nonce)),
         owner: acc.contract_owner.as_ref().map(vm_address_as_raw),
         storage: storage_raw,
-        username: None, // TODO: Add if needed
-        developer_rewards: developer_rewards_raw,
+        username: None,
     }
 }
 
-pub(crate) fn esdt_data_as_raw(esdt: &EsdtData) -> EsdtRaw {
-    let last_nonce_raw = if esdt.last_nonce == 0 {
+pub(crate) fn kda_data_as_raw(kda: &KdaData) -> KdaRaw {
+    let last_nonce_raw = if kda.last_nonce == 0 {
         None
     } else {
-        Some(u64_as_raw(esdt.last_nonce))
+        Some(u64_as_raw(kda.last_nonce))
     };
 
-    let roles = esdt.get_roles();
+    let roles = kda.get_roles();
     let mut roles_raw = Vec::with_capacity(roles.len());
     for role in roles {
         roles_raw.push(String::from_utf8(role).unwrap());
     }
 
     let mut instances_raw = Vec::new();
-    for inst in esdt.instances.get_instances().values() {
-        let inst_raw = EsdtInstanceRaw {
+    for inst in kda.instances.get_instances().values() {
+        let inst_raw = KdaInstanceRaw {
             attributes: Some(bytes_as_raw(&inst.metadata.attributes)),
             balance: Some(rust_biguint_as_raw(&inst.balance)),
             creator: inst.metadata.creator.as_ref().map(vm_address_as_raw),
@@ -80,12 +78,13 @@ pub(crate) fn esdt_data_as_raw(esdt: &EsdtData) -> EsdtRaw {
             nonce: Some(u64_as_raw(inst.nonce)),
             royalties: Some(u64_as_raw(inst.metadata.royalties)),
             uri: inst.metadata.uri.iter().map(|u| bytes_as_raw(u)).collect(),
+            can_burn: Some(inst.metadata.can_burn),
         };
 
         instances_raw.push(inst_raw);
     }
 
-    EsdtRaw::Full(EsdtFullRaw {
+    KdaRaw::Full(KdaFullRaw {
         frozen: None,
         instances: instances_raw,
         last_nonce: last_nonce_raw,
@@ -95,17 +94,17 @@ pub(crate) fn esdt_data_as_raw(esdt: &EsdtData) -> EsdtRaw {
 }
 
 pub(crate) fn tx_call_as_raw(tx_call: &ScCallMandos) -> TxCallRaw {
-    let mut all_esdt_raw = Vec::with_capacity(tx_call.esdt.len());
-    for esdt in tx_call.esdt.iter() {
-        let esdt_raw = TxESDTRaw {
+    let mut all_kda_raw = Vec::with_capacity(tx_call.kda.len());
+    for kda in tx_call.kda.iter() {
+        let kda_raw = TxKDARaw {
             token_identifier: Some(ValueSubTree::Str(bytes_to_scenario_string_or_hex(
-                &esdt.token_identifier,
+                &kda.token_identifier,
             ))),
-            nonce: Some(u64_as_raw(esdt.nonce)),
-            value: rust_biguint_as_raw(&esdt.value),
+            nonce: Some(u64_as_raw(kda.nonce)),
+            value: Some(rust_biguint_as_raw(&kda.value)),
         };
 
-        all_esdt_raw.push(esdt_raw);
+        all_kda_raw.push(kda_raw);
     }
 
     let mut arguments_raw = Vec::with_capacity(tx_call.arguments.len());
@@ -117,9 +116,9 @@ pub(crate) fn tx_call_as_raw(tx_call: &ScCallMandos) -> TxCallRaw {
     TxCallRaw {
         from: address_as_raw(&tx_call.from),
         to: address_as_raw(&tx_call.to),
-        value: None, // this is the old "value" field, which is now "egld_value". Only kept for backwards compatibility
-        egld_value: rust_biguint_as_opt_raw(&tx_call.egld_value),
-        esdt_value: all_esdt_raw,
+        value: None, // this is the old "value" field, which is now "klv_value". Only kept for backwards compatibility
+        klv_value: rust_biguint_as_opt_raw(&tx_call.klv_value),
+        kda_value: all_kda_raw,
         function: tx_call.function.clone(),
         arguments: arguments_raw,
         gas_limit: u64_as_raw(tx_call.gas_limit),
@@ -171,17 +170,17 @@ pub(crate) fn tx_expect_as_raw(tx_expect: &TxExpectMandos) -> TxExpectRaw {
 }
 
 pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw {
-    let mut all_check_esdt_raw = BTreeMap::new();
-    for (token_id, esdt_data) in acc.esdt.iter() {
-        let esdt_data_raw = match esdt_data_as_raw(esdt_data) {
-            EsdtRaw::Short(_) => unreachable!(), // this can't happen, esdt_data_as_raw always returns the full format
-            EsdtRaw::Full(full_raw) => full_raw,
+    let mut all_check_kda_raw = BTreeMap::new();
+    for (token_id, kda_data) in acc.kda.iter() {
+        let kda_data_raw = match kda_data_as_raw(kda_data) {
+            KdaRaw::Short(_) => unreachable!(), // this can't happen, kda_data_as_raw always returns the full format
+            KdaRaw::Full(full_raw) => full_raw,
         };
-        let last_nonce_check = opt_raw_value_to_check_raw(&esdt_data_raw.last_nonce);
+        let last_nonce_check = opt_raw_value_to_check_raw(&kda_data_raw.last_nonce);
 
-        let mut esdt_instances_check_raw = Vec::new();
-        for inst_raw in esdt_data_raw.instances.iter() {
-            let inst_check_raw = CheckEsdtInstanceRaw {
+        let mut kda_instances_check_raw = Vec::new();
+        for inst_raw in kda_data_raw.instances.iter() {
+            let inst_check_raw = CheckKdaInstanceRaw {
                 attributes: opt_raw_value_to_check_raw(&inst_raw.attributes),
                 balance: opt_raw_value_to_check_raw(&inst_raw.balance),
                 creator: opt_raw_value_to_check_raw(&inst_raw.creator),
@@ -200,24 +199,24 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
                 ),
             };
 
-            esdt_instances_check_raw.push(inst_check_raw);
+            kda_instances_check_raw.push(inst_check_raw);
         }
 
         let mut roles_as_str = Vec::new();
-        for role in esdt_data.roles.get() {
+        for role in kda_data.roles.get() {
             let role_str = String::from_utf8(role).unwrap();
             roles_as_str.push(role_str);
         }
 
-        let esdt_check_raw = CheckEsdtDataRaw {
+        let kda_check_raw = CheckKdaDataRaw {
             frozen: CheckBytesValueRaw::Unspecified,
             last_nonce: last_nonce_check,
-            instances: CheckEsdtInstancesRaw::Equal(esdt_instances_check_raw),
+            instances: CheckKdaInstancesRaw::Equal(kda_instances_check_raw),
             roles: roles_as_str,
         };
 
         let token_id_str = bytes_to_scenario_string_or_hex(token_id);
-        all_check_esdt_raw.insert(token_id_str, CheckEsdtRaw::Full(esdt_check_raw));
+        all_check_kda_raw.insert(token_id_str, CheckKdaRaw::Full(kda_check_raw));
     }
 
     let mut raw_storage = BTreeMap::new();
@@ -234,16 +233,14 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
     };
     let check_acc_raw = CheckAccountRaw {
         nonce: CheckBytesValueRaw::Star,
-        balance: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.egld_balance)),
-        esdt: CheckEsdtMapRaw::Equal(CheckEsdtMapContentsRaw {
-            other_esdts_allowed: false,
-            contents: all_check_esdt_raw,
+        balance: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.klv_balance)),
+        kda: CheckKdaMapRaw::Equal(CheckKdaMapContentsRaw {
+            other_kdas_allowed: false,
+            contents: all_check_kda_raw,
         }),
         owner: CheckBytesValueRaw::Star, // TODO: Add owner check?
-        developer_rewards: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.developer_rewards)),
         storage: CheckStorageRaw::Equal(check_storage_raw),
         code: CheckBytesValueRaw::Star,
-        async_call_data: CheckBytesValueRaw::Unspecified,
         comment: None,
         username: CheckBytesValueRaw::Unspecified,
     };

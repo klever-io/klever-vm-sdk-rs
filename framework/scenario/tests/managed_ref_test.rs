@@ -1,12 +1,12 @@
 use core::fmt::Debug;
-use multiversx_sc::{
+use klever_sc::{
     api::ManagedTypeApi,
     types::{
         BigInt, BigUint, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedRef, ManagedType,
         TokenIdentifier,
     },
 };
-use multiversx_sc_scenario::api::StaticApi;
+use klever_sc_scenario::api::StaticApi;
 
 fn test_managed_ref_for_type<M, T>(obj: T)
 where

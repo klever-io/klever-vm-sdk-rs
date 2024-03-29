@@ -26,7 +26,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Wrong ticket fee!",
                 "gas": "*",
                 "refund": "*"

@@ -1,12 +1,12 @@
 use std::sync::Mutex;
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     executor::VMHooks,
     types::VMAddress,
     vm_hooks::{SingleTxApiData, SingleTxApiVMHooksHandler, VMHooksDispatcher},
     world_mock::AccountData,
 };
-use multiversx_sc::api::RawHandle;
+use klever_sc::api::RawHandle;
 
 use crate::debug_executor::StaticVarData;
 

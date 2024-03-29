@@ -1,8 +1,8 @@
-use multiversx_sc_modules::only_admin;
+use klever_sc_modules::only_admin;
 
-multiversx_sc::imports!();
+klever_sc::imports!();
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 #[only_admin]
 pub trait OnlyAdminTestModule:
     super::only_admin_derived_mod::OnlyAdminDerivedTestModule + only_admin::OnlyAdminModule

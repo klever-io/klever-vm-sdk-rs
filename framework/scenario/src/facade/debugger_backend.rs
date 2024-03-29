@@ -76,10 +76,6 @@ impl ScenarioRunner for DebuggerBackend {
         self.for_each_runner_mut(|runner| runner.run_transfer_step(step));
     }
 
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        self.for_each_runner_mut(|runner| runner.run_validator_reward_step(step));
-    }
-
     fn run_check_state_step(&mut self, step: &CheckStateStep) {
         self.for_each_runner_mut(|runner| runner.run_check_state_step(step));
     }
@@ -114,9 +110,6 @@ impl DebuggerBackend {
                 },
                 Step::Transfer(transfer_step) => {
                     self.run_transfer_step(transfer_step);
-                },
-                Step::ValidatorReward(validator_reward_step) => {
-                    self.run_validator_reward_step(validator_reward_step);
                 },
                 Step::CheckState(check_state_step) => {
                     self.run_check_state_step(check_state_step);

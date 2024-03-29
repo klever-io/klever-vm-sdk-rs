@@ -1,13 +1,15 @@
 use crate::{
-    multiversx_sc::codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
-    scenario::model::{ScCallStep, TxESDT, TypedScCall},
+    klever_sc::codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
+    scenario::model::{ScCallStep, TxKDA, TypedScCall},
     scenario_model::TxResponse,
 };
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxInput, TxResult, TxTokenTransfer},
 };
+use num_bigint::BigUint;
+use num_traits::Zero;
 
 use super::{check_tx_output, tx_input_util::generate_tx_hash, ScenarioVMRunner};
 
@@ -82,8 +84,8 @@ fn tx_input_from_call(sc_call_step: &ScCallStep) -> TxInput {
     TxInput {
         from: tx.from.to_vm_address(),
         to: tx.to.to_vm_address(),
-        egld_value: tx.egld_value.value.clone(),
-        esdt_values: tx_esdt_transfers_from_scenario(tx.esdt_value.as_slice()),
+        klv_value: tx.klv_value.value.clone(),
+        kda_values: tx_kda_transfers_from_scenario(tx.kda_value.as_slice()),
         func_name: tx.function.clone().into(),
         args: tx
             .arguments
@@ -97,17 +99,17 @@ fn tx_input_from_call(sc_call_step: &ScCallStep) -> TxInput {
     }
 }
 
-pub fn tx_esdt_transfers_from_scenario(scenario_transf_esdt: &[TxESDT]) -> Vec<TxTokenTransfer> {
-    scenario_transf_esdt
+pub fn tx_kda_transfers_from_scenario(scenario_transf_kda: &[TxKDA]) -> Vec<TxTokenTransfer> {
+    scenario_transf_kda
         .iter()
-        .map(tx_esdt_transfer_from_scenario)
+        .map(tx_kda_transfer_from_scenario)
         .collect()
 }
 
-pub fn tx_esdt_transfer_from_scenario(scenario_transf_esdt: &TxESDT) -> TxTokenTransfer {
+pub fn tx_kda_transfer_from_scenario(scenario_transf_kda: &TxKDA) -> TxTokenTransfer {
     TxTokenTransfer {
-        token_identifier: scenario_transf_esdt.esdt_token_identifier.value.clone(),
-        nonce: scenario_transf_esdt.nonce.value,
-        value: scenario_transf_esdt.esdt_value.value.clone(),
+        token_identifier: scenario_transf_kda.kda_token_identifier.value.clone(),
+        nonce: scenario_transf_kda.nonce.value,
+        value: scenario_transf_kda.kda_value.value.clone(),
     }
 }

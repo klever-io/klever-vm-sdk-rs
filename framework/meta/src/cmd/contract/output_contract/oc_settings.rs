@@ -28,9 +28,6 @@ pub struct OutputContractSettings {
 
     /// Features that are activated on the contract crate, from wasm.
     pub features: Vec<String>,
-
-    /// Forcibly remove the original contrct legacy callback.
-    pub kill_legacy_callback: bool,
 }
 
 impl Default for OutputContractSettings {
@@ -42,7 +39,6 @@ impl Default for OutputContractSettings {
             allocator: Default::default(),
             stack_size: DEFAULT_STACK_SIZE,
             features: Default::default(),
-            kill_legacy_callback: false,
         }
     }
 }

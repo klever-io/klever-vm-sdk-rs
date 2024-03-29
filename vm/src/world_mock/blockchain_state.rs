@@ -5,7 +5,7 @@ use num_traits::Zero;
 
 use crate::{tx_mock::BlockchainUpdate, types::VMAddress};
 
-use super::{reserved::STORAGE_REWARD_KEY, AccountData, BlockInfo};
+use super::{AccountData, BlockInfo};
 
 #[derive(Default, Clone)]
 pub struct BlockchainState {
@@ -44,30 +44,10 @@ impl BlockchainState {
         });
         let gas_cost = BigUint::from(gas_limit) * BigUint::from(gas_price);
         assert!(
-            account.egld_balance >= gas_cost,
+            account.klv_balance >= gas_cost,
             "Not enough balance to pay gas upfront"
         );
-        account.egld_balance -= &gas_cost;
-    }
-
-    pub fn increase_validator_reward(&mut self, address: &VMAddress, amount: &BigUint) {
-        let account = self.accounts.get_mut(address).unwrap_or_else(|| {
-            panic!(
-                "Account not found: {}",
-                &std::str::from_utf8(address.as_ref()).unwrap()
-            )
-        });
-        account.egld_balance += amount;
-        let mut storage_v_rew =
-            if let Some(old_storage_value) = account.storage.get(STORAGE_REWARD_KEY) {
-                BigUint::from_bytes_be(old_storage_value)
-            } else {
-                BigUint::zero()
-            };
-        storage_v_rew += amount;
-        account
-            .storage
-            .insert(STORAGE_REWARD_KEY.to_vec(), storage_v_rew.to_bytes_be());
+        account.klv_balance -= &gas_cost;
     }
 
     pub fn put_new_token_identifier(&mut self, token_identifier: String) {

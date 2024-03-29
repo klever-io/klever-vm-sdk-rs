@@ -1,8 +1,8 @@
-multiversx_sc::imports!();
+klever_sc::imports!();
 
 use crate::storage;
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait ZombieHelper: storage::Storage {
     fn check_above_level(&self, level: u16, zombie_id: usize) {
         let my_zombie = self.zombies(&zombie_id).get();
@@ -16,12 +16,12 @@ pub trait ZombieHelper: storage::Storage {
         );
     }
 
-    #[payable("EGLD")]
+    #[payable("KLV")]
     #[endpoint]
     fn level_up(&self, zombie_id: usize) {
-        let payment_amount = self.call_value().egld_value();
+        let payment_amount = self.call_value().klv_value();
         let fee = self.level_up_fee().get();
-        require!(*payment_amount == fee, "Payment must be must be 0.001 EGLD");
+        require!(*payment_amount == fee, "Payment must be must be 0.001 KLV");
         self.zombies(&zombie_id)
             .update(|my_zombie| my_zombie.level += 1);
     }
@@ -31,7 +31,7 @@ pub trait ZombieHelper: storage::Storage {
     fn withdraw(&self) {
         let caller_address = self.blockchain().get_caller();
         let collected_fees = self.collected_fees().get();
-        self.send().direct_egld(&caller_address, &collected_fees);
+        self.send().direct_klv(&caller_address, &collected_fees);
         self.collected_fees().clear();
     }
 

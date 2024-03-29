@@ -12,13 +12,13 @@
 #![allow(incomplete_features)]
 #![feature(slice_partition_dedup)]
 #![feature(is_sorted)]
-pub use multiversx_sc_derive::{self as derive, contract, module, proxy};
+pub use klever_sc_derive::{self as derive, contract, module, proxy};
 
 // re-export basic heap types
 extern crate alloc;
 
-/// The current version of `multiversx_sc_codec`, re-exported.
-pub use multiversx_sc_codec as codec;
+/// The current version of `klever_sc_codec`, re-exported.
+pub use klever_sc_codec as codec;
 
 /// Reexported for convenience.
 pub use crate::codec::arrayvec;
@@ -27,7 +27,7 @@ pub mod abi;
 pub mod api;
 pub mod contract_base;
 pub mod err_msg;
-pub mod esdt;
+pub mod kda;
 pub mod external_view_contract;
 pub mod formatter;
 pub mod hex_call_data;

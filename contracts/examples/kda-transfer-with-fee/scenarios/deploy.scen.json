@@ -1,0 +1,118 @@
+{
+    "name": "setup fees",
+    "gasSchedule": "dummy",
+    "steps": [
+        {
+            "step": "setState",
+            "accounts": {
+                "address:owner": {
+                    "nonce": "1",
+                    "balance": "0"
+                },
+                "address:user1": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:USDC-aaaaaa": "500",
+                        "str:WKLV-012345": "500"
+                    }
+                },
+                "address:user2": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:WKLV-012345": "500",
+                        "str:MFNFT-567890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "1"
+                                },
+                                {
+                                    "nonce": "2",
+                                    "balance": "1"
+                                },
+                                {
+                                    "nonce": "3",
+                                    "balance": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "newAddresses": [
+                {
+                    "creatorAddress": "address:owner",
+                    "creatorNonce": "2",
+                    "newAddress": "sc:kda-transfer-with-fee"
+                }
+            ]
+        },
+        {
+            "step": "scDeploy",
+            "id": "1",
+            "tx": {
+                "from": "address:owner",
+                "contractCode": "file:../output/kda-transfer-with-fee.wasm",
+                "arguments": [],
+                "gasLimit": "5,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:owner": {
+                    "nonce": "2",
+                    "balance": "0",
+                    "storage": {}
+                },
+                "address:user1": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:USDC-aaaaaa": "500",
+                        "str:WKLV-012345": "500"
+                    }
+                },
+                "address:user2": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:MFNFT-567890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "1"
+                                },
+                                {
+                                    "nonce": "2",
+                                    "balance": "1"
+                                },
+                                {
+                                    "nonce": "3",
+                                    "balance": "1"
+                                }
+                            ]
+                        },
+                        "str:WKLV-012345": "500"
+                    }
+                },
+                "sc:kda-transfer-with-fee": {
+                    "nonce": "0",
+                    "storage": {},
+                    "code": "file:../output/kda-transfer-with-fee.wasm",
+                    "owner": "address:owner"
+                }
+            }
+        }
+    ]
+}

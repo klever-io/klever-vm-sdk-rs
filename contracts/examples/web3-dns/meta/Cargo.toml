@@ -1,0 +1,12 @@
+[package]
+name = "web3-dns-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies.web3-dns]
+path = ".."
+
+[dependencies.klever-sc-meta]
+version = "0.43.3"
+path = "../../../../framework/meta"

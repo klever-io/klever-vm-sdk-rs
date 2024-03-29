@@ -11,13 +11,13 @@ use system_sc_issue::*;
 use system_sc_special_roles::*;
 use system_sc_unimplemented::*;
 
-/// Address of the system smart contract that manages ESDT.
-/// Bech32: erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
-pub const ESDT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
+/// Address of the system smart contract that manages KDA.
+/// Bech32: klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
+pub const KDA_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
     hex!("000000000000000000010000000000000000000000000000000000000002ffff");
 
 pub fn is_system_sc_address(address: &VMAddress) -> bool {
-    address.as_array() == &ESDT_SYSTEM_SC_ADDRESS_ARRAY
+    address.as_array() == &KDA_SYSTEM_SC_ADDRESS_ARRAY
 }
 
 pub fn execute_system_sc(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, BlockchainUpdate) {
@@ -26,10 +26,10 @@ pub fn execute_system_sc(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Blo
         "issue" => issue(tx_input, tx_cache),
         "issueSemiFungible" => issue_semi_fungible(tx_input, tx_cache),
         "issueNonFungible" => issue_non_fungible(tx_input, tx_cache),
-        "registerMetaESDT" => register_meta_esdt(tx_input, tx_cache),
-        "changeSFTToMetaESDT" => change_sft_to_meta_esdt(tx_input, tx_cache),
+        "registerMetaKDA" => register_meta_kda(tx_input, tx_cache),
+        "changeSFTToMetaKDA" => change_sft_to_meta_kda(tx_input, tx_cache),
         "registerAndSetAllRoles" => register_and_set_all_roles(tx_input, tx_cache),
-        "ESDTBurn" => esdt_burn(tx_input, tx_cache),
+        "KDABurn" => kda_burn(tx_input, tx_cache),
         "mint" => mint(tx_input, tx_cache),
         "freeze" => freeze(tx_input, tx_cache),
         "unFreeze" => unfreeze(tx_input, tx_cache),

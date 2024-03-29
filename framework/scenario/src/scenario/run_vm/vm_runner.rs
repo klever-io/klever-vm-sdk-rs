@@ -1,6 +1,6 @@
 use crate::{
     debug_executor::ContractMapRef,
-    multiversx_chain_vm::BlockchainMock,
+    klever_chain_vm::BlockchainMock,
     scenario::{model::*, ScenarioRunner},
 };
 
@@ -58,10 +58,6 @@ impl ScenarioRunner for ScenarioVMRunner {
 
     fn run_transfer_step(&mut self, step: &TransferStep) {
         self.perform_transfer(step);
-    }
-
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        self.perform_validator_reward(step);
     }
 
     fn run_check_state_step(&mut self, step: &CheckStateStep) {

@@ -1,5 +1,5 @@
 use crate::{num_bigint, num_bigint::BigInt};
-use multiversx_sc::{
+use klever_sc::{
     api::ManagedTypeApi,
     types::{heap::BoxedBytes, BigUint, ManagedType},
 };

@@ -16,7 +16,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:contract"
                 }
             ]
@@ -45,7 +45,7 @@
             "tx": {
                 "from": "address:owner",
                 "to": "sc:contract",
-                "egldValue": "1000",
+                "klvValue": "1000",
                 "function": "repeat",
                 "arguments": [
                     "address:receiver",

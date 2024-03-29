@@ -1,7 +1,7 @@
-use crate::multiversx_sc::types::Address;
-use multiversx_chain_vm::tx_mock::TxResult;
-use multiversx_sdk::data::transaction::{
-    ApiLogs, ApiSmartContractResult, Events, TransactionOnNetwork,
+use crate::klever_sc::types::Address;
+use klever_chain_vm::tx_mock::TxResult;
+use klever_vm_sdk::data::transaction::{
+    ApiLogs, ApiSmartContractResult, Events,
 };
 
 use super::{
@@ -11,7 +11,7 @@ use super::{
 const LOG_IDENTIFIER_SC_DEPLOY: &str = "SCDeploy";
 const LOG_IDENTIFIER_SIGNAL_ERROR: &str = "signalError";
 
-const SYSTEM_SC_BECH32: &str = "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
+const SYSTEM_SC_BECH32: &str = "klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
 
 #[derive(Debug, Default, Clone)]
 /// The response of a transaction.
@@ -47,22 +47,6 @@ impl TxResponse {
             },
             ..Default::default()
         }
-    }
-
-    /// Creates a [`TxResponse`] from a [`TransactionOnNetwork`].
-    pub fn from_network_tx(tx: TransactionOnNetwork) -> Self {
-        let mut response = Self {
-            api_scrs: tx.smart_contract_results.unwrap_or_default(),
-            api_logs: tx.logs,
-            ..Default::default()
-        };
-
-        response.tx_error = response.process_signal_error();
-        if !response.tx_error.is_success() {
-            return response;
-        }
-
-        response.process()
     }
 
     /// Creates a [`TxResponse`] from raw results.

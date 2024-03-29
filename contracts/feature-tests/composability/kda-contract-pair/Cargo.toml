@@ -1,0 +1,20 @@
+[package]
+name = "kda-contract-pair"
+version = "0.0.0"
+authors = ["Dorin Iancu <dorin.iancu@multiversx.com>"]
+edition = "2021"
+publish = false
+
+[dev-dependencies.first-contract]
+path = "first-contract"
+
+[dev-dependencies.second-contract]
+path = "second-contract"
+
+[dev-dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.43.3"
+path = "../../../../framework/scenario"

@@ -5,15 +5,15 @@ use crate::codec::TopEncodeMulti;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, EgldOrEsdtTokenIdentifier, EgldOrEsdtTokenPayment, EgldOrMultiEsdtPayment,
-        EsdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
+        BigUint, KdaTokenPayment,
+        KlvOrMultiKdaPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
     },
 };
 
 use super::{
-    contract_call_exec::UNSPECIFIED_GAS_LIMIT, contract_call_with_egld::ContractCallWithEgld,
-    contract_call_with_multi_esdt::ContractCallWithMultiEsdt, ContractCall,
-    ContractCallWithAnyPayment, ContractCallWithEgldOrSingleEsdt, ManagedArgBuffer,
+    contract_call_exec::UNSPECIFIED_GAS_LIMIT, contract_call_with_klv::ContractCallWithKlv,
+    contract_call_with_multi_kda::ContractCallWithMultiKda, ContractCall,
+    ContractCallWithAnyPayment, ContractCallWithKlvOrSingleKda, ManagedArgBuffer,
 };
 
 /// Holds metadata for calling another contract, without payments.
@@ -43,10 +43,10 @@ where
     type OriginalResult = OriginalResult;
 
     #[inline]
-    fn into_normalized(self) -> ContractCallWithEgld<SA, Self::OriginalResult> {
-        ContractCallWithEgld {
+    fn into_normalized(self) -> ContractCallWithKlv<SA, Self::OriginalResult> {
+        ContractCallWithKlv {
             basic: self,
-            egld_payment: BigUint::zero(),
+            klv_payment: BigUint::zero(),
         }
     }
 
@@ -56,7 +56,8 @@ where
     }
 
     fn transfer_execute(self) {
-        self.transfer_execute_egld(BigUint::zero());
+        let kda_payments: ManagedVec<SA, KdaTokenPayment<SA>> = ManagedVec::new();
+        self.transfer_execute_kda(kda_payments);
     }
 }
 
@@ -75,54 +76,40 @@ where
         }
     }
 
-    /// Sets payment to be EGLD transfer.
-    pub fn with_egld_transfer(
+    /// Sets payment to be KLV transfer.
+    pub fn with_klv_transfer(
         self,
-        egld_amount: BigUint<SA>,
-    ) -> ContractCallWithEgld<SA, OriginalResult> {
-        ContractCallWithEgld {
+        klv_amount: BigUint<SA>,
+    ) -> ContractCallWithKlv<SA, OriginalResult> {
+        ContractCallWithKlv {
             basic: self,
-            egld_payment: egld_amount,
+            klv_payment: klv_amount,
         }
     }
 
-    /// Adds a single ESDT token transfer to a contract call.
+    /// Adds a single KDA token transfer to a contract call.
     ///
     /// Can be called multiple times on the same call.
-    pub fn with_esdt_transfer<P: Into<EsdtTokenPayment<SA>>>(
+    pub fn with_kda_transfer<P: Into<KdaTokenPayment<SA>>>(
         self,
         payment: P,
-    ) -> ContractCallWithMultiEsdt<SA, OriginalResult> {
-        let result = ContractCallWithMultiEsdt {
+    ) -> ContractCallWithMultiKda<SA, OriginalResult> {
+        let result = ContractCallWithMultiKda {
             basic: self,
-            esdt_payments: ManagedVec::new(),
+            kda_payments: ManagedVec::new(),
         };
-        result.with_esdt_transfer(payment)
-    }
-
-    #[deprecated(
-        since = "0.39.0",
-        note = "Replace by `contract_call.with_esdt_transfer((payment_token, payment_nonce, payment_amount))`. 
-        The tuple argument will get automatically converted to EsdtTokenPayment."
-    )]
-    pub fn add_esdt_token_transfer(
-        self,
-        payment_token: TokenIdentifier<SA>,
-        payment_nonce: u64,
-        payment_amount: BigUint<SA>,
-    ) -> ContractCallWithMultiEsdt<SA, OriginalResult> {
-        self.with_esdt_transfer((payment_token, payment_nonce, payment_amount))
+        result.with_kda_transfer(payment)
     }
 
     /// Sets payment to be a (potentially) multi-token transfer.
     #[inline]
     pub fn with_multi_token_transfer(
         self,
-        payments: ManagedVec<SA, EsdtTokenPayment<SA>>,
-    ) -> ContractCallWithMultiEsdt<SA, OriginalResult> {
-        ContractCallWithMultiEsdt {
+        payments: ManagedVec<SA, KdaTokenPayment<SA>>,
+    ) -> ContractCallWithMultiKda<SA, OriginalResult> {
+        ContractCallWithMultiKda {
             basic: self,
-            esdt_payments: payments,
+            kda_payments: payments,
         }
     }
 
@@ -130,7 +117,7 @@ where
     #[inline]
     pub fn with_any_payment(
         self,
-        payment: EgldOrMultiEsdtPayment<SA>,
+        payment: KlvOrMultiKdaPayment<SA>,
     ) -> ContractCallWithAnyPayment<SA, OriginalResult> {
         ContractCallWithAnyPayment {
             basic: self,
@@ -138,12 +125,12 @@ where
         }
     }
 
-    /// Sets payment to be either EGLD or a single ESDT transfer, as determined at runtime.
-    pub fn with_egld_or_single_esdt_transfer<P: Into<EgldOrEsdtTokenPayment<SA>>>(
+    /// Sets payment to be either KLV or a single KDA transfer, as determined at runtime.
+    pub fn with_klv_or_single_kda_transfer<P: Into<KdaTokenPayment<SA>>>(
         self,
         payment: P,
-    ) -> ContractCallWithEgldOrSingleEsdt<SA, OriginalResult> {
-        ContractCallWithEgldOrSingleEsdt {
+    ) -> ContractCallWithKlvOrSingleKda<SA, OriginalResult> {
+        ContractCallWithKlvOrSingleKda {
             basic: self,
             payment: payment.into(),
         }
@@ -151,14 +138,18 @@ where
 
     #[deprecated(
         since = "0.39.0",
-        note = "Replace by `contract_call.with_egld_or_single_esdt_transfer((payment_token, payment_nonce, payment_amount))`. "
+        note = "Replace by `contract_call.with_klv_or_single_kda_transfer((payment_token, payment_nonce, payment_amount))`. "
     )]
-    pub fn with_egld_or_single_esdt_token_transfer(
+    pub fn with_klv_or_single_kda_token_transfer(
         self,
-        payment_token: EgldOrEsdtTokenIdentifier<SA>,
+        payment_token: TokenIdentifier<SA>,
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
-    ) -> ContractCallWithEgldOrSingleEsdt<SA, OriginalResult> {
-        self.with_egld_or_single_esdt_transfer((payment_token, payment_nonce, payment_amount))
+    ) -> ContractCallWithKlvOrSingleKda<SA, OriginalResult> {
+        self.with_klv_or_single_kda_transfer((
+            payment_token,
+            payment_nonce,
+            payment_amount,
+        ))
     }
 }

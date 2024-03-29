@@ -1,4 +1,4 @@
-use multiversx_sc_scenario::*;
+use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     ScenarioWorld::vm_go()
@@ -127,9 +127,7 @@ fn start_limited_tickets_and_fixed_deadline_invalid_deadline_go() {
 
 #[test]
 fn start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_go() {
-    world().run(
-        "scenarios/start-limited-tickets-and-fixed-deadline-invalid-ticket-price-arg.scen.json",
-    );
+    world().run("scenarios/start-limited-tickets-and-fixed-deadline-invalid-ticket-price-arg.scen.json");
 }
 
 #[test]

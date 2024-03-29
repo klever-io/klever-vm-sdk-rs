@@ -1,8 +1,8 @@
 use crate::{
-    multiversx_sc::types::heap::Address, scenario::model::ScDeployStep, scenario_model::TxResponse,
+    klever_sc::types::heap::Address, scenario::model::ScDeployStep, scenario_model::TxResponse,
 };
 
-use multiversx_chain_vm::{
+use klever_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxFunctionName, TxInput, TxResult},
 };
@@ -64,9 +64,9 @@ fn tx_input_from_deploy(sc_deploy_step: &ScDeployStep) -> TxInput {
     let tx = &sc_deploy_step.tx;
     TxInput {
         from: tx.from.to_vm_address(),
-        to: multiversx_chain_vm::types::VMAddress::zero(),
-        egld_value: tx.egld_value.value.clone(),
-        esdt_values: Vec::new(),
+        to: klever_chain_vm::types::VMAddress::zero(),
+        klv_value: tx.klv_value.value.clone(),
+        kda_values: Vec::new(),
         func_name: TxFunctionName::INIT,
         args: tx
             .arguments

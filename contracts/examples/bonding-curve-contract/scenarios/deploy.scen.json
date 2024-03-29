@@ -1,6 +1,6 @@
 {
     "name": "init contract",
-    "gasSchedule": "v3",
+
     "steps": [
         {
             "step": "setState",
@@ -12,21 +12,21 @@
                 "address:buyer1": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "200"
+                    "kda": {
+                        "str:KLV-135790": "200"
                     }
                 },
                 "address:buyer2": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "20000"
+                    "kda": {
+                        "str:KLV-135790": "20000"
                     }
                 },
                 "address:artist1": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -73,7 +73,7 @@
                 "address:artist2": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFSFT-246802": {
                             "instances": [
                                 {
@@ -96,7 +96,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:bonding-curve-contract"
                 }
             ]
@@ -129,21 +129,21 @@
                 "address:buyer1": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "200"
+                    "kda": {
+                        "str:KLV-135790": "200"
                     }
                 },
                 "address:buyer2": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
-                        "str:EGLD-135790": "20000"
+                    "kda": {
+                        "str:KLV-135790": "20000"
                     }
                 },
                 "address:artist1": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFNFT-567890": {
                             "instances": [
                                 {
@@ -190,7 +190,7 @@
                 "address:artist2": {
                     "nonce": "0",
                     "balance": "0",
-                    "esdt": {
+                    "kda": {
                         "str:MFSFT-246802": {
                             "instances": [
                                 {

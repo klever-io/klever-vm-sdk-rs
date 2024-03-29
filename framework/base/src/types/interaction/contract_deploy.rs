@@ -24,7 +24,7 @@ where
 {
     _phantom: PhantomData<SA>,
     pub to: ManagedOption<SA, ManagedAddress<SA>>, // only used for Upgrade, ignored for Deploy
-    pub egld_payment: BigUint<SA>,
+    pub klv_payment: BigUint<SA>,
     pub explicit_gas_limit: u64,
     pub arg_buffer: ManagedArgBuffer<SA>,
     _return_type: PhantomData<OriginalResult>,
@@ -53,7 +53,7 @@ where
         ContractDeploy {
             _phantom: PhantomData,
             to: ManagedOption::none(),
-            egld_payment: zero,
+            klv_payment: zero,
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             arg_buffer,
             _return_type: PhantomData,
@@ -70,8 +70,8 @@ where
         Self::default()
     }
 
-    pub fn with_egld_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
-        self.egld_payment = payment_amount;
+    pub fn with_klv_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
+        self.klv_payment = payment_amount;
         self
     }
 
@@ -124,7 +124,7 @@ where
     {
         let (address, raw_result) = SendRawWrapper::<SA>::new().deploy_contract(
             self.resolve_gas_limit(),
-            &self.egld_payment,
+            &self.klv_payment,
             code,
             code_metadata,
             &self.arg_buffer,
@@ -145,7 +145,7 @@ where
     {
         let (address, raw_result) = SendRawWrapper::<SA>::new().deploy_from_source_contract(
             self.resolve_gas_limit(),
-            &self.egld_payment,
+            &self.klv_payment,
             source_address,
             code_metadata,
             &self.arg_buffer,
@@ -168,7 +168,7 @@ where
         SendRawWrapper::<SA>::new().upgrade_from_source_contract(
             sc_address,
             gas,
-            &self.egld_payment,
+            &self.klv_payment,
             source_address,
             code_metadata,
             &self.arg_buffer,
@@ -183,7 +183,7 @@ where
         SendRawWrapper::<SA>::new().upgrade_contract(
             sc_address,
             gas,
-            &self.egld_payment,
+            &self.klv_payment,
             code,
             code_metadata,
             &self.arg_buffer,

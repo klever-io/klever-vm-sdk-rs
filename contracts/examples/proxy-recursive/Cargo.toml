@@ -1,0 +1,20 @@
+[package]
+name = "proxy-recursive"
+version = "0.0.0"
+authors = ["you"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/proxy-recursive.rs"
+
+[dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.43.3"
+path = "../../../framework/scenario"
+
+[dev-dependencies]
+num-bigint = "0.4.2"

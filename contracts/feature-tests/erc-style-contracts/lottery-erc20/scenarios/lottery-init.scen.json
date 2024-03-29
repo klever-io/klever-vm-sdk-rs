@@ -25,12 +25,12 @@
             "newAddresses": [
                 {
                     "creatorAddress": "address:erc20_owner",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:erc20"
                 },
                 {
                     "creatorAddress": "address:my_address",
-                    "creatorNonce": "0",
+                    "creatorNonce": "1",
                     "newAddress": "sc:lottery"
                 }
             ]

@@ -42,11 +42,11 @@ impl MigrateUserName {
             if account.username != username {
                 return Result::Err(TxResult::from_vm_error("username mismatch"));
             }
-            if let Some(name_without_suffix) = username.strip_suffix(".elrond".as_bytes()) {
+            if let Some(name_without_suffix) = username.strip_suffix(".klever".as_bytes()) {
                 account.username = [name_without_suffix, ".x".as_bytes()].concat();
                 Ok(())
             } else {
-                Result::Err(TxResult::from_vm_error("expected .elrond suffix"))
+                Result::Err(TxResult::from_vm_error("expected .klever suffix"))
             }
         })?;
 

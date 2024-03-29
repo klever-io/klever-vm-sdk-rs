@@ -1,6 +1,6 @@
 use super::*;
 
-use multiversx_chain_vm_executor::{
+use klever_chain_vm_executor::{
     CompilationOptions, Executor, ExecutorError, Instance, OpcodeCost,
 };
 use std::{

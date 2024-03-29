@@ -22,7 +22,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "4",
+                "status": "57",
                 "message": "str:Ticket limit exceeded for this lottery!",
                 "gas": "*",
                 "refund": "*"

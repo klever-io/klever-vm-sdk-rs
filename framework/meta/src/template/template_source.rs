@@ -8,7 +8,7 @@ use crate::folder_structure::{whitelisted_deep_copy, RelevantDirectories};
 use super::{template_metadata::TemplateMetadata, RepoSource};
 
 const TEMPLATES_PATH_IN_REPO: &str = "contracts/examples";
-const TEMPLATE_TOML_FILE_NAME: &str = "mxsc-template.toml";
+const TEMPLATE_TOML_FILE_NAME: &str = "kleversc-template.toml";
 
 pub struct TemplateSource<'a> {
     pub repo_temp_dir: &'a RepoSource,

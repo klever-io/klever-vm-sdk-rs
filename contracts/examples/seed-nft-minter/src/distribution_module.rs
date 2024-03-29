@@ -1,5 +1,5 @@
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 pub const MAX_DISTRIBUTION_PERCENTAGE: u64 = 100_000; // 100%
 
@@ -11,7 +11,7 @@ pub struct Distribution<M: ManagedTypeApi> {
     pub gas_limit: u64,
 }
 
-#[multiversx_sc::module]
+#[klever_sc::module]
 pub trait DistributionModule {
     fn init_distribution(&self, distribution: ManagedVec<Distribution<Self::Api>>) {
         self.validate_distribution(&distribution);
@@ -20,7 +20,7 @@ pub trait DistributionModule {
 
     fn distribute_funds(
         &self,
-        token_id: &EgldOrEsdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         token_nonce: u64,
         total_amount: BigUint,
     ) {
@@ -35,7 +35,7 @@ pub trait DistributionModule {
             }
             self.send()
                 .contract_call::<IgnoreValue>(distribution.address, distribution.endpoint)
-                .with_egld_or_single_esdt_transfer((token_id.clone(), token_nonce, payment_amount))
+                .with_klv_or_single_kda_transfer((token_id.clone(), token_nonce, payment_amount))
                 .with_gas_limit(distribution.gas_limit)
                 .transfer_execute();
         }

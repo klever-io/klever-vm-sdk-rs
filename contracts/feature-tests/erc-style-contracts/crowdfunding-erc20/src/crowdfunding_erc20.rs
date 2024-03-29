@@ -1,7 +1,7 @@
 #![no_std]
 
-multiversx_sc::imports!();
-multiversx_sc::derive_imports!();
+klever_sc::imports!();
+klever_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone, Copy)]
 pub enum Status {
@@ -10,7 +10,7 @@ pub enum Status {
     Failed,
 }
 
-#[multiversx_sc::contract]
+#[klever_sc::contract]
 pub trait Crowdfunding {
     #[init]
     fn init(&self, target: BigUint, deadline: u64, erc20_contract_address: ManagedAddress) {
@@ -32,21 +32,19 @@ pub trait Crowdfunding {
 
         self.erc20_proxy(erc20_address)
             .transfer_from(caller.clone(), cf_contract_address, token_amount.clone())
-            .async_call()
-            .with_callback(
-                self.callbacks()
-                    .transfer_from_callback(caller, token_amount),
-            )
-            .call_and_exit()
+            .execute_on_dest_context::<IgnoreValue>();
+
+        self.deposit(&caller.clone())
+            .update(|deposit| *deposit += &token_amount.clone());
+        self.total_balance()
+            .update(|balance| *balance += token_amount.clone());
     }
 
     #[view]
     fn status(&self) -> Status {
         if self.blockchain().get_block_nonce() <= self.deadline().get() {
             Status::FundingPeriod
-        } else if self
-            .blockchain()
-            .get_sc_balance(&EgldOrEsdtTokenIdentifier::egld(), 0)
+        } else if self.blockchain().get_sc_balance(&TokenIdentifier::klv(), 0)
             >= self.target().get()
         {
             Status::Successful
@@ -72,8 +70,7 @@ pub trait Crowdfunding {
 
                 self.erc20_proxy(erc20_address)
                     .transfer(caller, balance)
-                    .async_call()
-                    .call_and_exit()
+                    .execute_on_dest_context::<IgnoreValue>();
             },
             Status::Failed => {
                 let caller = self.blockchain().get_caller();
@@ -86,42 +83,13 @@ pub trait Crowdfunding {
 
                     self.erc20_proxy(erc20_address)
                         .transfer(caller, deposit)
-                        .async_call()
-                        .call_and_exit()
+                        .execute_on_dest_context::<IgnoreValue>();
                 }
             },
-        }
-    }
-
-    #[callback]
-    fn transfer_from_callback(
-        &self,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-        cb_sender: ManagedAddress,
-        cb_amount: BigUint,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(()) => {
-                // transaction started before deadline, ended after -> refund
-                if self.blockchain().get_block_nonce() > self.deadline().get() {
-                    let erc20_address = self.erc20_contract_address().get();
-
-                    self.erc20_proxy(erc20_address)
-                        .transfer(cb_sender, cb_amount)
-                        .async_call()
-                        .call_and_exit();
-                }
-
-                self.deposit(&cb_sender)
-                    .update(|deposit| *deposit += &cb_amount);
-                self.total_balance().update(|balance| *balance += cb_amount);
-            },
-            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 
     // proxy
-
     #[proxy]
     fn erc20_proxy(&self, to: ManagedAddress) -> erc20::Proxy<Self::Api>;
 

@@ -1,6 +1,6 @@
 use std::fs;
 
-use multiversx_sc::abi::ContractAbi;
+use klever_sc::abi::ContractAbi;
 
 use crate::{cli_args::BuildArgs, tools::post_build::check_tools_installed, CargoTomlContents};
 

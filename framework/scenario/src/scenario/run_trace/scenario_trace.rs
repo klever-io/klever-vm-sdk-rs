@@ -1,10 +1,10 @@
-use multiversx_chain_scenario_format::{
+use klever_chain_scenario_format::{
     interpret_trait::{InterpretableFrom, InterpreterContext},
     serde_raw::ScenarioRaw,
 };
 
 use crate::{
-    multiversx_sc::types::Address,
+    klever_sc::types::Address,
     scenario::{model::*, ScenarioRunner},
     scenario_format::interpret_trait::IntoRaw,
 };
@@ -107,12 +107,6 @@ impl ScenarioRunner for ScenarioTrace {
         self.process_address_value(&step.tx.from);
         self.process_address_value(&step.tx.to);
         self.scenario_trace.steps.push(Step::Transfer(step.clone()));
-    }
-
-    fn run_validator_reward_step(&mut self, step: &ValidatorRewardStep) {
-        self.scenario_trace
-            .steps
-            .push(Step::ValidatorReward(step.clone()));
     }
 
     fn run_check_state_step(&mut self, step: &CheckStateStep) {

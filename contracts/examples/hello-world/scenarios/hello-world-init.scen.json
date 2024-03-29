@@ -1,0 +1,61 @@
+{
+  "name": "Hello world deployment test",
+  "steps": [
+    {
+      "step": "dumpState",
+      "comment": "Dumping state before deployment"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:my_address": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        }
+      },
+      "newAddresses": [
+        {
+          "creatorAddress": "address:my_address",
+          "creatorNonce": "1",
+          "newAddress": "sc:hello-world_contract"
+        }
+      ]
+    },
+    {
+      "step": "scDeploy",
+      "txId": "deploy",
+      "tx": {
+        "from": "address:my_address",
+        "contractCode": "file:../output/hello-world.wasm",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "dumpState",
+      "comment": "Dumping state before deployment"
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:my_address": {
+          "nonce": "1",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "sc:hello-world_contract": {
+          "nonce": "0",
+          "balance": "0",
+          "code": "*"
+        }
+      }
+    }
+  ]
+}

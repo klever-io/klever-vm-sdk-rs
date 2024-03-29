@@ -1,6 +1,6 @@
 use crate::{
     api::StaticApi,
-    multiversx_sc::types::{ContractCall, ContractCallWithEgld, EsdtTokenPayment},
+    klever_sc::types::{ContractCall, ContractCallWithKlv, KdaTokenPayment},
     scenario::model::{AddressValue, BigUintValue, BytesValue, U64Value},
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_egld_value, TxESDT};
+use super::{tx_interpret_util::interpret_klv_value, TxKDA};
 
 pub const DEFAULT_GAS_EXPR: &str = "5,000,000";
 
@@ -16,8 +16,8 @@ pub const DEFAULT_GAS_EXPR: &str = "5,000,000";
 pub struct TxCall {
     pub from: AddressValue,
     pub to: AddressValue,
-    pub egld_value: BigUintValue,
-    pub esdt_value: Vec<TxESDT>,
+    pub klv_value: BigUintValue,
+    pub kda_value: Vec<TxKDA>,
     pub function: String,
     pub arguments: Vec<BytesValue>,
     pub gas_limit: U64Value,
@@ -29,8 +29,8 @@ impl Default for TxCall {
         Self {
             from: Default::default(),
             to: Default::default(),
-            egld_value: Default::default(),
-            esdt_value: Default::default(),
+            klv_value: Default::default(),
+            kda_value: Default::default(),
             function: Default::default(),
             arguments: Default::default(),
             gas_limit: U64Value::from(DEFAULT_GAS_EXPR),
@@ -44,11 +44,11 @@ impl InterpretableFrom<TxCallRaw> for TxCall {
         TxCall {
             from: AddressValue::interpret_from(from.from, context),
             to: AddressValue::interpret_from(from.to, context),
-            egld_value: interpret_egld_value(from.value, from.egld_value, context),
-            esdt_value: from
-                .esdt_value
+            klv_value: interpret_klv_value(from.value, from.klv_value, context),
+            kda_value: from
+                .kda_value
                 .into_iter()
-                .map(|esdt_value| TxESDT::interpret_from(esdt_value, context))
+                .map(|kda_value| TxKDA::interpret_from(kda_value, context))
                 .collect(),
             function: from.function,
             arguments: from
@@ -68,11 +68,11 @@ impl IntoRaw<TxCallRaw> for TxCall {
             from: self.from.into_raw(),
             to: self.to.into_raw(),
             value: None,
-            egld_value: self.egld_value.into_raw_opt(),
-            esdt_value: self
-                .esdt_value
+            klv_value: self.klv_value.into_raw_opt(),
+            kda_value: self
+                .kda_value
                 .into_iter()
-                .map(|esdt_value| esdt_value.into_raw())
+                .map(|kda_value| kda_value.into_raw())
                 .collect(),
             function: self.function,
             arguments: self
@@ -87,23 +87,23 @@ impl IntoRaw<TxCallRaw> for TxCall {
 }
 
 impl TxCall {
-    pub fn to_contract_call(&self) -> ContractCallWithEgld<StaticApi, ()> {
-        let mut contract_call = ContractCallWithEgld::new(
+    pub fn to_contract_call(&self) -> ContractCallWithKlv<StaticApi, ()> {
+        let mut contract_call = ContractCallWithKlv::new(
             (&self.to.value).into(),
             self.function.as_bytes(),
-            (&self.egld_value.value).into(),
+            (&self.klv_value.value).into(),
         );
 
         contract_call.basic.explicit_gas_limit = self.gas_limit.value;
 
-        contract_call = contract_call.convert_to_esdt_transfer_call(
-            self.esdt_value
+        contract_call = contract_call.convert_to_kda_transfer_call(
+            self.kda_value
                 .iter()
-                .map(|esdt| {
-                    EsdtTokenPayment::new(
-                        esdt.esdt_token_identifier.value.as_slice().into(),
-                        esdt.nonce.value,
-                        (&esdt.esdt_value.value).into(),
+                .map(|kda| {
+                    KdaTokenPayment::new(
+                        kda.kda_token_identifier.value.as_slice().into(),
+                        kda.nonce.value,
+                        (&kda.kda_value.value).into(),
                     )
                 })
                 .collect(),

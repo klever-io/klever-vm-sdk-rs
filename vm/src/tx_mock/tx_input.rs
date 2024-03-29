@@ -13,8 +13,8 @@ use super::TxFunctionName;
 pub struct TxInput {
     pub from: VMAddress,
     pub to: VMAddress,
-    pub egld_value: BigUint,
-    pub esdt_values: Vec<TxTokenTransfer>,
+    pub klv_value: BigUint,
+    pub kda_values: Vec<TxTokenTransfer>,
     pub func_name: TxFunctionName,
     pub args: Vec<Vec<u8>>,
     pub gas_limit: u64,
@@ -29,8 +29,8 @@ impl Default for TxInput {
         TxInput {
             from: VMAddress::zero(),
             to: VMAddress::zero(),
-            egld_value: BigUint::zero(),
-            esdt_values: Vec::new(),
+            klv_value: BigUint::zero(),
+            kda_values: Vec::new(),
             func_name: TxFunctionName::EMPTY,
             args: Vec::new(),
             gas_limit: 0,
@@ -44,11 +44,11 @@ impl Default for TxInput {
 
 impl fmt::Display for TxInput {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "TxInput {{ func: {}, args: {:?}, call_value: {}, esdt_value: {:?}, from: 0x{}, to: 0x{}\n}}", 
+        write!(f, "TxInput {{ func: {}, args: {:?}, call_value: {}, kda_value: {:?}, from: 0x{}, to: 0x{}\n}}", 
             self.func_name.as_str(),
             self.args,
-            self.egld_value,
-            self.esdt_values,
+            self.klv_value,
+            self.kda_values,
             address_hex(&self.from),
             address_hex(&self.to))
     }
@@ -68,7 +68,7 @@ impl TxInput {
     }
 }
 
-/// Models ESDT transfers between accounts.
+/// Models KDA transfers between accounts.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct TxTokenTransfer {
     pub token_identifier: Vec<u8>,
@@ -79,26 +79,26 @@ pub struct TxTokenTransfer {
 /// Signals to the callback that funds have been returned to it, without performing any transfer.
 #[derive(Default, Clone, Debug)]
 pub struct CallbackPayments {
-    pub egld_value: BigUint,
-    pub esdt_values: Vec<TxTokenTransfer>,
+    pub klv_value: BigUint,
+    pub kda_values: Vec<TxTokenTransfer>,
 }
 
 impl TxInput {
-    /// The received EGLD can come either from the original caller, or from an async call, during callback.
-    pub fn received_egld(&self) -> &BigUint {
-        if !self.callback_payments.egld_value.is_zero() {
-            &self.callback_payments.egld_value
+    /// The received KLV can come either from the original caller, or from an async call, during callback.
+    pub fn received_klv(&self) -> &BigUint {
+        if !self.callback_payments.klv_value.is_zero() {
+            &self.callback_payments.klv_value
         } else {
-            &self.egld_value
+            &self.klv_value
         }
     }
 
-    /// The received ESDT tokens can come either from the original caller, or from an async call, during callback.
-    pub fn received_esdt(&self) -> &[TxTokenTransfer] {
-        if !self.callback_payments.esdt_values.is_empty() {
-            self.callback_payments.esdt_values.as_slice()
+    /// The received KDA tokens can come either from the original caller, or from an async call, during callback.
+    pub fn received_kda(&self) -> &[TxTokenTransfer] {
+        if !self.callback_payments.kda_values.is_empty() {
+            self.callback_payments.kda_values.as_slice()
         } else {
-            self.esdt_values.as_slice()
+            self.kda_values.as_slice()
         }
     }
 
