@@ -53,8 +53,8 @@ path = "../../sdk/scenario-format"
 
 [dependencies.klever-chain-vm-executor]
 git = "https://github.com/klever-io/klever-vm-executor-rs"
-version = "0.2.0"
-rev = "4794613"
+version = "0.2.1"
+rev="9898ecd"
 
 [dependencies.klever-chain-vm]
 version = "=0.5.2"

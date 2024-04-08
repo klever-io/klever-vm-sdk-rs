@@ -3,14 +3,13 @@ use core::marker::PhantomData;
 use crate::{
     api::{
         const_handles, use_raw_handle, BigIntApiImpl, BlockchainApi, BlockchainApiImpl, ErrorApi,
-        ErrorApiImpl, HandleConstraints, ManagedBufferApiImpl, ManagedTypeApi, ManagedTypeApiImpl,
-        StaticVarApiImpl, StorageReadApi, StorageReadApiImpl,
+        ErrorApiImpl, HandleConstraints, ManagedBufferApiImpl, ManagedTypeApi,
+        StaticVarApiImpl
     },
     codec::TopDecode,
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
-    storage::{self},
     types::{
-        convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType, LastClaim, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, PropertiesInfo, RolesInfo, RoyaltiesData, TokenIdentifier, UserKDA
+        convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType, LastClaim, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, PropertiesInfo, RolesInfo, RoyaltiesData, SFTMeta, TokenIdentifier, UserKDA
     },
 };
 
@@ -299,6 +298,23 @@ where
             mime: ManagedBuffer::from_raw_handle(mime_handle.get_raw_handle()),
             metadata: ManagedBuffer::from_raw_handle(metadata_handle.get_raw_handle()),
         }
+    }
+
+    pub fn get_sft_metadata(
+        &self,
+        ticker: &TokenIdentifier<A>,
+        nonce: u64,
+    ) -> SFTMeta<A> {
+        let managed_api_impl = A::managed_type_impl();
+        let data_handle = managed_api_impl.mb_new_empty();
+
+        A::blockchain_api_impl().managed_get_sft_metadata(
+            ticker.get_handle().get_raw_handle(),
+            nonce,
+            data_handle.get_raw_handle(),
+        );
+
+        SFTMeta::from(ManagedBuffer::from_raw_handle(data_handle.get_raw_handle()))
     }
 
     pub fn get_kda_token_data(

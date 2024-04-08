@@ -130,6 +130,13 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         issue_date_handle: RawHandle,
     );
 
+    fn managed_get_sft_metadata(
+        &self,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        data_handle: RawHandle,
+    );
+
     fn managed_get_kda_roles(
         &self,
         ticker_handle: RawHandle,

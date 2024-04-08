@@ -138,6 +138,15 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn managed_get_sft_metadata(
+        &self,
+        _ticker_handle: RawHandle,
+        _nonce: u64,
+        _data_handle: RawHandle,
+    ){
+        unreachable!()
+    }
+
     fn managed_get_kda_roles(
         &self,
         _ticker_handle: RawHandle,

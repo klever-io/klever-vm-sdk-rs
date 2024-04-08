@@ -187,6 +187,16 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     }
 
     #[allow(clippy::too_many_arguments)]
+    fn managed_get_sft_metadata(
+        &self,
+        _ticker_handle: RawHandle,
+        _nonce: u64,
+        _data_handle: RawHandle,
+    ) {
+       todo!()
+    }
+
+    #[allow(clippy::too_many_arguments)]
     fn managed_get_kda_token_data(
         &self,
         address_handle: RawHandle,

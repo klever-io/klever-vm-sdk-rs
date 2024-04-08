@@ -1,6 +1,7 @@
 mod encoded_managed_vec_item;
 mod kda_token_data;
 mod user_kda;
+mod sft_metadata;
 mod kda_token_payment;
 mod klv_or_multi_kda_payment;
 mod managed_address;
@@ -22,6 +23,9 @@ pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use kda_token_data::convert_buff_to_roles;
 pub use kda_token_data::get_u32;
 pub use kda_token_data::get_raw_handle;
+
+pub use sft_metadata::SFTMeta;
+pub use sft_metadata::SFTMetadata;
 
 pub use user_kda::UserKDA;
 pub use user_kda::UserBucket;

@@ -66,6 +66,13 @@ extern "C" {
         metadata_handle: i32,
     );
 
+
+    fn managedGetSftMetadata(
+        ticker_handle: i32,
+        nonce: u64,
+        data_handle: i32,
+    );
+
     fn managedGetKDATokenData(
         address_handle: i32,
         ticker_handle: i32,
@@ -274,6 +281,21 @@ impl BlockchainApiImpl for VmApiImpl {
                 token_identifier_len as i32,
                 nonce as i64,
                 dest,
+            );
+        }
+    }
+
+    fn managed_get_sft_metadata(
+        &self,
+        token_handle: RawHandle,
+        nonce: u64,
+        data_handle: RawHandle,
+    ) {
+        unsafe {
+            managedGetSftMetadata(
+              token_handle,
+              nonce,
+              data_handle,
             );
         }
     }

@@ -178,6 +178,21 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
                 );
             });
     }
+    
+    fn managed_get_sft_metadata(
+        &self,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        data_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_sft_metadata(
+                ticker_handle,
+                nonce as i64,
+                data_handle,
+            )
+        });
+    }
 
     fn managed_get_kda_token_data(
         &self,
