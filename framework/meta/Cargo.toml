@@ -48,6 +48,3 @@ hex = "0.4"
 version = "=0.43.3"
 path = "../base"
 features = ["alloc", "num-bigint", "promises"]
-
-# [target.'cfg(all(target_env = "musl", target_pointer_width = "64"))'.dependencies.jemallocator]
-# version = "0.5"
