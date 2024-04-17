@@ -1,0 +1,33 @@
+FROM rustlang/rust:nightly-slim as builder
+
+RUN apt update && apt install -y --no-install-recommends \
+    clang \
+    clang-tools \
+    llvm \
+    musl-tools \
+    musl-dev \
+    build-essential
+
+RUN update-ca-certificates
+RUN rustup target add x86_64-unknown-linux-musl
+
+WORKDIR /app
+
+COPY . .
+
+RUN echo "RUSTFLAGS: $CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS"
+
+RUN RUST_BACKTRACE=full \
+    CC_x86_64_unknown_linux_musl=clang \
+    AR_x86_64_unknown_linux_musl=llvm-ar \
+    CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static" \
+    cargo build -p klever-sc-meta --target x86_64-unknown-linux-musl --release
+
+
+FROM alpine:3.17.3
+
+WORKDIR /app
+
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/sc-meta /app/sc-meta
+
+CMD ["./sc-meta", "--help"]
