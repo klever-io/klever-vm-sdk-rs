@@ -4,11 +4,12 @@ klever_sc::imports!();
 klever_sc::derive_imports!();
 
 use rand::*;
-use crate::dice_utils::{calculate_payout, check_bet, roll};
-use crate::dice_data::{BetType, Bet, MAX_PREDICTION_OVER_VALUE, MIN_PREDICTION_OVER_VALUE, MAX_PREDICTION_UNDER_VALUE, MIN_PREDICTION_UNDER_VALUE};
+use crate::utils::{calculate_payout, check_bet, roll};
+use crate::data::{BetType, Bet, MAX_PREDICTION_OVER_VALUE, MIN_PREDICTION_OVER_VALUE, MAX_PREDICTION_UNDER_VALUE, MIN_PREDICTION_UNDER_VALUE};
 
-pub mod dice_data;
-pub mod dice_utils;
+pub mod data;
+pub mod utils;
+pub mod rand;
 
 #[klever_sc::contract]
 pub trait Dice :

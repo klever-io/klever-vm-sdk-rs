@@ -16,8 +16,3 @@ path = "../../../framework/base"
 [dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"
-
-[dependencies.rand]
-version = "0.0.0"
-path = "./common/rand"
-

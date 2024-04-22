@@ -1,5 +1,3 @@
-#![no_std]
-
 use klever_sc::{api::ManagedTypeApi, types::ManagedByteArray};
 
 const SEED_SIZE: usize = 48;

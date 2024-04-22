@@ -1,5 +1,5 @@
-use rand::*;
-use crate::dice_data::{BetType,MAX_ROLL_VALUE};
+use crate::data::{BetType,MAX_ROLL_VALUE};
+use crate::Rand;
 
 use core::ops::Div;
 use core::ops::Mul;

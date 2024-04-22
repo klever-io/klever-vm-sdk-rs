@@ -15,6 +15,3 @@ path = "../../../framework/base"
 [dev-dependencies.klever-sc-scenario]
 version = "0.43.3"
 path = "../../../framework/scenario"
-
-[dev-dependencies]
-num-bigint = "0.4.2"

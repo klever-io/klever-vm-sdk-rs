@@ -1,5 +1,5 @@
- use dice::dice_utils::check_bet;
- use dice::dice_data::BetType;
+ use dice::utils::check_bet;
+ use dice::data::BetType;
 
 #[test]
 fn test_check_bet(){
