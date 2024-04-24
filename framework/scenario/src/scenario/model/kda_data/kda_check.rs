@@ -5,6 +5,7 @@ use crate::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         serde_raw::{CheckKdaRaw, ValueSubTree},
     },
+    scenario_model::BytesValue,
 };
 use num_bigint::BigUint;
 
@@ -93,6 +94,54 @@ impl CheckKda {
                         kda_instance_check.push(CheckKdaInstance {
                             nonce,
                             balance: CheckValue::Equal(balance),
+                            ..Default::default()
+                        });
+                    }
+                },
+            }
+        }
+    }
+
+    pub fn add_balance_and_attributes_check<N, V, T>(
+        &mut self,
+        nonce_expr: N,
+        balance_expr: V,
+        attributes_expr: T,
+    ) where
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        BytesValue: From<T>,
+    {
+        let nonce = U64Value::from(nonce_expr);
+        let balance = BigUintValue::from(balance_expr);
+        let attributes = BytesValue::from(attributes_expr);
+
+        self.convert_to_full();
+
+        if let CheckKda::Full(prev_kda_check) = self {
+            match &mut prev_kda_check.instances {
+                CheckKdaInstances::Star => {
+                    let new_instances_check = vec![CheckKdaInstance {
+                        nonce,
+                        balance: CheckValue::Equal(balance),
+                        attributes: CheckValue::Equal(attributes),
+                        ..Default::default()
+                    }];
+
+                    prev_kda_check.instances = CheckKdaInstances::Equal(new_instances_check);
+                },
+                CheckKdaInstances::Equal(kda_instance_check) => {
+                    if let Some(i) = kda_instance_check
+                        .iter()
+                        .position(|item| item.nonce.value == nonce.value)
+                    {
+                        kda_instance_check[i].balance = CheckValue::Equal(balance);
+                        kda_instance_check[i].attributes = CheckValue::Equal(attributes);
+                    } else {
+                        kda_instance_check.push(CheckKdaInstance {
+                            nonce,
+                            balance: CheckValue::Equal(balance),
+                            attributes: CheckValue::Equal(attributes),
                             ..Default::default()
                         });
                     }

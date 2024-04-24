@@ -1,3 +1,5 @@
+use klever_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+
 use crate::{
     scenario::model::{
         BigUintValue, BytesKey, BytesValue, CheckKda, CheckKdaInstances, CheckKdaMap,
@@ -9,6 +11,7 @@ use crate::{
     },
 };
 use std::collections::BTreeMap;
+use crate::scenario_model::CheckKdaData;
 
 #[derive(Debug, Default, Clone)]
 pub struct CheckAccount {
@@ -92,6 +95,52 @@ impl CheckAccount {
                     }
                 }
             },
+        }
+
+        self
+    }
+
+    pub fn kda_nft_balance_and_attributes<K, N, V, T>(
+        mut self,
+        token_id_expr: K,
+        nonce_expr: N,
+        balance_expr: V,
+        attributes_expr: Option<T>,
+    ) -> Self
+        where
+            BytesKey: From<K>,
+            U64Value: From<N>,
+            BigUintValue: From<V>,
+            T: TopEncode,
+    {
+        let token_id = BytesKey::from(token_id_expr);
+
+        if let CheckKdaMap::Unspecified = &self.kda {
+            let mut check_kda = CheckKda::Full(CheckKdaData::default());
+
+            if let Some(attributes_expr) = attributes_expr {
+                check_kda.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    top_encode_to_vec_u8_or_panic(&attributes_expr),
+                );
+            } else {
+                check_kda.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    Vec::<u8>::new(),
+                );
+            }
+
+            let mut new_kda_map = BTreeMap::new();
+            let _ = new_kda_map.insert(token_id, check_kda);
+
+            let new_check_kda_map = CheckKdaMapContents {
+                contents: new_kda_map,
+                other_kdas_allowed: true,
+            };
+
+            self.kda = CheckKdaMap::Equal(new_check_kda_map);
         }
 
         self

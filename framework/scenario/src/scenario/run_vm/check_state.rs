@@ -130,7 +130,7 @@ pub fn check_account_kda(address: &AddressKey, expected: &CheckKdaMap, actual: &
                             let single_instance = actual_value
                                 .instances
                                 .get_by_nonce(0)
-                                .unwrap_or_else(|| panic!("Expected fungible KDA with none 0"));
+                                .unwrap_or_else(|| panic!("Expected fungible KDA with nonce 0"));
                             assert_eq!(
                                 single_instance.balance,
                                 expected_balance.value,
