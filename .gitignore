@@ -26,7 +26,6 @@ vm/**/Cargo.lock
 # Others
 my-vm-tests.sh
 quick.sh
-twiggy*
 template-test
 
 # Zip output with example wasm binaries

@@ -1,14 +1,7 @@
 use std::{ffi::OsStr, fs, process::Command};
 
 use super::OutputContract;
-use crate::{
-    abi_json::ContractAbiJson,
-    cli_args::BuildArgs,
-    ei::EIVersion,
-    kleversc_file_json::{save_kleversc_file_json, KleverscFileJson},
-    print_util::*,
-    tools::post_build,
-};
+use crate::{abi_json::ContractAbiJson, cli_args::BuildArgs, ei::EIVersion, kleversc_file_json::{save_kleversc_file_json, KleverscFileJson}, print_util::*, tools};
 
 impl OutputContract {
     pub fn build_contract(&self, build_args: &BuildArgs, output_path: &str) {
@@ -108,7 +101,7 @@ impl OutputContract {
 
         let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));
         print_call_wasm_opt(&output_wasm_path);
-        post_build::run_wasm_opt(output_wasm_path.as_str());
+        tools::run_wasm_opt(output_wasm_path.as_str());
     }
 
     fn run_wasm2wat(&self, build_args: &BuildArgs, output_path: &str) {
@@ -119,7 +112,8 @@ impl OutputContract {
         let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));
         let output_wat_path = format!("{output_path}/{}", self.wat_output_name(build_args));
         print_call_wasm2wat(&output_wasm_path, &output_wat_path);
-        post_build::run_wasm2wat(output_wasm_path.as_str(), output_wat_path.as_str());
+        tools::wasm_to_wat(output_wasm_path.as_str(), output_wat_path.as_str())
+            .expect("could not convert wasm to wat");
     }
 
     fn extract_imports(&self, build_args: &BuildArgs, output_path: &str) {
@@ -134,8 +128,8 @@ impl OutputContract {
             self.imports_json_output_name(build_args)
         );
         print_extract_imports(&output_imports_json_path);
-        let result = post_build::run_wasm_objdump(output_wasm_path.as_str());
-        let import_names = post_build::parse_imports(result.as_str());
+        let import_names = tools::extract_wasm_imports(&output_wasm_path)
+            .expect("error occured while extracting imports from .wasm ");
         write_imports_output(output_imports_json_path.as_str(), import_names.as_slice());
         validate_ei(&import_names, &self.settings.check_ei);
     }
@@ -172,7 +166,7 @@ impl OutputContract {
             if build_args.twiggy_top {
                 let output_twiggy_top_path =
                     format!("{output_path}/{}", self.twiggy_top_name(build_args));
-                post_build::run_twiggy_top(
+                tools::twiggy::run_twiggy_top(
                     output_wasm_path.as_str(),
                     output_twiggy_top_path.as_str(),
                 );
@@ -180,7 +174,7 @@ impl OutputContract {
             if build_args.twiggy_paths {
                 let output_twiggy_paths_path =
                     format!("{output_path}/{}", self.twiggy_paths_name(build_args));
-                post_build::run_twiggy_paths(
+                tools::twiggy::run_twiggy_paths(
                     output_wasm_path.as_str(),
                     output_twiggy_paths_path.as_str(),
                 );
@@ -188,7 +182,7 @@ impl OutputContract {
             if build_args.twiggy_monos {
                 let output_twiggy_monos_path =
                     format!("{output_path}/{}", self.twiggy_monos_name(build_args));
-                post_build::run_twiggy_monos(
+                tools::twiggy::run_twiggy_monos(
                     output_wasm_path.as_str(),
                     output_twiggy_monos_path.as_str(),
                 );
@@ -196,7 +190,7 @@ impl OutputContract {
             if build_args.twiggy_dominators {
                 let output_twiggy_dominators_path =
                     format!("{output_path}/{}", self.twiggy_dominators_name(build_args));
-                post_build::run_twiggy_dominators(
+                tools::twiggy::run_twiggy_dominators(
                     output_wasm_path.as_str(),
                     output_twiggy_dominators_path.as_str(),
                 );

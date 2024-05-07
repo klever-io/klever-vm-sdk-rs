@@ -1,3 +1,5 @@
+use klever_sc_derive::ManagedVecItem;
+
 use crate::codec::*;
 
 const KDA_TYPE_FUNGIBLE: &[u8] = b"FungibleKDA";
@@ -9,7 +11,7 @@ use crate as klever_sc; // needed by the TypeAbi generated code
 use crate::derive::TypeAbi;
 
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Eq, Debug, TypeAbi)]
+#[derive(Clone, PartialEq, Eq, Debug, TypeAbi, ManagedVecItem)]
 pub enum KdaTokenType {
     Fungible,
     NonFungible,

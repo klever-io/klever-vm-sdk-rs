@@ -1,4 +1,4 @@
-use klever_sc::types::H256;
+use klever_sc::types::{BigInt, H256};
 
 use crate::{
     api::StaticApi,
@@ -90,8 +90,25 @@ impl ScCallStep {
         self
     }
 
+    pub fn multi_kda_transfer<T>(mut self, tokens: T) -> Self
+    where T: IntoIterator<Item = TxKDA> {
+        if self.tx.klv_value.value > 0u32.into() {
+            panic!("Cannot transfer both KLV and KDA");
+        }
+
+        self.tx.kda_value.extend(tokens);
+
+        self
+    }
+
     pub fn function(mut self, expr: &str) -> Self {
         self.tx.function = expr.to_string();
+        self
+    }
+
+    pub fn tx_hash<T>(mut self, tx_hash_expr: T) -> Self
+    where H256: From<T>, {
+        self.explicit_tx_hash = Some(H256::from(tx_hash_expr));
         self
     }
 

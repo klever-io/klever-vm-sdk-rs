@@ -16,7 +16,7 @@ use crate::derive::{ManagedVecItem, TypeAbi};
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
 pub struct KdaTokenData<M: ManagedTypeApi> {
     pub asset_type: KdaTokenType,
     pub id: ManagedBuffer<M>,

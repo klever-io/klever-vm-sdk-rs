@@ -43,6 +43,8 @@ common-path = "1.0.0"
 lazy_static = "1.4.0"
 convert_case = "0.6.0"
 hex = "0.4"
+wasmparser = "0.113.1"
+wasmprinter = "0.2.67"
 
 [dependencies.klever-sc]
 version = "=0.43.3"
