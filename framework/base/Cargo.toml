@@ -21,6 +21,7 @@ num-bigint = ["klever-sc-codec/num-bigint"]
 alloc = ["klever-sc-codec/alloc"]
 promises = []
 managed-map = []
+back-transfers = []
 
 [dependencies]
 hex-literal = "0.3.1"

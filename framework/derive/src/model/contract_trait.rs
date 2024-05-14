@@ -1,5 +1,11 @@
 use super::{Method, Supertrait, TraitProperties};
 
+#[derive(Clone, Debug)]
+pub struct KdaAttribute {
+    pub ticker: String,
+    pub ty: proc_macro2::TokenStream,
+}
+
 /// Models a contract or module trait.
 pub struct ContractTrait {
     pub docs: Vec<String>,

@@ -9,6 +9,7 @@ use crate::{
         KlvOrMultiKdaPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
     },
 };
+use crate::types::FunctionCall;
 
 use super::{
     contract_call_exec::UNSPECIFIED_GAS_LIMIT, contract_call_with_klv::ContractCallWithKlv,
@@ -29,8 +30,7 @@ where
 {
     pub(super) _phantom: PhantomData<SA>,
     pub to: ManagedAddress<SA>,
-    pub endpoint_name: ManagedBuffer<SA>,
-    pub arg_buffer: ManagedArgBuffer<SA>,
+    pub function_call: FunctionCall<SA>,
     pub explicit_gas_limit: u64,
     pub(super) _return_type: PhantomData<OriginalResult>,
 }
@@ -69,8 +69,10 @@ where
         ContractCallNoPayment {
             _phantom: PhantomData,
             to,
-            endpoint_name: endpoint_name.into(),
-            arg_buffer: ManagedArgBuffer::new(),
+            function_call: FunctionCall {
+                function_name: endpoint_name.into(),
+                arg_buffer: ManagedArgBuffer::new(),
+            },
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             _return_type: PhantomData,
         }
@@ -151,5 +153,9 @@ where
             payment_nonce,
             payment_amount,
         ))
+    }
+
+    pub fn into_function_call(self) -> FunctionCall<SA> {
+        self.function_call
     }
 }

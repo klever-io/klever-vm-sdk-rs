@@ -9,6 +9,7 @@ mod contract_call_with_klv_or_single_kda;
 mod contract_call_with_multi_kda;
 mod contract_deploy;
 mod managed_arg_buffer;
+mod function_call;
 
 pub use back_transfers::BackTransfers;
 pub use contract_call_no_payment::ContractCallNoPayment;
@@ -18,4 +19,5 @@ pub use contract_call_with_klv::ContractCallWithKlv;
 pub use contract_call_with_klv_or_single_kda::ContractCallWithKlvOrSingleKda;
 pub use contract_call_with_multi_kda::ContractCallWithMultiKda;
 pub use contract_deploy::{new_contract_deploy, ContractDeploy};
+pub use function_call::FunctionCall;
 pub use managed_arg_buffer::ManagedArgBuffer;

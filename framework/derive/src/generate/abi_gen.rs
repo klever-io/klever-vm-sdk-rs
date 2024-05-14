@@ -11,6 +11,7 @@ fn generate_endpoint_snippet(
     only_admin: bool,
     mutability: EndpointMutabilityMetadata,
     endpoint_type: EndpointTypeMetadata,
+    allow_multiple_var_args: bool,
 ) -> proc_macro2::TokenStream {
     let endpoint_docs = &m.docs;
     let rust_method_name = m.name.to_string();
@@ -65,6 +66,7 @@ fn generate_endpoint_snippet(
             inputs: klever_sc::types::heap::Vec::new(),
             outputs: klever_sc::types::heap::Vec::new(),
             labels: &[ #(#label_names),* ],
+            allow_multiple_var_args: #allow_multiple_var_args,
         };
         #(#input_snippets)*
         #output_snippet
@@ -84,6 +86,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     false,
                     EndpointMutabilityMetadata::Mutable,
                     EndpointTypeMetadata::Init,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
@@ -98,6 +101,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     endpoint_metadata.only_admin,
                     endpoint_metadata.mutability.clone(),
                     EndpointTypeMetadata::Endpoint,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
@@ -168,6 +172,21 @@ fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::To
 			.collect()
 }
 
+fn generate_kda_attribute_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
+    contract
+        .trait_attributes
+        .kda_attribute
+        .iter()
+        .map(|kda_attr| {
+            let ticker = &kda_attr.ticker;
+            let ty = &kda_attr.ty;
+            quote!(
+                contract_abi.kda_attributes.push(klever_sc::abi::KdaAttributeAbi::new::<#ty>(#ticker));
+                contract_abi.add_type_descriptions::<#ty>();
+            )
+        }).collect()
+}
+
 fn generate_abi_method_body(
     contract: &ContractTrait,
     is_contract_main: bool,
@@ -178,6 +197,11 @@ fn generate_abi_method_body(
     let event_snippets = generate_event_snippets(contract);
     let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
         generate_supertrait_snippets(contract)
+    } else {
+        Vec::new()
+    };
+    let kda_attributes = if !&contract.trait_attributes.kda_attribute.is_empty() {
+        generate_kda_attribute_snippets(contract)
     } else {
         Vec::new()
     };
@@ -198,10 +222,12 @@ fn generate_abi_method_body(
             endpoints: klever_sc::types::heap::Vec::new(),
             events: klever_sc::types::heap::Vec::new(),
             type_descriptions: <klever_sc::abi::TypeDescriptionContainerImpl as klever_sc::abi::TypeDescriptionContainer>::new(),
+            kda_attributes: klever_sc::types::heap::Vec::new(),
         };
         #(#endpoint_snippets)*
         #(#event_snippets)*
         #(#supertrait_snippets)*
+        #(#kda_attributes)*
         contract_abi
     }
 }

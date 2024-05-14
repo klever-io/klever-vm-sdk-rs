@@ -1,7 +1,6 @@
 [settings]
-main = "erc1155"
+main = "proxy-test-second"
 
 # the only purpose of this config is to specify the allocator
-[contracts.erc1155]
-add-unlabelled = true
+[contracts.proxy-test-second]
 allocator = "static64k"

@@ -15,6 +15,7 @@ fn get_serialized_toml() -> MultiContractConfigSerde {
 
         [contracts.secondary-contract]
         name = "contract2-name"
+        add-unlabelled = false
         add-labels = ["label1", "label2"]
         external-view = true
         

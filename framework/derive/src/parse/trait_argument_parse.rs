@@ -20,6 +20,7 @@ fn process_trait_attribute(
 ) -> bool {
     process_only_owner_argument(attr, trait_arg_metadata)
         || process_only_admin_argument(attr, trait_arg_metadata)
+        || process_kda_attribute_argument(attr, trait_arg_metadata)
 }
 
 fn process_only_owner_argument(attr: &syn::Attribute, arg_metadata: &mut TraitProperties) -> bool {
@@ -36,4 +37,17 @@ fn process_only_admin_argument(attr: &syn::Attribute, arg_metadata: &mut TraitPr
         arg_metadata.only_admin = true;
     }
     has_attr
+}
+
+
+fn process_kda_attribute_argument(
+    attr: &syn::Attribute,
+    arg_metadata: &mut TraitProperties,
+) -> bool {
+    if let Some(kda_attribute) = get_kda_attribute_prop(attr) {
+        arg_metadata.kda_attribute.push(kda_attribute);
+        true
+    } else {
+        false
+    }
 }

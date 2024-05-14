@@ -1,5 +1,6 @@
 use super::*;
 use alloc::{string::String, vec::Vec};
+use crate::abi::kda_attribute_abi::KdaAttributeAbi;
 
 #[derive(Debug, Default, Clone)]
 pub struct ContractAbi {
@@ -9,6 +10,7 @@ pub struct ContractAbi {
     pub constructors: Vec<EndpointAbi>,
     pub endpoints: Vec<EndpointAbi>,
     pub events: Vec<EventAbi>,
+    pub kda_attributes: Vec<KdaAttributeAbi>,
     pub type_descriptions: TypeDescriptionContainerImpl,
 }
 
@@ -19,6 +21,7 @@ impl ContractAbi {
         self.endpoints.extend_from_slice(other.endpoints.as_slice());
         self.events.extend_from_slice(other.events.as_slice());
         self.type_descriptions.insert_all(&other.type_descriptions);
+        self.kda_attributes.extend_from_slice(other.kda_attributes.as_slice())
     }
 
     /// A type can provide more than 1 type descripions.

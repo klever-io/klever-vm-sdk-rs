@@ -16,7 +16,7 @@ use crate::derive::{ManagedVecItem, TypeAbi};
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
 pub struct KdaTokenData<M: ManagedTypeApi> {
     pub asset_type: KdaTokenType,
     pub id: ManagedBuffer<M>,
@@ -59,7 +59,7 @@ impl Default for StakingInfo {
     }
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
 pub struct PropertiesInfo {
     pub can_freeze: bool,
     pub can_wipe: bool,
@@ -120,7 +120,7 @@ impl Default for PropertiesInfo {
     }
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, Clone)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, Clone, ManagedVecItem)]
 pub struct AttributesInfo {
     pub is_paused: bool,
     pub is_nft_mint_stopped: bool,
@@ -154,7 +154,7 @@ impl Default for AttributesInfo {
     }
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
 pub struct RoyaltiesData<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub transfer_percentage: ManagedVec<M, RoyaltyData<M>>,

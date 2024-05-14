@@ -186,10 +186,7 @@ impl ScenarioWorld {
         B: CallableContractBuilder,
     {
         let multi_contract_config = klever_sc_meta::multi_contract_config::<Abi>(
-            self.current_dir
-                .join("multicontract.toml")
-                .to_str()
-                .unwrap(),
+            self.current_dir.as_path(),
         );
         let sub_contract = multi_contract_config.find_contract(sub_contract_name);
         let contract_obj = if sub_contract.settings.external_view {

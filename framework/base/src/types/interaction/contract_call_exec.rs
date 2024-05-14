@@ -54,8 +54,8 @@ where
 
     pub fn to_call_data_string(&self) -> ManagedBuffer<SA> {
         let mut result = ManagedBufferCachedBuilder::default();
-        result.append_managed_buffer(&self.basic.endpoint_name);
-        for arg in self.basic.arg_buffer.raw_arg_iter() {
+        result.append_managed_buffer(&self.basic.function_call.function_name);
+        for arg in self.basic.function_call.arg_buffer.raw_arg_iter() {
             result.append_bytes(b"@");
             SCLowerHex::fmt(&*arg, &mut result);
         }
@@ -72,8 +72,8 @@ where
             self.resolve_gas_limit(),
             &self.basic.to,
             &self.klv_payment,
-            &self.basic.endpoint_name,
-            &self.basic.arg_buffer,
+            &self.basic.function_call.function_name,
+            &self.basic.function_call.arg_buffer,
         );
 
         SendRawWrapper::<SA>::new().clean_return_data();
@@ -88,8 +88,8 @@ where
         let raw_result = SendRawWrapper::<SA>::new().execute_on_dest_context_readonly_raw(
             self.resolve_gas_limit(),
             &self.basic.to,
-            &self.basic.endpoint_name,
-            &self.basic.arg_buffer,
+            &self.basic.function_call.function_name,
+            &self.basic.function_call.arg_buffer,
         );
 
         SendRawWrapper::<SA>::new().clean_return_data();
@@ -105,8 +105,8 @@ where
             self.resolve_gas_limit(),
             &self.basic.to,
             &self.klv_payment,
-            &self.basic.endpoint_name,
-            &self.basic.arg_buffer,
+            &self.basic.function_call.function_name,
+            &self.basic.function_call.arg_buffer,
         );
 
         SendRawWrapper::<SA>::new().clean_return_data();
@@ -137,8 +137,8 @@ where
             &self.to,
             &payments,
             gas_limit,
-            &self.endpoint_name,
-            &self.arg_buffer,
+            &self.function_call.function_name,
+            &self.function_call.arg_buffer,
         );
     }
 

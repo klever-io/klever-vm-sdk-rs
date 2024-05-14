@@ -41,6 +41,7 @@ run-go-tests = []
 
 [dependencies.klever-sc]
 version = "=0.43.3"
+features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.klever-sc-meta]

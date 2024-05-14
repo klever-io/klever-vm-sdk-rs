@@ -23,6 +23,8 @@ klever_sc::imports!();
 /// - GovernanceModule
 /// - PauseModule
 #[klever_sc::contract]
+#[kda_attribute("TICKER1", BigUint)]
+#[kda_attribute("TICKER2", ManagedBuffer)]
 pub trait UseModule:
     ContractBase
     + contract_base_full_path_mod::ContractBaseFullPathTestModule

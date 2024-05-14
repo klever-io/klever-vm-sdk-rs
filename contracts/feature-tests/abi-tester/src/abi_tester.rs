@@ -16,6 +16,12 @@ use only_nested::*;
 /// Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,
 /// including Rust docs.
 #[klever_sc::contract]
+#[kda_attribute("TICKER1", BigUint)]
+#[kda_attribute("TICKER2", ManagedBuffer)]
+#[kda_attribute("TICKER3", u32)]
+#[kda_attribute("STRUCT1", AbiEnum)]
+#[kda_attribute("STRUCT2", AbiManagedType<Self::Api>)]
+#[kda_attribute("OnlyInKda", OnlyShowsUpInKdaAttr)]
 pub trait AbiTester {
     /// Contract constructor.
     #[init]
