@@ -10,13 +10,15 @@ use crate::{
         KLEVER_CONFIG_MARKETPLACE_FUNC_NAME, KLEVER_CREATE_ASSET_FUNC_NAME, KLEVER_CREATE_MARKETPLACE_FUNC_NAME,
         KLEVER_DELEGATE_FUNC_NAME, KLEVER_DEPOSIT_FUNC_NAME, KLEVER_FREEZE_FUNC_NAME,
         KLEVER_ITO_TRIGGER_FUNC_NAME, KLEVER_SELL_FUNC_NAME, KLEVER_SET_ACCOUNT_NAME_FUNC_NAME,
-        KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME
+        KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME,
+        KLEVER_UPDATE_ACCOUNT_PERMISSION
     },
     codec::{Empty, NestedEncode},
     kda::KDASystemSmartContractProxy,
     types::{
         BigUint, ContractCall, ContractCallNoPayment, ITOPackInfo, ITOWhitelist, KdaTokenPayment, ManagedAddress,
-        ManagedArgBuffer, ManagedBuffer, ManagedVec, PropertiesInfo, RoyaltiesData, TokenIdentifier, URI
+        ManagedArgBuffer, ManagedBuffer, ManagedVec, PropertiesInfo, RoyaltiesData, TokenIdentifier, URI, 
+        AccountPermission
     },
 };
 
@@ -241,6 +243,23 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(nonce);
         arg_buffer.push_arg(amount);
+
+        let _ = self.call_kda_built_in_function(
+            A::blockchain_api_impl().get_gas_left(),
+            &ManagedBuffer::from(func_name),
+            &arg_buffer,
+        );
+    }
+
+    pub fn account_update_permission(&self, address: &ManagedAddress<A>, updates: &ManagedVec<A, AccountPermission<A>>) {
+        let mut arg_buffer = ManagedArgBuffer::new();
+        let func_name = KLEVER_UPDATE_ACCOUNT_PERMISSION;
+        
+        let mut updates_bytes = ManagedBuffer::<A>::new();
+        let _ = updates.dep_encode(&mut updates_bytes);
+        
+        arg_buffer.push_arg(address);
+        arg_buffer.push_arg(updates_bytes);
 
         let _ = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),

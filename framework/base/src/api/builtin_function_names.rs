@@ -24,6 +24,7 @@ pub const KLEVER_VOTE_FUNC_NAME: &str = "KleverVote";
 pub const KLEVER_CONFIG_ITO_FUNC_NAME: &str = "KleverConfigITO";
 pub const KLEVER_ITO_TRIGGER_FUNC_NAME: &str = "KleverITOTrigger";
 pub const KLEVER_SET_ACCOUNT_NAME_FUNC_NAME: &str = "KleverSetAccountName";
+pub const KLEVER_UPDATE_ACCOUNT_PERMISSION: &str = "KleverUpdateAccountPermission";
 
 pub const KDA_LOCAL_MINT_FUNC_NAME: &str = "KDALocalMint";
 pub const KDA_LOCAL_BURN_FUNC_NAME: &str = "KDALocalBurn";

@@ -17,6 +17,7 @@ mod managed_vec_ref_iter;
 pub(crate) mod preloaded_managed_buffer;
 mod randomness_source;
 mod token_identifier;
+mod account_permission;
 
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 
@@ -30,6 +31,10 @@ pub use sft_metadata::SFTMetadata;
 pub use user_kda::UserKDA;
 pub use user_kda::UserBucket;
 pub use user_kda::LastClaim;
+
+pub use account_permission::{
+    AccountPermission, AccountPermissionType, AccountPermissionSigner
+};
 
 pub use kda_token_data::{
     AttributesInfo, ITOPackInfo, ITOPackItem, ITOWhitelist, KdaTokenData, PropertiesInfo, RolesInfo,
