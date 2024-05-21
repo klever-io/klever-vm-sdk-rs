@@ -3,13 +3,14 @@ use core::marker::PhantomData;
 use crate::{
     api::{
         const_handles, use_raw_handle, BigIntApiImpl, BlockchainApi, BlockchainApiImpl, ErrorApi,
-        ErrorApiImpl, HandleConstraints, ManagedBufferApiImpl, ManagedTypeApi,
-        StaticVarApiImpl
+        ErrorApiImpl, HandleConstraints, ManagedBufferApiImpl, ManagedTypeApi, StaticVarApiImpl,
     },
     codec::TopDecode,
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
     types::{
-        convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType, LastClaim, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec, PropertiesInfo, RolesInfo, RoyaltiesData, SFTMeta, TokenIdentifier, UserKDA
+        convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType,
+        LastClaim, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedType, ManagedVec,
+        PropertiesInfo, RolesInfo, RoyaltiesData, SFTMeta, TokenIdentifier, UserKDA,
     },
 };
 
@@ -242,7 +243,7 @@ where
         // KLV balance is not stored in KDA data.
         // It is stored in the account data, so we need to handle balance retrieval separately.
         if token_id.is_klv() {
-            return self.get_balance(address)
+            return self.get_balance(address);
         }
         let result_handle: A::BigIntHandle = use_raw_handle(A::static_var_api_impl().next_handle());
         A::blockchain_api_impl().load_kda_balance(
@@ -259,7 +260,7 @@ where
         address: &ManagedAddress<A>,
         ticker: &TokenIdentifier<A>,
         nonce: u64,
-    ) -> UserKDA<A>{
+    ) -> UserKDA<A> {
         let managed_api_impl = A::managed_type_impl();
 
         let balance_handle = managed_api_impl.bi_new_zero();
@@ -268,7 +269,7 @@ where
         let buckets_handle = managed_api_impl.mb_new_empty();
         let mime_handle = managed_api_impl.mb_new_empty();
         let metadata_handle = managed_api_impl.mb_new_empty();
-        
+
         A::blockchain_api_impl().managed_get_user_kda(
             address.get_handle().get_raw_handle(),
             ticker.get_handle().get_raw_handle(),
@@ -288,7 +289,7 @@ where
             balance = self.get_balance(address)
         }
 
-        UserKDA { 
+        UserKDA {
             balance: balance,
             frozen_balance: BigUint::from_raw_handle(frozen_handle.get_raw_handle()),
             last_claim: LastClaim::from(ManagedBuffer::from_raw_handle(
@@ -300,11 +301,7 @@ where
         }
     }
 
-    pub fn get_sft_metadata(
-        &self,
-        ticker: &TokenIdentifier<A>,
-        nonce: u64,
-    ) -> SFTMeta<A> {
+    pub fn get_sft_metadata(&self, ticker: &TokenIdentifier<A>, nonce: u64) -> SFTMeta<A> {
         let managed_api_impl = A::managed_type_impl();
         let data_handle = managed_api_impl.mb_new_empty();
 
@@ -331,6 +328,7 @@ where
         let id_handle = managed_api_impl.mb_new_empty();
         let name_handle = managed_api_impl.mb_new_empty();
         let creator_handle = managed_api_impl.mb_new_empty();
+        let admin_handle = managed_api_impl.mb_new_empty();
         let logo_handle = managed_api_impl.mb_new_empty();
         let uris_handle = managed_api_impl.mb_new_empty();
         let initial_supply_handle = managed_api_impl.bi_new_zero();
@@ -353,6 +351,7 @@ where
             id_handle.get_raw_handle(),
             name_handle.get_raw_handle(),
             creator_handle.get_raw_handle(),
+            admin_handle.get_raw_handle(),
             logo_handle.get_raw_handle(),
             uris_handle.get_raw_handle(),
             initial_supply_handle.get_raw_handle(),
@@ -377,7 +376,7 @@ where
         // get tokenType from properties bits 30 and 31
         let properties_value = match properties_bi.to_u64() {
             Some(value) => value,
-            None => A::error_api_impl().signal_error(b"Invalid value for Properties Handler.")
+            None => A::error_api_impl().signal_error(b"Invalid value for Properties Handler."),
         };
 
         let type_value = (properties_value >> 30) & 0b11;
@@ -394,6 +393,7 @@ where
             name: ManagedBuffer::from_raw_handle(name_handle.get_raw_handle()),
             ticker: ManagedBuffer::from_raw_handle(ticker.get_handle().get_raw_handle()),
             owner_address: ManagedAddress::from_raw_handle(creator_handle.get_raw_handle()),
+            admin_address: ManagedAddress::from_raw_handle(admin_handle.get_raw_handle()),
             logo: ManagedBuffer::from_raw_handle(logo_handle.get_raw_handle()),
             precision: BigUint::from_raw_handle(precision_handle.get_raw_handle()),
             initial_supply: BigUint::from_raw_handle(initial_supply_handle.get_raw_handle()),
@@ -412,14 +412,13 @@ where
                 attributes_handle.get_raw_handle(),
             )),
             uris: ManagedVec::from_raw_handle(uris_handle.get_raw_handle()),
-            roles: convert_buff_to_roles(ManagedBuffer::from_raw_handle(roles_handle.get_raw_handle())),
+            roles: convert_buff_to_roles(ManagedBuffer::from_raw_handle(
+                roles_handle.get_raw_handle(),
+            )),
         }
     }
 
-    pub fn get_kda_roles(
-        &self,
-        ticker: &TokenIdentifier<A>,
-    ) -> ManagedVec<A, RolesInfo<A>> {
+    pub fn get_kda_roles(&self, ticker: &TokenIdentifier<A>) -> ManagedVec<A, RolesInfo<A>> {
         // initializing outputs
         // the current version of VM does not set/overwrite them if the token is missing,
         // which is why we need to initialize them explicitly
@@ -431,13 +430,12 @@ where
             roles_handle.get_raw_handle(),
         );
 
-        convert_buff_to_roles(ManagedBuffer::from_raw_handle(roles_handle.get_raw_handle()))
+        convert_buff_to_roles(ManagedBuffer::from_raw_handle(
+            roles_handle.get_raw_handle(),
+        ))
     }
 
-    pub fn get_kda_properties(
-        &self,
-        ticker: &TokenIdentifier<A>,
-    ) -> PropertiesInfo {
+    pub fn get_kda_properties(&self, ticker: &TokenIdentifier<A>) -> PropertiesInfo {
         let kda_data = self.get_kda_token_data(&self.get_sc_address(), ticker, 0);
         kda_data.properties
     }

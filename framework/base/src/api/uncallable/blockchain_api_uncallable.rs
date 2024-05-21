@@ -122,6 +122,7 @@ impl BlockchainApiImpl for UncallableApi {
         _id_handle: RawHandle,
         _name_handle: RawHandle,
         _creator_handle: RawHandle,
+        _admin_handle: RawHandle,
         _logo_handle: RawHandle,
         _uris_handle: RawHandle,
         _initial_supply_handle: RawHandle,
@@ -143,15 +144,11 @@ impl BlockchainApiImpl for UncallableApi {
         _ticker_handle: RawHandle,
         _nonce: u64,
         _data_handle: RawHandle,
-    ){
+    ) {
         unreachable!()
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        _ticker_handle: RawHandle,
-        _roles_handle: RawHandle,
-    ) {
+    fn managed_get_kda_roles(&self, _ticker_handle: RawHandle, _roles_handle: RawHandle) {
         unreachable!()
     }
 

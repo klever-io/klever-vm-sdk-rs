@@ -1,8 +1,8 @@
 use crate as klever_sc;
-use crate::derive::TypeAbi;
 use crate::{
     codec,
     codec::derive::{TopDecode, TopEncode},
+    derive::TypeAbi,
 };
 
 pub const KLEVER_TRANSFER_FUNC_NAME: &str = "KleverTransfer";
@@ -40,12 +40,11 @@ pub const MIGRATE_USERNAME_FUNC_NAME: &str = "migrateUserName";
 pub const DELETE_USERNAME_FUNC_NAME: &str = "DeleteUserName";
 pub const UPGRADE_CONTRACT_FUNC_NAME: &str = "upgradeContract";
 
-
 #[derive(TopEncode, TopDecode, TypeAbi)]
 pub enum AssetType {
     Fungible,
     NFT,
-    SemiFungible
+    SemiFungible,
 }
 
 #[derive(TopEncode, TopDecode, TypeAbi)]
@@ -68,6 +67,7 @@ pub enum AssetTriggerType {
     UpdateKDAFeePool,
     StopRoyaltiesChange,
     StopNFTMetadataChange,
+    ChangeAdmin,
 }
 
 #[derive(TopDecode, TopEncode, TypeAbi)]

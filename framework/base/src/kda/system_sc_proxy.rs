@@ -4,8 +4,8 @@ use crate::{
     api::{AssetType, CallTypeApi, SendApi, StorageReadApi},
     contract_base::{BlockchainWrapper, SendWrapper},
     types::{
-        BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedVec,
-        PropertiesInfo, RoyaltiesData, TokenIdentifier,
+        BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedVec, PropertiesInfo,
+        RoyaltiesData, TokenIdentifier,
     },
 };
 
@@ -183,7 +183,11 @@ where
     /// The manager of an KDA token may freeze the tokens held by a specific account.
     /// As a consequence, no tokens may be transferred to or from the frozen account.
     /// Freezing and unfreezing the tokens of an account are operations designed to help token managers to comply with regulations.
-    pub fn freeze(self, token_identifier: &TokenIdentifier<SA>, amount: &BigUint<SA>) -> ManagedBuffer<SA> {
+    pub fn freeze(
+        self,
+        token_identifier: &TokenIdentifier<SA>,
+        amount: &BigUint<SA>,
+    ) -> ManagedBuffer<SA> {
         let send_wrapper = SendWrapper::<SA>::new();
         send_wrapper.freeze(token_identifier, amount)
     }

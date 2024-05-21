@@ -16,13 +16,16 @@ use crate::derive::{ManagedVecItem, TypeAbi};
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
-#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
+#[derive(
+    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
+)]
 pub struct KdaTokenData<M: ManagedTypeApi> {
     pub asset_type: KdaTokenType,
     pub id: ManagedBuffer<M>,
     pub name: ManagedBuffer<M>,
     pub ticker: ManagedBuffer<M>,
     pub owner_address: ManagedAddress<M>,
+    pub admin_address: ManagedAddress<M>,
     pub logo: ManagedBuffer<M>,
     pub uris: ManagedVec<M, URI<M>>,
     pub precision: BigUint<M>,
@@ -59,7 +62,9 @@ impl Default for StakingInfo {
     }
 }
 
-#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
+#[derive(
+    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
+)]
 pub struct PropertiesInfo {
     pub can_freeze: bool,
     pub can_wipe: bool,
@@ -75,8 +80,7 @@ fn check_bit(value: u64, bit: u8) -> bool {
     value & (1 << bit) != 0
 }
 
-impl From<u64> for PropertiesInfo
-{
+impl From<u64> for PropertiesInfo {
     fn from(v: u64) -> Self {
         PropertiesInfo {
             can_freeze: check_bit(v, 0),
@@ -97,10 +101,10 @@ where
 {
     fn from(v: BigUint<M>) -> Self {
         match v.to_u64() {
-            Some(value) => {
-                return PropertiesInfo::from(value)
+            Some(value) => return PropertiesInfo::from(value),
+            None => {
+                M::error_api_impl().signal_error(b"Invalid value for PropertiesInfo conversion.")
             },
-            None => M::error_api_impl().signal_error(b"Invalid value for PropertiesInfo conversion.")
         }
     }
 }
@@ -120,7 +124,9 @@ impl Default for PropertiesInfo {
     }
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, Clone, ManagedVecItem)]
+#[derive(
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, Clone, ManagedVecItem,
+)]
 pub struct AttributesInfo {
     pub is_paused: bool,
     pub is_nft_mint_stopped: bool,
@@ -154,7 +160,9 @@ impl Default for AttributesInfo {
     }
 }
 
-#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem)]
+#[derive(
+    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
+)]
 pub struct RoyaltiesData<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub transfer_percentage: ManagedVec<M, RoyaltyData<M>>,
@@ -227,12 +235,14 @@ impl<M: ManagedTypeApi> Default for RoyaltiesData<M> {
     }
 }
 
-pub fn convert_buff_to_roles<M: ManagedTypeApi>(mb: ManagedBuffer<M>) -> ManagedVec<M, RolesInfo<M>> {
+pub fn convert_buff_to_roles<M: ManagedTypeApi>(
+    mb: ManagedBuffer<M>,
+) -> ManagedVec<M, RolesInfo<M>> {
     let mut roles = ManagedVec::new();
     let mut i = 0;
 
-    while (i+1)*8 <= mb.len() {
-        let dest_slice = mb.copy_slice(8*i, 8).unwrap();
+    while (i + 1) * 8 <= mb.len() {
+        let dest_slice = mb.copy_slice(8 * i, 8).unwrap();
 
         roles.push(RolesInfo::from(dest_slice.clone()));
         i += 1;
@@ -318,6 +328,7 @@ impl<M: ManagedTypeApi> Default for KdaTokenData<M> {
             name: ManagedBuffer::default(),
             ticker: ManagedBuffer::default(),
             owner_address: ManagedAddress::default(),
+            admin_address: ManagedAddress::default(),
             logo: ManagedBuffer::default(),
             uris: ManagedVec::default(),
             precision: BigUint::default(),

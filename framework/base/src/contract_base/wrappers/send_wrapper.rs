@@ -2,23 +2,23 @@ use core::marker::PhantomData;
 
 use crate::{
     api::{
-        AssetTriggerType, AssetType, BlockchainApi, BlockchainApiImpl, BuyType, CallTypeApi, ClaimType,
-        DepositType, ErrorApiImpl, ITOStatus, ITOTriggerType, ITOWhitelistStatus, SellType, StakingType,
-        StorageReadApi, VoteType, WithdrawType,
+        AssetTriggerType, AssetType, BlockchainApi, BlockchainApiImpl, BuyType, CallTypeApi,
+        ClaimType, DepositType, ErrorApiImpl, ITOStatus, ITOTriggerType, ITOWhitelistStatus,
+        SellType, StakingType, StorageReadApi, VoteType, WithdrawType,
         CHANGE_OWNER_BUILTIN_FUNC_NAME, KLEVER_ASSET_TRIGGER_FUNC_NAME, KLEVER_BUY_FUNC_NAME,
         KLEVER_CANCEL_MARKET_ORDER_FUNC_NAME, KLEVER_CLAIM_FUNC_NAME, KLEVER_CONFIG_ITO_FUNC_NAME,
-        KLEVER_CONFIG_MARKETPLACE_FUNC_NAME, KLEVER_CREATE_ASSET_FUNC_NAME, KLEVER_CREATE_MARKETPLACE_FUNC_NAME,
-        KLEVER_DELEGATE_FUNC_NAME, KLEVER_DEPOSIT_FUNC_NAME, KLEVER_FREEZE_FUNC_NAME,
-        KLEVER_ITO_TRIGGER_FUNC_NAME, KLEVER_SELL_FUNC_NAME, KLEVER_SET_ACCOUNT_NAME_FUNC_NAME,
-        KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME,
-        KLEVER_UPDATE_ACCOUNT_PERMISSION
+        KLEVER_CONFIG_MARKETPLACE_FUNC_NAME, KLEVER_CREATE_ASSET_FUNC_NAME,
+        KLEVER_CREATE_MARKETPLACE_FUNC_NAME, KLEVER_DELEGATE_FUNC_NAME, KLEVER_DEPOSIT_FUNC_NAME,
+        KLEVER_FREEZE_FUNC_NAME, KLEVER_ITO_TRIGGER_FUNC_NAME, KLEVER_SELL_FUNC_NAME,
+        KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME,
+        KLEVER_UPDATE_ACCOUNT_PERMISSION, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME,
     },
     codec::{Empty, NestedEncode},
     kda::KDASystemSmartContractProxy,
     types::{
-        BigUint, ContractCall, ContractCallNoPayment, ITOPackInfo, ITOWhitelist, KdaTokenPayment, ManagedAddress,
-        ManagedArgBuffer, ManagedBuffer, ManagedVec, PropertiesInfo, RoyaltiesData, TokenIdentifier, URI, 
-        AccountPermission
+        AccountPermission, BigUint, ContractCall, ContractCallNoPayment, ITOPackInfo, ITOWhitelist,
+        KdaTokenPayment, ManagedAddress, ManagedArgBuffer, ManagedBuffer, ManagedVec,
+        PropertiesInfo, RoyaltiesData, TokenIdentifier, URI,
     },
 };
 
@@ -114,17 +114,8 @@ where
         nonce: u64,
         amount: &BigUint<A>,
     ) {
-        self.direct_kda_with_gas_limit(
-            to,
-            token_identifier,
-            nonce,
-            amount,
-            0,
-            Empty,
-            &[],
-        );
+        self.direct_kda_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
     }
-
 
     /// Sends multiple KDA tokens to a target address.
     pub fn direct_multi(
@@ -192,7 +183,7 @@ where
         let b_wrapper = BlockchainWrapper::new();
         let own_address = b_wrapper.get_sc_address();
 
-        self.kda_mint_with_address(token, nonce, amount, &own_address,  max_supply)
+        self.kda_mint_with_address(token, nonce, amount, &own_address, max_supply)
     }
 
     pub fn sft_mint_with_address(
@@ -203,7 +194,7 @@ where
         address: &ManagedAddress<A>,
         max_supply: u64,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        self.kda_mint_with_address(token, nonce, amount, &address,  max_supply)
+        self.kda_mint_with_address(token, nonce, amount, &address, max_supply)
     }
 
     pub fn kda_mint_with_address(
@@ -212,7 +203,7 @@ where
         nonce: u64,
         amount: &BigUint<A>,
         address: &ManagedAddress<A>,
-        value: u64
+        value: u64,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_ASSET_TRIGGER_FUNC_NAME;
@@ -251,13 +242,17 @@ where
         );
     }
 
-    pub fn account_update_permission(&self, address: &ManagedAddress<A>, updates: &ManagedVec<A, AccountPermission<A>>) {
+    pub fn account_update_permission(
+        &self,
+        address: &ManagedAddress<A>,
+        updates: &ManagedVec<A, AccountPermission<A>>,
+    ) {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_UPDATE_ACCOUNT_PERMISSION;
-        
+
         let mut updates_bytes = ManagedBuffer::<A>::new();
         let _ = updates.dep_encode(&mut updates_bytes);
-        
+
         arg_buffer.push_arg(address);
         arg_buffer.push_arg(updates_bytes);
 
@@ -344,6 +339,22 @@ where
         let func_name = KLEVER_ASSET_TRIGGER_FUNC_NAME;
 
         arg_buffer.push_arg(AssetTriggerType::ChangeOwner as u32);
+        arg_buffer.push_arg(token);
+        arg_buffer.push_arg(address);
+
+        let _ = self.call_kda_built_in_function(
+            A::blockchain_api_impl().get_gas_left(),
+            &ManagedBuffer::from(func_name),
+            &arg_buffer,
+        );
+    }
+
+    /// Allows synchronous change admin of KDA/NFT. Execution is resumed afterwards.
+    pub fn kda_change_admin(&self, token: &TokenIdentifier<A>, address: &ManagedAddress<A>) {
+        let mut arg_buffer = ManagedArgBuffer::new();
+        let func_name = KLEVER_ASSET_TRIGGER_FUNC_NAME;
+
+        arg_buffer.push_arg(AssetTriggerType::ChangeAdmin as u32);
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(address);
 
@@ -456,11 +467,7 @@ where
     }
 
     /// Allows synchronous update uris of KDA/NFT. Execution is resumed afterwards.
-    pub fn kda_update_uris(
-        &self,
-        token: &TokenIdentifier<A>,
-        uris: &ManagedVec<A, URI<A>>,
-    ) {
+    pub fn kda_update_uris(&self, token: &TokenIdentifier<A>, uris: &ManagedVec<A, URI<A>>) {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_ASSET_TRIGGER_FUNC_NAME;
 
@@ -649,10 +656,8 @@ where
 
         // try get index 0, if error signal error
         match result.try_get(0) {
-            Some(result) => {
-                TokenIdentifier::from(result.clone_value())
-            }
-            None => A::error_api_impl().signal_error("KDA create failed".as_bytes())
+            Some(result) => TokenIdentifier::from(result.clone_value()),
+            None => A::error_api_impl().signal_error("KDA create failed".as_bytes()),
         }
     }
 
@@ -670,13 +675,13 @@ where
             &arg_buffer,
         );
 
-         // try get index 0, if error signal error
-         match result.try_get(0) {
+        // try get index 0, if error signal error
+        match result.try_get(0) {
             Some(result) => {
                 // BUCKET ID
                 result.clone_value()
-            }
-            None => A::error_api_impl().signal_error("Freeze failed".as_bytes())
+            },
+            None => A::error_api_impl().signal_error("Freeze failed".as_bytes()),
         }
     }
 
@@ -808,7 +813,7 @@ where
         price: &BigUint<A>,
         reserve_price: &BigUint<A>,
         end_time: u64,
-    ) ->  ManagedBuffer<A>{
+    ) -> ManagedBuffer<A> {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_SELL_FUNC_NAME;
 
@@ -832,8 +837,8 @@ where
             Some(result) => {
                 // ORDER ID
                 result.clone_value()
-            }
-            None => A::error_api_impl().signal_error("Sell failed".as_bytes())
+            },
+            None => A::error_api_impl().signal_error("Sell failed".as_bytes()),
         }
     }
 
@@ -919,8 +924,8 @@ where
             Some(result) => {
                 // MARKETPLACE ID
                 result.clone_value()
-            }
-            None => A::error_api_impl().signal_error("Create marketplace failed".as_bytes())
+            },
+            None => A::error_api_impl().signal_error("Create marketplace failed".as_bytes()),
         }
     }
 

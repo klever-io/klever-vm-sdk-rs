@@ -116,6 +116,7 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         id_handle: RawHandle,
         name_handle: RawHandle,
         creator_handle: RawHandle,
+        admin_handle: RawHandle,
         logo_handle: RawHandle,
         uris_handle: RawHandle,
         initial_supply_handle: RawHandle,
@@ -137,16 +138,11 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         data_handle: RawHandle,
     );
 
-    fn managed_get_kda_roles(
-        &self,
-        ticker_handle: RawHandle,
-        roles_handle: RawHandle,
-    );
+    fn managed_get_kda_roles(&self, ticker_handle: RawHandle, roles_handle: RawHandle);
 
     fn managed_get_back_transfers(
         &self,
         kda_transfer_value_handle: RawHandle,
         call_value_handle: RawHandle,
     );
-
 }
