@@ -133,23 +133,43 @@ impl TxResponse {
     }
 
     fn process_new_issued_token_identifier(mut self) -> Self {
-        let token_identifier_issue_scr: Option<&ApiSmartContractResult> = self
-            .api_scrs
-            .iter()
-            .find(|scr| scr.sender.to_string() == SYSTEM_SC_BECH32 && scr.data.starts_with("@00@"));
+        for scr in self.api_scrs.iter() {
+            if scr.sender.to_string() != SYSTEM_SC_BECH32 {
+                continue
+            }
 
-        if token_identifier_issue_scr.is_none() {
-            return self;
+            let Some(prev_tx) = self.api_scrs.iter().find(|e| e.hash == scr.prev_tx_hash) else {
+                continue
+            };
+
+            // check if the previous transaction is a token issue, if not, continue
+            match prev_tx.data.split('@').next().unwrap_or("") {
+                "issue" => "Fungible",
+                "issueSemiFungible" => "SemiFungible",
+                "issueNonFungible" => "NonFungible",
+                "registerMetaKDA" => "MetaKDA",
+                _ => continue,
+            };
+
+            if scr.data.starts_with("KDATransfer@") {
+                let encoded_tid = scr.data.split('@').nth(1);
+                if encoded_tid.is_none() {
+                    return self;
+                }
+
+
+                break;
+            } else if scr.data.starts_with("@00@") {
+                let encoded_tid = scr.data.split('@').nth(2);
+                if encoded_tid.is_none() {
+                    return self;
+                }
+
+                self.new_issued_token_identifier = Some(String::from_utf8(hex::decode(encoded_tid.unwrap()).unwrap()).unwrap());
+
+                break;
+            }
         }
-
-        let token_identifier_issue_scr = token_identifier_issue_scr.unwrap();
-        let encoded_tid = token_identifier_issue_scr.data.split('@').nth(2);
-        if encoded_tid.is_none() {
-            return self;
-        }
-
-        self.new_issued_token_identifier =
-            Some(String::from_utf8(hex::decode(encoded_tid.unwrap()).unwrap()).unwrap());
 
         self
     }
