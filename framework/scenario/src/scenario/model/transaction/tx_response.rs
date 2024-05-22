@@ -3,6 +3,7 @@ use klever_chain_vm::tx_mock::TxResult;
 use klever_vm_sdk::data::transaction::{
     ApiLogs, ApiSmartContractResult, Events,
 };
+use klever_vm_sdk::utils::base64_decode;
 
 use super::{
     decode_scr_data_or_panic, is_out_scr, process_topics_error, Log, TxExpect, TxResponseStatus,
@@ -92,7 +93,7 @@ impl TxResponse {
                 return TxResponseStatus::signal_error(&error);
             }
 
-            let error_raw = base64::decode(topics.unwrap().get(1).unwrap()).unwrap();
+            let error_raw = base64_decode(topics.unwrap().get(1).unwrap());
             let error = String::from_utf8(error_raw).unwrap();
             return TxResponseStatus::signal_error(&error);
         }
@@ -123,7 +124,7 @@ impl TxResponse {
                 return self;
             }
 
-            let address_raw = base64::decode(topics.unwrap().get(0).unwrap()).unwrap();
+            let address_raw = base64_decode(topics.unwrap().get(0).unwrap());
             let address: Address = Address::from_slice(address_raw.as_slice());
             self.new_deployed_address = Some(address);
         }
