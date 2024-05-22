@@ -6,7 +6,7 @@ use serde::Deserialize;
 pub use oc_allocator::ContractAllocator;
 pub use oc_parse::*;
 pub use oc_parse_stack_size::*;
-use crate::cmd::contract::sc_config::{ContractVariantProfile, ContractVariantProfileSerde};
+use crate::cmd::contract::sc_config::{ContractVariantProfileSerde};
 
 use crate::ei::EIVersion;
 
