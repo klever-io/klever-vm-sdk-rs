@@ -40,7 +40,7 @@ impl From<&ContractAbi> for ContractAbiJson {
             build_info: Some(BuildInfoAbiJson::from(&abi.build_info)),
             docs: abi.docs.iter().map(|d| d.to_string()).collect(),
             name: abi.name.to_string(),
-            constructor: abi.constructors.get(0).map(ConstructorAbiJson::from),
+            constructor: abi.constructors.first().map(ConstructorAbiJson::from),
             endpoints: abi.endpoints.iter().map(EndpointAbiJson::from).collect(),
             events: abi.events.iter().map(EventAbiJson::from).collect(),
             types: convert_type_descriptions_to_json(&abi.type_descriptions),

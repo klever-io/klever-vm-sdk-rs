@@ -1482,7 +1482,7 @@ dependencies = [
  "serde",
  "serde_json",
  "toml",
- "wasmparser 0.116.1",
+ "wasmparser 0.118.2",
  "wasmprinter",
  "zip",
 ]
@@ -3146,9 +3146,9 @@ checksum = "ca6ad05a4870b2bf5fe995117d3728437bd27d7cd5f06f13c17443ef369775a1"
 
 [[package]]
 name = "wasmparser"
-version = "0.116.1"
+version = "0.118.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a58e28b80dd8340cb07b8242ae654756161f6fc8d0038123d679b7b99964fa50"
+checksum = "77f1154f1ab868e2a01d9834a805faca7bf8b50d041b4ca714d005d0dab1c50c"
 dependencies = [
  "indexmap 2.0.0",
  "semver",
