@@ -14,7 +14,7 @@ mod vec_mapper;
 mod whitelist_mapper;
 mod address_to_id_mapper;
 
-pub use address_to_id_mapper::{AddressId, AddressToIdMapper};
+pub use address_to_id_mapper::{AddressToIdMapper, AddressId, NULL_ID};
 pub use bi_di_mapper::BiDiMapper;
 pub use linked_list_mapper::{LinkedListMapper, LinkedListNode};
 pub use map_mapper::MapMapper;
