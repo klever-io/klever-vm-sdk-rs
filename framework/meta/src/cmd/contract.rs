@@ -1,14 +1,16 @@
 mod generate_snippets;
 mod meta_abi;
 mod meta_config;
-pub mod output_contract;
+pub mod sc_config;
+mod wasm_cargo_toml_data;
+mod wasm_cargo_toml_generate;
 
 use std::path::Path;
 use crate::cli_args::{ContractCliAction, ContractCliArgs};
 use clap::Parser;
 use meta_config::MetaConfig;
 use klever_sc::contract_base::ContractAbiProvider;
-use output_contract::OutputContractGlobalConfig;
+use sc_config::ScConfig;
 
 /// Entry point in the program from the contract meta crates.
 pub fn cli_main<AbiObj: ContractAbiProvider>() {
@@ -34,7 +36,7 @@ pub fn cli_main<AbiObj: ContractAbiProvider>() {
 fn process_original_abi<AbiObj: ContractAbiProvider>(cli_args: &ContractCliArgs) -> MetaConfig {
     let input_abi = <AbiObj as ContractAbiProvider>::abi();
     let mut meta_config = MetaConfig::create(input_abi, cli_args.load_abi_git_version);
-    meta_config.output_contracts.validate_output_contracts();
+    meta_config.sc_config.validate_contract_variants();
     meta_config.write_contract_abi();
     meta_config.write_kda_attribute_abis();
     meta_config.generate_wasm_crates();
@@ -43,17 +45,17 @@ fn process_original_abi<AbiObj: ContractAbiProvider>(cli_args: &ContractCliArgs)
 
 pub fn multi_contract_config<AbiObj: ContractAbiProvider>(
     contract_crate_path: &Path,
-) -> OutputContractGlobalConfig
+) -> ScConfig
 where
 AbiObj: ContractAbiProvider
 {
     let original_contract_abi = <AbiObj as ContractAbiProvider>::abi();
 
-    let output_contracts = OutputContractGlobalConfig::load_from_crate_or_default(
+    let sc_config = ScConfig::load_from_crate_or_default(
         contract_crate_path,
         &original_contract_abi,
     );
 
-    output_contracts.validate_output_contracts();
-    output_contracts
+    sc_config.validate_contract_variants();
+    sc_config
 }

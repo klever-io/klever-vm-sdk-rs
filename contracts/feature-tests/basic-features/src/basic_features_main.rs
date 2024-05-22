@@ -36,6 +36,7 @@ pub mod storage_raw_api_features;
 pub mod struct_eq;
 pub mod token_identifier_features;
 pub mod types;
+pub mod small_num_overflow_test_ops;
 
 #[klever_sc::contract]
 pub trait BasicFeatures:
@@ -69,6 +70,7 @@ pub trait BasicFeatures:
     + storage_mapper_non_fungible_token::NonFungibleTokenMapperFeatures
     + storage_mapper_unique_id_mapper::UniqueIdMapperFeatures
     + struct_eq::StructEquals
+    + small_num_overflow_test_ops::SmallIntOverflow
     + token_identifier_features::TokenIdentifierFeatures
     + non_zero_features::TypeFeatures
 {

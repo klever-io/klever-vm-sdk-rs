@@ -87,11 +87,4 @@ impl EndpointArgumentApiImpl for VmApiImpl {
     fn get_argument_i64(&self, arg_index: i32) -> i64 {
         unsafe { smallIntGetSignedArgument(arg_index) }
     }
-
-    // #[inline]
-    // fn load_callback_closure_buffer(&self, dest: Self::ManagedBufferHandle) {
-    //     unsafe {
-    //         managedGetCallbackClosure(dest);
-    //     }
-    // }
 }

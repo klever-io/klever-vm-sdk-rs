@@ -1,7 +1,6 @@
 [package]
 name = "proxy-pause-wasm"
 version = "0.0.0"
-authors = [ "you",]
 edition = "2021"
 publish = false
 

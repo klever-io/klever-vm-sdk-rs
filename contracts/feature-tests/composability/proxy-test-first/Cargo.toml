@@ -9,7 +9,7 @@ publish = false
 path = "src/proxy-test-first.rs"
 
 [dependencies]
-hex-literal = "0.3.1"
+hex-literal = "0.4.1"
 
 [dependencies.klever-sc]
 version = "0.43.3"

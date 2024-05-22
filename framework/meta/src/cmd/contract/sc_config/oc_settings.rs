@@ -5,12 +5,13 @@ mod oc_parse_stack_size;
 pub use oc_allocator::ContractAllocator;
 pub use oc_parse::*;
 pub use oc_parse_stack_size::*;
+use crate::cmd::contract::sc_config::ContractVariantProfile;
 
 use crate::ei::EIVersion;
 
 /// Collection of flags, specified in the multicontract config.
 #[derive(Clone, PartialEq, Eq, Debug)]
-pub struct OutputContractSettings {
+pub struct ContractVariantSettings {
     /// External view contracts are just readers of data from another contract.
     pub external_view: bool,
 
@@ -28,17 +29,20 @@ pub struct OutputContractSettings {
 
     /// Features that are activated on the contract crate, from wasm.
     pub features: Vec<String>,
+
+    pub contract_variant_profile: ContractVariantProfile,
 }
 
-impl Default for OutputContractSettings {
+impl Default for ContractVariantSettings {
     fn default() -> Self {
-        OutputContractSettings {
+        ContractVariantSettings {
             external_view: Default::default(),
             panic_message: Default::default(),
             check_ei: Some(EIVersion::default()),
             allocator: Default::default(),
             stack_size: DEFAULT_STACK_SIZE,
             features: Default::default(),
+            contract_variant_profile: Default::default(),
         }
     }
 }

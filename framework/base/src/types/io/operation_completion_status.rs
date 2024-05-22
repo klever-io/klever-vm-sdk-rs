@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use klever_sc_codec::{
     DecodeError, DecodeErrorHandler, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
 };
@@ -82,17 +83,17 @@ impl TypeAbi for OperationCompletionStatus {
         accumulator.insert(
             type_name,
             TypeDescription {
-                docs: &[],
+                docs: Vec::new(),
                 name: Self::type_name(),
                 contents: TypeContents::ExplicitEnum([
-                    ExplicitEnumVariantDescription {
-                        docs: &["indicates that operation was completed"],
-                        name: COMPLETED_STR,
-                    },
-                    ExplicitEnumVariantDescription {
-                        docs: &["indicates that operation was interrupted prematurely, due to low gas"],
-                        name: INTERRUPTED_STR,
-                    }
+                    ExplicitEnumVariantDescription::new(
+                        &["indicates that operation was completed"],
+                        COMPLETED_STR,
+                    ),
+                    ExplicitEnumVariantDescription::new(
+                        &["indicates that operation was interrupted prematurely, due to low gas"],
+                        INTERRUPTED_STR,
+                    )
                 ].to_vec()),
             },
         );

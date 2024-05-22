@@ -10,3 +10,4 @@ path = ".."
 [dependencies.klever-sc-meta]
 version = "0.43.3"
 path = "../../../../framework/meta"
+default-features = false

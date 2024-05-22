@@ -171,19 +171,16 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     ){
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
-        let account = self.account_data(&address);
 
-        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
-            if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
-                self.set_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
-            }
-            else {
-                self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+        if let Some(account) = self.account_data(&address) {
+            if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+                if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
+                    self.set_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle);
+                    return;
+                }
             }
         }
-        else {
-            self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
-        }
+        self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -221,72 +218,52 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     ) {
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
-        let account = self.account_data(&address);
 
-        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
-            if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
-                self.set_kda_data_values(
-                    kda_data,
-                    instance,
-                    precision_handle,
-                    id_handle,
-                    name_handle,
-                    creator_handle,
-                    logo_handle,
-                    uris_handle,
-                    initial_supply_handle,
-                    circulating_supply_handle,
-                    max_supply_handle,
-                    minted_handle,
-                    burned_handle,
-                    royalties_handle,
-                    properties_handle,
-                    attributes_handle,
-                    roles_handle,
-                    issue_date_handle,
-                )
-            } else {
-                // missing nonce
-                self.reset_kda_data_values(
-                    precision_handle,
-                    id_handle,
-                    name_handle,
-                    creator_handle,
-                    logo_handle,
-                    uris_handle,
-                    initial_supply_handle,
-                    circulating_supply_handle,
-                    max_supply_handle,
-                    minted_handle,
-                    burned_handle,
-                    royalties_handle,
-                    properties_handle,
-                    attributes_handle,
-                    roles_handle,
-                    issue_date_handle,
-                );
+        if let Some(account) = self.account_data(&address) {
+            if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+                if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
+                    self.set_kda_data_values(
+                        kda_data,
+                        instance,
+                        precision_handle,
+                        id_handle,
+                        name_handle,
+                        creator_handle,
+                        logo_handle,
+                        uris_handle,
+                        initial_supply_handle,
+                        circulating_supply_handle,
+                        max_supply_handle,
+                        minted_handle,
+                        burned_handle,
+                        royalties_handle,
+                        properties_handle,
+                        attributes_handle,
+                        roles_handle,
+                        issue_date_handle,
+                    );
+                    return;
+                }
             }
-        } else {
-            // missing token identifier
-            self.reset_kda_data_values(
-                precision_handle,
-                id_handle,
-                name_handle,
-                creator_handle,
-                logo_handle,
-                uris_handle,
-                initial_supply_handle,
-                circulating_supply_handle,
-                max_supply_handle,
-                minted_handle,
-                burned_handle,
-                royalties_handle,
-                properties_handle,
-                attributes_handle,
-                roles_handle,
-                issue_date_handle,
-            );
         }
+        self.reset_kda_data_values(
+            precision_handle,
+            id_handle,
+            name_handle,
+            creator_handle,
+            logo_handle,
+            uris_handle,
+            initial_supply_handle,
+            circulating_supply_handle,
+            max_supply_handle,
+            minted_handle,
+            burned_handle,
+            royalties_handle,
+            properties_handle,
+            attributes_handle,
+            roles_handle,
+            issue_date_handle,
+        );
     }
 
     fn managed_get_kda_roles(

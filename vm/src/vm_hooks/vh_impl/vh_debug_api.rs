@@ -18,6 +18,7 @@ use crate::{
     },
     world_mock::{reserved::STORAGE_RESERVED_PREFIX, AccountData, BlockInfo},
 };
+use crate::tx_mock::CallType;
 
 /// A simple wrapper around a managed type container RefCell.
 ///
@@ -83,8 +84,8 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         self.0.back_transfers_lock()
     }
 
-    fn account_data(&self, address: &VMAddress) -> AccountData {
-        self.0.with_account(address, |account| account.clone())
+    fn account_data(&self, address: &VMAddress) -> Option<AccountData> {
+        self.0.with_account_or_else(address, |account| Some(account.clone()), || None)
     }
 
     fn account_code(&self, address: &VMAddress) -> Vec<u8> {
@@ -102,7 +103,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         arguments: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
         let call_data = self.create_call_data(to, klv_value, func_name, arguments);
-        let tx_input = call_tx_input(&call_data);
+        let tx_input = call_tx_input(&call_data, CallType::ExecuteOnDestContext);
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
             tx_input,
@@ -167,7 +168,10 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         arguments: Vec<Vec<u8>>,
     ) {
         let call_data = self.create_call_data(to, klv_value, func_name, arguments);
-        let tx_input = call_tx_input(&call_data);
+        let mut tx_input = call_tx_input(&call_data, CallType::TransferExecute);
+        if self.is_back_transfer(&tx_input) {
+            tx_input.call_type = CallType::BackTransfer;
+        }
 
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
@@ -216,6 +220,13 @@ impl DebugApiVMHooksHandler {
         self.0.blockchain_cache().commit_updates(blockchain_updates);
 
         self.0.result_lock().merge_after_sync_call(&tx_result);
+
+        let contract_address = &self.0.input_ref().to;
+        let builtin_functions = &self.0.vm_ref.builtin_functions;
+        let current_back_transfers =
+            BackTransfers::new_from_result(contract_address, &tx_result, builtin_functions);
+
+        self.back_transfers_lock().merge(&current_back_transfers);
 
         tx_result.result_values
     }

@@ -1,12 +1,13 @@
 use super::*;
 use alloc::{string::String, vec::Vec};
+use alloc::string::ToString;
 use crate::abi::kda_attribute_abi::KdaAttributeAbi;
 
 #[derive(Debug, Default, Clone)]
 pub struct ContractAbi {
     pub build_info: BuildInfoAbi,
-    pub docs: &'static [&'static str],
-    pub name: &'static str,
+    pub docs: Vec<String>,
+    pub name: String,
     pub constructors: Vec<EndpointAbi>,
     pub endpoints: Vec<EndpointAbi>,
     pub events: Vec<EventAbi>,
@@ -15,6 +16,20 @@ pub struct ContractAbi {
 }
 
 impl ContractAbi {
+    /// Used in code generation.
+    pub fn new(build_info: BuildInfoAbi, docs: &[&str], name: &str) -> Self {
+        ContractAbi {
+            build_info,
+            docs: docs.iter().map(|s| s.to_string()).collect(),
+            name: name.to_string(),
+            constructors: Vec::new(),
+            endpoints: Vec::new(),
+            events: Vec::new(),
+            kda_attributes: Vec::new(),
+            type_descriptions: TypeDescriptionContainerImpl::new(),
+        }
+    }
+
     pub fn coalesce(&mut self, other: Self) {
         self.constructors
             .extend_from_slice(other.constructors.as_slice());

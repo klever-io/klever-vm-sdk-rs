@@ -45,9 +45,4 @@ pub trait VMHooksEndpointArgument: VMHooksHandlerSource + VMHooksManagedTypes {
             self.vm_error("argument out of range");
         }
     }
-
-    fn load_callback_closure_buffer(&self, dest: RawHandle) {
-        let closure_data = self.input_ref().promise_callback_closure_data.clone();
-        self.m_types_lock().mb_set(dest, closure_data);
-    }
 }

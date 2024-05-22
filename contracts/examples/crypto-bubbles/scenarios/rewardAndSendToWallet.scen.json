@@ -52,7 +52,9 @@
                             "0x12",
                             "address:acc1"
                         ],
-                        "data": "0x200"
+                        "data": [
+                            "0x200"
+                        ]
                     },
                     {
                         "address": "*",
@@ -63,7 +65,7 @@
                             "0x0200",
                             "address:acc1"
                         ],
-                        "data": ""
+                        "data": "*"
                     },
                     {
                         "address": "sc:crypto_bubbles",
@@ -72,7 +74,9 @@
                             "str:withdraw",
                             "address:acc1"
                         ],
-                        "data": "0x200"
+                        "data": [
+                            "0x200"
+                        ]
                     }
                 ],
                 "gas": "*",

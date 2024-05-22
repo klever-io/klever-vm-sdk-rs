@@ -10,6 +10,7 @@ use crate::{
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
+use crate::tx_mock::CallType;
 
 pub(super) struct ParsedTransferBuiltinFunCall {
     pub destination: VMAddress,
@@ -22,6 +23,15 @@ pub(super) struct RawKdaTransfer {
     pub token_identifier: Vec<u8>,
     pub nonce_bytes: Vec<u8>,
     pub value_bytes: Vec<u8>,
+}
+
+/// Convenience function for populating log topics and data with transfer fields as bytes.
+pub(super) fn push_transfer_bytes(transfers: &[RawKdaTransfer], dest: &mut Vec<Vec<u8>>) {
+    for transfer in transfers {
+        dest.push(transfer.token_identifier.clone());
+        dest.push(transfer.nonce_bytes.clone());
+        dest.push(transfer.value_bytes.clone());
+    }
 }
 
 pub(super) fn process_raw_kda_transfer(raw_kda_transfer: RawKdaTransfer) -> TxTokenTransfer {
@@ -51,28 +61,14 @@ pub(super) fn extract_transfer_info(
 pub(super) fn execute_transfer_builtin_func<F>(
     vm: &BlockchainVMRef,
     parsed_tx: ParsedTransferBuiltinFunCall,
-    builtin_function_name: &str,
     tx_input: TxInput,
     tx_cache: TxCache,
+    log: TxLog,
     f: F,
 ) -> (TxResult, BlockchainUpdate)
 where
     F: FnOnce(),
 {
-    let mut builtin_logs = Vec::new();
-    for raw_kda_transfer in &parsed_tx.raw_kda_transfers {
-        builtin_logs.push(TxLog {
-            address: tx_input.from.clone(),
-            endpoint: builtin_function_name.into(),
-            topics: vec![
-                raw_kda_transfer.token_identifier.clone(),
-                raw_kda_transfer.nonce_bytes.clone(),
-                raw_kda_transfer.value_bytes.clone(),
-                parsed_tx.destination.to_vec(),
-            ],
-            data: vec![],
-        });
-    }
 
     let exec_input = TxInput {
         from: tx_input.from,
@@ -90,7 +86,34 @@ where
     let (mut tx_result, blockchain_updates) = vm.default_execution(exec_input, tx_cache, f);
 
     // prepends kda log
-    tx_result.result_logs = [builtin_logs.as_slice(), tx_result.result_logs.as_slice()].concat();
+    tx_result.result_logs.insert(0, log);
 
     (tx_result, blockchain_updates)
+}
+
+pub(super) fn adjust_call_type(
+    call_type: CallType,
+    call: &ParsedTransferBuiltinFunCall,
+) -> CallType {
+    if call_type == CallType::TransferExecute && call.func_name.is_empty() {
+        CallType::DirectCall
+    } else {
+        call_type
+    }
+}
+
+pub(super) fn push_func_name_if_necessary(
+    call_type: CallType,
+    func_name: &TxFunctionName,
+    data: &mut Vec<Vec<u8>>,
+) {
+    if call_type == CallType::DirectCall {
+        return;
+    }
+
+    if func_name.is_empty() {
+        return;
+    }
+
+    data.push(func_name.clone().into_bytes());
 }

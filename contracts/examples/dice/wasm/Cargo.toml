@@ -2,7 +2,6 @@
 [package]
 name = "dice-wasm"
 version = "0.0.0"
-authors = ["Beroni Magalhaes <beroni@klever.io>"]
 edition = "2021"
 publish = false
 

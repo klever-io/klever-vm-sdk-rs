@@ -1,7 +1,6 @@
 [package]
 name = "crypto-zombies-wasm"
 version = "0.0.0"
-authors = ["Alin Cruceat <alin.cruceat@multiversx.com>"]
 edition = "2021"
 publish = false
 

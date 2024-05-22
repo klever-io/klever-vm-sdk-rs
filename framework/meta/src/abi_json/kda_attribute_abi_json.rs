@@ -11,6 +11,7 @@ use crate::abi_json::{convert_type_descriptions_to_json, TypeDescriptionJson};
 pub struct KdaAttributeAbiJson {
     pub kda_attribute: KdaAttributeJson,
 
+    #[serde(default)]
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub types: BTreeMap<String, TypeDescriptionJson>,
 }

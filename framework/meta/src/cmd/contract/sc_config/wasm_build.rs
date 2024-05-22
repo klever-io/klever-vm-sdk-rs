@@ -1,9 +1,9 @@
 use std::{ffi::OsStr, fs, process::Command};
 
-use super::OutputContract;
+use super::ContractVariant;
 use crate::{abi_json::ContractAbiJson, cli_args::BuildArgs, ei::EIVersion, kleversc_file_json::{save_kleversc_file_json, KleverscFileJson}, print_util::*, tools};
 
-impl OutputContract {
+impl ContractVariant {
     pub fn build_contract(&self, build_args: &BuildArgs, output_path: &str) {
         let mut command = self.compose_build_command(build_args);
 
@@ -112,8 +112,7 @@ impl OutputContract {
         let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));
         let output_wat_path = format!("{output_path}/{}", self.wat_output_name(build_args));
         print_call_wasm2wat(&output_wasm_path, &output_wat_path);
-        tools::wasm_to_wat(output_wasm_path.as_str(), output_wat_path.as_str())
-            .expect("could not convert wasm to wat");
+        tools::wasm_to_wat(output_wasm_path.as_str(), output_wat_path.as_str());
     }
 
     fn extract_imports(&self, build_args: &BuildArgs, output_path: &str) {
@@ -128,8 +127,7 @@ impl OutputContract {
             self.imports_json_output_name(build_args)
         );
         print_extract_imports(&output_imports_json_path);
-        let import_names = tools::extract_wasm_imports(&output_wasm_path)
-            .expect("error occured while extracting imports from .wasm ");
+        let import_names = tools::extract_wasm_imports(&output_wasm_path);
         write_imports_output(output_imports_json_path.as_str(), import_names.as_slice());
         validate_ei(&import_names, &self.settings.check_ei);
     }
@@ -158,7 +156,7 @@ fn validate_ei(import_names: &[String], check_ei: &Option<EIVersion>) {
     }
 }
 
-impl OutputContract {
+impl ContractVariant {
     fn run_twiggy(&self, build_args: &BuildArgs, output_path: &str) {
         if build_args.has_twiggy_call() {
             let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));

@@ -15,6 +15,7 @@ use klever_chain_vm::{
     world_mock::{AccountData, KdaData},
 };
 use num_traits::Zero;
+use crate::scenario_model::U64Value;
 
 use super::{ScCallMandos, ScQueryMandos, TxExpectMandos};
 
@@ -122,7 +123,7 @@ pub(crate) fn tx_call_as_raw(tx_call: &ScCallMandos) -> TxCallRaw {
         function: tx_call.function.clone(),
         arguments: arguments_raw,
         gas_limit: u64_as_raw(tx_call.gas_limit),
-        gas_price: u64_as_raw(tx_call.gas_price),
+        gas_price: u64_as_raw_opt(tx_call.gas_price),
     }
 }
 
@@ -294,6 +295,10 @@ pub(crate) fn vm_address_as_raw(address: &VMAddress) -> ValueSubTree {
 
 pub(crate) fn u64_as_raw(value: u64) -> ValueSubTree {
     ValueSubTree::Str(value.to_string())
+}
+
+pub(crate) fn u64_as_raw_opt(value: u64) -> Option<ValueSubTree> {
+    U64Value::from(value).into_raw_opt()
 }
 
 pub(crate) fn bytes_as_raw(bytes: &[u8]) -> ValueSubTree {

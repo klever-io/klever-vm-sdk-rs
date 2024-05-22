@@ -54,20 +54,18 @@ fn generate_endpoint_snippet(
     let endpoint_type_tokens = endpoint_type.to_tokens();
 
     quote! {
-        let mut endpoint_abi = klever_sc::abi::EndpointAbi{
-            docs: &[ #(#endpoint_docs),* ],
-            name: #endpoint_name,
-            rust_method_name: #rust_method_name,
-            only_owner: #only_owner,
-            only_admin: #only_admin,
-            mutability: #mutability_tokens,
-            endpoint_type: #endpoint_type_tokens,
-            payable_in_tokens: &[ #(#payable_in_tokens),* ],
-            inputs: klever_sc::types::heap::Vec::new(),
-            outputs: klever_sc::types::heap::Vec::new(),
-            labels: &[ #(#label_names),* ],
-            allow_multiple_var_args: #allow_multiple_var_args,
-        };
+        let mut endpoint_abi = klever_sc::abi::EndpointAbi::new(
+            &[ #(#endpoint_docs),* ],
+            #endpoint_name,
+            #rust_method_name,
+            #only_owner,
+            #only_admin,
+            #mutability_tokens,
+            #endpoint_type_tokens,
+            &[ #(#payable_in_tokens),* ],
+            &[ #(#label_names),* ],
+            #allow_multiple_var_args,
+        );
         #(#input_snippets)*
         #output_snippet
     }
@@ -132,11 +130,10 @@ fn generate_event_snippet(m: &Method, event_name: &str) -> proc_macro2::TokenStr
         .collect();
 
     quote! {
-        let mut event_abi = klever_sc::abi::EventAbi{
-            docs: &[ #(#event_docs),* ],
-            identifier: #event_name,
-            inputs: klever_sc::types::heap::Vec::new(),
-        };
+         let mut event_abi = klever_sc::abi::EventAbi::new(
+            &[ #(#event_docs),* ],
+            #event_name,
+        );
         #(#input_snippets)*
     }
 }
@@ -207,8 +204,8 @@ fn generate_abi_method_body(
     };
 
     quote! {
-        let mut contract_abi = klever_sc::abi::ContractAbi {
-            build_info: klever_sc::abi::BuildInfoAbi {
+        let mut contract_abi = klever_sc::abi::ContractAbi::new(
+            klever_sc::abi::BuildInfoAbi {
                 contract_crate: klever_sc::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
@@ -216,14 +213,9 @@ fn generate_abi_method_body(
                 },
                 framework: klever_sc::abi::FrameworkBuildAbi::create(),
             },
-            docs: &[ #(#contract_docs),* ],
-            name: #contract_name,
-            constructors: klever_sc::types::heap::Vec::new(),
-            endpoints: klever_sc::types::heap::Vec::new(),
-            events: klever_sc::types::heap::Vec::new(),
-            type_descriptions: <klever_sc::abi::TypeDescriptionContainerImpl as klever_sc::abi::TypeDescriptionContainer>::new(),
-            kda_attributes: klever_sc::types::heap::Vec::new(),
-        };
+            &[ #(#contract_docs),* ],
+            #contract_name,
+        );
         #(#endpoint_snippets)*
         #(#event_snippets)*
         #(#supertrait_snippets)*

@@ -6,7 +6,7 @@ use crate::{
 
 use num_bigint::BigUint;
 
-use super::{CallbackPayments, Promise, TxFunctionName};
+use super::{CallbackPayments, CallType, Promise, TxFunctionName};
 
 #[derive(Debug, Clone)]
 
@@ -20,7 +20,7 @@ pub struct CallTxData {
     pub tx_hash: H256,
 }
 
-pub fn call_tx_input(call_data: &CallTxData) -> TxInput {
+pub fn call_tx_input(call_data: &CallTxData, call_type: CallType) -> TxInput {
     TxInput {
         from: call_data.from.clone(),
         to: call_data.to.clone(),
@@ -28,6 +28,7 @@ pub fn call_tx_input(call_data: &CallTxData) -> TxInput {
         kda_values: Vec::new(),
         func_name: call_data.endpoint_name.clone(),
         args: call_data.arguments.clone(),
+        call_type,
         gas_limit: 1000,
         gas_price: 0,
         tx_hash: call_data.tx_hash.clone(),
@@ -78,7 +79,7 @@ fn extract_callback_payments(
 ) -> CallbackPayments {
     let mut callback_payments = CallbackPayments::default();
     for call in &result.all_calls {
-        let tx_input = call_tx_input(call);
+        let tx_input = call_tx_input(call, CallType::DirectCall);
         let token_transfers = builtin_functions.extract_token_transfers(&tx_input);
         if &token_transfers.real_recipient == callback_contract_address {
             if !token_transfers.is_empty() {
@@ -118,7 +119,7 @@ pub fn promise_tx_input(
         gas_limit: 1000,
         gas_price: 0,
         tx_hash: promise.call.tx_hash.clone(),
-        promise_callback_closure_data: promise.callback_closure_data.clone(),
+        promise_callback_closure_data: Some(promise.callback_closure_data.clone()),
         ..Default::default()
     }
 }

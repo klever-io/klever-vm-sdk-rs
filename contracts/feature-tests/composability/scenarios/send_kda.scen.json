@@ -5,7 +5,7 @@
         {
             "step": "setState",
             "accounts": {
-                "sc:basic-features": {
+                "sc:forwarder": {
                     "nonce": "1000",
                     "balance": "0",
                     "kda": {
@@ -24,7 +24,7 @@
             "id": "not-enough",
             "tx": {
                 "from": "address:an_account",
-                "to": "sc:basic-features",
+                "to": "sc:forwarder",
                 "function": "send_kda",
                 "arguments": [
                     "address:an_account",
@@ -61,15 +61,21 @@
                 "status": "",
                 "logs": [
                     {
-                        "address": "sc:basic-features",
+                        "address": "sc:forwarder",
                         "endpoint": "str:KDATransfer",
                         "topics": [
                             "str:SENDKDA",
                             "",
+                            "0",
                             "200",
                             "address:an_account"
                         ],
-                        "data": ""
+                        "data": [
+                            "str:DirectCall",
+                            "str:KDATransfer",
+                            "str:SENDKDA",
+                            "200"
+                        ]
                     }
                 ]
             }
@@ -77,7 +83,7 @@
         {
             "step": "checkState",
             "accounts": {
-                "sc:basic-features": {
+                "sc:forwarder": {
                     "nonce": "1000",
                     "balance": "0",
                     "kda": {

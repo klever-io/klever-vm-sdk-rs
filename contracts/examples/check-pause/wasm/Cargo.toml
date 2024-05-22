@@ -2,7 +2,6 @@
 name = "check-pause-wasm"
 version = "0.0.0"
 edition = "2021"
-authors = ["Alin Cruceat <alin.cruceat@multiversx.com>"]
 publish = false
 
 [lib]

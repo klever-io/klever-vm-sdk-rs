@@ -1,7 +1,6 @@
 [package]
 name = "kda-transfer-with-fee-wasm"
 version = "0.0.0"
-authors = ["Alin Cruceat <alin.cruceat@multiversx.com>"]
 edition = "2021"
 publish = false
 

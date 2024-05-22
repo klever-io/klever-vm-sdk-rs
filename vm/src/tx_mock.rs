@@ -18,6 +18,7 @@ mod tx_managed_types;
 mod tx_panic;
 mod tx_result;
 mod tx_result_calls;
+mod tx_input_call_type;
 
 pub use blockchain_rng::*;
 pub use blockchain_update::BlockchainUpdate;
@@ -30,6 +31,7 @@ pub use tx_context::*;
 pub use tx_context_ref::*;
 pub use tx_context_stack::*;
 pub use tx_input::*;
+pub use tx_input_call_type::CallType;
 pub use tx_input_function::*;
 pub use tx_log::*;
 pub use tx_managed_types::*;
