@@ -5,6 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use crate::cmd::contract::sc_config::oc_global_config::SC_CONFIG_FILE_NAMES;
+use crate::cmd::contract::sc_config::oc_settings::ContractVariantProfile;
 
 use super::{
     oc_settings::{parse_allocator, parse_check_ei, parse_stack_size},
@@ -74,10 +75,7 @@ impl ContractVariantBuilder {
                     allocator: parse_allocator(&cms.allocator),
                     stack_size: parse_stack_size(&cms.stack_size),
                     features: cms.features.clone(),
-                    contract_variant_profile: cms
-                        .contract_variant_profile
-                        .clone()
-                        .unwrap_or(default.settings.contract_variant_profile),
+                    profile: ContractVariantProfile::from_serde(&cms.profile),
                 },
                 ..default
             },

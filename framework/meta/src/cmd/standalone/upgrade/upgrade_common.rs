@@ -14,6 +14,7 @@ use crate::{
     },
     CargoTomlContents,
 };
+use crate::cmd::standalone::upgrade::upgrade_settings::UpgradeSettings;
 
 use super::upgrade_print::*;
 
@@ -200,7 +201,11 @@ pub fn re_generate_wasm_crate(dir: &RelevantDirectory) {
     );
 }
 
-pub fn cargo_check(dir: &RelevantDirectory) {
+pub fn cargo_check(dir: &RelevantDirectory, settings: &UpgradeSettings) {
+    if settings.no_check {
+        return;
+    }
+
     print_cargo_check(dir);
 
     let result = Command::new("cargo")

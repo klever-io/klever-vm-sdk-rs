@@ -9,7 +9,6 @@ files_include = [
     "common",
     "common/rand",
     "common/rand/src",
-    "wasm/Cargo.toml",
     "Cargo.toml",
     "kleverkapp.json",
 ]
