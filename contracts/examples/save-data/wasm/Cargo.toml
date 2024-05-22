@@ -13,6 +13,8 @@ opt-level = "z"
 lto = true
 debug = false
 panic = "abort"
+overflow-checks = false
+overflow-checks = false
 
 [dependencies.save-data]
 path = ".."
