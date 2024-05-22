@@ -1,9 +1,9 @@
 use klever_sc::abi::{ContractAbi, EndpointAbi};
 use klever_sc_meta::cmd::contract::sc_config::{
-    MultiContractConfigSerde, ScConfig,
+    ScConfigSerde, ScConfig,
 };
 
-fn get_serialized_toml() -> MultiContractConfigSerde {
+fn get_serialized_toml() -> ScConfigSerde {
     toml::from_str(
         r#"
         [settings]

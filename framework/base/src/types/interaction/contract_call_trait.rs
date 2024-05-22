@@ -77,7 +77,6 @@ where
 
     /// Executes immediately, synchronously, and returns contract call result.
     #[inline]
-    #[cfg(feature = "back-transfers")]
     fn execute_on_dest_context_with_back_transfers<RequestedResult>(
         self,
     ) -> (RequestedResult, super::BackTransfers<SA>)
