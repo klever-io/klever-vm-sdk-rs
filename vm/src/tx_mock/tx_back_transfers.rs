@@ -16,15 +16,12 @@ impl BackTransfers {
     }
 
     pub fn new_from_result(
+        &mut self,
         own_address: &VMAddress,
         result: &TxResult,
         builtin_functions: &BuiltinFunctionContainer,
-    ) -> Self {
+    ) {
         let mut bt = BackTransfers::default();
-
-        if result.result_status != 0 {
-            return bt;
-        }
 
         for call in &result.all_calls {
             // TODO: refactor, check type
@@ -41,11 +38,7 @@ impl BackTransfers {
             }
         }
 
-        bt
-    }
-
-    pub fn merge(&mut self, other: &BackTransfers) {
-        self.call_value += &other.call_value;
-        self.kda_transfers.extend_from_slice(&other.kda_transfers);
+        self.call_value = bt.call_value;
+        self.kda_transfers = bt.kda_transfers;
     }
 }
