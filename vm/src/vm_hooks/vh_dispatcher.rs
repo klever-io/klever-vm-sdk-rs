@@ -525,8 +525,7 @@ impl VMHooks for VMHooksDispatcher {
     }
 
     fn managed_get_multi_kda_call_value(&self, multi_call_value_handle: i32) {
-        self.handler
-            .load_all_kda_transfers(multi_call_value_handle)
+        self.handler.load_all_kda_transfers(multi_call_value_handle)
     }
 
     fn managed_get_kda_balance(
@@ -550,7 +549,7 @@ impl VMHooks for VMHooksDispatcher {
         buckets_handle: i32,
         mime_handle: i32,
         metadata_handle: i32,
-    ){
+    ) {
         self.handler.managed_get_user_kda(
             address_handle,
             token_id_handle,
@@ -573,6 +572,7 @@ impl VMHooks for VMHooksDispatcher {
         id_handle: i32,
         name_handle: i32,
         creator_handle: i32,
+        admin_handle: i32,
         logo_handle: i32,
         uris_handle: i32,
         initial_supply_handle: i32,
@@ -609,28 +609,14 @@ impl VMHooks for VMHooksDispatcher {
         );
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        token_id_handle: i32,
-        roles_handle: i32,
-    ) {
-        self.handler.managed_get_kda_roles(
-            token_id_handle,
-            roles_handle,
-        );
+    fn managed_get_kda_roles(&self, token_id_handle: i32, roles_handle: i32) {
+        self.handler
+            .managed_get_kda_roles(token_id_handle, roles_handle);
     }
 
-    fn managed_get_sft_metadata(
-        &self,
-        ticker_handle: i32,
-        nonce: i64,
-        data_handle: i32,
-    ) {
-        self.handler.managed_get_sft_metadata(
-            ticker_handle,
-            nonce as u64,
-            data_handle,
-        );
+    fn managed_get_sft_metadata(&self, ticker_handle: i32, nonce: i64, data_handle: i32) {
+        self.handler
+            .managed_get_sft_metadata(ticker_handle, nonce as u64, data_handle);
     }
 
     fn managed_get_back_transfers(&self, kda_transfer_value_handle: i32, call_value_handle: i32) {

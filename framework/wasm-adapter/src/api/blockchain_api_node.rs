@@ -66,12 +66,7 @@ extern "C" {
         metadata_handle: i32,
     );
 
-
-    fn managedGetSftMetadata(
-        ticker_handle: i32,
-        nonce: u64,
-        data_handle: i32,
-    );
+    fn managedGetSftMetadata(ticker_handle: i32, nonce: u64, data_handle: i32);
 
     fn managedGetKDATokenData(
         address_handle: i32,
@@ -81,6 +76,7 @@ extern "C" {
         id_handle: i32,
         name_handle: i32,
         creator_handle: i32,
+        admin_handle: i32,
         logo_handle: i32,
         uris_handle: i32,
         initial_supply_handle: i32,
@@ -95,10 +91,7 @@ extern "C" {
         issue_date_handle: i32,
     );
 
-    fn managedGetKDARoles(
-        ticker_handle: i32,
-        roles_handle: i32,
-    );
+    fn managedGetKDARoles(ticker_handle: i32, roles_handle: i32);
 
     fn managedGetBackTransfers(kdaTransfersValueHandle: i32, callValueHandle: i32);
 }
@@ -292,39 +285,35 @@ impl BlockchainApiImpl for VmApiImpl {
         data_handle: RawHandle,
     ) {
         unsafe {
-            managedGetSftMetadata(
-              token_handle,
-              nonce,
-              data_handle,
-            );
+            managedGetSftMetadata(token_handle, nonce, data_handle);
         }
     }
 
     fn managed_get_user_kda(
-            &self,
-            address_handle: RawHandle,
-            ticker_handle: RawHandle,
-            nonce: u64,
-            balance_handle: RawHandle,
-            frozen_handle: RawHandle,
-            last_claim_handle: RawHandle,
-            buckets_handle: RawHandle,
-            mime_handle: RawHandle,
-            metadata_handle: RawHandle,
-        ) {
-            unsafe {
-                managedGetUserKDA(
-                    address_handle,
-                    ticker_handle,
-                    nonce,
-                    balance_handle,
-                    frozen_handle,
-                    last_claim_handle,
-                    buckets_handle,
-                    mime_handle,
-                    metadata_handle,
-                );
-            }
+        &self,
+        address_handle: RawHandle,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        balance_handle: RawHandle,
+        frozen_handle: RawHandle,
+        last_claim_handle: RawHandle,
+        buckets_handle: RawHandle,
+        mime_handle: RawHandle,
+        metadata_handle: RawHandle,
+    ) {
+        unsafe {
+            managedGetUserKDA(
+                address_handle,
+                ticker_handle,
+                nonce,
+                balance_handle,
+                frozen_handle,
+                last_claim_handle,
+                buckets_handle,
+                mime_handle,
+                metadata_handle,
+            );
+        }
     }
 
     fn managed_get_kda_token_data(
@@ -336,6 +325,7 @@ impl BlockchainApiImpl for VmApiImpl {
         id_handle: RawHandle,
         name_handle: RawHandle,
         creator_handle: RawHandle,
+        admin_handle: RawHandle,
         logo_handle: RawHandle,
         uris_handle: RawHandle,
         initial_supply_handle: RawHandle,
@@ -358,6 +348,7 @@ impl BlockchainApiImpl for VmApiImpl {
                 id_handle,
                 name_handle,
                 creator_handle,
+                admin_handle,
                 logo_handle,
                 uris_handle,
                 initial_supply_handle,
@@ -374,16 +365,9 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        ticker_handle: RawHandle,
-        roles_handle: RawHandle,
-    ) {
+    fn managed_get_kda_roles(&self, ticker_handle: RawHandle, roles_handle: RawHandle) {
         unsafe {
-            managedGetKDARoles(
-                ticker_handle,
-                roles_handle,
-            );
+            managedGetKDARoles(ticker_handle, roles_handle);
         }
     }
 

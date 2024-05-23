@@ -153,32 +153,32 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
     }
 
     fn managed_get_user_kda(
-            &self,
-            address_handle: RawHandle,
-            ticker_handle: RawHandle,
-            nonce: u64,
-            balance_handle: RawHandle,
-            frozen_handle: RawHandle,
-            last_claim_handle: RawHandle,
-            buckets_handle: RawHandle,
-            mime_handle: RawHandle,
-            metadata_handle: RawHandle,
-        ) {
-            self.with_vm_hooks(|vh| {
-                vh.managed_get_user_kda(
-                    address_handle,
-                    ticker_handle,
-                    nonce as i64,
-                    balance_handle,
-                    frozen_handle,
-                    last_claim_handle,
-                    buckets_handle,
-                    mime_handle,
-                    metadata_handle,
-                );
-            });
+        &self,
+        address_handle: RawHandle,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        balance_handle: RawHandle,
+        frozen_handle: RawHandle,
+        last_claim_handle: RawHandle,
+        buckets_handle: RawHandle,
+        mime_handle: RawHandle,
+        metadata_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_user_kda(
+                address_handle,
+                ticker_handle,
+                nonce as i64,
+                balance_handle,
+                frozen_handle,
+                last_claim_handle,
+                buckets_handle,
+                mime_handle,
+                metadata_handle,
+            );
+        });
     }
-    
+
     fn managed_get_sft_metadata(
         &self,
         ticker_handle: RawHandle,
@@ -186,11 +186,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         data_handle: RawHandle,
     ) {
         self.with_vm_hooks(|vh| {
-            vh.managed_get_sft_metadata(
-                ticker_handle,
-                nonce as i64,
-                data_handle,
-            )
+            vh.managed_get_sft_metadata(ticker_handle, nonce as i64, data_handle)
         });
     }
 
@@ -203,6 +199,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         id_handle: RawHandle,
         name_handle: RawHandle,
         creator_handle: RawHandle,
+        admin_handle: RawHandle,
         logo_handle: RawHandle,
         uris_handle: RawHandle,
         initial_supply_handle: RawHandle,
@@ -225,6 +222,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
                 id_handle,
                 name_handle,
                 creator_handle,
+                admin_handle,
                 logo_handle,
                 uris_handle,
                 initial_supply_handle,
@@ -241,17 +239,8 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         });
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        ticker_handle: RawHandle,
-        roles_handle: RawHandle,
-    ) {
-        self.with_vm_hooks(|vh| {
-            vh.managed_get_kda_roles(
-                ticker_handle,
-                roles_handle,
-            )
-        });
+    fn managed_get_kda_roles(&self, ticker_handle: RawHandle, roles_handle: RawHandle) {
+        self.with_vm_hooks(|vh| vh.managed_get_kda_roles(ticker_handle, roles_handle));
     }
 
     fn managed_get_back_transfers(
@@ -263,5 +252,4 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
             vh.managed_get_back_transfers(kda_transfer_value_handle, call_value_handle)
         });
     }
-
 }
