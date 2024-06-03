@@ -600,6 +600,10 @@
                     "type": "Address"
                 },
                 {
+                    "name": "admin_address",
+                    "type": "Address"
+                },
+                {
                     "name": "logo",
                     "type": "bytes"
                 },

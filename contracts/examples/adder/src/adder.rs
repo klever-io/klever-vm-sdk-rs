@@ -27,4 +27,10 @@ pub trait Adder {
     fn add_payable(&self, value: BigUint) {
         self.sum().update(|sum| *sum += value);
     }
+
+    // Changes sum to a new value on contract upgrades
+    #[upgrade]
+    fn upgrade(&self, new_value: BigUint) {
+        self.sum().set(new_value);
+    }
 }

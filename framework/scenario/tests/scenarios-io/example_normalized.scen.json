@@ -256,8 +256,7 @@
                 ],
                 "function": "someFunctionName",
                 "arguments": [],
-                "gasLimit": "0x100000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000"
             }
         },
         {
@@ -269,8 +268,7 @@
                 "to": "0x1000000000000000000000000000000000000000000000000000000000000000",
                 "function": "someFunctionName",
                 "arguments": [],
-                "gasLimit": "0x100000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000"
             },
             "expect": {
                 "status": ""
@@ -285,8 +283,7 @@
                 "to": "0x1000000000000000000000000000000000000000000000000000000000000000",
                 "function": "someFunctionName",
                 "arguments": [],
-                "gasLimit": "0x100000",
-                "gasPrice": "0"
+                "gasLimit": "0x100000"
             },
             "expect": {
                 "out": [],
