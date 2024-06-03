@@ -21,6 +21,7 @@ pub mod non_zero_features;
 pub mod storage_direct_load;
 pub mod storage_direct_store;
 pub mod storage_mapper_fungible_token;
+pub mod storage_mapper_get_at_address;
 pub mod storage_mapper_linked_list;
 pub mod storage_mapper_map;
 pub mod storage_mapper_map_storage;
@@ -73,6 +74,7 @@ pub trait BasicFeatures:
     + small_num_overflow_test_ops::SmallIntOverflow
     + token_identifier_features::TokenIdentifierFeatures
     + non_zero_features::TypeFeatures
+    + storage_mapper_get_at_address::StorageMapperGetAtAddress
 {
     #[init]
     fn init(&self) {}

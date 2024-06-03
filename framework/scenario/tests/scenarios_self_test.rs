@@ -68,6 +68,17 @@ fn set_check_code() {
 
 #[test]
 #[should_panic]
+fn set_check_codemetadata_err_rs() {
+    world().run("tests/scenarios-self/set-check/set-check-codemetadata.err.json");
+}
+
+#[test]
+fn set_check_codemetadata() {
+    world().run("tests/scenarios-self/set-check/set-check-codemetadata.scen.json");
+}
+
+#[test]
+#[should_panic]
 fn set_check_kda_err_rs() {
     world().run("tests/scenarios-self/set-check/set-check-kda.err1.json");
 }

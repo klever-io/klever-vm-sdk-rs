@@ -1,3 +1,4 @@
+use crate::version::FrameworkVersion;
 use crate::version_history::LAST_TEMPLATE_VERSION;
 
 pub enum RepoVersion {
@@ -27,10 +28,10 @@ impl RepoVersion {
     }
 
 
-    pub fn get_tag(&self) -> String {
+    pub fn get_tag(&self) -> FrameworkVersion {
         match self {
-            RepoVersion::Master => LAST_TEMPLATE_VERSION.to_string(),
-            RepoVersion::Tag(tag) => tag.to_string(),
+            RepoVersion::Master => LAST_TEMPLATE_VERSION,
+            RepoVersion::Tag(tag) => FrameworkVersion::from_string_template(tag),
         }
     }
 }

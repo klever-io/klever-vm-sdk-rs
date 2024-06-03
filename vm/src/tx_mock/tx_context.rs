@@ -9,6 +9,7 @@ use std::{
     collections::HashMap,
     sync::{Arc, Mutex, MutexGuard},
 };
+use crate::types::VMCodeMetadata;
 
 use super::{BackTransfers, BlockchainRng, BlockchainUpdate, TxCache, TxInput, TxManagedTypes, TxResult};
 
@@ -47,6 +48,7 @@ impl TxContext {
             kda: AccountKda::default(),
             username: Vec::new(),
             contract_path: None,
+            code_metadata: VMCodeMetadata::empty(),
             contract_owner: None,
         });
 
@@ -145,6 +147,7 @@ impl TxContext {
         &self,
         new_address: &VMAddress,
         contract_path: Vec<u8>,
+        code_metadata: VMCodeMetadata,
         contract_owner: VMAddress,
     ) {
         assert!(
@@ -160,6 +163,7 @@ impl TxContext {
             kda: AccountKda::default(),
             username: Vec::new(),
             contract_path: Some(contract_path),
+            code_metadata,
             contract_owner: Some(contract_owner),
         });
     }

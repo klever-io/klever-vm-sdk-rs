@@ -123,7 +123,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         &self,
         klv_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
-        _code_metadata: VMCodeMetadata,
+        code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
     ) -> (VMAddress, Vec<Vec<u8>>) {
         let contract_address = self.current_address();
@@ -146,6 +146,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         let (tx_result, new_address, blockchain_updates) = self.0.vm_ref.deploy_contract(
             tx_input,
             contract_code,
+            code_metadata,
             tx_cache,
             execute_current_tx_context_input,
         );

@@ -7,8 +7,12 @@ use klever_chain_vm::{
         KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
     },
 };
+use klever_chain_vm::types::VMCodeMetadata;
 
 use super::ScenarioVMRunner;
+
+/// Refers to the default of the "setState" scenario step.
+pub const DEFAULT_CODE_METADATA: VMCodeMetadata = VMCodeMetadata::all();
 
 impl ScenarioVMRunner {
     pub fn perform_set_state(&mut self, set_state_step: &SetStateStep) {
@@ -54,6 +58,11 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .code
                 .as_ref()
                 .map(|bytes_value| bytes_value.value.clone()),
+            code_metadata: account
+                .code_metadata
+                .as_ref()
+                .map(|bytes_value| VMCodeMetadata::from(&bytes_value.value))
+                .unwrap_or(DEFAULT_CODE_METADATA),
             contract_owner: account
                 .owner
                 .as_ref()

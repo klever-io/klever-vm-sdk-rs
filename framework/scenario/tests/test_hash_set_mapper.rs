@@ -2,6 +2,7 @@ use klever_sc::storage::{
     mappers::{SetMapper, StorageClearable, StorageMapper},
     StorageKey,
 };
+use klever_sc::types::ManagedAddress;
 use klever_sc_scenario::api::SingleTxApi;
 
 fn create_set() -> SetMapper<SingleTxApi, u64> {
@@ -9,11 +10,26 @@ fn create_set() -> SetMapper<SingleTxApi, u64> {
     SetMapper::new(base_key)
 }
 
+fn create_set_at_address(
+    address: ManagedAddress<SingleTxApi>,
+) -> SetMapper<SingleTxApi, u64, ManagedAddress<SingleTxApi>> {
+    let base_key = StorageKey::new(&b"my_remote_set"[..]);
+    SetMapper::new_from_address(address, base_key)
+}
+
 fn check_set(set: &SetMapper<SingleTxApi, u64>, expected: Vec<u64>) {
     assert_eq!(set.len(), expected.len());
     assert!(set.check_internal_consistency());
     let actual: Vec<u64> = set.iter().collect();
     assert_eq!(actual, expected);
+}
+
+fn check_set_at_address(
+    set: &SetMapper<SingleTxApi, u64, ManagedAddress<SingleTxApi>>,
+    expected_len: usize,
+) {
+    assert_eq!(set.len(), expected_len);
+    assert!(set.check_internal_consistency());
 }
 
 #[test]
@@ -79,4 +95,10 @@ fn test_set_clear() {
     assert!(set.check_internal_consistency());
     assert_eq!(set.len(), 0);
     assert!(set.is_empty());
+}
+
+#[test]
+fn test_set_at_address() {
+    let set = create_set_at_address(ManagedAddress::default());
+    check_set_at_address(&set, 0usize);
 }

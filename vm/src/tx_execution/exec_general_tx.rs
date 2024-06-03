@@ -10,7 +10,7 @@ use crate::{
     with_shared::Shareable,
 };
 use crate::tx_mock::CallType;
-use crate::types::top_encode_big_uint;
+use crate::types::{top_encode_big_uint, VMCodeMetadata};
 
 use super::{is_system_sc_address, BlockchainVMRef};
 
@@ -136,6 +136,7 @@ impl BlockchainVMRef {
         &self,
         mut tx_input: TxInput,
         contract_path: Vec<u8>,
+        code_metadata: VMCodeMetadata,
         tx_cache: TxCache,
         f: F,
     ) -> (TxResult, VMAddress, BlockchainUpdate)
@@ -159,7 +160,12 @@ impl BlockchainVMRef {
                 BlockchainUpdate::empty(),
             );
         }
-        tx_context_sh.create_new_contract(&new_address, contract_path, tx_input_ref.from.clone());
+        tx_context_sh.create_new_contract(
+            &new_address,
+            contract_path,
+            code_metadata,
+            tx_input_ref.from.clone(),
+        );
         tx_context_sh
             .tx_cache
             .increase_klv_balance(&new_address, &tx_input_ref.klv_value);

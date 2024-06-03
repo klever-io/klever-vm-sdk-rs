@@ -15,6 +15,7 @@ use crate::{
     CargoTomlContents,
 };
 use crate::cmd::standalone::upgrade::upgrade_settings::UpgradeSettings;
+use crate::version::FrameworkVersion;
 
 use super::upgrade_print::*;
 
@@ -76,7 +77,7 @@ fn try_replace_file_name(file_name_str: &str, patterns: &[(&str, &str)]) -> Opti
 }
 
 /// Uses `CargoTomlContents`. Will only replace versions of framework crates.
-pub fn version_bump_in_cargo_toml(path: &Path, from_version: &str, to_version: &str) {
+pub fn version_bump_in_cargo_toml(path: &Path, from_version: &FrameworkVersion, to_version: &FrameworkVersion) {
     if is_cargo_toml_file(path) {
         let mut cargo_toml_contents = CargoTomlContents::load_from_file(path);
         upgrade_all_dependency_versions(
@@ -115,8 +116,8 @@ fn is_cargo_toml_file(path: &Path) -> bool {
 fn upgrade_all_dependency_versions(
     cargo_toml_contents: &mut CargoTomlContents,
     deps_name: &str,
-    from_version: &str,
-    to_version: &str,
+    from_version: &FrameworkVersion,
+    to_version: &FrameworkVersion,
 ) {
     if let Some(dependencies) = cargo_toml_contents.toml_value.get_mut(deps_name) {
         for &framework_crate_name in FRAMEWORK_CRATE_NAMES {
@@ -137,8 +138,8 @@ fn upgrade_dependency_version(
     deps_name: &str,
     dependencies: &mut Value,
     framework_crate_name: &str,
-    from_version: &str,
-    to_version: &str,
+    from_version: &FrameworkVersion,
+    to_version: &FrameworkVersion,
 ) {
     match dependencies.get_mut(framework_crate_name) {
         Some(Value::String(version_string)) => {
@@ -169,16 +170,16 @@ fn upgrade_dependency_version(
 
 fn change_version_string(
     version_string: &mut String,
-    from_version: &str,
-    to_version: &str,
+    from_version: &FrameworkVersion,
+    to_version: &FrameworkVersion,
     path: &Path,
     deps_name: &str,
     framework_crate_name: &str,
 ) {
     let version_string_before = version_string.clone();
     let mut version_spec = VersionReq::from_string(std::mem::take(version_string));
-    if version_spec.semver == from_version {
-        version_spec.semver = to_version.to_string();
+    if version_spec.semver == *from_version {
+        version_spec.semver = to_version.clone();
     }
     *version_string = version_spec.into_string();
 

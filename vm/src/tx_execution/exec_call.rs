@@ -12,6 +12,7 @@ use num_bigint::BigUint;
 use num_traits::Zero;
 use std::collections::HashMap;
 use crate::tx_mock::CallType;
+use crate::types::VMCodeMetadata;
 
 use super::BlockchainVMRef;
 
@@ -237,6 +238,7 @@ impl BlockchainVMRef {
                 username: Vec::new(),
                 storage: HashMap::new(),
                 contract_path: None,
+                code_metadata: VMCodeMetadata::empty(),
                 contract_owner: None,
             });
             Ok(tx_cache.into_blockchain_updates())

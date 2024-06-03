@@ -4,6 +4,7 @@ use std::{
 };
 
 use crate::folder_structure::RelevantDirectories;
+use crate::version::FrameworkVersion;
 
 use super::{copy_util::whitelisted_deep_copy, template_metadata::TemplateMetadata, RepoSource};
 
@@ -17,7 +18,7 @@ pub struct TemplateSource<'a> {
 }
 
 impl<'a> TemplateSource<'a> {
-    pub fn copy_template(&self, target_path: impl AsRef<Path>, args_tag: &str) {
+    pub fn copy_template(&self, target_path: impl AsRef<Path>, args_tag: FrameworkVersion) {
         whitelisted_deep_copy(
             &self.source_path,
             target_path.as_ref(),

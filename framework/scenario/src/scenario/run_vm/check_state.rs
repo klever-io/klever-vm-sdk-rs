@@ -57,6 +57,15 @@ fn execute(state: &BlockchainState, accounts: &CheckAccounts) {
                 hex::encode(actual_code),
                 actual_code.len(),
             );
+            let actual_code_metadata = account.code_metadata.to_vec();
+            assert!(
+                expected_account.code_metadata.check(&actual_code_metadata),
+                "bad account code metadata. Address: {}. Want: {}. Have: {}",
+                expected_address,
+                expected_account.code_metadata,
+                hex::encode(actual_code_metadata),
+            );
+
 
             if let CheckStorage::Equal(eq) = &expected_account.storage {
                 let default_value = &Vec::new();

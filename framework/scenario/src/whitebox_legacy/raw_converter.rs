@@ -46,10 +46,11 @@ pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
 
     AccountRaw {
         balance: balance_raw,
-        code: code_raw,
         comment: None,
         kda: all_kda_raw,
         nonce: Some(u64_as_raw(acc.nonce)),
+        code: code_raw,
+        code_metadata: Some(bytes_as_raw(acc.code_metadata.to_vec())),
         owner: acc.contract_owner.as_ref().map(vm_address_as_raw),
         storage: storage_raw,
         username: None,
@@ -75,10 +76,10 @@ pub(crate) fn kda_data_as_raw(kda: &KdaData) -> KdaRaw {
             attributes: Some(bytes_as_raw(&inst.metadata.attributes)),
             balance: Some(rust_biguint_as_raw(&inst.balance)),
             creator: inst.metadata.creator.as_ref().map(vm_address_as_raw),
-            hash: inst.metadata.hash.as_ref().map(|h| bytes_as_raw(h)),
+            hash: inst.metadata.hash.as_ref().map(bytes_as_raw),
             nonce: Some(u64_as_raw(inst.nonce)),
             royalties: Some(u64_as_raw(inst.metadata.royalties)),
-            uri: inst.metadata.uri.iter().map(|u| bytes_as_raw(u)).collect(),
+            uri: inst.metadata.uri.iter().map(bytes_as_raw).collect(),
             can_burn: Some(inst.metadata.can_burn),
         };
 
@@ -242,6 +243,7 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
         owner: CheckBytesValueRaw::Star, // TODO: Add owner check?
         storage: CheckStorageRaw::Equal(check_storage_raw),
         code: CheckBytesValueRaw::Star,
+        code_metadata: CheckBytesValueRaw::Star,
         comment: None,
         username: CheckBytesValueRaw::Unspecified,
     };
@@ -301,10 +303,16 @@ pub(crate) fn u64_as_raw_opt(value: u64) -> Option<ValueSubTree> {
     U64Value::from(value).into_raw_opt()
 }
 
-pub(crate) fn bytes_as_raw(bytes: &[u8]) -> ValueSubTree {
+pub(crate) fn bytes_as_raw<B>(bytes: B) -> ValueSubTree
+    where
+        B: AsRef<[u8]>,
+{
     ValueSubTree::Str(bytes_to_hex(bytes))
 }
 
-pub(crate) fn bytes_to_hex(bytes: &[u8]) -> String {
+pub(crate) fn bytes_to_hex<B>(bytes: B) -> String
+    where
+        B: AsRef<[u8]>,
+{
     format!("0x{}", hex::encode(bytes))
 }

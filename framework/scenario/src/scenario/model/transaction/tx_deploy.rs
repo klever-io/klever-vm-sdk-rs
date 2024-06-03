@@ -13,8 +13,8 @@ use super::{tx_interpret_util::interpret_klv_value, DEFAULT_GAS_EXPR};
 pub struct TxDeploy {
     pub from: AddressValue,
     pub klv_value: BigUintValue,
-    pub code_metadata: CodeMetadata,
     pub contract_code: BytesValue,
+    pub code_metadata: CodeMetadata,
     pub arguments: Vec<BytesValue>,
     pub gas_limit: U64Value,
     pub gas_price: U64Value,

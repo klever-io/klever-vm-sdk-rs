@@ -95,7 +95,7 @@ impl CargoTomlContents {
                 return remove_quotes(version);
             }
         }
-        panic!("could not find multiversx-sc dependency version in cargo toml")
+        panic!("could not find klever-sc dependency version in cargo toml")
     }
 
     pub fn dependency_path(&self, crate_name: &str) -> Option<String> {
