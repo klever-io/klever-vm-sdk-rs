@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-kda");
 
     blockchain.register_contract(
-        "file:output/crowdfunding-kda.wasm",
+        "kleversc:output/crowdfunding-kda.kleversc.json",
         crowdfunding_kda::ContractBuilder,
     );
     blockchain

@@ -85,7 +85,7 @@
             "str:numberOfEntriesForUser|u32:12|str:lottery_name|address:acc1": "1",
             "+": ""
           },
-          "code": "file:../output/lottery-kda.wasm"
+          "code": "kleversc:../output/lottery-kda.kleversc.json"
         }
       }
     }

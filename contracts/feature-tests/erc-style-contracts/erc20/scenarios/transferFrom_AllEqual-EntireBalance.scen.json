@@ -17,7 +17,7 @@
                         "str:balance|address:account_1": "0x2710",
                         "str:totalSupply": "0x2710"
                     },
-                    "code": "file:../output/erc20.wasm"
+                    "code": "kleversc:../output/erc20.kleversc.json"
                 }
             }
         },
@@ -73,7 +73,7 @@
                         "str:balance|address:account_1": "0x2710",
                         "str:totalSupply": "0x2710"
                     },
-                    "code": "file:../output/erc20.wasm"
+                    "code": "kleversc:../output/erc20.kleversc.json"
                 }
             }
         }

@@ -22,7 +22,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:my_address",
-                "contractCode": "file:../output/crowdfunding-kda.wasm",
+                "contractCode": "kleversc:../output/crowdfunding-kda.kleversc.json",
                 "arguments": [
                     "500,000,000,000",
                     "123,000",
@@ -54,7 +54,7 @@
                         "str:deadline": "123,000",
                         "str:tokenIdentifier": "str:KLV"
                     },
-                    "code": "file:../output/crowdfunding-kda.wasm"
+                    "code": "kleversc:../output/crowdfunding-kda.kleversc.json"
                 }
             }
         }

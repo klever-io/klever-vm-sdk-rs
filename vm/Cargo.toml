@@ -28,6 +28,7 @@ ed25519-dalek = "1.0.1"
 itertools = "0.12.0"
 hex-literal = "=0.4.1"
 bitflags = "=2.4.1"
+colored = "2.1.0"
 
 [dependencies.klever-chain-vm-executor]
 git = "https://github.com/klever-io/klever-vm-executor-rs"

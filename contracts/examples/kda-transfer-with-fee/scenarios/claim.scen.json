@@ -81,7 +81,7 @@
                         "str:token_fee|nested:str:MFNFT-567890": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:5",
                         "str:token_fee|nested:str:WKLV-012345": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:10"
                     },
-                    "code": "file:../output/kda-transfer-with-fee.wasm",
+                    "code": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                     "owner": "address:owner"
                 }
             }

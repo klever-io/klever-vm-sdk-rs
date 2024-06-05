@@ -12,7 +12,7 @@
                 "sc:user_mock": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../../erc1155-user-mock/output/erc1155-user-mock.wasm"
+                    "code": "kleversc:../../erc1155-user-mock/output/erc1155-user-mock.kleversc.json"
                 }
             }
         },
@@ -77,7 +77,7 @@
                     "nonce": "0",
                     "balance": "0",
                     "storage": {},
-                    "code": "file:../../erc1155-user-mock/output/erc1155-user-mock.wasm"
+                    "code": "kleversc:../../erc1155-user-mock/output/erc1155-user-mock.kleversc.json"
                 },
                 "sc:erc1155": {
                     "nonce": "0",
@@ -98,7 +98,7 @@
                         "str:balanceOf|sc:user_mock|str:.node_id|biguint:1": "1",
                         "str:balanceOf|sc:user_mock|str:.info": "u32:1|u32:1|u32:1|u32:1"
                     },
-                    "code": "file:../output/erc1155.wasm"
+                    "code": "kleversc:../output/erc1155.kleversc.json"
                 }
             }
         }

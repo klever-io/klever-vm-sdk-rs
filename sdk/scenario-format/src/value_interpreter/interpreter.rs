@@ -1,4 +1,5 @@
 use crate::{interpret_trait::InterpreterContext, serde_raw::ValueSubTree};
+use crate::value_interpreter::file_loader::KleverscFileJson;
 
 use super::{file_loader::load_file, functions::*, parse_num::*, prefixes::*};
 
@@ -60,7 +61,14 @@ pub fn interpret_string(s: &str, context: &InterpreterContext) -> Vec<u8> {
     }
 
     if let Some(stripped) = s.strip_prefix(FILE_PREFIX) {
-        return load_file(stripped, context);
+        return load_file(stripped, context, |c| c);
+    }
+
+    if let Some(stripped) = s.strip_prefix(KLEVERSC_PREFIX) {
+        return load_file(stripped, context, |content| {
+            let kleversc_json: KleverscFileJson = serde_json::from_slice(&content).unwrap();
+            hex::decode(kleversc_json.code).expect("Could not decode contract code")
+        });
     }
 
     if let Some(stripped) = s.strip_prefix(KECCAK256_PREFIX) {

@@ -5,12 +5,6 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-#[ignore = "waiting for VM 1.5"]
-fn builtin_func_delete_user_name_go() {
-    world().run("scenarios/builtin_func_delete_user_name.scen.json");
-}
-
-#[test]
 fn builtin_func_set_user_name_go() {
     world().run("scenarios/builtin_func_set_user_name.scen.json");
 }

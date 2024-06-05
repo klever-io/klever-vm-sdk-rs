@@ -36,6 +36,14 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn managed_get_code_metadata(
+        &self,
+        _address_handle: Self::ManagedBufferHandle,
+        _response_handle: Self::ManagedBufferHandle,
+    ) {
+        unreachable!()
+    }
+
     fn load_state_root_hash_managed(&self, _dest: Self::ManagedBufferHandle) {
         unreachable!()
     }
@@ -157,6 +165,13 @@ impl BlockchainApiImpl for UncallableApi {
         _kda_transfer_value_handle: RawHandle,
         _call_value_handle: RawHandle,
     ) {
+        unreachable!()
+    }
+
+    fn managed_is_builtin_function(
+        &self,
+        _function_name_handle: Self::ManagedBufferHandle,
+    ) -> bool {
         unreachable!()
     }
 }

@@ -32,7 +32,7 @@
             "id": "",
             "tx": {
                 "from": "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60",
-                "contractCode": "file:../output/adder.wasm",
+                "contractCode": "kleversc:../output/adder.kleversc.json",
                 "arguments": [
                     "0x00"
                 ],

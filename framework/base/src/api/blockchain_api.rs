@@ -1,3 +1,4 @@
+use crate::types::CodeMetadata;
 use super::{HandleTypeInfo, ManagedTypeApi, ManagedTypeApiImpl, RawHandle};
 use crate::types::heap::{Address, Box, H256};
 
@@ -145,4 +146,12 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         kda_transfer_value_handle: RawHandle,
         call_value_handle: RawHandle,
     );
+
+    fn managed_get_code_metadata(
+        &self,
+        address_handle: Self::ManagedBufferHandle,
+        response_handle: Self::ManagedBufferHandle,
+    );
+
+    fn managed_is_builtin_function(&self, function_name_handle: Self::ManagedBufferHandle) -> bool;
 }

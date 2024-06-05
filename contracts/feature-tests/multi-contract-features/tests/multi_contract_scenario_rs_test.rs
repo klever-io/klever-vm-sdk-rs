@@ -5,17 +5,17 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/multi-contract-features");
 
     blockchain.register_partial_contract::<multi_contract_features::AbiProvider, _>(
-        "file:output/multi-contract-features.wasm",
+        "kleversc:output/multi-contract-features.kleversc.json",
         multi_contract_features::ContractBuilder,
         "multi-contract-features",
     );
     blockchain.register_partial_contract::<multi_contract_features::AbiProvider, _>(
-        "file:output/multi-contract-features-view.wasm",
+        "kleversc:output/multi-contract-features-view.kleversc.json",
         multi_contract_features::ContractBuilder,
         "multi-contract-features-view",
     );
     blockchain.register_partial_contract::<multi_contract_features::AbiProvider, _>(
-        "file:output/multi-contract-alt-impl.wasm",
+        "kleversc:output/multi-contract-alt-impl.kleversc.json",
         multi_contract_features::ContractBuilder,
         "multi-contract-alt-impl",
     );

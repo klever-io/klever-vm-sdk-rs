@@ -1,15 +1,42 @@
 use num_bigint::BigInt;
 
 use crate::{
+    tx_execution::vm_builtin_function_names::*,
     types::{RawHandle, VMAddress},
     vm_hooks::VMHooksHandlerSource,
     world_mock::{KdaData, KdaInstance},
 };
+use crate::types::VMCodeMetadata;
 // use num_bigint::BigInt;
 // use num_traits::Zero;
 
 // The Go VM doesn't do it, but if we change that, we can enable it easily here too via this constant.
 const KDA_TOKEN_DATA_FUNC_RESETS_VALUES: bool = false;
+
+const VM_BUILTIN_FUNCTION_NAMES: [&str; 22] = [
+    KLEVER_TRANSFER_FUNC_NAME,
+    KLEVER_CREATE_ASSET_FUNC_NAME,
+    KLEVER_FREEZE_FUNC_NAME,
+    KLEVER_UNFREEZE_FUNC_NAME,
+    KLEVER_DELEGATE_FUNC_NAME,
+    KLEVER_UNDELEGATE_FUNC_NAME,
+    KLEVER_WITHDRAW_FUNC_NAME,
+    KLEVER_CLAIM_FUNC_NAME,
+    KLEVER_ASSET_TRIGGER_FUNC_NAME,
+    KLEVER_SET_ACCOUNT_NAME_FUNC_NAME,
+    KLEVER_VOTE_FUNC_NAME,
+    KLEVER_CONFIG_ITO_FUNC_NAME,
+    KLEVER_BUY_FUNC_NAME,
+    KLEVER_SELL_FUNC_NAME,
+    KLEVER_CANCEL_MARKET_ORDER_FUNC_NAME,
+    KLEVER_CREATE_MARKETPLACE_FUNC_NAME,
+    KLEVER_CONFIG_MARKETPLACE_FUNC_NAME,
+    KLEVER_UPDATE_ACCOUNT_PERMISSION,
+    KLEVER_DEPOSIT_FUNC_NAME,
+    KLEVER_ITO_TRIGGER_FUNC_NAME,
+    CHANGE_OWNER_BUILTIN_FUNC_NAME,
+    UPGRADE_CONTRACT_FUNC_NAME,    
+];
 
 pub trait VMHooksBlockchain: VMHooksHandlerSource {
     fn is_contract_address(&self, address_bytes: &[u8]) -> bool {
@@ -377,5 +404,27 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             // m_types.bi_overwrite(royalties_handle, BigInt::zero());
             // m_types.bi_overwrite(uris_handle, BigInt::zero());
         }
+    }
+
+    fn managed_get_code_metadata(&self, address_handle: i32, response_handle: i32) {
+        let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
+        let Some(data) = self.account_data(&address) else {
+            self.vm_error(&format!(
+                "account not found: {}",
+                hex::encode(address.as_bytes())
+            ))
+        };
+        let code_metadata_bytes = data.code_metadata.to_byte_array();
+        self.m_types_lock()
+            .mb_set(response_handle, code_metadata_bytes.to_vec())
+    }
+
+    fn managed_is_builtin_function(&self, function_name_handle: i32) -> bool {
+        VM_BUILTIN_FUNCTION_NAMES.contains(
+            &self
+                .m_types_lock()
+                .mb_to_function_name(function_name_handle)
+                .as_str(),
+        )
     }
 }

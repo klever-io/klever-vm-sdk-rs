@@ -28,7 +28,7 @@
             "id": "deploy-first-contract",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../first-contract/output/first-contract.wasm",
+                "contractCode": "kleversc:../first-contract/output/first-contract.kleversc.json",
                 "arguments": [
                     "str:cool_token",
                     "sc:second_contract"
@@ -48,7 +48,7 @@
             "id": "deploy-second-contract",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../second-contract/output/second-contract.wasm",
+                "contractCode": "kleversc:../second-contract/output/second-contract.kleversc.json",
                 "arguments": [
                     "str:cool_token"
                 ],

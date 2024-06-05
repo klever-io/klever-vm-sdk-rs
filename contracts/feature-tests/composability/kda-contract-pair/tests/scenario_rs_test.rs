@@ -3,12 +3,12 @@ use klever_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
-        "file:first-contract/output/first-contract.wasm",
+        "kleversc:first-contract/output/first-contract.kleversc.json",
         first_contract::ContractBuilder,
     );
 
     blockchain.register_contract(
-        "file:second-contract/output/second-contract.wasm",
+        "kleversc:second-contract/output/second-contract.kleversc.json",
         second_contract::ContractBuilder,
     );
     blockchain

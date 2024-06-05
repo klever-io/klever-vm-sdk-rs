@@ -152,7 +152,7 @@
                             ]
                         }
                     },
-                    "code": "file:smart-contract.wasm",
+                    "code": "kleversc:smart-contract.kleversc.json",
                     "owner": "address:alice"
                 }
             },
@@ -426,7 +426,7 @@
                         "str:anything-goes": "*",
                         "+": ""
                     },
-                    "code": "file:smart-contract.wasm",
+                    "code": "kleversc:smart-contract.kleversc.json",
                     "owner": "address:bob"
                 },
                 "address:smart_contract_address_2": {

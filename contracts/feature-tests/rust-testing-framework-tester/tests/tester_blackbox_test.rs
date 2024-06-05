@@ -1,7 +1,7 @@
 use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
 use rust_testing_framework_tester::*; // TODO: clean up imports
 
-const WASM_PATH_EXPR: &str = "file:output/rust-testing-framework-tester.wasm";
+const WASM_PATH_EXPR: &str = "kleversc:output/rust-testing-framework-tester.kleversc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

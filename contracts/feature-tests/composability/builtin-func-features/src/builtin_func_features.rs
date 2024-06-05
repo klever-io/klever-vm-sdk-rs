@@ -14,16 +14,9 @@ pub trait BuiltinFuncFeatures {
     fn init(&self) {}
 
     #[endpoint]
-    fn call_set_user_name(&self, address: ManagedAddress, name: ManagedBuffer) {
+    fn call_set_account_name(&self, address: ManagedAddress, name: ManagedBuffer) {
         self.builtin_func_proxy(address)
-            .set_user_name(&name)
-            .execute_on_dest_context::<IgnoreValue>();
-    }
-
-    #[endpoint]
-    fn call_delete_user_name(&self, address: ManagedAddress) {
-        self.builtin_func_proxy(address)
-            .delete_user_name()
+            .set_account_name(&name)
             .execute_on_dest_context::<IgnoreValue>();
     }
 }

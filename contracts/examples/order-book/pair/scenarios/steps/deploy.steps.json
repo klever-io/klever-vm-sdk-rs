@@ -16,7 +16,7 @@
             "id": "deploy-router",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../../output/order-book-pair.wasm",
+                "contractCode": "kleversc:../../output/order-book-pair.kleversc.json",
                 "arguments": [
                     "str:WKLV-abcdef",
                     "str:BUSD-abcdef"

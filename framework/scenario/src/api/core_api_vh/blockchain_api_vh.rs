@@ -252,4 +252,23 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
             vh.managed_get_back_transfers(kda_transfer_value_handle, call_value_handle)
         });
     }
+
+    fn managed_get_code_metadata(
+        &self,
+        address_handle: Self::ManagedBufferHandle,
+        response_handle: Self::ManagedBufferHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_code_metadata(
+                address_handle.get_raw_handle_unchecked(),
+                response_handle.get_raw_handle_unchecked(),
+            )
+        });
+    }
+
+    fn managed_is_builtin_function(&self, function_name_handle: Self::ManagedBufferHandle) -> bool {
+        i32_to_bool(self.with_vm_hooks(|vh| {
+            vh.managed_is_builtin_function(function_name_handle.get_raw_handle_unchecked())
+        }))
+    }
 }

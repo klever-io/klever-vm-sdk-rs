@@ -1,7 +1,7 @@
 use super::{
     builtin_func_trait::BuiltinFunction,
     builtin_function_names::*,
-    general::{ChangeOwner, DeleteUsername, SetUsername, UpgradeContract, KleverAssetTrigger},
+    general::{ChangeOwner, UpgradeContract, KleverAssetTrigger, SetAccountName},
     transfer::KDAMultiTransfer,
     BuiltinFunctionKdaTransferInfo,
 };
@@ -74,14 +74,10 @@ impl<'a> BuiltinFunctionCall<'a> {
     {
         match self.tx_input.func_name.as_str() {
             KLEVER_ASSET_TRIGGER_FUNC_NAME => self.execute_bf(KleverAssetTrigger, f),
+            KLEVER_SET_ACCOUNT_NAME_FUNC_NAME => self.execute_bf(SetAccountName, f),
             KLEVER_TRANSFER_FUNC_NAME => self.execute_bf(KDAMultiTransfer, f),
             CHANGE_OWNER_BUILTIN_FUNC_NAME => self.execute_bf(ChangeOwner, f),
-            SET_USERNAME_FUNC_NAME => self.execute_bf(SetUsername, f),
-            DELETE_USERNAME_FUNC_NAME => self.execute_bf(DeleteUsername, f),
             UPGRADE_CONTRACT_FUNC_NAME => self.execute_bf(UpgradeContract, f),
-            MIGRATE_USERNAME_FUNC_NAME => {
-                panic!("builtin function {MIGRATE_USERNAME_FUNC_NAME} was dropped")
-            },
             _ => or_else(self.tx_input, self.tx_cache, f),
         }
     }

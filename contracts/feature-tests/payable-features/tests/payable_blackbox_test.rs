@@ -1,6 +1,6 @@
 use klever_sc_scenario::{scenario_model::*, *};
 
-const PF_PATH_EXPR: &str = "file:output/payable-features.wasm";
+const PF_PATH_EXPR: &str = "kleversc:output/payable-features.kleversc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

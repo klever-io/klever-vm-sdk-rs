@@ -5,11 +5,11 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
     blockchain.register_contract(
-        "file:output/basic-features.wasm",
+        "kleversc:output/basic-features.kleversc.json",
         basic_features::ContractBuilder,
     );
     blockchain.register_contract(
-        "file:../kda-system-sc-mock/output/kda-system-sc-mock.wasm",
+        "kleversc:../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json",
         kda_system_sc_mock::ContractBuilder,
     );
 
@@ -216,6 +216,16 @@ fn get_caller_rs() {
 }
 
 #[test]
+fn get_code_metadata_rs() {
+    world().run("scenarios/get_code_metadata.scen.json");
+}
+
+#[test]
+fn is_builtin_function_rs() {
+    world().run("scenarios/is_builtin_function.scen.json");
+}
+
+#[test]
 fn managed_address_array_rs() {
     world().run("scenarios/managed_address_array.scen.json");
 }
@@ -259,6 +269,11 @@ fn managed_vec_array_push_rs() {
 #[test]
 fn managed_vec_biguint_push_rs() {
     world().run("scenarios/managed_vec_biguint_push.scen.json");
+}
+
+#[test]
+fn new_address_rs() {
+    world().run("scenarios/new_address.scen.json");
 }
 
 #[test]
@@ -352,6 +367,11 @@ fn storage_map_3_rs() {
 #[ignore]
 fn storage_mapper_fungible_token_rs() {
     world().run("scenarios/storage_mapper_fungible_token.scen.json");
+}
+
+#[test]
+fn storage_mapper_get_at_address_rs() {
+    world().run("scenarios/storage_mapper_get_at_address.scen.json");
 }
 
 #[test]

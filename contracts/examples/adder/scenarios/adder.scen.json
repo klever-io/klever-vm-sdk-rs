@@ -24,7 +24,7 @@
             "id": "1",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/adder.wasm",
+                "contractCode": "kleversc:../output/adder.kleversc.json",
                 "arguments": [
                     "5"
                 ],
@@ -91,7 +91,7 @@
                     "storage": {
                         "str:sum": "8"
                     },
-                    "code": "file:../output/adder.wasm"
+                    "code": "kleversc:../output/adder.kleversc.json"
                 }
             }
         }

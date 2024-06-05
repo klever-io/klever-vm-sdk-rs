@@ -94,6 +94,10 @@ extern "C" {
     fn managedGetKDARoles(ticker_handle: i32, roles_handle: i32);
 
     fn managedGetBackTransfers(kdaTransfersValueHandle: i32, callValueHandle: i32);
+
+    fn managedGetCodeMetadata(addressHandle: i32, resultHandle: i32);
+
+    fn managedIsBuiltinFunction(function_name_handle: i32) -> bool;
 }
 
 impl BlockchainApi for VmApiImpl {
@@ -379,5 +383,19 @@ impl BlockchainApiImpl for VmApiImpl {
         unsafe {
             managedGetBackTransfers(kda_transfer_value_handle, call_value_handle);
         }
+    }
+
+    fn managed_get_code_metadata(
+        &self,
+        address_handle: Self::ManagedBufferHandle,
+        response_handle: Self::ManagedBufferHandle,
+    ) {
+        unsafe {
+            managedGetCodeMetadata(address_handle, response_handle);
+        }
+    }
+    
+    fn managed_is_builtin_function(&self, function_name_handle: Self::ManagedBufferHandle) -> bool {
+        unsafe { managedIsBuiltinFunction(function_name_handle) }
     }
 }

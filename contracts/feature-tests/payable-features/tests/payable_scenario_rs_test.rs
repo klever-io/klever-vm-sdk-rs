@@ -4,7 +4,7 @@ fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/payable-features");
     blockchain.register_contract(
-        "file:output/payable-features.wasm",
+        "kleversc:output/payable-features.kleversc.json",
         payable_features::ContractBuilder,
     );
     blockchain

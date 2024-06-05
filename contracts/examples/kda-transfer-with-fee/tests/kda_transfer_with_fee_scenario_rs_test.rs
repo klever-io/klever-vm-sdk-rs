@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/kda-transfer-with-fee");
 
     blockchain.register_contract(
-        "file:output/kda-transfer-with-fee.wasm",
+        "kleversc:output/kda-transfer-with-fee.kleversc.json",
         kda_transfer_with_fee::ContractBuilder,
     );
     blockchain

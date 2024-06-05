@@ -30,7 +30,7 @@
             "id": "1",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/use-module.wasm",
+                "contractCode": "kleversc:../output/use-module.kleversc.json",
                 "arguments": [],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"

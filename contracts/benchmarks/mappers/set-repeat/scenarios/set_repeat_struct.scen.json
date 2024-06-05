@@ -24,7 +24,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/set-repeat.wasm",
+                "contractCode": "kleversc:../output/set-repeat.kleversc.json",
                 "arguments": [],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"

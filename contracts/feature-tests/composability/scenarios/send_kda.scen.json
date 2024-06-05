@@ -11,7 +11,7 @@
                     "kda": {
                         "str:SENDKDA": "1,000"
                     },
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "kleversc:../forwarder/output/forwarder.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -90,7 +90,7 @@
                         "str:SENDKDA": "800"
                     },
                     "storage": {},
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "kleversc:../forwarder/output/forwarder.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",

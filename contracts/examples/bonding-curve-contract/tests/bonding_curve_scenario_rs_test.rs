@@ -3,7 +3,7 @@ use klever_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
-        "file:output/bonding-curve-contract.wasm",
+        "kleversc:output/bonding-curve-contract.kleversc.json",
         bonding_curve_contract::ContractBuilder,
     );
     blockchain

@@ -3,7 +3,7 @@ use linked_list_repeat::ProxyTrait;
 use klever_sc::types::{MultiValueEncoded, TokenIdentifier};
 use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
 
-const WASM_PATH_EXPR: &str = "file:output/linked-list-repeat.wasm";
+const WASM_PATH_EXPR: &str = "kleversc:output/linked-list-repeat.kleversc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

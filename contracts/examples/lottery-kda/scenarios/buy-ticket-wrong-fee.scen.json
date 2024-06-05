@@ -78,7 +78,7 @@
               "6-prize_pool": "biguint:0"
             }
           },
-          "code": "file:../output/lottery-kda.wasm"
+          "code": "kleversc:../output/lottery-kda.kleversc.json"
         }
       }
     }

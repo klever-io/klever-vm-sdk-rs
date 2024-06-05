@@ -1,14 +1,14 @@
-use crate::tx_execution::{builtin_function_names::SET_USERNAME_FUNC_NAME, BlockchainVMRef};
+use crate::tx_execution::{builtin_function_names::KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, BlockchainVMRef};
 
 use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult};
 
 use super::super::builtin_func_trait::BuiltinFunction;
 
-pub struct SetUsername;
+pub struct SetAccountName;
 
-impl BuiltinFunction for SetUsername {
+impl BuiltinFunction for SetAccountName {
     fn name(&self) -> &str {
-        SET_USERNAME_FUNC_NAME
+        KLEVER_SET_ACCOUNT_NAME_FUNC_NAME
     }
 
     fn execute<F>(
@@ -23,7 +23,7 @@ impl BuiltinFunction for SetUsername {
     {
         if tx_input.args.len() != 1 {
             return (
-                TxResult::from_vm_error("SetUserName expects 1 argument"),
+                TxResult::from_vm_error("SetAccountName expects 1 argument"),
                 BlockchainUpdate::empty(),
             );
         }
@@ -42,7 +42,7 @@ impl BuiltinFunction for SetUsername {
             (TxResult::empty(), tx_cache.into_blockchain_updates())
         } else {
             (
-                TxResult::from_vm_error("SetUserName expects 1 argument"),
+                TxResult::from_vm_error("SetAccountName expects 1 argument"),
                 BlockchainUpdate::empty(),
             )
         }

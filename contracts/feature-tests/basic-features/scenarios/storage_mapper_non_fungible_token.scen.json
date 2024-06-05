@@ -16,7 +16,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -25,7 +25,7 @@
                 "0x000000000000000000000000000000000000000000000000000000000002ffff": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../../kda-system-sc-mock/output/kda-system-sc-mock.wasm"
+                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
                 }
             }
         },
@@ -70,7 +70,7 @@
                     "storage": {
                         "str:nonFungibleTokenMapper": ""
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 }
             }
         },
@@ -167,7 +167,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
@@ -259,7 +259,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
@@ -329,7 +329,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",

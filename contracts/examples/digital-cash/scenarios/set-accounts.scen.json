@@ -42,7 +42,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:digital_cash_owner_address",
-                "contractCode": "file:../output/digital-cash.wasm",
+                "contractCode": "kleversc:../output/digital-cash.kleversc.json",
                 "arguments": [
                     "10"
                 ],
@@ -65,7 +65,7 @@
                     "storage": {
                         "str:fee": "10"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "0",

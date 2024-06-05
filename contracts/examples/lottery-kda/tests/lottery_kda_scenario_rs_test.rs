@@ -4,7 +4,7 @@ fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/lottery-kda");
 
-    blockchain.register_contract("file:output/lottery-kda.wasm", lottery_kda::ContractBuilder);
+    blockchain.register_contract("kleversc:output/lottery-kda.kleversc.json", lottery_kda::ContractBuilder);
     blockchain
 }
 

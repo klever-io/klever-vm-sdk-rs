@@ -304,7 +304,7 @@
                         "str:paid_fees.value|u32:1": "nested:str:USDC-aaaaaa|u64:0",
                         "str:paid_fees.mapped|nested:str:USDC-aaaaaa|u64:0": "13"
                     },
-                    "code": "file:../output/kda-transfer-with-fee.wasm",
+                    "code": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                     "owner": "address:owner"
                 }
             }

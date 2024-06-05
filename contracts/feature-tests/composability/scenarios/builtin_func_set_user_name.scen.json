@@ -14,7 +14,7 @@
                 "sc:dns#00": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../builtin-func-features/output/builtin-func-features.wasm"
+                    "code": "kleversc:../builtin-func-features/output/builtin-func-features.kleversc.json"
                 }
             }
         },
@@ -51,7 +51,7 @@
                 "sc:dns#00": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../builtin-func-features/output/builtin-func-features.wasm"
+                    "code": "kleversc:../builtin-func-features/output/builtin-func-features.kleversc.json"
                 }
             }
         }

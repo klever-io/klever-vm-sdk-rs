@@ -403,7 +403,7 @@ fn contract_without_macros_basic() {
 fn world() -> klever_sc_scenario::ScenarioWorld {
     let mut blockchain = klever_sc_scenario::ScenarioWorld::new();
     blockchain.register_contract(
-        "file:../../contracts/examples/adder/output/adder.wasm",
+        "kleversc:../../contracts/examples/adder/output/adder.kleversc.json",
         sample_adder::ContractBuilder,
     );
     blockchain

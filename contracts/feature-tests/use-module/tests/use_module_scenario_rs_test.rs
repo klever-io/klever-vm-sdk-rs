@@ -3,8 +3,8 @@ mod user_builtin {
 
     #[klever_sc::proxy]
     pub trait UserBuiltin {
-        #[endpoint(SetUserName)]
-        fn set_user_name(&self, name: &BoxedBytes) -> BigUint;
+        #[endpoint(KleverSetAccountName)]
+        fn set_account_name(&self, name: &BoxedBytes) -> BigUint;
     }
 }
 
@@ -22,7 +22,7 @@ mod dns_mock {
             let _payment = self.call_value().klv_value();
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
-                .set_user_name(&name)
+                .set_account_name(&name)
                 .execute_on_dest_context::<IgnoreValue>();
         }
     }
@@ -32,10 +32,10 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.register_contract("file:output/use-module.wasm", use_module::ContractBuilder);
+    blockchain.register_contract("kleversc:output/use-module.kleversc.json", use_module::ContractBuilder);
 
     blockchain.register_contract(
-        "file:test-wasm/klever-wasm-sc-dns.wasm",
+        "kleversc:test-wasm/klever-wasm-sc-dns.kleversc.json",
         dns_mock::ContractBuilder,
     );
 

@@ -2,7 +2,7 @@ use crowdfunding_kda::*;
 use klever_sc::types::TokenIdentifier;
 use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
 
-const CF_PATH_EXPR: &str = "file:output/crowdfunding-kda.wasm";
+const CF_PATH_EXPR: &str = "kleversc:output/crowdfunding-kda.kleversc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

@@ -22,7 +22,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/large-storage.wasm",
+                "contractCode": "kleversc:../output/large-storage.kleversc.json",
                 "arguments": [],
                 "gasLimit": "2,000,000",
                 "gasPrice": "0"

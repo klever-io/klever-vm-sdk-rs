@@ -2,7 +2,7 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.register_contract("file:output/str-repeat.wasm", str_repeat::ContractBuilder);
+    blockchain.register_contract("kleversc:output/str-repeat.kleversc.json", str_repeat::ContractBuilder);
     blockchain
 }
 

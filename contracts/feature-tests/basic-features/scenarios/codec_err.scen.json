@@ -6,7 +6,7 @@
             "step": "setState",
             "accounts": {
                 "sc:basic-features": {
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {}
             }

@@ -79,7 +79,7 @@
                             "5-release_ticks": "u64:4"
                         }
                     },
-                    "code": "file:../output/token-release.wasm"
+                    "code": "kleversc:../output/token-release.kleversc.json"
                 }
             }
         }

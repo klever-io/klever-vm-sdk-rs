@@ -6,7 +6,7 @@ fn world() -> ScenarioWorld {
         .set_current_dir_from_workspace("contracts/feature-tests/rust-testing-framework-tester");
 
     blockchain.register_contract(
-        "file:output/rust-testing-framework-tester.wasm",
+        "kleversc:output/rust-testing-framework-tester.kleversc.json",
         rust_testing_framework_tester::ContractBuilder,
     );
     blockchain

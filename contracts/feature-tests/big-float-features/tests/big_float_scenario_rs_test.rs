@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/big-float-features");
 
     blockchain.register_contract(
-        "file:output/big-float-features.wasm",
+        "kleversc:output/big-float-features.kleversc.json",
         big_float_features::ContractBuilder,
     );
 

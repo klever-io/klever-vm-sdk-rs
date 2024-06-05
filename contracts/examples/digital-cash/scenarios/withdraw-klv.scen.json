@@ -105,7 +105,7 @@
                         },
                         "str:fee": "10"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "4",
@@ -256,7 +256,7 @@
                         },
                         "str:fee": "10"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "6",
