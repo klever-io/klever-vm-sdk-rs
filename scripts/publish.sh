@@ -29,12 +29,12 @@
 # The branch doesn't need to be published for the following steps to work.
 #
 # 6. Make sure that the contract upgrade tool is still sound.
-# At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in 
+# At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in
 # `./klever-vm-sdk-rs/framework/meta/src/sc_upgrade/upgrade_versions.rs`
-# 
+#
 # 7. Run this script, `./publish.sh`.
 # You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
-# 
+#
 # 8. Search for `klever` on `crates.io` and check that the new versions appear for all crates.
 # If any of the crates was not published, check what went wrong and try again.
 #
@@ -60,45 +60,45 @@
 #
 
 cd vm
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ..
 
 cd sdk/core
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd sdk/scenario-format/
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd data/codec-derive
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd data/codec
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd framework/derive
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd framework/base
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd framework/meta
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd framework/scenario
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd framework/wasm-adapter
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
 
 cd contracts/modules
-cargo publish || return 1
+cargo publish --token ${CRATES_TOKEN} || return 1
 cd ../..
