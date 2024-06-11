@@ -18,6 +18,7 @@ pub(crate) mod preloaded_managed_buffer;
 mod randomness_source;
 mod token_identifier;
 mod account_permission;
+mod traits;
 
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 
@@ -56,3 +57,8 @@ pub use managed_vec_ref::ManagedVecRef;
 pub use managed_vec_ref_iter::ManagedVecRefIterator;
 pub use randomness_source::RandomnessSource;
 pub use token_identifier::TokenIdentifier;
+
+pub use traits::{
+    fixed_token_supply::FixedSupplyToken,
+    mergeable::{ExternallyMergeable, Mergeable},
+};
