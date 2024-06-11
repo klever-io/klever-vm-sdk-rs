@@ -1,6 +1,6 @@
 use crate::big_float_operators;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::module]
 pub trait BigFloatWrappedOperators: big_float_operators::BigFloatOperators {

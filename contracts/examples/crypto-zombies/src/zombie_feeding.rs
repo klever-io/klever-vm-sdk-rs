@@ -1,12 +1,12 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 use crate::{storage, zombie_factory, zombie_helper};
 // use crypto_kitties_proxy::Kitty;
 
 mod crypto_kitties_proxy {
-    klever_sc::imports!();
-    klever_sc::derive_imports!();
+    use klever_sc::imports::*;
+    use klever_sc::derive_imports::*;
 
     #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
     pub struct Kitty {

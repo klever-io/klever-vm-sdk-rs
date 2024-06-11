@@ -1,4 +1,6 @@
-klever_sc::imports!();
+#![allow(deprecated)]
+
+use klever_sc::imports::*;
 
 use klever_sc::types::String;
 
@@ -11,12 +13,12 @@ pub trait MacroFeaturesLegacy {
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
         klever_sc::only_owner!(self, "Custom only owner message");
-        Ok(())
+        SCResult::Ok(())
     }
 
     #[view]
     fn return_sc_error(&self) -> SCResult<()> {
-        sc_error!("return_sc_error")
+        klever_sc::sc_error!("return_sc_error")
     }
 
     #[view]
@@ -55,13 +57,13 @@ pub trait MacroFeaturesLegacy {
         require!(test, "test argument is false");
         let unwrapped =
             SCResult::<String, StaticSCError>::from_result(arg.ok_or("option argument is none"))?;
-        Ok(unwrapped)
+        SCResult::Ok(unwrapped)
     }
 
     #[endpoint]
     fn result_echo_2(&self, arg: Option<String>) -> SCResult<String> {
         let unwrapped = arg.ok_or("option argument is none")?;
-        Ok(unwrapped)
+        SCResult:: Ok(unwrapped)
     }
 
     #[endpoint]

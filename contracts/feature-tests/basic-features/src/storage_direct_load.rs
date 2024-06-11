@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use klever_sc::api::{use_raw_handle, HandleTypeInfo};
 

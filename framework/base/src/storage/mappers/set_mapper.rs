@@ -2,17 +2,11 @@ use core::marker::PhantomData;
 
 pub use super::queue_mapper::Iter;
 use super::{QueueMapper, StorageClearable, StorageMapper};
-use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
-    api::StorageMapperApi,
-    codec::{
-        self, multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, NestedDecode,
-        NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
-    },
-    storage::{storage_get_from_address, storage_set, StorageKey},
-    storage_get,
-    types::{ManagedAddress, ManagedRef, ManagedType, MultiValueEncoded},
-};
+use crate::{abi::{TypeAbi, TypeDescriptionContainer, TypeName}, api::StorageMapperApi, codec::{
+    self, multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, NestedDecode,
+    NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+}, storage::{storage_get_from_address, storage_set, StorageKey}, storage_get, storage_get_len, types::{ManagedAddress, ManagedRef, ManagedType, MultiValueEncoded}};
+use crate::storage::storage_get_len_from_address;
 
 const NULL_ENTRY: u32 = 0;
 const NODE_ID_IDENTIFIER: &[u8] = b".node_id";
@@ -22,6 +16,7 @@ where
     SA: StorageMapperApi,
 {
     fn address_storage_get<T: TopDecode>(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> T;
+    fn address_storage_get_len(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> usize;
 }
 
 pub struct CurrentStorage;
@@ -33,6 +28,10 @@ where
     fn address_storage_get<T: TopDecode>(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> T {
         storage_get(key)
     }
+
+    fn address_storage_get_len(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> usize {
+        storage_get_len(key)
+    }
 }
 
 impl<SA> StorageAddress<SA> for ManagedAddress<SA>
@@ -41,6 +40,10 @@ where
 {
     fn address_storage_get<T: TopDecode>(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> T {
         storage_get_from_address(self.as_ref(), key)
+    }
+
+    fn address_storage_get_len(&self, key: ManagedRef<'_, SA, StorageKey<SA>>) -> usize {
+        storage_get_len_from_address(self.as_ref(), key)
     }
 }
 
@@ -175,6 +178,11 @@ impl<SA, A, T> SetMapper<SA, T, A>
     pub fn iter(&self) -> Iter<SA, A, T> {
         self.queue_mapper.iter()
     }
+    
+    pub fn iter_from(&self, value: &T) -> Iter<SA, A, T> {
+        let node_id = self.get_node_id(value);
+        self.queue_mapper.iter_from_node_id(node_id)
+    }
 
     fn get_node_id(&self, value: &T) -> u32 {
         self.address.address_storage_get(
@@ -201,6 +209,36 @@ impl<SA, A, T> SetMapper<SA, T, A>
     /// Checks the internal consistency of the collection. Used for unit tests.
     pub fn check_internal_consistency(&self) -> bool {
         self.queue_mapper.check_internal_consistency()
+    }
+
+    pub fn next(&self, value: &T) -> Option<T> {
+        let node_id = self.get_node_id(value);
+        if node_id == NULL_ENTRY {
+            return None;
+        }
+
+        let next_node_id = self.queue_mapper.get_node(node_id).next;
+
+        self.queue_mapper.get_value_option(next_node_id)
+    }
+
+    pub fn previous(&self, value: &T) -> Option<T> {
+        let node_id = self.get_node_id(value);
+        if node_id == NULL_ENTRY {
+            return None;
+        }
+
+        let next_node_id = self.queue_mapper.get_node(node_id).previous;
+
+        self.queue_mapper.get_value_option(next_node_id)
+    }
+
+    pub fn front(&self) -> Option<T> {
+        self.queue_mapper.front()
+    }
+
+    pub fn back(&self) -> Option<T> {
+        self.queue_mapper.back()
     }
 }
 

@@ -1,6 +1,6 @@
 use klever_sc::codec::TopEncodeMulti;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 const CALLBACK_RESERVED_GAS_PER_TOKEN: u64 = 1_000_000;
 

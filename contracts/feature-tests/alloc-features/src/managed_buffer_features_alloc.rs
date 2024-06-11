@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// ManagedBuffers interacting with the heap.
 #[klever_sc::module]

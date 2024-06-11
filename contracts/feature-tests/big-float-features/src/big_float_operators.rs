@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Checks that BigFloat operators work as expected.
 #[klever_sc::module]

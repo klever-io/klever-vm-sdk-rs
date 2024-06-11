@@ -1,3 +1,4 @@
+use convert_case::{Case, Casing};
 use crate::{
     cli_args::TemplateArgs,
     version_history::{validate_template_tag, LAST_TEMPLATE_VERSION},
@@ -22,7 +23,11 @@ pub fn create_contract(args: &TemplateArgs) {
 }
 
 fn target_from_args(args: &TemplateArgs) -> ContractCreatorTarget {
-    let new_name = args.name.clone().unwrap_or_else(|| args.template.clone());
+    let new_name = args
+        .name
+        .clone()
+        .unwrap_or_else(|| args.template.clone())
+        .to_case(Case::Kebab);
     let target_path = args.path.clone().unwrap_or_default();
     ContractCreatorTarget {
         target_path,

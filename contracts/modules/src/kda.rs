@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Standard smart contract module for managing a single KDA.
 ///

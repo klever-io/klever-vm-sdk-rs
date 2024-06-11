@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 pub mod big_float_methods;
 pub mod big_float_methods_wrapped;

@@ -1,5 +1,5 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 use super::common::{Order, OrderType};
 

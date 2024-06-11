@@ -1,8 +1,8 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 use crate::types::CodecErrorTestType;
 
 mod encode_err_proxy {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
     use crate::types::CodecErrorTestType;
 
     #[klever_sc::proxy]

@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Various macros provided by klever-sc.
 #[klever_sc::module]

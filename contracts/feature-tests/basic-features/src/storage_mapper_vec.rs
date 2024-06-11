@@ -1,4 +1,5 @@
-klever_sc::imports!();
+use klever_sc::storage::StorageKey;
+use klever_sc::imports::*;
 
 /// Storage mapper test.
 #[klever_sc::module]
@@ -20,7 +21,8 @@ pub trait VecMapperFeatures {
 
     #[view]
     fn vec_mapper_get_at_address(&self, address: ManagedAddress, index: usize) -> u32 {
-        self.vec_mapper().get_at_address(&address, index)
+        let mapper = VecMapper::new_from_address(address, StorageKey::from("vec_mapper"));
+        mapper.get(index)
     }
 
     #[view]
@@ -30,6 +32,8 @@ pub trait VecMapperFeatures {
 
     #[view]
     fn vec_mapper_len_at_address(&self, address: ManagedAddress) -> usize {
-        self.vec_mapper().len_at_address(&address)
+        let mapper: VecMapper<Self::Api, u32, _> =
+            VecMapper::new_from_address(address, StorageKey::from("vec_mapper"));
+        mapper.len()
     }
 }

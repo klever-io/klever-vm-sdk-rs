@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 #[klever_sc::contract]
 pub trait Kapps {
     #[init]
@@ -16,7 +16,7 @@ pub trait Kapps {
 
     #[payable("*")]
     #[endpoint]
-    fn deposit_check(&self) -> SCResult<bool> {
+    fn deposit_check(&self) -> bool {
         let payments = self.call_value().all_kda_transfers();
         payments.iter().for_each(|payment| {
             self.test_event(
@@ -31,7 +31,7 @@ pub trait Kapps {
             "Invalid payment, two tokens are needed"
         );
 
-        return Ok(true);
+        return true;
     }
 
     #[payable("*")]
@@ -42,9 +42,9 @@ pub trait Kapps {
         token: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-    ) -> SCResult<bool> {
+    ) -> bool {
         self.send().direct_kda(&to, &token, nonce, &amount);
-        return Ok(true);
+        return true;
     }
 
     #[payable("*")]
@@ -110,16 +110,15 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn mint(&self, token: TokenIdentifier, amount: BigUint) -> SCResult<bool> {
+    fn mint(&self, token: TokenIdentifier, amount: BigUint) -> bool {
         self.send().kda_mint(&token, 0, &amount);
 
-        Ok(true)
+        true
     }
 
     #[endpoint]
-    fn burn(&self, token: TokenIdentifier, nonce: u64, amount: BigUint) -> SCResult<()> {
+    fn burn(&self, token: TokenIdentifier, nonce: u64, amount: BigUint) {
         self.send().kda_burn(&token, nonce, &amount);
-        Ok(())
     }
 
     #[endpoint]
@@ -129,27 +128,23 @@ pub trait Kapps {
         nonce: u64,
         amount: BigUint,
         address: ManagedAddress,
-    ) -> SCResult<()> {
+    ) {
         self.send().kda_wipe(&token, nonce, &amount, &address);
-        Ok(())
     }
 
     #[endpoint]
-    fn pause(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn pause(&self, token: TokenIdentifier) {
         self.send().kda_pause(&token);
-        Ok(())
     }
 
     #[endpoint]
-    fn resume(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn resume(&self, token: TokenIdentifier) {
         self.send().kda_resume(&token);
-        Ok(())
     }
 
     #[endpoint]
-    fn change_owner(&self, token: TokenIdentifier, new_owner: ManagedAddress) -> SCResult<()> {
+    fn change_owner(&self, token: TokenIdentifier, new_owner: ManagedAddress) {
         self.send().kda_change_owner(&token, &new_owner);
-        Ok(())
     }
 
     #[endpoint]
@@ -161,7 +156,7 @@ pub trait Kapps {
         has_role_set_ito_prices: bool,
         has_role_deposit: bool,
         has_role_transfer: bool,
-    ) -> SCResult<()> {
+    ) {
         self.send().kda_add_role(
             &token,
             &address,
@@ -170,13 +165,11 @@ pub trait Kapps {
             has_role_deposit,
             has_role_transfer,
         );
-        Ok(())
     }
 
     #[endpoint]
-    fn remove_role(&self, token: TokenIdentifier, address: ManagedAddress) -> SCResult<()> {
+    fn remove_role(&self, token: TokenIdentifier, address: ManagedAddress) {
         self.send().kda_remove_role(&token, &address);
-        Ok(())
     }
 
     #[endpoint]
@@ -187,22 +180,19 @@ pub trait Kapps {
         address: ManagedAddress,
         mime: ManagedBuffer,
         metadata: ManagedBuffer,
-    ) -> SCResult<()> {
+    ) {
         self.send()
             .kda_update_metadata(&token, nonce, &address, &mime, &metadata);
-        Ok(())
     }
 
     #[endpoint]
-    fn stop_nft_mint(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn stop_nft_mint(&self, token: TokenIdentifier) {
         self.send().kda_stop_nft_mint(&token);
-        Ok(())
     }
 
     #[endpoint]
-    fn update_logo(&self, token: TokenIdentifier, logo: ManagedBuffer) -> SCResult<()> {
+    fn update_logo(&self, token: TokenIdentifier, logo: ManagedBuffer) {
         self.send().kda_update_logo(&token, &logo);
-        Ok(())
     }
 
     #[endpoint]
@@ -210,9 +200,8 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         address: ManagedAddress,
-    ) -> SCResult<()> {
+    ) {
         self.send().kda_change_royalties_receiver(&token, &address);
-        Ok(())
     }
 
     #[endpoint]
@@ -224,7 +213,7 @@ pub trait Kapps {
         min_epochs_to_claim: u32,
         min_epochs_to_unstake: u32,
         min_epochs_to_withdraw: u32,
-    ) -> SCResult<()> {
+    ) {
         self.send().kda_update_staking(
             &token,
             staking_type,
@@ -233,7 +222,6 @@ pub trait Kapps {
             min_epochs_to_unstake,
             min_epochs_to_withdraw,
         );
-        Ok(())
     }
 
     #[endpoint]
@@ -244,7 +232,7 @@ pub trait Kapps {
         admin_address: ManagedAddress,
         f_ratio_kda: u64,
         f_ratio_klv: u64,
-    ) -> SCResult<()> {
+    ) {
         self.send().kda_update_fee_pool(
             &token,
             is_active,
@@ -252,23 +240,20 @@ pub trait Kapps {
             f_ratio_kda,
             f_ratio_klv,
         );
-        Ok(())
     }
 
     #[endpoint]
-    fn stop_royalties_change(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn stop_royalties_change(&self, token: TokenIdentifier) {
         self.send().kda_stop_royalties_change(&token);
-        Ok(())
     }
 
     #[endpoint]
-    fn stop_metadata_change(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn stop_metadata_change(&self, token: TokenIdentifier) {
         self.send().kda_stop_metadata_change(&token);
-        Ok(())
     }
 
     #[endpoint]
-    fn update_royalties(&self, token: TokenIdentifier, to: ManagedAddress) -> SCResult<()> {
+    fn update_royalties(&self, token: TokenIdentifier, to: ManagedAddress) {
         let mut transfer_percentage = ManagedVec::<Self::Api, RoyaltyData<Self::Api>>::new();
 
         transfer_percentage.push(RoyaltyData {
@@ -316,12 +301,10 @@ pub trait Kapps {
                 transfer_percentage: transfer_percentage,
             },
         );
-
-        Ok(())
     }
 
     #[endpoint]
-    fn update_uris(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn update_uris(&self, token: TokenIdentifier) {
         let mut uris = ManagedVec::<Self::Api, URI<Self::Api>>::new();
         uris.push(URI {
             key: ManagedBuffer::from("Google"),
@@ -334,39 +317,33 @@ pub trait Kapps {
         });
 
         self.send().kda_update_uris(&token, &uris);
-        Ok(())
     }
 
     #[payable("*")]
     #[endpoint]
-    fn freeze(&self, token: TokenIdentifier, amount: BigUint) -> SCResult<()> {
+    fn freeze(&self, token: TokenIdentifier, amount: BigUint) {
         self.send().freeze(&token, &amount);
-        Ok(())
     }
 
     #[endpoint]
-    fn unfreeze(&self, token: TokenIdentifier, bucket_id: ManagedBuffer) -> SCResult<()> {
+    fn unfreeze(&self, token: TokenIdentifier, bucket_id: ManagedBuffer) {
         self.send().unfreeze(&token, &bucket_id);
-        Ok(())
     }
 
     #[payable("*")]
     #[endpoint]
-    fn delegate(&self, address: ManagedAddress, bucket_id: ManagedBuffer) -> SCResult<()> {
+    fn delegate(&self, address: ManagedAddress, bucket_id: ManagedBuffer) {
         self.send().delegate(&address, &bucket_id);
-        Ok(())
     }
 
     #[endpoint]
-    fn undelegate(&self, bucket_id: ManagedBuffer) -> SCResult<()> {
+    fn undelegate(&self, bucket_id: ManagedBuffer) {
         self.send().undelegate(&bucket_id);
-        Ok(())
     }
 
     #[endpoint]
-    fn claim(&self, claim_type: ClaimType, id: ManagedBuffer) -> SCResult<()> {
+    fn claim(&self, claim_type: ClaimType, id: ManagedBuffer) {
         self.send().kda_claim(claim_type, &id);
-        Ok(())
     }
 
     #[endpoint]
@@ -376,10 +353,9 @@ pub trait Kapps {
         token: TokenIdentifier,
         amount: BigUint,
         currency: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         self.send()
             .withdraw(withdraw_type, &token, &amount, &currency);
-        Ok(())
     }
 
     #[payable("*")]
@@ -394,7 +370,7 @@ pub trait Kapps {
         price: BigUint,
         reserve_price: BigUint,
         end_time: u64,
-    ) -> SCResult<()> {
+    ) {
         self.send().sell(
             sell_type,
             &marketplace_id,
@@ -405,7 +381,6 @@ pub trait Kapps {
             &reserve_price,
             end_time,
         );
-        Ok(())
     }
 
     #[payable("*")]
@@ -416,9 +391,8 @@ pub trait Kapps {
         id: ManagedBuffer,
         currency: TokenIdentifier,
         amount: BigUint,
-    ) -> SCResult<()> {
+    ) {
         self.send().buy(buy_type, &id, &currency, &amount);
-        Ok(())
     }
 
     #[payable("*")]
@@ -429,15 +403,13 @@ pub trait Kapps {
         id: ManagedBuffer,
         currency: TokenIdentifier,
         amount: BigUint,
-    ) -> SCResult<()> {
+    ) {
         self.send().deposit(deposit_type, &id, &currency, &amount);
-        Ok(())
     }
 
     #[endpoint]
-    fn vote(&self, proposal_id: u64, vote_type: VoteType, amount: BigUint) -> SCResult<()> {
+    fn vote(&self, proposal_id: u64, vote_type: VoteType, amount: BigUint) {
         self.send().vote(proposal_id, vote_type, &amount);
-        Ok(())
     }
 
     #[endpoint]
@@ -450,7 +422,7 @@ pub trait Kapps {
         end_time: u64,
         wl_start_time: u64,
         wl_end_time: u64,
-    ) -> SCResult<()> {
+    ) {
         let mut split = ManagedVec::<Self::Api, ITOWhitelist<Self::Api>>::new();
         split.push(ITOWhitelist {
             address: wl_address,
@@ -483,11 +455,10 @@ pub trait Kapps {
             &split,
             &packs,
         );
-        Ok(())
     }
 
     #[endpoint]
-    fn ito_set_prices(&self, token: TokenIdentifier) -> SCResult<()> {
+    fn ito_set_prices(&self, token: TokenIdentifier) {
         let mut packs = ManagedVec::<Self::Api, ITOPackInfo<Self::Api>>::new();
         let mut p = ManagedVec::<Self::Api, ITOPackItem<Self::Api>>::new();
         p.push(ITOPackItem {
@@ -501,13 +472,11 @@ pub trait Kapps {
         });
 
         let _ = self.send().ito_set_prices(&token, &packs);
-        Ok(())
     }
 
     #[endpoint]
-    fn ito_update_status(&self, token: TokenIdentifier, status: ITOStatus) -> SCResult<()> {
+    fn ito_update_status(&self, token: TokenIdentifier, status: ITOStatus) {
         let _ = self.send().ito_update_status(&token, status);
-        Ok(())
     }
 
     #[endpoint]
@@ -515,15 +484,13 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         receiver: ManagedAddress,
-    ) -> SCResult<()> {
+    ) {
         let _ = self.send().ito_update_receiver_address(&token, &receiver);
-        Ok(())
     }
 
     #[endpoint]
-    fn ito_update_max_amount(&self, token: TokenIdentifier, max_amount: BigUint) -> SCResult<()> {
+    fn ito_update_max_amount(&self, token: TokenIdentifier, max_amount: BigUint) {
         let _ = self.send().ito_update_max_amount(&token, &max_amount);
-        Ok(())
     }
 
     #[endpoint]
@@ -531,11 +498,10 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         default_limit_per_address: BigUint,
-    ) -> SCResult<()> {
+    ) {
         let _ = self
             .send()
             .ito_update_default_limit_per_address(&token, &default_limit_per_address);
-        Ok(())
     }
 
     #[endpoint]
@@ -544,9 +510,8 @@ pub trait Kapps {
         token: TokenIdentifier,
         start_time: u64,
         end_time: u64,
-    ) -> SCResult<()> {
+    ) {
         let _ = self.send().ito_update_times(&token, start_time, end_time);
-        Ok(())
     }
 
     #[endpoint]
@@ -554,11 +519,10 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         whitelist_status: ITOWhitelistStatus,
-    ) -> SCResult<()> {
+    ) {
         let _ = self
             .send()
             .ito_update_whitelist_status(&token, whitelist_status);
-        Ok(())
     }
 
     #[endpoint]
@@ -566,7 +530,7 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         wl_address: ManagedAddress,
-    ) -> SCResult<()> {
+    ) {
         let mut split = ManagedVec::<Self::Api, ITOWhitelist<Self::Api>>::new();
         split.push(ITOWhitelist {
             address: wl_address,
@@ -574,7 +538,6 @@ pub trait Kapps {
         });
 
         let _ = self.send().ito_add_to_whitelist(&token, &split);
-        Ok(())
     }
 
     #[endpoint]
@@ -582,7 +545,7 @@ pub trait Kapps {
         &self,
         token: TokenIdentifier,
         wl_address: ManagedAddress,
-    ) -> SCResult<()> {
+    ) {
         let mut split = ManagedVec::<Self::Api, ITOWhitelist<Self::Api>>::new();
         split.push(ITOWhitelist {
             address: wl_address,
@@ -590,7 +553,6 @@ pub trait Kapps {
         });
 
         let _ = self.send().ito_remove_from_whitelist(&token, &split);
-        Ok(())
     }
 
     #[endpoint]
@@ -599,18 +561,16 @@ pub trait Kapps {
         token: TokenIdentifier,
         whitelist_start_time: u64,
         whitelist_end_time: u64,
-    ) -> SCResult<()> {
+    ) {
         let _ = self.send().ito_update_whitelist_times(
             &token,
             whitelist_start_time,
             whitelist_end_time,
         );
-        Ok(())
     }
 
     #[endpoint]
-    fn set_account_name(&self, name: ManagedBuffer) -> SCResult<()> {
+    fn set_account_name(&self, name: ManagedBuffer) {
         let _ = self.send().set_account_name(name);
-        Ok(())
     }
 }

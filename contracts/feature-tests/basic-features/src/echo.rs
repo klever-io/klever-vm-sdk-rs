@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use crate::types::*;
 use core::num::NonZeroUsize;

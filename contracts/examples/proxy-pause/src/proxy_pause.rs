@@ -1,9 +1,9 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 mod pause_proxy {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait Pausable {

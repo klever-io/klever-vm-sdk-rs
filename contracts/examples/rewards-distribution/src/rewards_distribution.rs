@@ -1,7 +1,7 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 use klever_sc_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
@@ -440,7 +440,7 @@ fn ticket_from_storage(position: u64, ticket_id: u64) -> u64 {
 }
 
 mod seed_nft_minter {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait SeedNftMinter {

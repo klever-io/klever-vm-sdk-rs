@@ -1,6 +1,6 @@
 use crate::big_float_methods;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::module]
 pub trait BigFloatWrappedMethods: big_float_methods::BigFloatMethods {

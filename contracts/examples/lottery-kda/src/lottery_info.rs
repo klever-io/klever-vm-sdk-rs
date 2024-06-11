@@ -3,7 +3,7 @@ use klever_sc::{
     types::{BigUint, TokenIdentifier, ManagedVec},
 };
 
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<M: ManagedTypeApi> {

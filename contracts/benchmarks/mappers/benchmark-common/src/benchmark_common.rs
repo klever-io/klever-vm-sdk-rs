@@ -1,6 +1,6 @@
 use crate::ExampleStruct;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::module]
 pub trait BenchmarkCommon {

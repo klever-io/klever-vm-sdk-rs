@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                          352
-// Total number of exported functions: 353
+// Endpoints:                          368
+// Total number of exported functions: 369
 
 #![no_std]
 #![allow(internal_features)]
@@ -125,6 +125,8 @@ klever_sc_wasm_adapter::endpoints! {
         get_state_root_hash => get_state_root_hash
         get_tx_hash => get_tx_hash
         get_gas_left => get_gas_left
+        get_code_metadata => get_code_metadata
+        is_builtin_function => is_builtin_function
         codec_err_finish => codec_err_finish
         codec_err_storage_key => codec_err_storage_key
         codec_err_storage_get => codec_err_storage_get
@@ -295,6 +297,11 @@ klever_sc_wasm_adapter::endpoints! {
         set_mapper_insert => set_mapper_insert
         set_mapper_contains => set_mapper_contains
         set_mapper_remove => set_mapper_remove
+        set_mapper_front => set_mapper_front
+        set_mapper_back => set_mapper_back
+        set_mapper_next => set_mapper_next
+        set_mapper_previous => set_mapper_previous
+        set_mapper_iter_from_and_count => set_mapper_iter_from_and_count
         map_my_single_value_mapper => map_my_single_value_mapper
         my_single_value_mapper_increment_1 => my_single_value_mapper_increment_1
         my_single_value_mapper_increment_2 => my_single_value_mapper_increment_2
@@ -370,5 +377,14 @@ klever_sc_wasm_adapter::endpoints! {
         token_identifier_is_valid_2 => token_identifier_is_valid_2
         non_zero_usize_iter => non_zero_usize_iter
         non_zero_usize_macro => non_zero_usize_macro
+        set_contract_address => set_contract_address
+        is_empty_at_address => is_empty_at_address
+        contains_at_address => contains_at_address
+        len_at_address => len_at_address
+        next_at_address => next_at_address
+        previous_at_address => previous_at_address
+        front_at_address => front_at_address
+        back_at_address => back_at_address
+        fill_set_mapper => fill_set_mapper
     )
 }

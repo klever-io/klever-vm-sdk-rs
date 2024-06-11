@@ -1,8 +1,8 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 pub mod erc1155_user_proxy;
 

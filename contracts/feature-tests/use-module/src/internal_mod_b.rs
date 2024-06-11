@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Example of a module that lies in the same crate.
 #[klever_sc::module]

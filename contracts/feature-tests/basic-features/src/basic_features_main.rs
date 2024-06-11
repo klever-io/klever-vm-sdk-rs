@@ -1,7 +1,7 @@
 #![no_std]
 #![feature(never_type)]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 pub mod big_num_methods;
 pub mod big_num_operators;
@@ -97,4 +97,7 @@ pub trait BasicFeatures:
 
         arg1
     }
+
+    #[storage_mapper("coolTree")]
+    fn cool_tree(&self) -> OrderedBinaryTreeMapper<Self::Api, BigUint>;
 }

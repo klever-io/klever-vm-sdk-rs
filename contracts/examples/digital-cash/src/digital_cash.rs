@@ -1,8 +1,8 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 mod deposit_info;
 

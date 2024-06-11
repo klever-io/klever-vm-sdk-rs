@@ -5,33 +5,7 @@
 #[macro_export]
 macro_rules! imports {
     () => {
-        use core::ops::{
-            Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div,
-            DivAssign, Mul, MulAssign, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
-            SubAssign,
-        };
-        use klever_sc::{
-            abi::TypeAbi,
-            api::{ErrorApiImpl, ManagedTypeApi, BuyType, ClaimType, DepositType, ITOStatus, ITOWhitelistStatus, SellType, StakingType,
-                VoteType, WithdrawType},
-            arrayvec::ArrayVec,
-            codec::{
-                multi_types::*, DecodeError, IntoMultiValue, NestedDecode, NestedEncode, TopDecode,
-                TopEncode,
-            },
-            contract_base::{ContractBase, ProxyObjBase},
-            err_msg,
-            kda::*,
-            io::*,
-            non_zero_usize,
-            non_zero_util::*,
-            require, require_old, sc_error, sc_format, sc_panic, sc_print,
-            storage::mappers::*,
-            types::{
-                SCResult::{Err, Ok},
-                *,
-            },
-        };
+        use klever_sc::imports::*;
     };
 }
 
@@ -39,18 +13,15 @@ macro_rules! imports {
 #[macro_export]
 macro_rules! derive_imports {
     () => {
-        use klever_sc::{
-            codec,
-            codec::derive::{
-                NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
-                TopEncodeOrDefault,
-            },
-            derive::{ManagedVecItem, TypeAbi},
-        };
+        use klever_sc::derive_imports::*;
     };
 }
 
 /// Compact way of returning a static error message.
+#[deprecated(
+    since = "0.43.4",
+    note = "Use `sc_panic!` instead, which terminates immediately."
+)]
 #[macro_export]
 macro_rules! sc_error {
     ($s:expr) => {
@@ -75,6 +46,10 @@ macro_rules! sc_error {
 /// }
 /// # }
 /// ```
+#[deprecated(
+    since = "0.43.4",
+    note = "Use `require!` instead, which terminates immediately."
+)]
 #[macro_export]
 macro_rules! require_old {
     ($expression:expr, $error_msg:expr) => {
@@ -198,7 +173,7 @@ macro_rules! sc_try {
 macro_rules! only_owner {
     ($trait_self: expr, $error_msg:expr) => {
         if ($trait_self.blockchain().get_caller() != $trait_self.blockchain().get_owner_address()) {
-            return sc_error!($error_msg);
+            return klever_sc::sc_error!($error_msg);
         }
     };
 }

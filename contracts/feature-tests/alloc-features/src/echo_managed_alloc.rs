@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Serialization of managed types, mixed with the heap allocator.
 #[klever_sc::module]

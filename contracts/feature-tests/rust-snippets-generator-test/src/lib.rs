@@ -1,7 +1,7 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 // contract to help with snippet generation tests
 // contains endpoints with various types combinations

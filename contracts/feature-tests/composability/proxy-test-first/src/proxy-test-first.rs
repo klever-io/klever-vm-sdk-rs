@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use hex_literal::hex;
 
@@ -8,7 +8,7 @@ static HARDCODED_ADDRESS: [u8; 32] =
     hex!("fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe");
 
 mod pay_me_proxy {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait PayMe {
@@ -23,7 +23,7 @@ mod pay_me_proxy {
 }
 
 mod message_me_proxy {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait MessageMe {

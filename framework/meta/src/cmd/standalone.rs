@@ -6,9 +6,11 @@ pub mod scen_test_gen;
 pub mod template;
 pub(crate) mod upgrade;
 mod test;
+mod test_coverage;
 
 use crate::{
     cli_args::{StandaloneCliAction, StandaloneCliArgs},
+    cmd::standalone::test_coverage::test_coverage,
 };
 use all::call_all_meta;
 use clap::Parser;
@@ -41,6 +43,9 @@ pub fn cli_main_standalone() {
             test_gen_tool(args);
         },
         Some(StandaloneCliAction::Test(args)) => test(args),
+        Some(StandaloneCliAction::TestCoverage(args)) => {
+            test_coverage(args);
+        },
         None => {},
     }
 }

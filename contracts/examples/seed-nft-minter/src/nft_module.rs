@@ -1,7 +1,7 @@
 use crate::distribution_module;
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 const NFT_AMOUNT: u32 = 1;
 

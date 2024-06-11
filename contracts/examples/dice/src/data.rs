@@ -1,4 +1,4 @@
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
 
 // OVER
 pub const MIN_PREDICTION_OVER_VALUE: u32 = 5;

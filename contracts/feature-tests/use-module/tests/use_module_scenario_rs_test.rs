@@ -1,5 +1,5 @@
 mod user_builtin {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait UserBuiltin {
@@ -9,7 +9,7 @@ mod user_builtin {
 }
 
 mod dns_mock {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::contract]
     pub trait DnsMock {

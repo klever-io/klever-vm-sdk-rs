@@ -1,4 +1,5 @@
-klever_sc::imports!();
+use klever_sc::storage::StorageKey;
+use klever_sc::imports::*;
 
 /// Storage mapper test.
 #[klever_sc::module]
@@ -53,8 +54,12 @@ pub trait SingleValueMapperFeatures {
 
     #[endpoint]
     fn is_empty_at_address_single_value_mapper(&self, address: ManagedAddress) -> bool {
-        self.map_my_single_value_mapper()
-            .is_empty_at_address(&address)
+        let mapper: SingleValueMapper<Self::Api, BigInt, _> = SingleValueMapper::new_from_address(
+            address,
+            StorageKey::from("my_single_value_mapper"),
+        );
+
+        mapper.is_empty()
     }
 
     #[endpoint]

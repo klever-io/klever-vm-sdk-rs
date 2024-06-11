@@ -1,5 +1,5 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 pub const MAX_ORDERS_PER_USER: usize = 100;
 pub const PERCENT_BASE_POINTS: u64 = 100_000;

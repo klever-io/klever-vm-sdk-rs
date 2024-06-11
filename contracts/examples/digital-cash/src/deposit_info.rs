@@ -3,7 +3,7 @@ use klever_sc::{
     types::{BigUint, KdaTokenPayment, ManagedAddress, ManagedVec},
 };
 
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct DepositInfo<M: ManagedTypeApi> {

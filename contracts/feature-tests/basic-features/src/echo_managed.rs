@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Test endpoint argument and result serialization.
 #[klever_sc::module]

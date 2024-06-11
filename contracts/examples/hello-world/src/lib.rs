@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::contract]
 pub trait HelloWorld: ContractBase {
@@ -12,14 +12,13 @@ pub trait HelloWorld: ContractBase {
     fn message(&self, msg: &str);
 
     #[endpoint]
-    fn get_message(&self) -> SCResult<()> {
+    fn get_message(&self) {
         self.message("Hello World!");
-        Ok(())
     }
 
     #[endpoint]
     #[payable("KLV")]
-    fn pay_hello(&self) -> SCResult<()> {
+    fn pay_hello(&self) {
         let payment = self.call_value().klv_value();
 
         require!(
@@ -28,7 +27,6 @@ pub trait HelloWorld: ContractBase {
         );
 
         self.message("Hello World!");
-        Ok(())
     }
 
 }

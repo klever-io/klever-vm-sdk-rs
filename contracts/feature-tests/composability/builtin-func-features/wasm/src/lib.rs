@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                            2
-// Total number of exported functions:   3
+// Endpoints:                            1
+// Total number of exported functions:   2
 
 #![no_std]
 #![allow(internal_features)]
@@ -18,7 +18,6 @@ klever_sc_wasm_adapter::endpoints! {
     builtin_func_features
     (
         init => init
-        call_set_user_name => call_set_user_name
-        call_delete_user_name => call_delete_user_name
+        call_set_account_name => call_set_account_name
     )
 }

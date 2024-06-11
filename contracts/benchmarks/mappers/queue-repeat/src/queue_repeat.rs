@@ -2,7 +2,7 @@
 
 use benchmark_common::ExampleStruct;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::contract]
 pub trait QueueRepeat: benchmark_common::BenchmarkCommon {

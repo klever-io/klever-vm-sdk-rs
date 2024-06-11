@@ -1,7 +1,7 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 mod nft_module;
 
@@ -78,7 +78,7 @@ pub trait NftMinter: nft_module::NftModule {
 }
 
 mod nft_marketplace_proxy {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait NftMarketplace {

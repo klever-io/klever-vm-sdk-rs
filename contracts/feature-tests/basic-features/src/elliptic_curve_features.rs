@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// All elliptic curve functions provided by Arwen exposed here.
 /// TODO: remove heap allocation and move to basic features.

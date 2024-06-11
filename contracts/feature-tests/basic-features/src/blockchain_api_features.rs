@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Contains all events that can be emitted by the contract.
 #[klever_sc::module]

@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 const KDA_TRANSFER_STRING: &[u8] = b"KDATransfer";
 const SECOND_CONTRACT_ACCEPT_KDA_PAYMENT: &[u8] = b"acceptKdaPayment";

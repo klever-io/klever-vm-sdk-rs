@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Various features of heap-allocated types.
 #[klever_sc::module]

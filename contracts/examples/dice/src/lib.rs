@@ -1,7 +1,7 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
+use klever_sc::derive_imports::*;
 
 use rand::*;
 use crate::utils::{calculate_payout, check_bet, roll};
@@ -17,6 +17,9 @@ pub trait Dice :
 
     #[init]
     fn init(&self) {}
+
+    #[upgrade]
+    fn upgrade(&self) {}
 
     #[view(getLastResult)]
     #[storage_mapper("lastResult")]

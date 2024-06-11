@@ -1,3 +1,4 @@
+use klever_chain_vm::crypto_functions::keccak256;
 use crate::klever_sc::types::Address;
 use klever_chain_vm::tx_mock::TxResult;
 use klever_vm_sdk::data::transaction::{
@@ -9,7 +10,6 @@ use super::{
     decode_scr_data_or_panic, is_out_scr, process_topics_error, Log, TxExpect, TxResponseStatus,
 };
 
-const LOG_IDENTIFIER_SC_DEPLOY: &str = "SCDeploy";
 const LOG_IDENTIFIER_SIGNAL_ERROR: &str = "signalError";
 
 const SYSTEM_SC_BECH32: &str = "klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
@@ -101,9 +101,13 @@ impl TxResponse {
         TxResponseStatus::default()
     }
 
-    fn process(self) -> Self {
+    fn process(
+        self,
+        sender_address: [u8; 32],
+        nonce: u64
+    ) -> Self {
         self.process_out()
-            .process_new_deployed_address()
+            .process_new_deployed_address(sender_address, nonce)
             .process_new_issued_token_identifier()
     }
 
@@ -117,17 +121,26 @@ impl TxResponse {
         self
     }
 
-    fn process_new_deployed_address(mut self) -> Self {
-        if let Some(event) = self.find_log(LOG_IDENTIFIER_SC_DEPLOY).cloned() {
-            let topics = event.topics.as_ref();
-            if process_topics_error(topics).is_some() {
-                return self;
-            }
+    fn process_new_deployed_address(
+        mut self,
+        sender_address_bytes: [u8; 32],
+        nonce: u64
+    ) -> Self {
+        let sender_nonce_bytes = nonce.to_le_bytes();
+        let mut bytes_to_hash: Vec<u8> = Vec::new();
+        bytes_to_hash.extend_from_slice(&sender_address_bytes);
+        bytes_to_hash.extend_from_slice(&sender_nonce_bytes);
 
-            let address_raw = base64_decode(topics.unwrap().first().unwrap());
-            let address: Address = Address::from_slice(address_raw.as_slice());
-            self.new_deployed_address = Some(address);
-        }
+        let address_keccak = keccak256(&bytes_to_hash);
+
+        let mut address = [0u8; 32];
+
+        address[0..8].copy_from_slice(&[0u8; 8]);
+        address[8..10].copy_from_slice(&[5, 0]);
+        address[10..30].copy_from_slice(&address_keccak[10..30]);
+        address[30..32].copy_from_slice(&sender_address_bytes[30..32]);
+
+        self.new_deployed_address = Some(Address::from(address));
 
         self
     }

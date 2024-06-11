@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Contract that only tests the call value features,
 /// i.e. the framework/Arwen functionality for accepting KLV and KDA payments.

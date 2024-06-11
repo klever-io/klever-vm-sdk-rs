@@ -1,7 +1,7 @@
 #![no_std]
 
 extern crate alloc;
-klever_sc::imports!();
+use klever_sc::imports::*;
 use klever_sc::types::heap::String;
 
 #[klever_sc::contract]
@@ -14,7 +14,7 @@ pub trait Web3DNS {
 
     #[endpoint]
     #[payable("*")]
-    fn register(&self, domain: String, record: String, value: String) -> SCResult<()> {
+    fn register(&self, domain: String, record: String, value: String) {
         let payment = self.call_value().klv_value();
 
         require!(
@@ -22,11 +22,10 @@ pub trait Web3DNS {
             "The payment must be 10 KLV."
         );
         self.dns(domain, record).set(value);
-        Ok(())
     }
 
     #[view]
-    fn get_record(&self, domain: String, record: String) -> SCResult<String> {
-        Ok(self.dns(domain, record).get())
+    fn get_record(&self, domain: String, record: String) -> String {
+        self.dns(domain, record).get()
     }
 }
