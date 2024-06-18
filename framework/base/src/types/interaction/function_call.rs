@@ -10,7 +10,7 @@ use crate::{
     },
     formatter::SCLowerHex,
     types::{
-        ManagedAddress, ManagedBuffer, ManagedBufferCachedBuilder, ManagedVec,
+        ManagedAddress, ManagedBuffer, ManagedBufferBuilder, ManagedVec,
         MultiValueEncoded,
     },
 };
@@ -67,7 +67,7 @@ where
     }
 
     pub fn to_call_data_string(&self) -> ManagedBuffer<Api> {
-        let mut result = ManagedBufferCachedBuilder::default();
+        let mut result = ManagedBufferBuilder::default();
         result.append_managed_buffer(&self.function_name);
         for arg in self.arg_buffer.raw_arg_iter() {
             result.append_bytes(b"@");
