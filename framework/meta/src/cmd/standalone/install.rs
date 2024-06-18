@@ -6,7 +6,7 @@ pub fn install(args: &InstallArgs) {
     let command = args
         .command
         .as_ref()
-        .expect("command expected after `install`");
+        .expect("Installation command must be specified after `install` keyword.");
 
     match command {
         InstallCommand::All => {

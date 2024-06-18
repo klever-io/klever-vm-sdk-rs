@@ -26,6 +26,7 @@ pub trait StrRepeat {
     #[storage_mapper("byteArray")]
     fn byte_array(&self) -> SingleValueMapper<Vec<u8>>;
 
+    /// Benchmark method for the `StrRepeat` contract. It builds a managed buffer based on the provided `payload` and `num_repeats`.
     #[view]
     #[label("mb-builder")]
     fn mb_builder_benchmark(&self, payload: u32, num_repeats: usize) -> ManagedBuffer {
