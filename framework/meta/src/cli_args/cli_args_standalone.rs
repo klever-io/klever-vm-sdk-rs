@@ -67,6 +67,9 @@ pub enum StandaloneCliAction {
 
     #[command(name = "test-coverage", about = "Run test coverage and output report")]
     TestCoverage(TestCoverageArgs),
+
+    #[command(name = "install", about = "Installs framework dependencies")]
+    Install(InstallArgs),
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
@@ -130,6 +133,31 @@ pub struct TestCoverageArgs {
     #[arg(short = 'i', long = "ignore-filename-regex", verbatim_doc_comment)]
     pub ignore_filename_regex: Vec<String>,
 }
+
+#[derive(Default, PartialEq, Eq, Debug, Clone, Parser)]
+#[command(propagate_version = true)]
+pub struct InstallArgs {
+    #[command(subcommand)]
+    pub command: Option<InstallCommand>,
+}
+
+#[derive(Clone, PartialEq, Eq, Debug, Subcommand)]
+pub enum InstallCommand {
+    #[command(about = "Installs all the known tools")]
+    All,
+
+    #[command(name = "wasm32", about = "Installs the `wasm32` target")]
+    Wasm32(InstallWasm32Args),
+
+    #[command(name = "wasm-opt", about = "Installs the `wasm-opt` tool")]
+    WasmOpt(InstallWasmOptArgs),
+}
+
+#[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
+pub struct InstallWasm32Args {}
+
+#[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
+pub struct InstallWasmOptArgs {}
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
 pub struct AllArgs {

@@ -1,0 +1,17 @@
+[package]
+name = "exchange-features"
+version = "0.0.0"
+authors = ["Alin-Marius Cruceat <alin.cruceat@multiversx.com>"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/exchange_features.rs"
+
+[dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.43.3"
+path = "../../../framework/scenario"

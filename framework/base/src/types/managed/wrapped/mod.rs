@@ -5,7 +5,6 @@ mod sft_metadata;
 mod kda_token_payment;
 mod klv_or_multi_kda_payment;
 mod managed_address;
-mod managed_buffer_cached_builder;
 mod managed_byte_array;
 mod managed_option;
 mod managed_ref;
@@ -18,7 +17,10 @@ pub(crate) mod preloaded_managed_buffer;
 mod randomness_source;
 mod token_identifier;
 mod account_permission;
+mod traits;
+mod builder;
 
+pub use builder::*;
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 
 pub use kda_token_data::convert_buff_to_roles;
@@ -44,7 +46,6 @@ pub use kda_token_data::{
 pub use kda_token_payment::{KdaTokenPayment, MultiKdaPayment};
 pub use klv_or_multi_kda_payment::KlvOrMultiKdaPayment;
 pub use managed_address::ManagedAddress;
-pub use managed_buffer_cached_builder::ManagedBufferCachedBuilder;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;
 pub use managed_byte_array::ManagedByteArray;
 pub use managed_option::ManagedOption;
@@ -56,3 +57,8 @@ pub use managed_vec_ref::ManagedVecRef;
 pub use managed_vec_ref_iter::ManagedVecRefIterator;
 pub use randomness_source::RandomnessSource;
 pub use token_identifier::TokenIdentifier;
+
+pub use traits::{
+    fixed_token_supply::FixedSupplyToken,
+    mergeable::{ExternallyMergeable, Mergeable},
+};

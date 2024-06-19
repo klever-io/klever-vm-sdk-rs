@@ -8,6 +8,9 @@ publish = false
 [lib]
 path = "src/str_repeat.rs"
 
+[features]
+managed-buffer-builder-cached = ["klever-sc/managed-buffer-builder-cached"]
+
 [dependencies.klever-sc]
 version = "0.43.3"
 path = "../../../framework/base"

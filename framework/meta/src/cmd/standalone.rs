@@ -7,6 +7,7 @@ pub mod template;
 pub(crate) mod upgrade;
 mod test;
 mod test_coverage;
+pub mod install;
 
 use crate::{
     cli_args::{StandaloneCliAction, StandaloneCliArgs},
@@ -15,6 +16,7 @@ use crate::{
 use all::call_all_meta;
 use clap::Parser;
 use info::call_info;
+use install::install;
 use local_deps::local_deps;
 use scen_test_gen::test_gen_tool;
 use template::{create_contract, print_template_names};
@@ -46,6 +48,7 @@ pub fn cli_main_standalone() {
         Some(StandaloneCliAction::TestCoverage(args)) => {
             test_coverage(args);
         },
+        Some(StandaloneCliAction::Install(args)) => install(args),
         None => {},
     }
 }
