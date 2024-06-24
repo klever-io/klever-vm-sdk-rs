@@ -641,6 +641,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "deposit-kda-pool"
+version = "0.0.0"
+dependencies = [
+ "klever-sc",
+ "klever-sc-scenario",
+]
+
+[[package]]
+name = "deposit-kda-pool-meta"
+version = "0.0.0"
+dependencies = [
+ "deposit-kda-pool",
+ "klever-sc-meta",
+]
+
+[[package]]
 name = "dice"
 version = "0.0.0"
 dependencies = [

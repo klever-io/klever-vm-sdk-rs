@@ -91,7 +91,8 @@ members = [
   "contracts/examples/dice/meta",
   "contracts/examples/save-data",
   "contracts/examples/save-data/meta",
-
+  "contracts/examples/deposit-kda-pool",
+  "contracts/examples/deposit-kda-pool/meta",  
   "contracts/feature-tests/abi-tester",
   "contracts/feature-tests/abi-tester/meta",
   "contracts/feature-tests/alloc-features",

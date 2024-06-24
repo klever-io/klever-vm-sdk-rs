@@ -1,0 +1,17 @@
+name = "deposit-kda-pool"
+contract_trait = "DepositKDAPoolContract"
+src_file = "deposit.rs"
+rename_pairs = [
+    [
+        "blockchain.set_current_dir_from_workspace(\"contracts/examples/deposit-kda-pool\");",
+        "// blockchain.set_current_dir_from_workspace(\"relative path to your workspace, if applicable\");",
+    ],
+]
+files_include = [
+    "meta",
+    "scenarios",
+    "src",
+    "tests",
+    "Cargo.toml",
+    "kleverkapp.json",
+]
