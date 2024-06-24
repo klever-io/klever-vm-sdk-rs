@@ -26,6 +26,6 @@ pub trait DepositKDAPoolContract {
 
         require!(payment > 0, "payment amount can't be zero");
 
-        self.send().deposit_kda_pool(&ManagedBuffer::from(self.pool_id().get()), &token_identifier, &BigUint::from(payment))
+        self.send().deposit_kda_pool(&self.pool_id().get().into_managed_buffer(), &token_identifier, &BigUint::from(payment))
     }
 }
