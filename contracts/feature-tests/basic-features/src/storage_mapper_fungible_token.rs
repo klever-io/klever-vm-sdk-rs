@@ -4,23 +4,7 @@ use klever_sc::imports::*;
 pub trait FungibleTokenMapperFeatures {
     #[payable("KLV")]
     #[endpoint]
-    fn issue_fungible_default_callback(
-        &self,
-        token_ticker: ManagedBuffer,
-        initial_supply: BigUint,
-    ) {
-        self.fungible_token_mapper().issue(
-            &ManagedBuffer::new(),
-            &token_ticker,
-            &initial_supply,
-            &initial_supply,
-            0,
-        );
-    }
-
-    #[payable("KLV")]
-    #[endpoint]
-    fn issue_fungible_custom_callback(&self, token_ticker: ManagedBuffer, initial_supply: BigUint) {
+    fn issue_fungible(&self, token_ticker: ManagedBuffer, initial_supply: BigUint) {
         let token_identifier = self.fungible_token_mapper().issue(
             &ManagedBuffer::new(),
             &token_ticker,

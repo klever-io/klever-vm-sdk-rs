@@ -130,7 +130,7 @@ impl ContractVariant {
                 build_args.extract_imports,
                 &self.settings.check_ei,
             )
-                .expect("error occured while extracting imports from .wasm ");
+                .expect("error occurred while extracting imports from .wasm ");
         }
 
         let output_imports_json_path = format!(
@@ -142,7 +142,7 @@ impl ContractVariant {
 
         let wasm_data =
             WasmInfo::extract_wasm_info(&output_wasm_path, true, &self.settings.check_ei)
-                .expect("error occured while extracting imports from .wasm ");
+                .expect("error occurred while extracting imports from .wasm ");
 
         write_imports_output(
             output_imports_json_path.as_str(),

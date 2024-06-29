@@ -475,13 +475,11 @@ where
     }
 
     /// Retrieves and deserializes token attributes from the SC account, with given token identifier and nonce.
-    pub fn get_token_attributes<T: TopDecode>(
+    pub fn get_token_attributes(
         &self,
         token_id: &TokenIdentifier<A>,
-        token_nonce: u64,
-    ) -> T {
-        let own_sc_address = self.get_sc_address();
-        let token_data = self.get_kda_token_data(&own_sc_address, token_id, token_nonce);
-        token_data.decode_attributes()
+    ) -> AttributesInfo {
+        let kda_data = self.get_kda_token_data(&self.get_sc_address(), token_id, 0);
+        kda_data.attributes
     }
 }

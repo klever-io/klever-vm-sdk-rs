@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                            6
-// Total number of exported functions:   7
+// Endpoints:                            5
+// Total number of exported functions:   6
 
 #![no_std]
 #![allow(internal_features)]
@@ -21,7 +21,6 @@ klever_sc_wasm_adapter::endpoints! {
         issue => issue_fungible
         issueNonFungible => issue_non_fungible
         issueSemiFungible => issue_semi_fungible
-        registerMetaKDA => issue_meta_kda
         setSpecialRole => set_special_roles
         registerAndSetAllRoles => register_and_set_all_roles
     )

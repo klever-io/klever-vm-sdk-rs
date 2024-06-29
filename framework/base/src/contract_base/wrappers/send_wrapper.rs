@@ -132,6 +132,20 @@ where
         );
     }
 
+    /// Sends payment to a target address.
+    pub fn direct_payment(
+        &self,
+        to: &ManagedAddress<A>,
+        payment: &KdaTokenPayment<A>,
+    ) {
+        self.direct_kda(
+            to,
+            &payment.token_identifier,
+            payment.token_nonce,
+            &payment.amount,
+        )
+    }
+
     /// Creates a call to the `ChangeOwnerAddress` builtin function.
     pub fn change_owner_address(
         &self,
@@ -417,6 +431,7 @@ where
         address: &ManagedAddress<A>,
         mime: &ManagedBuffer<A>,
         metadata: &ManagedBuffer<A>,
+        name: &ManagedBuffer<A>,
     ) {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_ASSET_TRIGGER_FUNC_NAME;
@@ -427,6 +442,7 @@ where
         arg_buffer.push_arg(address);
         arg_buffer.push_arg(mime);
         arg_buffer.push_arg(metadata);
+        arg_buffer.push_arg(name);
 
         let _ = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),

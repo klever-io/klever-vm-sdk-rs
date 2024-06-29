@@ -26,6 +26,7 @@ pub mod storage_mapper_linked_list;
 pub mod storage_mapper_map;
 pub mod storage_mapper_map_storage;
 pub mod storage_mapper_non_fungible_token;
+pub mod storage_mapper_semi_fungible_token;
 pub mod storage_mapper_queue;
 pub mod storage_mapper_set;
 pub mod storage_mapper_single;
@@ -69,6 +70,7 @@ pub trait BasicFeatures:
     + storage_mapper_whitelist::StorageMapperWhitelistFeatures
     + storage_mapper_fungible_token::FungibleTokenMapperFeatures
     + storage_mapper_non_fungible_token::NonFungibleTokenMapperFeatures
+    + storage_mapper_semi_fungible_token::SemiFungibleTokenMapperFeatures
     + storage_mapper_unique_id_mapper::UniqueIdMapperFeatures
     + struct_eq::StructEquals
     + small_num_overflow_test_ops::SmallIntOverflow

@@ -8,17 +8,16 @@ use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     codec::{
-        CodecFrom, EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput,
+        CodecFrom, EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     contract_base::{BlockchainWrapper, SendWrapper},
-    imports::{AttributesInfo, UserKDA},
-    kda::KDASystemSmartContractProxy, storage::StorageKey, storage_get,
+    imports::{KdaTokenPayment, SFTMeta}, kda::KDASystemSmartContractProxy, storage::StorageKey, storage_get,
     types::{
         BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, PropertiesInfo, TokenIdentifier
     }
 };
 
-pub struct NonFungibleTokenMapper<SA>
+pub struct SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
@@ -26,7 +25,7 @@ where
     token_state: TokenMapperState<SA>,
 }
 
-impl<SA> StorageMapper<SA> for NonFungibleTokenMapper<SA>
+impl<SA> StorageMapper<SA> for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
@@ -38,7 +37,7 @@ where
     }
 }
 
-impl<SA> StorageTokenWrapper<SA> for NonFungibleTokenMapper<SA>
+impl<SA> StorageTokenWrapper<SA> for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
@@ -72,7 +71,7 @@ where
     }
 }
 
-impl<SA> NonFungibleTokenMapper<SA>
+impl<SA> SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
@@ -80,13 +79,15 @@ where
         &mut self,
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
+        precision: Option<u32>
     ) -> TokenIdentifier<SA> {
         check_not_set(self);
 
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
-        let token_id = system_sc_proxy.issue_non_fungible(
+        let token_id = system_sc_proxy.issue_semi_fungible(
             token_display_name,
             token_ticker,
+            precision.unwrap_or(0),
             &PropertiesInfo {
                 can_freeze: false,
                 can_wipe: false,
@@ -105,14 +106,36 @@ where
         token_id
     }
 
-    pub fn nft_mint(&self, amount: &BigUint<SA>) -> ManagedVec<SA, ManagedBuffer<SA>> {
+    pub fn sft_mint<T: TopEncode>(
+        &self, 
+        amount: &BigUint<SA>,
+        attributes: &T,
+    ) -> u64 {
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id();
 
-        system_sc_proxy.mint(&token_id, &amount)
+        let output = system_sc_proxy.mint(&token_id, &amount);
+
+        let nonce = if let Some(first_result_bytes) = output.try_get(0) {
+            first_result_bytes.parse_as_u64().unwrap()
+        } else {
+            panic!("Failed to get nonce from mint result")
+        };
+
+        let mut encoded_buffer = ManagedBuffer::new();
+        if let Result::Err(err) = attributes.top_encode(&mut encoded_buffer) {
+            panic!("Failed to encode attributes: {}", err.message_str());
+        };
+        let empty_addr = ManagedAddress::default();
+        let empty = ManagedBuffer::new();
+
+        
+        system_sc_proxy.update_metadata(&token_id, nonce, &empty_addr, &empty,&encoded_buffer, &ManagedBuffer::new());
+
+        nonce
     }
 
-    pub fn nft_mint_to_address(
+    pub fn sft_mint_to_address(
         &self,
         to: &ManagedAddress<SA>,
         amount: &BigUint<SA>,
@@ -123,7 +146,41 @@ where
         send_wrapper.kda_mint_with_address(&token_id, 0, amount, to, 0)
     }
 
-    pub fn nft_burn(&self, token_nonce: u64, amount: &BigUint<SA>) {
+    pub fn sft_add_quantity(
+        &self, 
+        nonce: u64,
+        amount: &BigUint<SA>,
+    ) -> KdaTokenPayment<SA> {
+        let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
+        let token_id = self.get_token_id();
+
+        let _ = system_sc_proxy.sft_add_quantity(&token_id, nonce, &amount);
+
+        KdaTokenPayment::new(token_id, nonce, amount.clone())
+    }
+
+    pub fn sft_add_quantity_and_send(
+        &self, 
+        to: &ManagedAddress<SA>,
+        nonce: u64,
+        amount: &BigUint<SA>,
+    ) -> KdaTokenPayment<SA> {
+        let payment = self.sft_add_quantity(nonce, amount);
+
+        self.send_payment(to, &payment);
+
+        payment
+    }
+
+    fn send_payment(&self, to: &ManagedAddress<SA>, payment: &KdaTokenPayment<SA>) {
+        let send_wrapper = SendWrapper::<SA>::new();
+        send_wrapper.direct_payment(
+            to,
+            &payment
+        );
+    }
+
+    pub fn sft_burn(&self, token_nonce: u64, amount: &BigUint<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
         let token_id = self.get_token_id_ref();
 
@@ -138,14 +195,6 @@ where
         b_wrapper.get_kda_token_data(&own_sc_address, token_id, token_nonce)
     }
 
-    pub fn get_nft_token_data(&self, token_nonce: u64) -> UserKDA<SA> {
-        let b_wrapper = BlockchainWrapper::new();
-        let own_sc_address = Self::get_sc_address();
-        let token_id = self.get_token_id_ref();
-
-        b_wrapper.get_user_kda(&own_sc_address, token_id, token_nonce)
-    }
-
     pub fn get_balance(&self, token_nonce: u64) -> BigUint<SA> {
         let b_wrapper = BlockchainWrapper::new();
         let own_sc_address = Self::get_sc_address();
@@ -154,13 +203,21 @@ where
         b_wrapper.get_kda_balance(&own_sc_address, token_id, token_nonce)
     }
 
-    pub fn get_token_attributes<T: TopDecode>(&self, token_nonce: u64) -> AttributesInfo {
-        let token_data = self.get_all_token_data(token_nonce);
-        token_data.attributes
+    pub fn get_sft_meta(&self, token_nonce: u64) -> SFTMeta<SA> {
+        let b_wrapper = BlockchainWrapper::new();
+        let token_id = self.get_token_id_ref();
+
+        b_wrapper.get_sft_metadata(&token_id, token_nonce)
+    }
+
+    pub fn get_sft_meta_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
+        let meta = self.get_sft_meta(token_nonce);
+        
+        meta.metadata.decode_attributes()
     }
 }
 
-impl<SA> TopEncodeMulti for NonFungibleTokenMapper<SA>
+impl<SA> TopEncodeMulti for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
@@ -177,12 +234,12 @@ where
     }
 }
 
-impl<SA> CodecFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
+impl<SA> CodecFrom<SemiFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
     SA: StorageMapperApi + CallTypeApi
 {
 }
 
-impl<SA> TypeAbi for NonFungibleTokenMapper<SA>
+impl<SA> TypeAbi for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {

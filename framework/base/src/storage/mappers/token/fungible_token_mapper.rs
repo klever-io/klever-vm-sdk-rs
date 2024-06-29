@@ -134,11 +134,9 @@ where
 
     fn send_payment(&self, to: &ManagedAddress<SA>, payment: &KdaTokenPayment<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.direct_kda(
+        send_wrapper.direct_payment(
             to,
-            &payment.token_identifier,
-            0,
-            &payment.amount,
+            payment,
         );
     }
 }

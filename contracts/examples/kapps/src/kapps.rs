@@ -180,9 +180,10 @@ pub trait Kapps {
         address: ManagedAddress,
         mime: ManagedBuffer,
         metadata: ManagedBuffer,
+        name: ManagedBuffer,
     ) {
         self.send()
-            .kda_update_metadata(&token, nonce, &address, &mime, &metadata);
+            .kda_update_metadata(&token, nonce, &address, &mime, &metadata, &name);
     }
 
     #[endpoint]

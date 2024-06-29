@@ -17,8 +17,9 @@ pub trait KdaModule {
         KdaTokenType is an enum (u8):
         0 - Fungible,
         1 - NonFungible,
+        2 - SemiFungible
 
-        Note: Only Fungible have decimals
+        Note: Only Fungible and SemiFungible have decimals
     */
     #[payable("KLV")]
     #[only_owner]
@@ -73,15 +74,14 @@ pub trait KdaModule {
         self.send().kda_burn(&token_id, token_nonce, amount);
     }
 
-    // TODO: review this
-    fn get_token_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
-        let own_sc_address = self.blockchain().get_sc_address();
+    /// Retrieves and decode SFT token attributes
+    fn get_sft_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
         let token_id = self.token_id().get();
-        let token_data =
+        let meta =
             self.blockchain()
-                .get_kda_token_data(&own_sc_address, &token_id, token_nonce);
+                .get_sft_metadata(&token_id, token_nonce);
 
-        token_data.decode_attributes()
+        meta.metadata.decode_attributes()
     }
 
     fn require_token_issued(&self) {

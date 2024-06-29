@@ -3,18 +3,15 @@ use crate::{
     codec,
     codec::{
         derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        *,
     },
     types::{
         BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
         TokenIdentifier,
     },
+    derive::{ManagedVecItem, TypeAbi},
 };
 
 use crate as klever_sc; // needed by the TypeAbi generated code
-use crate::derive::{ManagedVecItem, TypeAbi};
-
-const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
 #[derive(
     Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
@@ -368,20 +365,4 @@ pub struct ITOPackItem<M: ManagedTypeApi> {
 pub struct ITOWhitelist<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub limit: BigUint<M>,
-}
-
-impl<M: ManagedTypeApi> KdaTokenData<M> {
-    pub fn try_decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
-        // T::top_decode(self.attributes.clone()) // TODO: remove clone
-        todo!()
-    }
-
-    pub fn decode_attributes<T: TopDecode>(&self) -> T {
-        // let Ok(value) = T::top_decode_or_handle_err(
-        //     self.attributes.clone(), // TODO: remove clone
-        //     ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        // );
-        // value
-        todo!()
-    }
 }

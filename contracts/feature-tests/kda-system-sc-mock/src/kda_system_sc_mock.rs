@@ -58,18 +58,6 @@ pub trait PayableFeatures {
         self.create_new_token_id(token_ticker)
     }
 
-    #[payable("KLV")]
-    #[endpoint(registerMetaKDA)]
-    fn issue_meta_kda(
-        &self,
-        _token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-        _num_decimals: usize,
-        _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
-        self.create_new_token_id(token_ticker)
-    }
-
     #[endpoint(setSpecialRole)]
     fn set_special_roles(
         &self,

@@ -43,7 +43,7 @@ where
     /// Produces a contract call to the KDA system SC,
     /// which causes it to issue a new fungible KDA token.
     pub fn issue_fungible(
-        self,
+        &self,
         token_display_name: &ManagedBuffer<SA>,
         num_decimals: u32,
         token_ticker: &ManagedBuffer<SA>,
@@ -65,7 +65,7 @@ where
     /// Produces a contract call to the KDA system SC,
     /// which causes it to issue a new non-fungible KDA token.
     pub fn issue_non_fungible(
-        self,
+        &self,
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: &PropertiesInfo,
@@ -84,14 +84,14 @@ where
     /// Produces a contract call to the KDA system SC,
     /// which causes it to issue a new semi-fungible KDA token.
     pub fn issue_semi_fungible(
-        self,
+        &self,
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         num_decimals: u32,
         properties: &PropertiesInfo,
     ) -> TokenIdentifier<SA> {
         self.issue(
-            KdaTokenType::NonFungible,
+            KdaTokenType::SemiFungible,
             token_display_name,
             token_ticker,
             num_decimals,
@@ -102,7 +102,7 @@ where
     }
 
     fn issue(
-        self,
+        &self,
         token_type: KdaTokenType,
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
@@ -139,7 +139,7 @@ where
     /// which causes it to mint more fungible KDA tokens.
     /// It will fail if the SC is not the owner of the token.
     pub fn mint(
-        self,
+        &self,
         token_identifier: &TokenIdentifier<SA>,
         amount: &BigUint<SA>,
     ) -> ManagedVec<SA, ManagedBuffer<SA>> {
@@ -151,7 +151,7 @@ where
     /// which causes it to mint more fungible KDA tokens.
     /// It will fail if the SC is not the owner of the token.
     pub fn mint_with_address(
-        self,
+        &self,
         to: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
         amount: &BigUint<SA>,
@@ -160,22 +160,45 @@ where
         send_wrapper.kda_mint_with_address(token_identifier, 0, amount, to, 0)
     }
 
+    pub fn update_metadata(
+        &self,
+        token: &TokenIdentifier<SA>,
+        nonce: u64,
+        address: &ManagedAddress<SA>,
+        mime: &ManagedBuffer<SA>,
+        metadata: &ManagedBuffer<SA>,
+        name: &ManagedBuffer<SA>,
+    ) {
+        let send_wrapper = SendWrapper::<SA>::new();
+        send_wrapper.kda_update_metadata(token, nonce, address, mime, metadata, name)
+    }
+
+    pub fn sft_add_quantity(
+        &self,
+        token_identifier: &TokenIdentifier<SA>,
+        nonce: u64,
+        amount: &BigUint<SA>,
+    ) -> ManagedVec<SA, ManagedBuffer<SA>> {
+        let send_wrapper = SendWrapper::<SA>::new();
+        send_wrapper.kda_mint(token_identifier, nonce, amount)
+    }
+
     /// Produces a contract call to the KDA system SC,
     /// which causes it to burn fungible KDA tokens owned by the SC.
-    pub fn burn(self, token_identifier: &TokenIdentifier<SA>, amount: &BigUint<SA>) {
+    pub fn burn(&self, token_identifier: &TokenIdentifier<SA>, amount: &BigUint<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
         send_wrapper.kda_burn(&token_identifier, 0, &amount);
     }
 
     /// The manager of an KDA token may choose to suspend all transactions of the token,
     /// except minting, freezing/unfreezing and wiping.
-    pub fn pause(self, token_identifier: &TokenIdentifier<SA>) {
+    pub fn pause(&self, token_identifier: &TokenIdentifier<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
         send_wrapper.kda_pause(token_identifier)
     }
 
     /// The reverse operation of `pause`.
-    pub fn unpause(self, token_identifier: &TokenIdentifier<SA>) {
+    pub fn unpause(&self, token_identifier: &TokenIdentifier<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
         send_wrapper.kda_resume(&token_identifier)
     }
@@ -184,7 +207,7 @@ where
     /// As a consequence, no tokens may be transferred to or from the frozen account.
     /// Freezing and unfreezing the tokens of an account are operations designed to help token managers to comply with regulations.
     pub fn freeze(
-        self,
+        &self,
         token_identifier: &TokenIdentifier<SA>,
         amount: &BigUint<SA>,
     ) -> ManagedBuffer<SA> {
@@ -193,7 +216,7 @@ where
     }
 
     /// The reverse operation of `freeze`, unfreezing, will allow further transfers to and from the account.
-    pub fn unfreeze(self, token_identifier: &TokenIdentifier<SA>, bucket_id: &ManagedBuffer<SA>) {
+    pub fn unfreeze(&self, token_identifier: &TokenIdentifier<SA>, bucket_id: &ManagedBuffer<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
         send_wrapper.unfreeze(token_identifier, bucket_id)
     }
@@ -203,7 +226,7 @@ where
     /// and it must be done by the token manager.
     /// Wiping the tokens of an account is an operation designed to help token managers to comply with regulations.
     pub fn wipe(
-        self,
+        &self,
         token_identifier: &TokenIdentifier<SA>,
         nonce: u64,
         amount: &BigUint<SA>,
@@ -216,7 +239,7 @@ where
     /// This function can be called only if owner of the token is the SC.
     /// address will receiver special roles related to the token.
     pub fn set_special_roles(
-        self,
+        &self,
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
         allow_mint: bool,
@@ -236,7 +259,7 @@ where
     }
 
     pub fn transfer_ownership(
-        self,
+        &self,
         token_identifier: &TokenIdentifier<SA>,
         new_owner: &ManagedAddress<SA>,
     ) {

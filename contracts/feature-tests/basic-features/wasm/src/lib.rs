@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                          368
-// Total number of exported functions: 369
+// Endpoints:                          380
+// Total number of exported functions: 381
 
 #![no_std]
 #![allow(internal_features)]
@@ -330,8 +330,7 @@ klever_sc_wasm_adapter::endpoints! {
         check_contains_at_address => check_contains_at_address
         require_contains => require_contains
         require_contains_at_address => require_contains_at_address
-        issue_fungible_default_callback => issue_fungible_default_callback
-        issue_fungible_custom_callback => issue_fungible_custom_callback
+        issue_fungible => issue_fungible
         mint_fungible => mint_fungible
         mint_and_send_fungible => mint_and_send_fungible
         burn_fungible => burn_fungible
@@ -339,13 +338,23 @@ klever_sc_wasm_adapter::endpoints! {
         require_same_token_fungible => require_same_token_fungible
         require_all_same_token_fungible => require_all_same_token_fungible
         getFungibleTokenId => fungible_token_mapper
-        issue => issue
+        issue_nft => issue_nft
         mapper_nft_set_token_id => mapper_nft_set_token_id
         mapper_nft_mint => mapper_nft_mint
         mapper_nft_burn => mapper_nft_burn
         mapper_nft_get_balance => mapper_nft_get_balance
-        mapper_get_token_attributes => mapper_get_token_attributes
+        mapper_get_nft_attributes => mapper_get_nft_attributes
         getNonFungibleTokenId => non_fungible_token_mapper
+        issue_sft => issue_sft
+        mapper_sft_set_token_id => mapper_sft_set_token_id
+        mapper_sft_mint => mapper_sft_mint
+        mapper_sft_add_quantity => mapper_sft_add_quantity
+        mapper_sft_mint_and_send => mapper_sft_mint_and_send
+        mapper_sft_add_quantity_and_send => mapper_sft_add_quantity_and_send
+        mapper_sft_burn => mapper_sft_burn
+        mapper_sft_get_balance => mapper_sft_get_balance
+        mapper_get_sft_attributes => mapper_get_sft_attributes
+        getSemiFungibleTokenId => semi_fungible_token_mapper
         init_unique_id_mapper => init_unique_id_mapper
         unique_id_mapper_get => unique_id_mapper_get
         unique_id_mapper_swap_remove => unique_id_mapper_swap_remove
@@ -385,6 +394,9 @@ klever_sc_wasm_adapter::endpoints! {
         previous_at_address => previous_at_address
         front_at_address => front_at_address
         back_at_address => back_at_address
+        keys_at_address => keys_at_address
+        values_at_address => values_at_address
         fill_set_mapper => fill_set_mapper
+        fill_map_mapper => fill_map_mapper
     )
 }
