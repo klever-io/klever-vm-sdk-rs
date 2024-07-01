@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                            8
-// Total number of exported functions:   9
+// Endpoints:                           12
+// Total number of exported functions:  13
 
 #![no_std]
 #![allow(internal_features)]
@@ -18,13 +18,17 @@ klever_sc_wasm_adapter::endpoints! {
     digital_cash
     (
         init => init
+        whitelistFeeToken => whitelist_fee_token
+        blacklistFeeToken => blacklist_fee_token
+        claimFees => claim_fees
+        getAmount => get_amount
+        payFeeAndFundKDA => pay_fee_and_fund_kda
+        payFeeAndFundKLV => pay_fee_and_fund_klv
         fund => fund
+        depositFees => deposit_fees
         withdraw => withdraw
         claim => claim
-        claim_fees => claim_fees
-        deposit_fees => deposit_fees
         forward => forward
-        amount => get_amount
         deposit => deposit
     )
 }

@@ -4,272 +4,90 @@
 use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
 
+mod constants;
 mod deposit_info;
+mod helpers;
+mod pay_fee_and_fund;
+mod signature_operations;
+mod storage;
 
-use deposit_info::{DepositInfo, Fee};
-
-pub const SECONDS_PER_ROUND: u64 = 6;
-pub use klever_sc::api::{ED25519_KEY_BYTE_LEN, ED25519_SIGNATURE_BYTE_LEN};
+use constants::*;
 
 #[klever_sc::contract]
-pub trait DigitalCash {
+pub trait DigitalCash:
+    pay_fee_and_fund::PayFeeAndFund
+    + signature_operations::SignatureOperationsModule
+    + helpers::HelpersModule
+    + storage::StorageModule
+{
     #[init]
-    fn init(&self, fee: BigUint) {
-        self.fee().set(fee);
+    fn init(&self, fee: BigUint, token: TokenIdentifier) {
+        self.whitelist_fee_token(fee, token);
     }
 
-    //endpoints
-
-    #[endpoint]
-    #[payable("*")]
-    fn fund(&self, address: ManagedAddress, valability: u64) {
-        require!(!self.deposit(&address).is_empty(), "fees not covered");
-
-        let mut kda_payment = self.call_value().all_kda_transfers().clone_value();
-        let klv_payment = self.call_value().klv_value().clone_value();
-
-        kda_payment = kda_payment.into_iter().filter(|kda| kda.token_identifier != TokenIdentifier::klv()).collect();
-
-        let num_tokens = (klv_payment != BigUint::zero()) as usize + kda_payment.len();
-
-        require!(num_tokens > 0, "amount must be greater than 0");
-
-        let fee = self.fee().get();
-
-        self.deposit(&address).update(|deposit| {
-            require!(
-                deposit.klv_funds == BigUint::zero() && deposit.kda_funds.is_empty(),
-                "key already used"
-            );
-            require!(
-                fee * num_tokens as u64 <= deposit.fees.value,
-                "cannot deposit funds without covering the fee cost first"
-            );
-
-            deposit.fees.num_token_to_transfer += num_tokens;
-            deposit.valability = valability;
-            deposit.expiration_round = self.get_expiration_round(valability);
-            deposit.kda_funds = kda_payment;
-            deposit.klv_funds = klv_payment;
-        });
+    #[endpoint(whitelistFeeToken)]
+    #[only_owner]
+    fn whitelist_fee_token(&self, fee: BigUint, token: TokenIdentifier) {
+        require!(self.fee(&token).is_empty(), "Token already whitelisted");
+        self.fee(&token).set(fee);
+        self.whitelisted_fee_tokens().insert(token.clone());
+        self.all_time_fee_tokens().insert(token);
     }
 
-    #[endpoint]
-    fn withdraw(&self, address: ManagedAddress) {
-        require!(!self.deposit(&address).is_empty(), "non-existent key");
-
-        let block_round = self.blockchain().get_block_round();
-
-        let deposit = self.deposit(&address).get();
-
-        require!(
-            deposit.expiration_round < block_round,
-            "withdrawal has not been available yet"
-        );
-
-        let klv_funds = deposit.klv_funds + deposit.fees.value;
-        if klv_funds != BigUint::zero() {
-            self.send()
-                .direct_klv(&deposit.depositor_address, &klv_funds);
-        }
-
-        if !deposit.kda_funds.is_empty() {
-            self.send()
-                .direct_multi(&deposit.depositor_address, &deposit.kda_funds);
-        }
-
-        self.deposit(&address).clear();
+    #[endpoint(blacklistFeeToken)]
+    #[only_owner]
+    fn blacklist_fee_token(&self, token: TokenIdentifier) {
+        require!(!self.fee(&token).is_empty(), "Token is not whitelisted");
+        self.fee(&token).clear();
+        self.whitelisted_fee_tokens().swap_remove(&token);
     }
 
-    #[endpoint]
-    fn claim(
-        &self,
-        address: ManagedAddress,
-        signature: ManagedByteArray<Self::Api, ED25519_SIGNATURE_BYTE_LEN>,
-    ) {
-        require!(!self.deposit(&address).is_empty(), "non-existent key");
-
-        let caller_address = self.blockchain().get_caller();
-        self.require_signature(&address, &caller_address, signature);
-
-        let block_round = self.blockchain().get_block_round();
-
-        let fee = self.fee().get();
-
-        self.deposit(&address).update(|deposit| {
-            require!(deposit.expiration_round >= block_round, "deposit expired");
-            let num_tokens_transfered = &deposit.get_num_tokens();
-            let fee_cost = fee * *num_tokens_transfered as u64;
-
-            deposit.fees.num_token_to_transfer -= num_tokens_transfered;
-            deposit.fees.value -= &fee_cost;
-
-            self.collected_fees()
-                .update(|collected_fees| *collected_fees += fee_cost);
-
-            if deposit.klv_funds != BigUint::zero() {
-                self.send()
-                    .direct_klv(&caller_address, &deposit.klv_funds);
-            }
-
-            if !deposit.kda_funds.is_empty() {
-                self.send()
-                    .direct_multi(&caller_address, &deposit.kda_funds);
-            }
-
-            if deposit.fees.value > 0 {
-                self.send()
-                    .direct_klv(&deposit.depositor_address, &deposit.fees.value);
-            }
-        });
-
-        self.deposit(&address).clear();
-    }
-
-    #[endpoint]
+    #[endpoint(claimFees)]
     #[only_owner]
     fn claim_fees(&self) {
+        let fee_tokens_mapper = self.all_time_fee_tokens();
+        let fee_tokens = fee_tokens_mapper.iter();
         let caller_address = self.blockchain().get_caller();
-        let fees = self.collected_fees().get();
-
-        self.send().direct_klv(&caller_address, &fees);
-        self.collected_fees().clear();
-    }
-
-    fn require_signature(
-        &self,
-        address: &ManagedAddress,
-        caller_address: &ManagedAddress,
-        signature: ManagedByteArray<Self::Api, ED25519_SIGNATURE_BYTE_LEN>,
-    ) {
-        let addr = address.as_managed_buffer();
-        let message = caller_address.as_managed_buffer();
-        self.crypto()
-            .verify_ed25519(addr, message, signature.as_managed_buffer());
-    }
-
-    #[endpoint]
-    #[payable("KLV")]
-    fn deposit_fees(&self, address: ManagedAddress) {
-        let payment = self.call_value().klv_value().clone_value();
-        let caller_address = self.blockchain().get_caller();
-
-        if self.deposit(&address).is_empty() {
-            let new_deposit = DepositInfo {
-                depositor_address: caller_address,
-                kda_funds: ManagedVec::new(),
-                klv_funds: BigUint::zero(),
-                valability: 0,
-                expiration_round: 0,
-                fees: Fee {
-                    num_token_to_transfer: 0,
-                    value: payment,
-                },
-            };
-            self.deposit(&address).set(new_deposit)
-        } else {
-            self.deposit(&address)
-                .update(|deposit| deposit.fees.value += payment);
+        let mut collected_kda_fees = ManagedVec::new();
+        for token in fee_tokens {
+            let fee = self.collected_fees(&token).take();
+            if fee == 0 {
+                continue;
+            }
+            if token == TokenIdentifier::klv() {
+                self.send().direct_klv(&caller_address, &fee);
+            } else {
+                let collected_fee = KdaTokenPayment::new(token, 0, fee);
+                collected_kda_fees.push(collected_fee);
+            }
+        }
+        if !collected_kda_fees.is_empty() {
+            self.send()
+                .direct_multi(&caller_address, &collected_kda_fees);
         }
     }
 
-    #[endpoint]
-    fn forward(
-        &self,
-        address: ManagedAddress,
-        forward_address: ManagedAddress,
-        signature: ManagedByteArray<Self::Api, ED25519_SIGNATURE_BYTE_LEN>,
-    ) {
-        require!(
-            !self.deposit(&forward_address).is_empty(),
-            "cannot deposit funds without covering the fee cost first"
-        );
-
-        let caller_address = self.blockchain().get_caller();
-        let fee = self.fee().get();
-        self.require_signature(&address, &caller_address, signature);
-
-        let mut forwarded_deposit = self.deposit(&address).get();
-        let num_tokens = forwarded_deposit.get_num_tokens();
-        self.deposit(&forward_address).update(|deposit| {
-            require!(
-                deposit.klv_funds == BigUint::zero() && deposit.kda_funds.is_empty(),
-                "key already used"
-            );
-            require!(
-                &fee * num_tokens as u64 <= deposit.fees.value,
-                "cannot forward funds without the owner covering the fee cost first"
-            );
-
-            deposit.fees.num_token_to_transfer += num_tokens;
-            deposit.valability = forwarded_deposit.valability;
-            deposit.expiration_round = self.get_expiration_round(forwarded_deposit.valability);
-            deposit.kda_funds = forwarded_deposit.kda_funds;
-            deposit.klv_funds = forwarded_deposit.klv_funds;
-        });
-
-        let forward_fee = &fee * num_tokens as u64;
-
-        forwarded_deposit.fees.value -= &forward_fee;
-
-        self.collected_fees()
-            .update(|collected_fees| *collected_fees += forward_fee);
-
-        if forwarded_deposit.fees.value > 0 {
-            self.send().direct_klv(
-                &forwarded_deposit.depositor_address,
-                &forwarded_deposit.fees.value,
-            );
-        }
-
-        self.deposit(&address).clear();
-    }
-
-    //views
-
-    #[view(amount)]
+    #[view(getAmount)]
     fn get_amount(
         &self,
         address: ManagedAddress,
         token: TokenIdentifier,
         nonce: u64,
     ) -> BigUint {
-        require!(!self.deposit(&address).is_empty(), "non-existent key");
+        let deposit_mapper = self.deposit(&address);
+        require!(!deposit_mapper.is_empty(), NON_EXISTENT_KEY_ERR_MSG);
 
-        let mut amount = BigUint::zero();
-
-        require!(!self.deposit(&address).is_empty(), "non-existent key");
-
-        let deposit = self.deposit(&address).get();
+        let deposit = deposit_mapper.get();
         if token.is_klv() {
-            amount = deposit.klv_funds;
-        } else {
-            for kda in deposit.kda_funds.into_iter() {
-                if kda.token_identifier == token && kda.token_nonce == nonce {
-                    amount = kda.amount;
-                }
+            return deposit.klv_funds;
+        }
+
+        for kda in deposit.kda_funds.into_iter() {
+            if kda.token_identifier == token && kda.token_nonce == nonce {
+                return kda.amount;
             }
         }
 
-        amount
+        BigUint::zero()
     }
-
-    //private functions
-
-    fn get_expiration_round(&self, valability: u64) -> u64 {
-        let valability_rounds = valability / SECONDS_PER_ROUND;
-        self.blockchain().get_block_round() + valability_rounds
-    }
-
-    //storage
-
-    #[view]
-    #[storage_mapper("deposit")]
-    fn deposit(&self, donor: &ManagedAddress) -> SingleValueMapper<DepositInfo<Self::Api>>;
-
-    #[storage_mapper("fee")]
-    fn fee(&self) -> SingleValueMapper<BigUint>;
-
-    #[storage_mapper("collected_fees")]
-    fn collected_fees(&self) -> SingleValueMapper<BigUint>;
 }

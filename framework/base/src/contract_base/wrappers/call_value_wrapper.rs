@@ -43,7 +43,7 @@ where
     }
 
     /// Returns all KDA transfers that accompany this SC call.
-    /// Will return 0 results if nothing was transfered, or just KLV.
+    /// Will return 0 results if nothing was transfered.
     /// Fully managed underlying types, very efficient.
     pub fn all_kda_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, KdaTokenPayment<A>>> {
         let mut call_value_handle: A::ManagedBufferHandle =
