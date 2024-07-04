@@ -58,13 +58,11 @@ pub trait NftModule:
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get_token_id();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_kda(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+
+        self.tx()
+            .to(ToCaller)
+            .single_kda(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         self.distribute_funds(
             &payment.token_identifier,

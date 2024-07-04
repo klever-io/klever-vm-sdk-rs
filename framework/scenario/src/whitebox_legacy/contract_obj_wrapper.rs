@@ -403,6 +403,7 @@ impl BlockchainStateWrapper {
             None,
             None,
             &[],
+            true,
         );
     }
 
@@ -419,6 +420,7 @@ impl BlockchainStateWrapper {
         name: Option<&[u8]>,
         hash: Option<&[u8]>,
         uris: &[Vec<u8>],
+        can_burn: bool,
     ) {
         let vm_address = to_vm_address(address);
         match self.world.get_mut_state().accounts.get_mut(&vm_address) {
@@ -434,10 +436,9 @@ impl BlockchainStateWrapper {
                         name: name.unwrap_or_default().to_vec(),
                         hash: hash.map(|h| h.to_vec()),
                         uri: uris.to_vec(),
-                        can_burn: true,
+                        can_burn,
                     },
                 );
-
                 self.add_mandos_set_account(address);
             },
             None => panic!(

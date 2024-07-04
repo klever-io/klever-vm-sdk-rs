@@ -1,5 +1,5 @@
 use crate::{
-    klever_sc::codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
+    klever_sc::codec::{PanicErrorHandler, TopEncodeMulti},
     scenario::model::{ScCallStep, TxKDA, TypedScCall},
     scenario_model::TxResponse,
 };
@@ -10,6 +10,8 @@ use klever_chain_vm::{
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
+use klever_sc::abi::TypeAbiFrom;
+use klever_sc::codec::TopDecodeMulti;
 
 use super::{check_tx_output, tx_input_util::generate_tx_hash, ScenarioVMRunner};
 
@@ -36,7 +38,7 @@ impl ScenarioVMRunner {
     ) -> RequestedResult
     where
         OriginalResult: TopEncodeMulti,
-        RequestedResult: CodecFrom<OriginalResult>,
+        RequestedResult: TopDecodeMulti + TypeAbiFrom<OriginalResult>,
     {
         let sc_call_step: ScCallStep = typed_sc_call.into();
         let tx_result =

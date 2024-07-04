@@ -3,6 +3,7 @@
 use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
 
+pub mod proxy_crypto_zombies;
 mod storage;
 mod zombie;
 mod zombie_attack;

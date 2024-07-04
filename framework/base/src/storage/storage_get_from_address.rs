@@ -80,15 +80,24 @@ where
     }
 
     #[inline]
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
-    where
-        H: DecodeErrorHandler,
+    ) -> Result<usize, H::HandledErr>
+        where
+            H: DecodeErrorHandler,
     {
-        self.to_managed_buffer().into_max_size_buffer(buffer, h)
+        self.to_managed_buffer()
+            .into_max_size_buffer_align_right(buffer, h)
+    }
+
+    #[inline]
+    fn into_i64<H>(self, h: H) -> Result<i64, H::HandledErr>
+        where
+            H: DecodeErrorHandler,
+    {
+        self.to_managed_buffer().into_i64(h)
     }
 
     #[inline]

@@ -8,7 +8,9 @@ mod type_abi_impl_codec_multi;
 mod type_description;
 mod type_description_container;
 mod kda_attribute_abi;
+mod type_abi_from;
 
+pub use type_abi_from::*;
 pub use build_info_abi::*;
 pub use contract_abi::*;
 pub use endpoint_abi::*;
@@ -19,3 +21,18 @@ pub use type_description::*;
 pub use type_description_container::*;
 
 pub type TypeName = alloc::string::String;
+#[derive(Clone, Debug, PartialEq, Eq)]
+
+pub struct TypeNames {
+    pub abi: alloc::string::String,
+    pub rust: alloc::string::String,
+}
+
+impl TypeNames {
+    pub const fn new() -> Self {
+        TypeNames {
+            abi: alloc::string::String::new(),
+            rust: alloc::string::String::new(),
+        }
+    }
+}

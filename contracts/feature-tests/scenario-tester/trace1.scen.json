@@ -1,0 +1,135 @@
+{
+    "steps": [
+        {
+            "step": "setState",
+            "accounts": {
+                "address:other": {
+                    "nonce": "2",
+                    "balance": "300",
+                    "kda": {
+                        "str:TOKEN-123456": "500"
+                    }
+                },
+                "address:owner": {
+                    "nonce": "1",
+                    "balance": "100"
+                }
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:other": {
+                    "nonce": "2",
+                    "balance": "300",
+                    "kda": {
+                        "str:TOKEN-123456": "500",
+                        "+": ""
+                    },
+                    "storage": "*",
+                    "code": "*",
+                    "owner": "*"
+                },
+                "address:owner": {
+                    "nonce": "1",
+                    "balance": "100",
+                    "storage": "*",
+                    "code": "*",
+                    "owner": "*"
+                }
+            }
+        },
+        {
+            "step": "setState",
+            "newAddresses": [
+                {
+                    "creatorAddress": "address:owner",
+                    "creatorNonce": "2",
+                    "newAddress": "sc:scenario-tester"
+                }
+            ]
+        },
+        {
+            "step": "scDeploy",
+            "id": "",
+            "tx": {
+                "from": "address:owner",
+                "contractCode": "kleversc:output/scenario-tester.kleversc.json",
+                "arguments": [
+                    "0x05"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [],
+                "status": "0"
+            }
+        },
+        {
+            "step": "scQuery",
+            "id": "",
+            "tx": {
+                "to": "sc:scenario-tester",
+                "function": "getSum",
+                "arguments": []
+            },
+            "expect": {
+                "out": [
+                    "0x05"
+                ],
+                "status": "0"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:scenario-tester",
+                "function": "add",
+                "arguments": [
+                    "0x01"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [],
+                "status": "0"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:owner": {
+                    "storage": "*",
+                    "code": "*",
+                    "owner": "*"
+                },
+                "sc:scenario-tester": {
+                    "storage": {
+                        "str:sum": "6"
+                    },
+                    "code": "*",
+                    "owner": "*"
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "",
+            "tx": {
+                "from": "address:other",
+                "to": "sc:scenario-tester",
+                "function": "add",
+                "arguments": [
+                    "0x01"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [],
+                "status": "0"
+            }
+        }
+    ]
+}

@@ -1,7 +1,6 @@
 use benchmark_common::ExampleStruct;
 use linked_list_repeat::ProxyTrait;
-use klever_sc::types::{MultiValueEncoded, TokenIdentifier};
-use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
+use klever_sc_scenario::imports::*;
 
 const WASM_PATH_EXPR: &str = "kleversc:output/linked-list-repeat.kleversc.json";
 

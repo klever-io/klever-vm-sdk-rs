@@ -134,8 +134,8 @@ fn validate_method(method: &Method) {
     assert!(
         matches!(
             method.public_role,
-            PublicRole::Init(_) | PublicRole::Endpoint(_)
-        ) || method.label_names.is_empty(),
+            PublicRole::Init(_) | PublicRole::Endpoint(_) | PublicRole::Upgrade(_)
+                ) || method.label_names.is_empty(),
         "Labels can only be placed on endpoints and constructors. Method '{}' is neither.",
         &method.name.to_string()
     )

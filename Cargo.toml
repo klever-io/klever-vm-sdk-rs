@@ -135,6 +135,8 @@ members = [
   "contracts/feature-tests/erc-style-contracts/lottery-erc20/meta",
   "contracts/feature-tests/kda-system-sc-mock",
   "contracts/feature-tests/kda-system-sc-mock/meta",
+  "contracts/feature-tests/exchange-features",
+  "contracts/feature-tests/exchange-features/meta",
   "contracts/feature-tests/formatted-message-features",
   "contracts/feature-tests/formatted-message-features/meta",
   "contracts/feature-tests/managed-map-features",
@@ -153,4 +155,6 @@ members = [
   "contracts/feature-tests/use-module/meta",
   "contracts/feature-tests/exchange-features",
   "contracts/feature-tests/exchange-features/meta",
+  "contracts/feature-tests/scenario-tester",
+  "contracts/feature-tests/scenario-tester/meta"
 ]

@@ -1,4 +1,7 @@
-use klever_sc::types::{BigInt, H256};
+use klever_sc::{
+    abi::TypeAbiFrom,
+    types::{ContractCallBase, H256},
+};
 
 use crate::{
     api::StaticApi,
@@ -7,7 +10,7 @@ use crate::{
 };
 
 use crate::klever_sc::{
-    codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
+    codec::{PanicErrorHandler, TopEncodeMulti},
     types::{ContractCall, ManagedArgBuffer},
 };
 
@@ -134,7 +137,7 @@ impl ScCallStep {
     /// - "arguments"
     pub fn call<CC>(mut self, contract_call: CC) -> TypedScCall<CC::OriginalResult>
     where
-        CC: ContractCall<StaticApi>,
+        CC: ContractCallBase<StaticApi>,
     {
         let (to_str, function, klv_value_expr, scenario_args) =
             process_contract_call(contract_call);
@@ -170,7 +173,7 @@ impl ScCallStep {
     ) -> TypedScCall<CC::OriginalResult>
     where
         CC: ContractCall<StaticApi>,
-        ExpectedResult: CodecFrom<CC::OriginalResult> + TopEncodeMulti,
+        ExpectedResult: TypeAbiFrom<CC::OriginalResult> + TopEncodeMulti,
     {
         self.call(contract_call).expect_value(expected_value)
     }
@@ -220,7 +223,7 @@ pub(super) fn process_contract_call<CC>(
     contract_call: CC,
 ) -> (String, String, BigUintValue, Vec<String>)
 where
-    CC: ContractCall<StaticApi>,
+    CC: ContractCallBase<StaticApi>,
 {
     let normalized_cc = contract_call.into_normalized();
     let to_str = format!(

@@ -1,10 +1,8 @@
 #![allow(deprecated)]
 
 use basic_features::BasicFeatures;
-use klever_sc::imports::{OrderedBinaryTreeNode, NULL_NODE_ID};
-use klever_sc_scenario::{
-    managed_biguint, rust_biguint, testing_framework::BlockchainStateWrapper,
-};
+
+use klever_sc_scenario::imports::*;
 
 #[test]
 fn ordered_binary_tree_test() {

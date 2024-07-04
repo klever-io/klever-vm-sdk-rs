@@ -1,5 +1,4 @@
-use klever_sc::types::{BigUint, ManagedVec};
-use klever_sc_scenario::{api::StaticApi, *};
+use klever_sc_scenario::imports::*;
 
 use basic_features::managed_vec_features::ManagedVecFeatures;
 

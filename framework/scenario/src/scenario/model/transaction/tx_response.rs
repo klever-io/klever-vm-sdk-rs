@@ -1,6 +1,7 @@
 use klever_chain_vm::crypto_functions::keccak256;
 use crate::klever_sc::types::Address;
 use klever_chain_vm::tx_mock::TxResult;
+use klever_sc::types::KDASystemSCAddress;
 use klever_vm_sdk::data::transaction::{
     ApiLogs, ApiSmartContractResult, Events,
 };
@@ -11,8 +12,6 @@ use super::{
 };
 
 const LOG_IDENTIFIER_SIGNAL_ERROR: &str = "signalError";
-
-const SYSTEM_SC_BECH32: &str = "klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
 
 #[derive(Debug, Default, Clone)]
 /// The response of a transaction.
@@ -147,7 +146,7 @@ impl TxResponse {
 
     fn process_new_issued_token_identifier(mut self) -> Self {
         for scr in self.api_scrs.iter() {
-            if scr.sender.to_string() != SYSTEM_SC_BECH32 {
+            if scr.sender.to_bech32_string().unwrap() != KDASystemSCAddress.to_bech32_string() {
                 continue
             }
 

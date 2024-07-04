@@ -4,6 +4,7 @@ use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
 
 mod distribution_module;
+pub mod nft_marketplace_proxy;
 mod nft_module;
 
 use distribution_module::Distribution;
@@ -39,10 +40,13 @@ pub trait SeedNftMinter:
         let claim_destination = self.blockchain().get_sc_address();
         let mut total_amount = BigUint::zero();
         for address in self.marketplaces().iter() {
-            let results: MultiValue2<BigUint, ManagedVec<KdaTokenPayment>> = self
-                .marketplace_proxy(address)
+            let results = self
+                .tx()
+                .to(&address)
+                .typed(nft_marketplace_proxy::NftMarketplaceProxy)
                 .claim_tokens(&claim_destination, token_id, token_nonce)
-                .execute_on_dest_context();
+                .returns(ReturnsResult)
+                .sync_call();
 
             let (klv_amount, kda_payments) = results.into_tuple();
             let amount = if token_id.is_klv() {
@@ -66,25 +70,4 @@ pub trait SeedNftMinter:
     #[view(getNftCount)]
     #[storage_mapper("nftCount")]
     fn nft_count(&self) -> SingleValueMapper<u64>;
-
-    #[proxy]
-    fn marketplace_proxy(
-        &self,
-        sc_address: ManagedAddress,
-    ) -> nft_marketplace_proxy::Proxy<Self::Api>;
-}
-
-mod nft_marketplace_proxy {
-    use klever_sc::imports::*;
-
-    #[klever_sc::proxy]
-    pub trait NftMarketplace {
-        #[endpoint(claimTokens)]
-        fn claim_tokens(
-            &self,
-            claim_destination: &ManagedAddress,
-            token_id: &TokenIdentifier,
-            token_nonce: u64,
-        ) -> MultiValue2<BigUint, ManagedVec<KdaTokenPayment>>;
-    }
 }

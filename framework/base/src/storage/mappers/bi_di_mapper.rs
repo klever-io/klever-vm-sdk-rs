@@ -1,20 +1,21 @@
 use core::marker::PhantomData;
 
-use crate::codec::{
-    multi_encode_iter_or_handle_err, multi_types::MultiValue2, CodecFrom, EncodeErrorHandler,
-    NestedDecode, NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
-};
-
-use super::{unordered_set_mapper, StorageMapper, UnorderedSetMapper};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
-    storage::{storage_get, storage_set, StorageKey},
+    storage::{storage_set, StorageKey},
     storage_clear,
     types::{ManagedType, MultiValueEncoded},
 };
+use crate::abi::TypeAbiFrom;
+use crate::codec::{
+    CodecFrom, EncodeErrorHandler, multi_encode_iter_or_handle_err, multi_types::MultiValue2,
+    NestedDecode, NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+};
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::types::ManagedAddress;
+
+use super::{StorageMapper, unordered_set_mapper, UnorderedSetMapper};
 
 const VALUE_SUFIX: &[u8] = b"_value";
 const ID_SUFIX: &[u8] = b"_id";
@@ -303,6 +304,23 @@ where
 {
 }
 
+impl<SA, K, V> TypeAbiFrom<BiDiMapper<SA, K, V, CurrentStorage>>
+    for MultiValueEncoded<SA, MultiValue2<K, V>>
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+    V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+{
+}
+
+impl<SA, K, V> TypeAbiFrom<Self> for BiDiMapper<SA, K, V, CurrentStorage>
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+    V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+{
+}
+
 impl<SA, K, V> TypeAbi for BiDiMapper<SA, K, V, CurrentStorage>
 where
     SA: StorageMapperApi,
@@ -323,8 +341,14 @@ where
         + PartialEq
         + TypeAbi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         MultiValueEncoded::<SA, MultiValue2<K, V>>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        MultiValueEncoded::<SA, MultiValue2<K, V>>::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

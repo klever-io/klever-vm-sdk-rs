@@ -16,6 +16,8 @@ use crate::{
         ManagedBuffer, ManagedType, TokenIdentifier,
     },
 };
+use crate::abi::TypeAbiFrom;
+use crate::types::Tx;
 
 pub struct FungibleTokenMapper<SA>
 where
@@ -133,11 +135,10 @@ where
     }
 
     fn send_payment(&self, to: &ManagedAddress<SA>, payment: &KdaTokenPayment<SA>) {
-        let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.direct_payment(
-            to,
-            payment,
-        );
+        Tx::new_tx_from_sc()
+            .to(to)
+            .single_kda(&payment.token_identifier, 0, &payment.amount)
+            .transfer();
     }
 }
 
@@ -163,12 +164,25 @@ impl<SA> CodecFrom<FungibleTokenMapper<SA>> for TokenIdentifier<SA> where
 {
 }
 
+impl<SA> TypeAbiFrom<FungibleTokenMapper<SA>> for TokenIdentifier<SA> where
+    SA: StorageMapperApi + CallTypeApi
+{
+}
+
+impl<SA> TypeAbiFrom<Self> for FungibleTokenMapper<SA> where SA: StorageMapperApi + CallTypeApi {}
+
 impl<SA> TypeAbi for FungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         TokenIdentifier::<SA>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        TokenIdentifier::<SA>::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: crate::abi::TypeDescriptionContainer>(accumulator: &mut TDC) {

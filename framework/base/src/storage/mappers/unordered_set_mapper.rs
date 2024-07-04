@@ -13,6 +13,7 @@ use crate::{
     storage_clear, storage_get, storage_set,
     types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
+use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 const ITEM_INDEX: &[u8] = b".index";
@@ -230,14 +231,34 @@ where
 {
 }
 
+impl<SA, T> TypeAbiFrom<UnorderedSetMapper<SA, T>> for MultiValueEncoded<SA, T>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static,
+{
+}
+
+impl<SA, T> TypeAbiFrom<Self> for UnorderedSetMapper<SA, T>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static,
+{
+}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for UnorderedSetMapper<SA, T>
 where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         crate::abi::type_name_variadic::<T>()
+    }
+
+    fn type_name_rust() -> TypeName {
+        crate::abi::type_name_multi_value_encoded::<T>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

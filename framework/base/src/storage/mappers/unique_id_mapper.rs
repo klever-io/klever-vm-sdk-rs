@@ -11,6 +11,7 @@ use crate::{
     storage_set,
     types::{ManagedType, MultiValueEncoded},
 };
+use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::types::ManagedAddress;
 
@@ -213,13 +214,26 @@ impl<SA> CodecFrom<UniqueIdMapper<SA, CurrentStorage>> for MultiValueEncoded<SA,
 {
 }
 
+impl<SA> TypeAbiFrom<UniqueIdMapper<SA, CurrentStorage>> for MultiValueEncoded<SA, usize> where
+    SA: StorageMapperApi
+{
+}
+
+impl<SA> TypeAbiFrom<Self> for UniqueIdMapper<SA, CurrentStorage> where SA: StorageMapperApi {}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA> TypeAbi for UniqueIdMapper<SA, CurrentStorage>
 where
     SA: StorageMapperApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         crate::abi::type_name_variadic::<usize>()
+    }
+
+    fn type_name_rust() -> TypeName {
+        crate::abi::type_name_multi_value_encoded::<usize>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

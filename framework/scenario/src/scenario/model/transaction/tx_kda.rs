@@ -1,4 +1,6 @@
-use klever_sc::types::BigUint;
+use klever_sc::api::ManagedTypeApi;
+use klever_sc::types::KdaTokenPayment;
+
 use crate::{
     scenario::model::{BigUintValue, BytesValue, U64Value},
     scenario_format::{
@@ -30,6 +32,18 @@ impl IntoRaw<TxKDARaw> for TxKDA {
             token_identifier: Some(self.kda_token_identifier.into_raw()),
             nonce: self.nonce.into_raw_opt(),
             value: self.kda_value.into_raw_opt(),
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> From<KdaTokenPayment<M>> for TxKDA {
+    fn from(value: KdaTokenPayment<M>) -> Self {
+        TxKDA {
+            kda_token_identifier: BytesValue::from(
+                value.token_identifier.as_managed_buffer().to_vec(),
+            ),
+            nonce: U64Value::from(value.token_nonce),
+            kda_value: BigUintValue::from(value.amount),
         }
     }
 }

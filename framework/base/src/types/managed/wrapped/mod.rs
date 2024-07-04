@@ -43,8 +43,8 @@ pub use kda_token_data::{
     RoyaltiesData, RoyaltyData, RoyaltyInfo, RoyaltySplitData, StakingInfo, URI
 };
 
-pub use kda_token_payment::{KdaTokenPayment, MultiKdaPayment};
-pub use klv_or_multi_kda_payment::KlvOrMultiKdaPayment;
+pub use kda_token_payment::{KdaTokenPayment, KdaTokenPaymentRefs, MultiKdaPayment};
+pub use klv_or_multi_kda_payment::{KlvOrMultiKdaPayment, KlvOrMultiKdaPaymentRefs};
 pub use managed_address::ManagedAddress;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;
 pub use managed_byte_array::ManagedByteArray;

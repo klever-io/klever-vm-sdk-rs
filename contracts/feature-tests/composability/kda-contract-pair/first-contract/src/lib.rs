@@ -2,9 +2,9 @@
 
 use klever_sc::imports::*;
 
-const KDA_TRANSFER_STRING: &[u8] = b"KDATransfer";
-const SECOND_CONTRACT_ACCEPT_KDA_PAYMENT: &[u8] = b"acceptKdaPayment";
-const SECOND_CONTRACT_REJECT_KDA_PAYMENT: &[u8] = b"rejectKdaPayment";
+const KDA_TRANSFER_STRING: &str = "KDATransfer";
+const SECOND_CONTRACT_ACCEPT_KDA_PAYMENT: &str = "acceptKdaPayment";
+const SECOND_CONTRACT_REJECT_KDA_PAYMENT: &str = "rejectKdaPayment";
 
 #[klever_sc::contract]
 pub trait FirstContract {
@@ -90,14 +90,13 @@ pub trait FirstContract {
             "Wrong kda token"
         );
 
-        let _ = self.send_raw().transfer_kda_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &kda_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_KDA_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_REJECT_KDA_PAYMENT)
+            .single_kda(&expected_token_identifier, 0u64, &kda_value)
+            .transfer_execute();
     }
 
     #[payable("*")]
@@ -112,14 +111,13 @@ pub trait FirstContract {
             "Wrong kda token"
         );
 
-        let _ = self.send_raw().transfer_kda_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &kda_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_KDA_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_ACCEPT_KDA_PAYMENT)
+            .single_kda(&expected_token_identifier, 0u64, &kda_value)
+            .transfer_execute();
     }
 
     fn call_kda_second_contract(
@@ -138,13 +136,11 @@ pub trait FirstContract {
             arg_buffer.push_arg_raw(arg);
         }
 
-        self.send_raw().execute_on_dest_context_raw(
-            0,
-            to,
-            &BigUint::zero(),
-            &ManagedBuffer::from(KDA_TRANSFER_STRING),
-            &arg_buffer,
-        );
+        self.tx()
+            .to(to)
+            .raw_call(KDA_TRANSFER_STRING)
+            .arguments_raw(arg_buffer)
+            .sync_call();
     }
 
     // storage

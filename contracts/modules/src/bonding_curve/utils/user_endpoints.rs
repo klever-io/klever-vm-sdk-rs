@@ -1,7 +1,5 @@
-use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
-
 use klever_sc::contract_base::ManagedSerializer;
+use klever_sc::imports::*;
 
 use crate::bonding_curve::{
     curves::curve_function::CurveFunction,
@@ -48,8 +46,11 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
         self.nonce_amount(&offered_token, nonce)
             .update(|val| *val += sell_amount);
 
-        self.send()
-            .direct_kda(&caller, &payment_token, 0u64, &calculated_price);
+        self.tx()
+            .to(&caller)
+            .klv_or_single_kda(&payment_token, 0u64, &calculated_price)
+            .transfer();
+
         self.token_details(&offered_token)
             .update(|details| details.add_nonce(nonce));
 
@@ -98,8 +99,10 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
 
         match requested_nonce {
             OptionalValue::Some(nonce) => {
-                self.send()
-                    .direct_kda(&caller, &requested_token, nonce, &requested_amount);
+                self.tx()
+                    .to(&caller)
+                    .single_kda(&requested_token, nonce, &requested_amount)
+                    .transfer();
                 if self.nonce_amount(&requested_token, nonce).get() - requested_amount.clone() > 0 {
                     self.nonce_amount(&requested_token, nonce)
                         .update(|val| *val -= requested_amount.clone());
@@ -114,12 +117,10 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
             },
         };
 
-        self.send().direct_kda(
-            &caller,
-            &offered_token,
-            0u64,
-            &(&payment - &calculated_price),
-        );
+        self.tx()
+            .to(&caller)
+            .klv_or_single_kda(&offered_token, 0u64, &(&payment - &calculated_price))
+            .transfer();
 
         self.buy_token_event(&caller, &calculated_price);
     }
@@ -156,7 +157,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
             }
         }
 
-        self.send().direct_multi(caller, &tokens_to_send);
+        self.tx().to(caller).multi_kda(tokens_to_send).transfer();
 
         self.token_details(&token)
             .update(|token_ownership| token_ownership.token_nonces = nonces);

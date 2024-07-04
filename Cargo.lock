@@ -2483,6 +2483,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "scenario-tester"
+version = "0.0.0"
+dependencies = [
+ "klever-sc",
+ "klever-sc-scenario",
+]
+
+[[package]]
+name = "scenario-tester-meta"
+version = "0.0.0"
+dependencies = [
+ "klever-sc-meta",
+ "scenario-tester",
+]
+
+[[package]]
 name = "schannel"
 version = "0.1.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"

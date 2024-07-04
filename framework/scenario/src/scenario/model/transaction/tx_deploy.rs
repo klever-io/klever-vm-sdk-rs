@@ -73,7 +73,7 @@ impl IntoRaw<TxDeployRaw> for TxDeploy {
 impl TxDeploy {
     pub fn to_tx_data(&self) -> String {
         let mut result = hex::encode(&self.contract_code.value);
-        result.push_str("@0500@"); // VM identifier
+        result.push_str("@0000@"); // VM identifier
         result.push_str(hex::encode(self.code_metadata.to_byte_array()).as_str());
         for argument in &self.arguments {
             result.push('@');

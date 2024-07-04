@@ -6,7 +6,7 @@ use klever_sc_codec::{
 
 use crate::{
     abi::{
-        ExplicitEnumVariantDescription, TypeAbi, TypeContents, TypeDescription,
+        ExplicitEnumVariantDescription, TypeAbi, TypeAbiFrom, TypeContents, TypeDescription,
         TypeDescriptionContainer, TypeName,
     },
     api::ManagedTypeApi,
@@ -54,12 +54,14 @@ impl TopEncode for OperationCompletionStatus {
 impl TopDecode for OperationCompletionStatus {
     fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
         where I: TopDecodeInput, H: DecodeErrorHandler {
-        let mut buffer = [0u8; 16];
-        input.into_max_size_buffer(&mut buffer, h)?;
+        const BUFFER_LEN: usize = 16;
+        let mut buffer = [0u8; BUFFER_LEN];
+        let len = input.into_max_size_buffer_align_right(&mut buffer, h)?;
+        let bytes = &buffer[BUFFER_LEN - len..];
 
-        if buffer.starts_with(COMPLETED_STR.as_bytes()) {
+        if bytes.starts_with(COMPLETED_STR.as_bytes()) {
             Ok(OperationCompletionStatus::Completed)
-        } else if buffer.starts_with(INTERRUPTED_STR.as_bytes()) {
+        } else if bytes.starts_with(INTERRUPTED_STR.as_bytes()) {
             Ok(OperationCompletionStatus::InterruptedBeforeOutOfGas)
         } else {
             Err(h.handle_error(DecodeError::INVALID_VALUE))
@@ -72,19 +74,31 @@ impl<M: ManagedTypeApi> CodecFrom<OperationCompletionStatus> for ManagedBuffer<M
 impl CodecFrom<OperationCompletionStatus> for crate::types::heap::BoxedBytes {}
 impl CodecFrom<OperationCompletionStatus> for crate::types::heap::Vec<u8> {}
 
+impl<M: ManagedTypeApi> TypeAbiFrom<OperationCompletionStatus> for ManagedBuffer<M> {}
+impl TypeAbiFrom<OperationCompletionStatus> for crate::types::heap::BoxedBytes {}
+impl TypeAbiFrom<OperationCompletionStatus> for crate::types::heap::Vec<u8> {}
+
+impl TypeAbiFrom<Self> for OperationCompletionStatus {}
+
 impl TypeAbi for OperationCompletionStatus {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         TypeName::from("OperationCompletionStatus")
     }
 
+    fn type_name_rust() -> TypeName {
+        TypeName::from("OperationCompletionStatus")
+    }
+
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {
-        let type_name = Self::type_name();
+        let type_names = Self::type_names();
 
         accumulator.insert(
-            type_name,
+            type_names,
             TypeDescription {
                 docs: Vec::new(),
-                name: Self::type_name(),
+                names: Self::type_names(),
                 contents: TypeContents::ExplicitEnum([
                     ExplicitEnumVariantDescription::new(
                         &["indicates that operation was completed"],
@@ -95,6 +109,7 @@ impl TypeAbi for OperationCompletionStatus {
                         INTERRUPTED_STR,
                     )
                 ].to_vec()),
+                macro_attributes: Vec::new()
             },
         );
     }

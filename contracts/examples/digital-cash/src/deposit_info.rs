@@ -1,7 +1,8 @@
 use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct DepositInfo<M: ManagedTypeApi> {
     pub depositor_address: ManagedAddress<M>,
     pub kda_funds: ManagedVec<M, KdaTokenPayment<M>>,
@@ -25,7 +26,8 @@ where
     }
 }
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct Fee<M: ManagedTypeApi> {
     pub num_token_to_transfer: usize,
     pub value: KdaTokenPayment<M>,

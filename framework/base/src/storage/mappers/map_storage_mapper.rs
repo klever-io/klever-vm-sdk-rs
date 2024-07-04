@@ -10,6 +10,7 @@ use crate::{
     storage::{self, StorageKey},
     types::ManagedAddress,
 };
+use crate::contract_base::ErrorHelper;
 
 const MAPPED_STORAGE_VALUE_IDENTIFIER: &[u8] = b".storage";
 type Keys<'a, SA, A, T> = set_mapper::Iter<'a, SA, A, T>;
@@ -232,7 +233,9 @@ where
     #[inline]
     fn next(&mut self) -> Option<(K, V)> {
         if let Some(key) = self.key_iter.next() {
-            let value = self.hash_map.get(&key).unwrap();
+            let Some(value) = self.hash_map.get(&key) else {
+                ErrorHelper::<SA>::signal_error_with_message("missing key")
+            };
             return Some((key, value));
         }
         None

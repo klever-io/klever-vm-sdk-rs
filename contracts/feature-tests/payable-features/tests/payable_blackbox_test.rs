@@ -1,4 +1,4 @@
-use klever_sc_scenario::{scenario_model::*, *};
+use klever_sc_scenario::imports::*;
 
 const PF_PATH_EXPR: &str = "kleversc:output/payable-features.kleversc.json";
 

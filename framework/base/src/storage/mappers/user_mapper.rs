@@ -12,6 +12,7 @@ use crate::{
     storage::{storage_get, storage_get_len, storage_set, StorageKey},
     types::{ManagedAddress, ManagedType, ManagedVec, MultiValueEncoded},
 };
+use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 const ADDRESS_TO_ID_SUFFIX: &[u8] = b"_address_to_id";
@@ -222,13 +223,26 @@ impl<SA> CodecFrom<UserMapper<SA, CurrentStorage>> for MultiValueEncoded<SA, Man
 {
 }
 
+impl<SA> TypeAbiFrom<UserMapper<SA, CurrentStorage>> for MultiValueEncoded<SA, ManagedAddress<SA>> where
+    SA: StorageMapperApi
+{
+}
+
+impl<SA> TypeAbiFrom<Self> for UserMapper<SA, CurrentStorage> where SA: StorageMapperApi {}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA> TypeAbi for UserMapper<SA, CurrentStorage>
 where
     SA: StorageMapperApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         crate::abi::type_name_variadic::<ManagedAddress<SA>>()
+    }
+
+    fn type_name_rust() -> TypeName {
+        crate::abi::type_name_multi_value_encoded::<ManagedAddress<SA>>()
     }
 
     fn is_variadic() -> bool {

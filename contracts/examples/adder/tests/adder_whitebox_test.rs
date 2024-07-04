@@ -1,5 +1,5 @@
 use adder::*;
-use klever_sc_scenario::{scenario_model::*, *};
+use klever_sc_scenario::imports::*;
 
 const ADDER_PATH_EXPR: &str = "kleversc:output/adder.kleversc.json";
 

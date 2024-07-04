@@ -16,6 +16,9 @@ use crate::{
         BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, PropertiesInfo, TokenIdentifier
     }
 };
+use crate::abi::TypeAbiFrom;
+use crate::imports::UserMapper;
+use crate::storage::mappers::set_mapper::CurrentStorage;
 
 pub struct SemiFungibleTokenMapper<SA>
 where
@@ -238,11 +241,13 @@ impl<SA> CodecFrom<SemiFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
     SA: StorageMapperApi + CallTypeApi
 {
 }
+impl<SA> TypeAbiFrom<Self> for SemiFungibleTokenMapper<SA> where SA: StorageMapperApi + CallTypeApi {}
 
 impl<SA> TypeAbi for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
+    type Unmanaged = Self;
     fn type_name() -> TypeName {
         TokenIdentifier::<SA>::type_name()
     }

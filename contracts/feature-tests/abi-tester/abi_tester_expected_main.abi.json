@@ -44,6 +44,22 @@
         ],
         "outputs": []
     },
+    "upgradeConstructor": {
+        "docs": [
+            "Upgrade constructor."
+        ],
+        "inputs": [
+            {
+                "name": "_constructor_arg_1",
+                "type": "i32"
+            },
+            {
+                "name": "_constructor_arg_2",
+                "type": "OnlyShowsUpInConstructor"
+            }
+        ],
+        "outputs": []
+    },
     "endpoints": [
         {
             "docs": [
@@ -350,6 +366,16 @@
             "outputs": [
                 {
                     "type": "Option<OnlyShowsUpAsNestedInOption>"
+                }
+            ]
+        },
+        {
+            "name": "operation_completion_status",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "OperationCompletionStatus"
                 }
             ]
         },
@@ -913,6 +939,23 @@
                 {
                     "name": "field",
                     "type": "OnlyShowsUpAsNested10"
+                }
+            ]
+        },
+        "OperationCompletionStatus": {
+            "type": "explicit-enum",
+            "variants": [
+                {
+                    "docs": [
+                        "indicates that operation was completed"
+                    ],
+                    "name": "completed"
+                },
+                {
+                    "docs": [
+                        "indicates that operation was interrupted prematurely, due to low gas"
+                    ],
+                    "name": "interrupted"
                 }
             ]
         },

@@ -12,19 +12,7 @@ pub(crate) fn write_snippet_imports(file: &mut File, contract_crate_name: &str) 
 use {contract_crate_name}::ProxyTrait as _;
 use {contract_crate_name}::*;
 
-use klever_sc_snippets::{{
-    env_logger,
-    erdrs::wallet::Wallet,
-    klever_sc::{{codec::multi_types::*, types::*}},
-    klever_sc_scenario::{{
-        api::StaticApi,
-        bech32,
-        scenario_format::interpret_trait::{{InterpretableFrom, InterpreterContext}},
-        scenario_model::*,
-        ContractInfo,
-    }},
-    sdk, tokio, Interactor,
-}};
+use klever_sc_snippets::imports::*;
 "
     )
     .unwrap();

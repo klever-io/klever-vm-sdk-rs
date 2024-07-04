@@ -4,11 +4,11 @@ use klever_sc::{
         NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
         TopEncodeOutput,
     },
-    derive::TypeAbi,
+    derive::type_abi,
 };
 
 /// Helper type to explore encode/decode errors.
-#[derive(TypeAbi)]
+#[type_abi]
 pub struct CodecErrorTestType;
 
 impl TopEncode for CodecErrorTestType {

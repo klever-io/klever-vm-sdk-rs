@@ -85,21 +85,13 @@ pub trait NftModule {
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_kda(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+        self.tx()
+            .to(ToCaller)
+            .single_kda(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         let owner = self.blockchain().get_owner_address();
-        self.send().direct_kda(
-            &owner,
-            &payment.token_identifier,
-            payment.token_nonce,
-            &payment.amount,
-        );
+        self.tx().to(owner).payment(payment).transfer();
     }
 
     // views

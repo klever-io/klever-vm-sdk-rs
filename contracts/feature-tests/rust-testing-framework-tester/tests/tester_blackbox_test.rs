@@ -1,5 +1,5 @@
-use klever_sc_scenario::{api::StaticApi, scenario_model::*, *};
-use rust_testing_framework_tester::*; // TODO: clean up imports
+use klever_sc_scenario::imports::*;
+use rust_testing_framework_tester::*;
 
 const WASM_PATH_EXPR: &str = "kleversc:output/rust-testing-framework-tester.kleversc.json";
 

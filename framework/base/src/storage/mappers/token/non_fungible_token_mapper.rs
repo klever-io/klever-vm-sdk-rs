@@ -17,6 +17,7 @@ use crate::{
         BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, PropertiesInfo, TokenIdentifier
     }
 };
+use crate::abi::TypeAbiFrom;
 
 pub struct NonFungibleTokenMapper<SA>
 where
@@ -182,12 +183,25 @@ impl<SA> CodecFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
 {
 }
 
+impl<SA> TypeAbiFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
+    SA: StorageMapperApi + CallTypeApi
+{
+}
+
+impl<SA> TypeAbiFrom<Self> for NonFungibleTokenMapper<SA> where SA: StorageMapperApi + CallTypeApi {}
+
 impl<SA> TypeAbi for NonFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         TokenIdentifier::<SA>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        TokenIdentifier::<SA>::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: crate::abi::TypeDescriptionContainer>(accumulator: &mut TDC) {

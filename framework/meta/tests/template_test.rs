@@ -26,6 +26,7 @@ fn test_template_list() {
         [
             "adder".to_string(),
             "crypto-zombies".to_string(),
+            "deposit-kda-pool".to_string(),
             "dice".to_string(),
             "empty".to_string()
         ]

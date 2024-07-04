@@ -1,5 +1,5 @@
 use crate::{
-    abi::{TypeAbi, TypeName},
+    abi::{TypeAbi, TypeAbiFrom, TypeName},
     api::{ErrorApi, ErrorApiImpl, HandleConstraints, ManagedTypeApi, ManagedTypeApiImpl},
     codec::*,
     err_msg,
@@ -187,12 +187,23 @@ impl<M: ManagedTypeApi> TopDecode for TokenIdentifier<M> {
 impl<M> CodecFromSelf for TokenIdentifier<M> where M: ManagedTypeApi {}
 
 impl<M> CodecFrom<&[u8]> for TokenIdentifier<M> where M: ManagedTypeApi {}
-
 impl<M> CodecFrom<Vec<u8>> for TokenIdentifier<M> where M: ManagedTypeApi {}
 
+impl<M> TypeAbiFrom<&[u8]> for TokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> TypeAbiFrom<Vec<u8>> for TokenIdentifier<M> where M: ManagedTypeApi {}
+
+impl<M: ManagedTypeApi> TypeAbiFrom<Self> for TokenIdentifier<M> {}
+impl<M: ManagedTypeApi> TypeAbiFrom<&Self> for TokenIdentifier<M> {}
+
 impl<M: ManagedTypeApi> TypeAbi for TokenIdentifier<M> {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         "TokenIdentifier".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "TokenIdentifier<$API>".into()
     }
 }
 

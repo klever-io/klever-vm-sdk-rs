@@ -44,7 +44,7 @@ pub trait Parent {
             .child_proxy(child_contract_adress)
             .issue_wrapped_klv(token_display_name, token_ticker, initial_supply)
             .with_klv_transfer(issue_cost.clone_value())
-            .with_gas_limit(ISSUE_EXPECTED_GAS_COST)
+            .gas(ISSUE_EXPECTED_GAS_COST)
             .execute_on_dest_context();
     }
 

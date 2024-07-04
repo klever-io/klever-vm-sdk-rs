@@ -1,5 +1,5 @@
 use std::{fs, fs::File, io::Write};
-use klever_sc::abi::{EnumVariantDescription, TypeContents};
+use klever_sc::abi::{EnumVariantDescription, TypeContents, TypeNames};
 use klever_sc::contract_base::ContractAbiProvider;
 
 use klever_sc_meta::abi_json;
@@ -92,7 +92,10 @@ fn abi_deserialization_check() {
         .types
         .get("AbiEnum")
         .unwrap()
-        .to_type_description("AbiEnum");
+        .to_type_description(TypeNames {
+            abi: "AbiEnum".to_string(),
+            rust: "Enum".to_string(),
+        });
     if let TypeContents::Enum(variants) = abi_enum_type.contents {
         assert_eq!(variants.len(), 4);
         assert_eq!(

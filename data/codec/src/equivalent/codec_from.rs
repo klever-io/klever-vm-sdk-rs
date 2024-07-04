@@ -1,12 +1,16 @@
 use crate::{TopDecodeMulti, TopEncodeMulti};
 
 /// Signals that after serializing `T`, we can safely deserialize it as `Self`.
+#[deprecated(since = "0.43.4", note = "Please use trait `TypeAbiFrom` instead.")]
+// still widely used, cant be deleted for now
 pub trait CodecFrom<T>: TopDecodeMulti
 where
     T: TopEncodeMulti,
 {
 }
 
+#[deprecated(since = "0.43.4", note = "Please use trait `TypeAbiFrom` instead.")]
+// still widely used, cant be deleted for now
 pub auto trait CodecFromSelf {}
 
 impl<T> CodecFrom<T> for T where T: TopEncodeMulti + TopDecodeMulti + CodecFromSelf {}

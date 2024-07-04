@@ -151,7 +151,7 @@ fn convert_scenario_kda_instance_to_world_mock(
             creator: scenario_kda
                 .creator
                 .as_ref()
-                .map(|creator| VMAddress::from_slice(creator.value.as_slice())),
+                .map(|creator| creator.to_vm_address()),
             royalties: scenario_kda
                 .royalties
                 .as_ref()

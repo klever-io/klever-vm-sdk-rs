@@ -1,12 +1,10 @@
 #![allow(deprecated)] // TODO: migrate tests
 
-use adder::*;
 use num_traits::ToPrimitive;
 
 use basic_features::BasicFeatures;
 use klever_sc::{
     codec::Empty,
-    contract_base::ContractBase,
     err_msg,
     types::{Address, BigUint, KdaTokenPayment, ManagedVec, TokenIdentifier},
 };

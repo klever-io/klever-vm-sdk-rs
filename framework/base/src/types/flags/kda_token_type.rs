@@ -1,6 +1,9 @@
 use klever_sc_derive::ManagedVecItem;
 
-use crate::codec::*;
+use crate::{
+    codec,
+    codec::derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
+};
 
 const KDA_TYPE_FUNGIBLE: &[u8] = b"FungibleKDA";
 const KDA_TYPE_NON_FUNGIBLE: &[u8] = b"NonFungibleKDA";
@@ -8,10 +11,14 @@ const KDA_TYPE_SEMI_FUNGIBLE: &[u8] = b"SemiFungibleKDA";
 const KDA_TYPE_INVALID: &[u8] = &[];
 
 use crate as klever_sc; // needed by the TypeAbi generated code
-use crate::derive::TypeAbi;
+use crate::derive::type_abi;
 
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Eq, Debug, TypeAbi, ManagedVecItem)]
+
+#[type_abi]
+#[derive(
+    TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug, ManagedVecItem,
+)]
 pub enum KdaTokenType {
     Fungible,
     NonFungible,
@@ -71,47 +78,5 @@ impl<'a> From<&'a [u8]> for KdaTokenType {
         } else {
             Self::Invalid
         }
-    }
-}
-
-impl NestedEncode for KdaTokenType {
-    #[inline]
-    fn dep_encode_or_handle_err<O, H>(&self, dest: &mut O, h: H) -> Result<(), H::HandledErr>
-    where
-        O: NestedEncodeOutput,
-        H: EncodeErrorHandler,
-    {
-        self.as_u8().dep_encode_or_handle_err(dest, h)
-    }
-}
-
-impl TopEncode for KdaTokenType {
-    #[inline]
-    fn top_encode_or_handle_err<O, H>(&self, output: O, h: H) -> Result<(), H::HandledErr>
-    where
-        O: TopEncodeOutput,
-        H: EncodeErrorHandler,
-    {
-        self.as_u8().top_encode_or_handle_err(output, h)
-    }
-}
-
-impl NestedDecode for KdaTokenType {
-    fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
-    where
-        I: NestedDecodeInput,
-        H: DecodeErrorHandler,
-    {
-        Ok(Self::from(u8::dep_decode_or_handle_err(input, h)?))
-    }
-}
-
-impl TopDecode for KdaTokenType {
-    fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
-    where
-        I: TopDecodeInput,
-        H: DecodeErrorHandler,
-    {
-        Ok(Self::from(u8::top_decode_or_handle_err(input, h)?))
     }
 }

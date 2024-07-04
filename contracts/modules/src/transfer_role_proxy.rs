@@ -12,26 +12,33 @@ pub trait TransferRoleProxyModule {
         &self,
         original_caller: ManagedAddress,
         dest: ManagedAddress,
-        payments: PaymentsVec<Self::Api>,
+        payments: &PaymentsVec<Self::Api>,
         data: ManagedBuffer,
     ) {
-        let contract_call =
-            ContractCallWithMultiKda::<Self::Api, ()>::new(dest, data, payments.clone());
+        let transaction = self.tx().to(&dest).raw_call(data).payment(payments);
 
-        self.execute_call(original_caller, payments, contract_call);
+        self.execute_call(original_caller, payments, transaction)
     }
 
     fn transfer_to_contract_typed_call<T>(
         &self,
         original_caller: ManagedAddress,
-        contract_call: ContractCallWithMultiKda<Self::Api, T>,
+        transaction: Tx<
+            TxScEnv<Self::Api>,
+            (),
+            &ManagedAddress,
+            &ManagedVec<Self::Api, KdaTokenPayment<Self::Api>>,
+            (),
+            FunctionCall<Self::Api>,
+            (),
+        >,
     ) where
         T: TopEncodeMulti,
     {
         self.execute_call(
             original_caller,
-            contract_call.kda_payments.clone(),
-            contract_call,
+            transaction.payment,
+            transaction,
         );
     }
 
@@ -39,48 +46,48 @@ pub trait TransferRoleProxyModule {
         &self,
         original_caller: ManagedAddress,
         dest: ManagedAddress,
-        payments: PaymentsVec<Self::Api>,
+        payments: &PaymentsVec<Self::Api>,
         endpoint_name: ManagedBuffer,
         args: ManagedArgBuffer<Self::Api>,
     ) {
-        let contract_call =
-            ContractCallWithMultiKda::<Self::Api, ()>::new(dest, endpoint_name, payments.clone())
-                .with_raw_arguments(args);
+        let transaction = self
+            .tx()
+            .to(&dest)
+            .raw_call(endpoint_name)
+            .payment(payments)
+            .arguments_raw(args);
 
-        self.execute_call(
-            original_caller,
-            payments,
-            contract_call,
-        );
+        self.execute_call(original_caller, payments, transaction)
     }
     
-    fn execute_call<T>(
+    fn execute_call(
         &self,
         _original_caller: ManagedAddress,
-        _initial_payments: PaymentsVec<Self::Api>,
-        contract_call: ContractCallWithMultiKda<Self::Api, T>,
-    ) where
-        T: TopEncodeMulti,
+        initial_payments: &PaymentsVec<Self::Api>,
+        transaction: Tx<
+            TxScEnv<Self::Api>,
+            (),
+            &ManagedAddress,
+            &ManagedVec<Self::Api, KdaTokenPayment<Self::Api>>,
+            (),
+            FunctionCall<Self::Api>,
+            (),
+        >)
     {
         require!(
-            self.destination_whitelist()
-                .contains(&contract_call.basic.to),
+            self.destination_whitelist().contains(transaction.to),
             "Destination address not whitelisted"
         );
 
         let remaining_gas = self.blockchain().get_gas_left();
-        let cb_gas_needed =
-            CALLBACK_RESERVED_GAS_PER_TOKEN * contract_call.kda_payments.len() as u64;
+        let cb_gas_needed = CALLBACK_RESERVED_GAS_PER_TOKEN * transaction.payment.len() as u64;
         require!(
             remaining_gas > cb_gas_needed,
             "Not enough gas to launch async call"
         );
 
-        let async_call_gas = remaining_gas - cb_gas_needed;
 
-        contract_call
-            .with_gas_limit(async_call_gas)
-            .execute_on_dest_context::<IgnoreValue>();
+        transaction.sync_call();
     }
 
     #[storage_mapper("transfer_role_proxy:destination_whitelist")]

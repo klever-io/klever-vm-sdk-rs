@@ -14,6 +14,7 @@ use crate::{
 };
 use core::{marker::PhantomData, usize};
 use storage_get_from_address::storage_get_len_from_address;
+use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 const ITEM_SUFFIX: &[u8] = b".item";
@@ -353,14 +354,34 @@ where
 {
 }
 
+impl<SA, T> TypeAbiFrom<VecMapper<SA, T, CurrentStorage>> for MultiValueEncoded<SA, T>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+{
+}
+
+impl<SA, T> TypeAbiFrom<Self> for VecMapper<SA, T, CurrentStorage>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+{
+}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for VecMapper<SA, T, CurrentStorage>
 where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode + TypeAbi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         crate::abi::type_name_variadic::<T>()
+    }
+
+    fn type_name_rust() -> TypeName {
+        crate::abi::type_name_multi_value_encoded::<T>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

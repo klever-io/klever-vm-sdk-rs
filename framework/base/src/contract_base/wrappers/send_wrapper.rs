@@ -21,8 +21,8 @@ use crate::{
         PropertiesInfo, RoyaltiesData, TokenIdentifier, URI,
     },
 };
-
-use super::{BlockchainWrapper, SendRawWrapper};
+use crate::contract_base::{BlockchainWrapper, SendRawWrapper};
+use crate::types::{GasLeft, ReturnsRawResult, ToSelf, Tx};
 
 /// API that groups methods that either send KLV or KDA, or that call other contracts.
 // pub trait SendApi: Clone + Sized {
@@ -101,7 +101,7 @@ where
     #[inline]
     #[allow(clippy::too_many_arguments)]
     pub fn direct_klv(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
-        self.direct_kda(to, &TokenIdentifier::klv(), 0, amount);
+        Tx::new_tx_from_sc().to(to).klv(amount).transfer();
     }
 
     /// Sends a single KDA transfer to target address.
@@ -111,10 +111,13 @@ where
         &self,
         to: &ManagedAddress<A>,
         token_identifier: &TokenIdentifier<A>,
-        nonce: u64,
+        token_nonce: u64,
         amount: &BigUint<A>,
     ) {
-        self.direct_kda_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
+        Tx::new_tx_from_sc()
+            .to(to)
+            .single_kda(token_identifier, token_nonce, amount)
+            .transfer();
     }
 
     /// Sends multiple KDA tokens to a target address.
@@ -123,13 +126,7 @@ where
         to: &ManagedAddress<A>,
         payments: &ManagedVec<A, KdaTokenPayment<A>>,
     ) {
-        let _ = self.send_raw_wrapper().multi_kda_transfer_execute(
-            to,
-            payments,
-            0,
-            &ManagedBuffer::new(),
-            &ManagedArgBuffer::new(),
-        );
+        Tx::new_tx_from_sc().to(to).payment(payments).transfer();
     }
 
     /// Sends payment to a target address.
@@ -162,12 +159,30 @@ where
     pub fn call_kda_built_in_function(
         &self,
         gas: u64,
-        endpoint_name: &ManagedBuffer<A>,
-        arg_buffer: &ManagedArgBuffer<A>,
+        endpoint_name: ManagedBuffer<A>,
+        arg_buffer: ManagedArgBuffer<A>,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        self.send_raw_wrapper()
-            .call_kda_built_in_function(gas, endpoint_name, arg_buffer)
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(gas)
+            .raw_call(endpoint_name)
+            .arguments_raw(arg_buffer)
+            .returns(ReturnsRawResult)
+            .sync_call()
     }
+    
+    fn call_local_kda_built_in_function_minimal(
+        &self,
+        function_name: &str,
+        arg_buffer: ManagedArgBuffer<A>,
+    ) {
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .raw_call(function_name)
+            .arguments_raw(arg_buffer)
+            .sync_call()
+    }   
 
     /// Allows synchronous minting of KDA/NFT/SFT (depending on nonce). Execution is resumed afterwards.
     ///
@@ -230,9 +245,9 @@ where
         arg_buffer.push_arg(value);
 
         self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            A::blockchain_api_impl().get_gas_left(), 
+            ManagedBuffer::from(func_name), 
+            arg_buffer
         )
     }
 
@@ -249,11 +264,7 @@ where
         arg_buffer.push_arg(nonce);
         arg_buffer.push_arg(amount);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     pub fn account_update_permission(
@@ -270,11 +281,7 @@ where
         arg_buffer.push_arg(address);
         arg_buffer.push_arg(updates_bytes);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows burning of multiple KDA tokens at once.
@@ -310,11 +317,7 @@ where
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(address);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous pause of KDA/NFT. Execution is resumed afterwards.
@@ -325,11 +328,7 @@ where
         arg_buffer.push_arg(AssetTriggerType::Pause as u32);
         arg_buffer.push_arg(token);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous resume of KDA/NFT. Execution is resumed afterwards.
@@ -340,11 +339,7 @@ where
         arg_buffer.push_arg(AssetTriggerType::Resume as u32);
         arg_buffer.push_arg(token);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous change owner of KDA/NFT. Execution is resumed afterwards.
@@ -356,11 +351,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(address);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous change admin of KDA/NFT. Execution is resumed afterwards.
@@ -372,11 +363,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(address);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous add a role of KDA/NFT. Execution is resumed afterwards.
@@ -400,11 +387,7 @@ where
         arg_buffer.push_arg(has_role_deposit);
         arg_buffer.push_arg(has_role_transfer);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous remove a role of KDA/NFT. Execution is resumed afterwards.
@@ -416,11 +399,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(address);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous change owner of NFT. Execution is resumed afterwards.
@@ -444,11 +423,7 @@ where
         arg_buffer.push_arg(metadata);
         arg_buffer.push_arg(name);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous stop nft mint of NFT. Execution is resumed afterwards.
@@ -459,11 +434,7 @@ where
         arg_buffer.push_arg(AssetTriggerType::StopNFTMint as u32);
         arg_buffer.push_arg(token);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous update logo of KDA/NFT. Execution is resumed afterwards.
@@ -475,11 +446,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(logo);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous update uris of KDA/NFT. Execution is resumed afterwards.
@@ -494,11 +461,7 @@ where
         let _ = uris.dep_encode(&mut uri_bytes);
         arg_buffer.push_arg(uri_bytes);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous change royalties receiver of KDA/NFT. Execution is resumed afterwards.
@@ -514,11 +477,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(address);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous update staking of KDA. Execution is resumed afterwards.
@@ -542,11 +501,7 @@ where
         arg_buffer.push_arg(min_epochs_to_unstake);
         arg_buffer.push_arg(min_epochs_to_withdraw);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous update fee pool of KDA. Execution is resumed afterwards.
@@ -568,11 +523,7 @@ where
         arg_buffer.push_arg(f_ratio_kda);
         arg_buffer.push_arg(f_ratio_klv);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous stop royalties change of KDA/NFT. Execution is resumed afterwards.
@@ -583,11 +534,7 @@ where
         arg_buffer.push_arg(AssetTriggerType::StopRoyaltiesChange as u32);
         arg_buffer.push_arg(token);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous stop metadata change of NFT. Execution is resumed afterwards.
@@ -598,11 +545,7 @@ where
         arg_buffer.push_arg(AssetTriggerType::StopNFTMetadataChange as u32);
         arg_buffer.push_arg(token);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous update royalties of KDA/NFT. Execution is resumed afterwards.
@@ -617,11 +560,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(royalties_bytes);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous KDA create. Execution is resumed afterwards.
@@ -666,8 +605,8 @@ where
 
         let result = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         );
 
         // try get index 0, if error signal error
@@ -687,8 +626,8 @@ where
 
         let result = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         );
 
         // try get index 0, if error signal error
@@ -709,11 +648,7 @@ where
         arg_buffer.push_arg(token);
         arg_buffer.push_arg(bucket_id);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous delegate of KDA. Execution is resumed afterwards.
@@ -724,11 +659,7 @@ where
         arg_buffer.push_arg(address);
         arg_buffer.push_arg(bucket_id);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous undelegate of KDA. Execution is resumed afterwards.
@@ -738,11 +669,7 @@ where
 
         arg_buffer.push_arg(bucket_id);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous claim of KDA. Execution is resumed afterwards.
@@ -753,11 +680,7 @@ where
         arg_buffer.push_arg(claim_type as u32);
         arg_buffer.push_arg(id);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous staking claim of KDA. Execution is resumed afterwards.
@@ -791,11 +714,7 @@ where
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(currency);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous withdraw staking of KDA. Execution is resumed afterwards.
@@ -844,8 +763,8 @@ where
 
         let result = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         );
 
         // try get index 0, if error signal error
@@ -874,11 +793,7 @@ where
         arg_buffer.push_arg(currency);
         arg_buffer.push_arg(amount);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous buy ITO. Execution is resumed afterwards.
@@ -908,11 +823,7 @@ where
 
         arg_buffer.push_arg(order_id);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous create marketplace for NFT. Execution is resumed afterwards.
@@ -931,8 +842,8 @@ where
 
         let result = self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         );
 
         // try get index 0, if error signal error
@@ -961,11 +872,7 @@ where
         arg_buffer.push_arg(referral_address);
         arg_buffer.push_arg(referral_percentage);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous deposit KDA. Execution is resumed afterwards.
@@ -984,11 +891,7 @@ where
         arg_buffer.push_arg(currency);
         arg_buffer.push_arg(amount);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous deposit KDA. Execution is resumed afterwards.
@@ -1025,11 +928,7 @@ where
         arg_buffer.push_arg(vote_type as u32);
         arg_buffer.push_arg(amount);
 
-        let _ = self.call_kda_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
 
     /// Allows synchronous ITO config. Execution is resumed afterwards.
@@ -1073,8 +972,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1096,8 +995,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1116,8 +1015,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1136,8 +1035,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1156,8 +1055,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1176,8 +1075,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1198,8 +1097,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1218,8 +1117,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1241,8 +1140,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1264,8 +1163,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1286,8 +1185,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 
@@ -1300,8 +1199,8 @@ where
 
         self.call_kda_built_in_function(
             A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
+            ManagedBuffer::from(func_name),
+            arg_buffer
         )
     }
 }

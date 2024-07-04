@@ -1,20 +1,6 @@
 use klever_sc::imports::*;
 use crate::types::CodecErrorTestType;
 
-mod encode_err_proxy {
-    use klever_sc::imports::*;
-    use crate::types::CodecErrorTestType;
-
-    #[klever_sc::proxy]
-    pub trait EncodeErrorProxy {
-        #[init]
-        fn init(&self, error_arg: CodecErrorTestType);
-
-        #[endpoint]
-        fn encode_error_method(&self, error_arg: CodecErrorTestType);
-    }
-}
-
 /// Test various serialization errors.
 #[klever_sc::module]
 pub trait CodecErrorTest {
@@ -63,23 +49,17 @@ pub trait CodecErrorTest {
         self.event_err_data(CodecErrorTestType);
     }
 
-    #[proxy]
-    fn encode_err_proxy(&self) -> encode_err_proxy::Proxy<Self::Api>;
-
     /// Never actually calls any deploy/upgrade, so it is appropriate in this contract.
     /// It just covers contract init serialization errors.
     #[endpoint]
     fn codec_err_contract_init(&self) {
-        let _ = self.encode_err_proxy().init(CodecErrorTestType);
+        let _ = self.tx().raw_deploy().argument(&CodecErrorTestType);
     }
 
     /// Never actually do any call, so it is appropriate in this contract.
     /// It just covers contract call serialization errors.
     #[endpoint]
     fn codec_err_contract_call(&self) {
-        let _ = self
-            .encode_err_proxy()
-            .contract(ManagedAddress::zero())
-            .encode_error_method(CodecErrorTestType);
+        let _ = self.tx().raw_call("dummy").argument(&CodecErrorTestType);
     }
 }

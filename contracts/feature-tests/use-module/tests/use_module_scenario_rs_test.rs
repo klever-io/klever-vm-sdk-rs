@@ -22,7 +22,7 @@ mod dns_mock {
             let _payment = self.call_value().klv_value();
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
-                .set_account_name(&name)
+                .set_account_name(name)
                 .execute_on_dest_context::<IgnoreValue>();
         }
     }

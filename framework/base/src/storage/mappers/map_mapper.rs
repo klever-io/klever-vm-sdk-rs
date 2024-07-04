@@ -5,7 +5,7 @@ use super::{
     SetMapper, StorageClearable, StorageMapper,
 };
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
+    abi::{TypeAbi, TypeAbiFrom, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     codec::{
         multi_encode_iter_or_handle_err, multi_types::MultiValue2, CodecFrom, EncodeErrorHandler,
@@ -549,6 +549,23 @@ where
 {
 }
 
+impl<SA, K, V> TypeAbiFrom<MapMapper<SA, K, V, CurrentStorage>>
+    for MultiValueEncoded<SA, MultiValue2<K, V>>
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static,
+    V: TopEncode + TopDecode + 'static,
+{
+}
+
+impl<SA, K, V> TypeAbiFrom<Self> for MapMapper<SA, K, V, CurrentStorage>
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static,
+    V: TopEncode + TopDecode + 'static,
+{
+}
+
 /// Behaves like a MultiResultVec<MultiValue<K, V>> when an endpoint result.
 impl<SA, K, V> TypeAbi for MapMapper<SA, K, V, CurrentStorage>
 where
@@ -556,8 +573,14 @@ where
     K: TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi + 'static,
     V: TopEncode + TopDecode + TypeAbi + 'static,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         MultiValueEncoded::<SA, MultiValue2<K, V>>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        MultiValueEncoded::<SA, MultiValue2<K, V>>::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

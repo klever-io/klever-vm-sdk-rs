@@ -48,7 +48,7 @@ pub struct ResponseTxCost {
 }
 
 // TransactionOnNetwork holds a transaction's info entry in a hyper block
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionOnNetwork {
     #[serde(rename = "type")]
@@ -119,6 +119,7 @@ pub struct TransactionInfoData {
 // TransactionInfo holds a transaction info response from the network
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TransactionInfo {
+    #[serde(default)]
     pub error: String,
     pub code: String,
     pub data: Option<TransactionInfoData>,

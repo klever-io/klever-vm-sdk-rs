@@ -16,6 +16,7 @@ use crate::{
     types::{ManagedAddress, ManagedType},
 };
 use storage_get_from_address::storage_get_len_from_address;
+use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 /// Manages a single serializable item in storage.
@@ -212,10 +213,32 @@ where
 {
 }
 
+impl<SA, T, R> TypeAbiFrom<SingleValueMapper<SA, T, CurrentStorage>> for SingleValue<R>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+    R: TopDecode + CodecFrom<T>,
+{
+}
+
 impl<SA, T> CodecFrom<SingleValueMapper<SA, T>> for PlaceholderOutput
 where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode,
+{
+}
+
+impl<SA, T> TypeAbiFrom<SingleValueMapper<SA, T>> for PlaceholderOutput
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+{
+}
+
+impl<SA, T> TypeAbiFrom<Self> for SingleValueMapper<SA, T, CurrentStorage>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + TypeAbi,
 {
 }
 
@@ -224,8 +247,14 @@ where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode + TypeAbi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         T::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        T::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

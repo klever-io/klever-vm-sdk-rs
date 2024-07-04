@@ -1,0 +1,17 @@
+[package]
+name = "scenario-tester"
+version = "0.0.0"
+authors = ["klever <support@klever.com>"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies.klever-sc]
+version = "0.43.3"
+path = "../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.43.3"
+path = "../../../framework/scenario"

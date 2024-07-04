@@ -3,6 +3,7 @@
 use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
 
+pub mod nft_marketplace_proxy;
 mod nft_module;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
@@ -65,29 +66,11 @@ pub trait NftMinter: nft_module::NftModule {
         token_nonce: u64,
     ) {
         let caller = self.blockchain().get_caller();
-        self.marketplace_proxy(marketplace_address)
+        self.tx()
+            .to(&marketplace_address)
+            .typed(nft_marketplace_proxy::NftMarketplaceProxy)
             .claim_tokens(token_id, token_nonce, caller)
             .execute_on_dest_context::<IgnoreValue>();
     }
-
-    #[proxy]
-    fn marketplace_proxy(
-        &self,
-        sc_address: ManagedAddress,
-    ) -> nft_marketplace_proxy::Proxy<Self::Api>;
 }
 
-mod nft_marketplace_proxy {
-    use klever_sc::imports::*;
-
-    #[klever_sc::proxy]
-    pub trait NftMarketplace {
-        #[endpoint(claimTokens)]
-        fn claim_tokens(
-            &self,
-            token_id: TokenIdentifier,
-            token_nonce: u64,
-            claim_destination: ManagedAddress,
-        );
-    }
-}
