@@ -4,12 +4,10 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                            2
-// Total number of exported functions:   3
+// Endpoints:                            3
+// Total number of exported functions:   4
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!();
 klever_sc_wasm_adapter::panic_handler_with_message!();
@@ -20,5 +18,6 @@ klever_sc_wasm_adapter::endpoints! {
         init => init
         panicWithMessage => panic_with_message
         panicAfterLog => panic_after_log
+        sc_panic => sc_panic
     )
 }

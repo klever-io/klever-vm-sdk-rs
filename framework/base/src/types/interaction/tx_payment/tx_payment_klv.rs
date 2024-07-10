@@ -14,6 +14,12 @@ pub struct Klv<KlvValue>(pub KlvValue);
 
 pub type KlvPayment<Api> = Klv<BigUint<Api>>;
 
+impl<KlvValue: Clone> Clone for Klv<KlvValue> {
+    fn clone(&self) -> Self {
+        Klv(self.0.clone())
+    }
+}
+
 impl<Env, KlvValue> TxPayment<Env> for Klv<KlvValue>
 where
     Env: TxEnv,
@@ -42,6 +48,7 @@ where
         })
     }
 
+    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,
@@ -53,11 +60,11 @@ where
     where
         From: TxFrom<Env>,
         To: TxToSpecified<Env>,
-        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, &FunctionCall<Env::Api>) -> R,
+        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, FunctionCall<Env::Api>) -> R,
     {
         to.with_address_ref(env, |to_addr| {
             self.0
-                .with_value_ref(env, |klv_value| f(to_addr, klv_value, &fc))
+                .with_value_ref(env, |klv_value| f(to_addr, klv_value, fc))
         })
     }
 
@@ -78,14 +85,17 @@ where
         self.0.annotation(env)
     }
 
+    #[inline]
     fn to_value(&self, env: &Env) -> BigUint<Env::Api> {
         self.0.to_value(env)
     }
 
+    #[inline]
     fn into_value(self, env: &Env) -> BigUint<Env::Api> {
         self.0.into_value(env)
     }
 
+    #[inline]
     fn with_value_ref<F, R>(&self, env: &Env, f: F) -> R
     where
         F: FnOnce(&BigUint<Env::Api>) -> R,

@@ -1,12 +1,13 @@
 pub use tx_payment_klv::{Klv, KlvPayment};
 pub use tx_payment_klv_value::TxKlvValue;
 pub use tx_payment_multi_kda::TxPaymentMultiKda;
+pub use tx_payment_not_payable::NotPayable;
 
 use crate::{
     api::ManagedTypeApi
     ,
     types::{
-        KdaTokenPayment, KlvOrMultiKdaPayment, ManagedAddress,
+        KlvOrMultiKdaPayment, ManagedAddress,
         MultiKdaPayment,
     },
 };
@@ -18,11 +19,17 @@ mod tx_payment_klv_or_multi_kda_ref;
 mod tx_payment_klv_value;
 mod tx_payment_multi_kda;
 mod tx_payment_none;
+mod tx_payment_not_payable;
 mod tx_payment_single_kda;
 mod tx_payment_single_kda_ref;
 mod tx_payment_single_kda_triple;
 
 /// Describes a payment that is part of a transaction.
+#[diagnostic::on_unimplemented(
+    message = "Type `{Self}` cannot be used as payment (does not implement `TxPayment<{Env}>`)",
+    label = "not a valid payment type",
+    note = "there are multiple ways to specify the transaction payment, but `{Self}` is not one of them"
+)]
 pub trait TxPayment<Env>
 where
     Env: TxEnv,
@@ -52,10 +59,19 @@ where
     where
         From: TxFrom<Env>,
         To: TxToSpecified<Env>,
-        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, &FunctionCall<Env::Api>) -> R;
+        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, FunctionCall<Env::Api>) -> R;
 
     /// Payment data to be used by the testing framework. Will be refactored.
     fn into_full_payment_data(self, env: &Env) -> FullPaymentData<Env::Api>;
+}
+
+/// Marker trait that indicates that payment field contains no payment.
+///
+/// Implemented by `()` and `NotPayable`.
+pub trait TxNoPayment<Env>: TxPayment<Env>
+where
+    Env: TxEnv,
+{
 }
 
 /// Marks a payment object that only contains KLV or nothing at all.
@@ -63,6 +79,7 @@ pub trait TxPaymentKlvOnly<Env>: TxPayment<Env> + AnnotatedValue<Env, BigUint<En
 where
     Env: TxEnv,
 {
+    #[inline]
     fn with_klv_value<F, R>(&self, env: &Env, f: F) -> R
     where
         F: FnOnce(&BigUint<Env::Api>) -> R,

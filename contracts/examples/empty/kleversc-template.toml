@@ -1,12 +1,7 @@
 name = "empty"
 contract_trait = "EmptyContract"
 src_file = "empty.rs"
-rename_pairs = [
-    [
-        "blockchain.set_current_dir_from_workspace(\"contracts/examples/empty\");",
-        "// blockchain.set_current_dir_from_workspace(\"relative path to your workspace, if applicable\");",
-    ],
-]
+rename_pairs = []
 files_include = [
     "meta",
     "scenarios",

@@ -40,7 +40,7 @@ impl<M: ManagedTypeApi> KdaTokenPaymentMultiValue<M> {
 }
 
 impl<M: ManagedTypeApi> ManagedVecItem for KdaTokenPaymentMultiValue<M> {
-    const PAYLOAD_SIZE: usize = KdaTokenPayment::<M>::PAYLOAD_SIZE;
+    type PAYLOAD = <KdaTokenPayment<M> as ManagedVecItem>::PAYLOAD;
     const SKIPS_RESERIALIZATION: bool = KdaTokenPayment::<M>::SKIPS_RESERIALIZATION;
     type Ref<'a> = Self;
 

@@ -4,7 +4,6 @@ use crate::{
     codec::{
         self,
         derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        CodecFromSelf,
     },
     types::BigUint,
 };
@@ -22,8 +21,6 @@ pub enum KlvOrMultiKdaPayment<M: ManagedTypeApi> {
     Klv(BigUint<M>),
     MultiKda(ManagedVec<M, KdaTokenPayment<M>>),
 }
-
-impl<M> CodecFromSelf for KlvOrMultiKdaPayment<M> where M: ManagedTypeApi {}
 
 impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
     pub fn is_empty(&self) -> bool {

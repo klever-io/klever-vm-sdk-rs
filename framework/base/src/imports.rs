@@ -9,7 +9,7 @@ pub use crate::{
           VoteType, WithdrawType, VMApi},
     arrayvec::ArrayVec,
     codec::{
-        multi_types::*, CodecFrom, CodecFromSelf, CodecInto, DecodeError, IntoMultiValue,
+        multi_types::*, DecodeError, IntoMultiValue,
         NestedDecode, NestedEncode, TopDecode, TopEncode,
     },
     contract_base::{ContractBase, ProxyObjBase, ProxyObjNew},

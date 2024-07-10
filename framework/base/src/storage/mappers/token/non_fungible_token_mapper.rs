@@ -8,7 +8,7 @@ use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     codec::{
-        CodecFrom, EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput,
+        EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     contract_base::{BlockchainWrapper, SendWrapper},
     imports::{AttributesInfo, UserKDA},
@@ -176,11 +176,6 @@ where
             output.push_single_value(&self.get_token_id(), h)
         }
     }
-}
-
-impl<SA> CodecFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
-    SA: StorageMapperApi + CallTypeApi
-{
 }
 
 impl<SA> TypeAbiFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where

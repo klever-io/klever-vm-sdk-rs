@@ -6,7 +6,7 @@ use klever_sc::{
     },
 };
 use klever_sc::abi::{TypeAbi, TypeAbiFrom};
-use klever_sc::types::ReturnsResultUnmanaged;
+use klever_sc::types::{ReturnsRawResult, ReturnsResultUnmanaged};
 
 use crate::scenario_model::{TxResponse, TypedResponse};
 
@@ -74,6 +74,15 @@ where
             .new_deployed_address
             .clone()
             .expect("missing returned address")
+    }
+}
+
+impl<Env, Original> RHListItemExec<TxResponse, Env, Original> for ReturnsRawResult
+where
+    Env: TxEnv,
+{
+    fn item_process_result(self, tx_response: &TxResponse) -> Self::Returns {
+        tx_response.out.clone().into()
     }
 }
 

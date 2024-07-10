@@ -1,5 +1,5 @@
 use hex_literal::hex;
-use klever_sc_codec::{CodecFrom, EncodeErrorHandler, TopEncode, TopEncodeOutput};
+use klever_sc_codec::{EncodeErrorHandler, TopEncode, TopEncodeOutput};
 
 use crate::{
     api::{CallTypeApi, ManagedTypeApi},
@@ -61,7 +61,6 @@ impl TopEncode for KDASystemSCAddress {
     }
 }
 
-impl<M> CodecFrom<KDASystemSCAddress> for ManagedAddress<M> where M: ManagedTypeApi {}
 impl<M> TypeAbiFrom<KDASystemSCAddress> for ManagedAddress<M> where M: ManagedTypeApi {}
 
 impl core::fmt::Display for KDASystemSCAddress {

@@ -130,6 +130,64 @@
                 "out": [],
                 "status": "0"
             }
+        },
+        {
+            "step": "scCall",
+            "id": "",
+            "tx": {
+                "from": "address:other",
+                "to": "sc:scenario-tester",
+                "function": "multi_param",
+                "arguments": [
+                    "0x01",
+                    "0x01"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [],
+                "status": "0"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "",
+            "tx": {
+                "from": "address:other",
+                "to": "sc:scenario-tester",
+                "function": "multi_return",
+                "arguments": [
+                    "0x01"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [
+                    "0x01",
+                    "0x02"
+                ],
+                "status": "0"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "",
+            "tx": {
+                "from": "address:other",
+                "to": "sc:scenario-tester",
+                "function": "multi_return",
+                "arguments": [
+                    "0x01"
+                ],
+                "gasLimit": "5,000,000"
+            },
+            "expect": {
+                "out": [
+                    "0x01",
+                    "0x02"
+                ],
+                "status": "0"
+            }
         }
     ]
 }

@@ -3,7 +3,7 @@ use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::{ErrorApiImpl, StorageMapperApi},
     codec::{
-        multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, TopDecode, TopEncode,
+        multi_encode_iter_or_handle_err, EncodeErrorHandler, TopDecode, TopEncode,
         TopEncodeMulti, TopEncodeMultiOutput,
     },
     storage::{
@@ -345,13 +345,6 @@ where
     {
         multi_encode_iter_or_handle_err(self.iter(), output, h)
     }
-}
-
-impl<SA, T> CodecFrom<VecMapper<SA, T, CurrentStorage>> for MultiValueEncoded<SA, T>
-where
-    SA: StorageMapperApi,
-    T: TopEncode + TopDecode,
-{
 }
 
 impl<SA, T> TypeAbiFrom<VecMapper<SA, T, CurrentStorage>> for MultiValueEncoded<SA, T>

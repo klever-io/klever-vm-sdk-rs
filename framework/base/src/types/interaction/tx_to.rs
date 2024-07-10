@@ -10,6 +10,11 @@ where
 
 impl<Env> TxTo<Env> for () where Env: TxEnv {}
 
+#[diagnostic::on_unimplemented(
+    message = "Type `{Self}` cannot be used as recipient value (does not implement `TxToSpecified<{Env}>`)",
+    label = "recipient needs to be explicit",
+    note = "there are multiple ways to specify the recipient value for a transaction, but `{Self}` is not one of them"
+)]
 pub trait TxToSpecified<Env>: TxTo<Env> + AnnotatedValue<Env, ManagedAddress<Env::Api>>
 where
     Env: TxEnv,
@@ -17,6 +22,7 @@ where
     /// Avoids a clone when performing transfer-execute.
     ///
     /// Other than that, does thesame as `AnnotatedValue::into_value`.
+    #[inline]
     fn with_address_ref<F, R>(&self, env: &Env, f: F) -> R
     where
         F: FnOnce(&ManagedAddress<Env::Api>) -> R,

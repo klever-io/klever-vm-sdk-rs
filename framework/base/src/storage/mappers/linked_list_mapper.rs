@@ -10,7 +10,7 @@ use crate::{
             NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
             TopEncodeOrDefault,
         },
-        CodecFrom, DecodeDefault, EncodeDefault, EncodeErrorHandler, NestedDecode, NestedEncode,
+        DecodeDefault, EncodeDefault, EncodeErrorHandler, NestedDecode, NestedEncode,
         TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     storage::{storage_get, storage_set, StorageKey},
@@ -610,14 +610,6 @@ where
         }
         Ok(())
     }
-}
-
-impl<SA, T, U> CodecFrom<LinkedListMapper<SA, T>> for MultiValueEncoded<SA, U>
-where
-    SA: StorageMapperApi,
-    T: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
-    U: CodecFrom<T>,
-{
 }
 
 impl<SA, T, U> TypeAbiFrom<LinkedListMapper<SA, T>> for MultiValueEncoded<SA, U>

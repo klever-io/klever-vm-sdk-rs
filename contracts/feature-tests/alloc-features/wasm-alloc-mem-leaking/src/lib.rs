@@ -4,12 +4,10 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           64
-// Total number of exported functions:  65
+// Endpoints:                           62
+// Total number of exported functions:  63
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!(leaking);
 klever_sc_wasm_adapter::panic_handler!();
@@ -51,9 +49,7 @@ klever_sc_wasm_adapter::endpoints! {
         only_owner_legacy => only_owner_legacy
         return_sc_error => return_sc_error
         result_ok => result_ok
-        result_err_from_bytes_1 => result_err_from_bytes_1
-        result_err_from_bytes_2 => result_err_from_bytes_2
-        result_err_from_bytes_3 => result_err_from_bytes_3
+        result_err_from_bytes => result_err_from_bytes
         result_err_from_string => result_err_from_string
         result_err_from_str => result_err_from_str
         result_echo => result_echo

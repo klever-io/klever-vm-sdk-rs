@@ -9,7 +9,6 @@ const CODE_PATH: KleverscPath = KleverscPath::new("output/adder.kleversc.json");
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/examples/adder");
 
     blockchain.register_contract(CODE_PATH, adder::ContractBuilder);
     blockchain
@@ -63,6 +62,18 @@ fn adder_blackbox_raw() {
     world.check_account(OWNER_ADDRESS);
 
     world.check_account(ADDER_ADDRESS).check_storage("str:sum", "6");
-    
+
+    world
+        .tx()
+        .from(OWNER_ADDRESS)
+        .to(ADDER_ADDRESS)
+        .typed(adder_proxy::AdderProxy)
+        .upgrade(100u64)
+        .code(CODE_PATH)
+        .run();
+     world
+        .check_account(ADDER_ADDRESS)
+        .check_storage("str:sum", "100");
+     
     world.write_scenario_trace("trace1.scen.json");
 }

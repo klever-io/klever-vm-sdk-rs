@@ -1,4 +1,3 @@
-use proc_macro2::TokenTree;
 use crate::model::KdaAttribute;
 
 pub(super) fn is_attribute_with_no_args(attr: &syn::Attribute, name: &str) -> bool {

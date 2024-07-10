@@ -17,7 +17,7 @@ use crate::derive::type_abi;
 
 #[type_abi]
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug, ManagedVecItem,
+    TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug, ManagedVecItem
 )]
 pub enum KdaTokenType {
     Fungible,

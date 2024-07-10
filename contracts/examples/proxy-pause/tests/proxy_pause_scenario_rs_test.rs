@@ -2,7 +2,6 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/examples/proxy-pause");
 
     blockchain.register_contract("kleversc:output/proxy-pause.kleversc.json", proxy_pause::ContractBuilder);
 

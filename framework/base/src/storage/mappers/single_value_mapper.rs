@@ -5,7 +5,7 @@ use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     codec::{
-        multi_types::PlaceholderOutput, CodecFrom, CodecFromSelf, DecodeErrorHandler,
+        multi_types::PlaceholderOutput, DecodeErrorHandler,
         EncodeErrorHandler, TopDecode, TopDecodeInput, TopEncode, TopEncodeMulti,
         TopEncodeMultiOutput, TopEncodeOutput,
     },
@@ -161,7 +161,7 @@ where
 
 /// Intermediary type for deserializing the result of an endpoint that returns a `SingleValueMapper`.
 ///
-/// Necessary because we cannot implement `CodecFrom` directly on `T`.
+/// Necessary because we cannot implement `TypeAbiFrom` directly on `T`.
 pub struct SingleValue<T: TopDecode>(T);
 
 impl<T: TopEncode + TopDecode> TopEncode for SingleValue<T> {
@@ -197,34 +197,11 @@ impl<T: TopDecode> SingleValue<T> {
     }
 }
 
-impl<SA, T, A> !CodecFromSelf for SingleValueMapper<SA, T, A>
-where
-    SA: StorageMapperApi,
-    A: StorageAddress<SA>,
-    T: TopEncode + TopDecode,
-{
-}
-
-impl<SA, T, R> CodecFrom<SingleValueMapper<SA, T, CurrentStorage>> for SingleValue<R>
-where
-    SA: StorageMapperApi,
-    T: TopEncode + TopDecode,
-    R: TopDecode + CodecFrom<T>,
-{
-}
-
 impl<SA, T, R> TypeAbiFrom<SingleValueMapper<SA, T, CurrentStorage>> for SingleValue<R>
 where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode,
-    R: TopDecode + CodecFrom<T>,
-{
-}
-
-impl<SA, T> CodecFrom<SingleValueMapper<SA, T>> for PlaceholderOutput
-where
-    SA: StorageMapperApi,
-    T: TopEncode + TopDecode,
+    R: TopDecode + TypeAbiFrom<T>,
 {
 }
 
@@ -247,7 +224,7 @@ where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode + TypeAbi,
 {
-    type Unmanaged = Self;
+    type Unmanaged = T::Unmanaged;
 
     fn type_name() -> TypeName {
         T::type_name()

@@ -2,7 +2,6 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
     blockchain.register_contract(
         "kleversc:output/basic-features.kleversc.json",
@@ -259,11 +258,6 @@ fn managed_buffer_set_random_rs() {
 #[test]
 fn managed_vec_address_push_rs() {
     world().run("scenarios/managed_vec_address_push.scen.json");
-}
-
-#[test]
-fn managed_vec_array_push_rs() {
-    world().run("scenarios/managed_vec_array_push.scen.json");
 }
 
 #[test]

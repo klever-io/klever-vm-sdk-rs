@@ -11,6 +11,7 @@ impl<'a, Env> TxPayment<Env> for KdaTokenPaymentRefs<'a, Env::Api>
 where
     Env: TxEnv,
 {
+    #[inline]
     fn is_no_payment(&self, _env: &Env) -> bool {
         self.amount == &0u32
     }
@@ -57,11 +58,11 @@ where
     where
         From: TxFrom<Env>,
         To: TxToSpecified<Env>,
-        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, &FunctionCall<Env::Api>) -> R,
+        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, FunctionCall<Env::Api>) -> R,
     {
         to.with_address_ref(env, |to_addr| {
             let fc_conv = fc.convert_to_transfer_kda_call(to_addr, self);
-            f(&from.resolve_address(env), &BigUint::zero(), &fc_conv)
+            f(&from.resolve_address(env), &*BigUint::zero_ref(), fc_conv)
         })
     }
 

@@ -2,7 +2,7 @@ use crate::types::{
     BigUint, ManagedAddress
     , TxFrom, TxToSpecified,
 };
-use crate::types::{Klv, KlvOrMultiKdaPayment};
+use crate::types::KlvOrMultiKdaPayment;
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};
 
@@ -14,6 +14,7 @@ where
         self.is_empty()
     }
 
+    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -21,16 +22,11 @@ where
         gas_limit: u64,
         fc: FunctionCall<Env::Api>,
     ) {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                Klv(klv_amount).perform_transfer_execute(env, to, gas_limit, fc)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                multi_kda_payment.perform_transfer_execute(env, to, gas_limit, fc)
-            },
-        }
+        self.as_refs()
+            .perform_transfer_execute(env, to, gas_limit, fc)
     }
 
+    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,
@@ -42,27 +38,13 @@ where
     where
         From: TxFrom<Env>,
         To: TxToSpecified<Env>,
-        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, &FunctionCall<Env::Api>) -> R,
+        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, FunctionCall<Env::Api>) -> R,
     {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                Klv(klv_amount).with_normalized(env, from, to, fc, f)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                multi_kda_payment.with_normalized(env, from, to, fc, f)
-            },
-        }
+        self.as_refs().with_normalized(env, from, to, fc, f)
     }
 
     fn into_full_payment_data(self, env: &Env) -> FullPaymentData<Env::Api> {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                TxPayment::<Env>::into_full_payment_data(Klv(klv_amount), env)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                TxPayment::<Env>::into_full_payment_data(multi_kda_payment, env)
-            },
-        }
+        self.as_refs().into_full_payment_data(env)
     }
 }
 
@@ -74,6 +56,7 @@ where
         self.is_empty()
     }
 
+    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -81,16 +64,11 @@ where
         gas_limit: u64,
         fc: FunctionCall<Env::Api>,
     ) {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                Klv(klv_amount).perform_transfer_execute(env, to, gas_limit, fc)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                multi_kda_payment.perform_transfer_execute(env, to, gas_limit, fc)
-            },
-        }
+        self.as_refs()
+            .perform_transfer_execute(env, to, gas_limit, fc)
     }
 
+    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,
@@ -102,26 +80,12 @@ where
     where
         From: TxFrom<Env>,
         To: TxToSpecified<Env>,
-        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, &FunctionCall<Env::Api>) -> R,
+        F: FnOnce(&ManagedAddress<Env::Api>, &BigUint<Env::Api>, FunctionCall<Env::Api>) -> R,
     {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                Klv(klv_amount).with_normalized(env, from, to, fc, f)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                multi_kda_payment.with_normalized(env, from, to, fc, f)
-            },
-        }
+        self.as_refs().with_normalized(env, from, to, fc, f)
     }
 
     fn into_full_payment_data(self, env: &Env) -> FullPaymentData<Env::Api> {
-        match self {
-            KlvOrMultiKdaPayment::Klv(klv_amount) => {
-                TxPayment::<Env>::into_full_payment_data(Klv(klv_amount), env)
-            },
-            KlvOrMultiKdaPayment::MultiKda(multi_kda_payment) => {
-                TxPayment::<Env>::into_full_payment_data(multi_kda_payment, env)
-            },
-        }
+        self.as_refs().into_full_payment_data(env)
     }
 }

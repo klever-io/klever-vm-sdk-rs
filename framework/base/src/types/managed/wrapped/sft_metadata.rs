@@ -1,3 +1,4 @@
+use unwrap_infallible::UnwrapInfallible;
 use crate::{
     api::{ManagedTypeApi, RawHandle},
     codec,
@@ -71,11 +72,10 @@ impl<M: ManagedTypeApi> SFTMetadata<M> {
     }
 
     pub fn decode_attributes<T: TopDecode>(&self) -> T {
-        let Ok(value) = T::top_decode_or_handle_err(
+        T::top_decode_or_handle_err(
             self.attributes.clone(),
             ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        );
-        value
+        ).unwrap_infallible()
     }
 }
 

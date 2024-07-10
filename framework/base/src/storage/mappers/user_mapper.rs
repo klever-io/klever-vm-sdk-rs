@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
 use crate::codec::{
-    multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, TopEncodeMulti,
+    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti,
     TopEncodeMultiOutput,
 };
 
@@ -216,11 +216,6 @@ where
         let all_addresses = self.get_all_addresses();
         multi_encode_iter_or_handle_err(all_addresses.into_iter(), output, h)
     }
-}
-
-impl<SA> CodecFrom<UserMapper<SA, CurrentStorage>> for MultiValueEncoded<SA, ManagedAddress<SA>> where
-    SA: StorageMapperApi
-{
 }
 
 impl<SA> TypeAbiFrom<UserMapper<SA, CurrentStorage>> for MultiValueEncoded<SA, ManagedAddress<SA>> where

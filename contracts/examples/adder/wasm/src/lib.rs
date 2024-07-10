@@ -4,12 +4,11 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                            4
+// Upgrade:                              1
+// Endpoints:                            3
 // Total number of exported functions:   5
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!();
 klever_sc_wasm_adapter::panic_handler!();
@@ -18,9 +17,9 @@ klever_sc_wasm_adapter::endpoints! {
     adder
     (
         init => init
+        upgrade => upgrade
         getSum => sum
         add => add
         add_payable => add_payable
-        upgrade => upgrade
     )
 }

@@ -11,12 +11,13 @@ use crate::{
     },
 };
 
-use crate as klever_sc; // needed by the TypeAbi generated code
+use crate as klever_sc;
+use crate::types::{ManagedVecItem}; // needed by the TypeAbi generated code
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
 #[type_abi]
-#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct KdaTokenData<M: ManagedTypeApi> {
     pub asset_type: KdaTokenType,
     pub id: ManagedBuffer<M>,
@@ -40,7 +41,7 @@ pub struct KdaTokenData<M: ManagedTypeApi> {
 }
 
 #[type_abi]
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct StakingInfo {
     pub interest_type: u32,
     pub apr: u32,
@@ -316,7 +317,7 @@ pub struct RolesInfo<M: ManagedTypeApi> {
 }
 
 #[type_abi]
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct RoyaltySplitData<M: ManagedTypeApi> {
     pub percent_transfer_percentage: u32,
     pub percent_transfer_fixed: BigUint<M>,

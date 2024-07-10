@@ -45,7 +45,7 @@ where
     Gas: TxGas<Env>,
 {
     pub fn set_user_name<
-        Arg0: CodecInto<ManagedBuffer<Env::Api>>,
+        Arg0: ProxyArg<ManagedBuffer<Env::Api>>,
     >(
         self,
         name: Arg0,

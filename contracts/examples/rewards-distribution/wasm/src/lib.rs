@@ -8,8 +8,6 @@
 // Total number of exported functions:  14
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!();
 klever_sc_wasm_adapter::panic_handler!();

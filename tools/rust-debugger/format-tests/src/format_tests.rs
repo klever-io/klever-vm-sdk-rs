@@ -6,10 +6,7 @@ use klever_sc::{
         ManagedBuffer, ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
-use klever_sc_scenario::{
-    api::{DebugHandle, DebugApi},
-    num_bigint::{BigInt as RustBigInt, BigUint as RustBigUint},
-};
+use klever_sc_scenario::imports::*;
 
 macro_rules! push {
     ($list: ident, $name:ident, $expected: expr ) => {{

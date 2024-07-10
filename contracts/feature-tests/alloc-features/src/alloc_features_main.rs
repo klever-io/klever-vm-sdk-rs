@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(never_type)]
 
 use klever_sc::imports::*;
 

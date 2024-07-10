@@ -106,15 +106,6 @@ impl ScenarioWorld {
         self
     }
 
-    /// Tells the tests where the crate lies relative to the workspace.
-    /// This ensures that the paths are set correctly, including in debug mode.
-    pub fn set_current_dir_from_workspace(&mut self, relative_path: &str) -> &mut Self {
-        let mut path = find_current_workspace().unwrap();
-        path.push(relative_path);
-        self.current_dir = path;
-        self
-    }
-
     pub fn current_dir(&self) -> &PathBuf {
         &self.current_dir
     }

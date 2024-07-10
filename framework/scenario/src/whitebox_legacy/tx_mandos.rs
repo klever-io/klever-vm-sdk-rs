@@ -31,7 +31,7 @@ impl ScCallMandos {
     }
 
     pub fn add_klv_value(&mut self, klv_value: &num_bigint::BigUint) {
-        self.klv_value = klv_value.clone();
+        self.klv_value.clone_from(klv_value);
     }
 
     pub fn add_kda_transfer(
@@ -101,6 +101,6 @@ impl TxExpectMandos {
     }
 
     pub fn set_message(&mut self, msg: &str) {
-        self.message = msg.to_owned();
+        self.message = msg.to_string();
     }
 }

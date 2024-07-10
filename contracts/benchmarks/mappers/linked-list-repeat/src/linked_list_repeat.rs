@@ -3,6 +3,7 @@
 use klever_sc::imports::*;
 
 use benchmark_common::ExampleStruct;
+pub mod linked_list_repeat_proxy;
 
 #[klever_sc::contract]
 pub trait LinkedListRepeat: benchmark_common::BenchmarkCommon {

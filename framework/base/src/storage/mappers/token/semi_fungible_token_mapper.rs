@@ -8,7 +8,7 @@ use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     codec::{
-        CodecFrom, EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+        EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     contract_base::{BlockchainWrapper, SendWrapper},
     imports::{KdaTokenPayment, SFTMeta}, kda::KDASystemSmartContractProxy, storage::StorageKey, storage_get,
@@ -237,10 +237,6 @@ where
     }
 }
 
-impl<SA> CodecFrom<SemiFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
-    SA: StorageMapperApi + CallTypeApi
-{
-}
 impl<SA> TypeAbiFrom<Self> for SemiFungibleTokenMapper<SA> where SA: StorageMapperApi + CallTypeApi {}
 
 impl<SA> TypeAbi for SemiFungibleTokenMapper<SA>

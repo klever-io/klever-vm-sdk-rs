@@ -57,9 +57,9 @@ impl KdaInstances {
             .0
             .entry(nonce)
             .and_modify(|instance| {
-                instance.balance = value.clone();
+                instance.balance.clone_from(value);
                 instance.nonce = nonce;
-                instance.metadata = metadata.clone();
+                instance.metadata.clone_from(&metadata);
             })
             .or_insert_with(|| KdaInstance {
                 nonce,

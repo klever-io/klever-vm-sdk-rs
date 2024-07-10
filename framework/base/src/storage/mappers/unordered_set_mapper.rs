@@ -6,7 +6,7 @@ use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     codec::{
-        multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, NestedDecode, NestedEncode,
+        multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode, NestedEncode,
         TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     storage::{storage_get_from_address, StorageKey},
@@ -222,13 +222,6 @@ where
     {
         multi_encode_iter_or_handle_err(self.iter(), output, h)
     }
-}
-
-impl<SA, T> CodecFrom<UnorderedSetMapper<SA, T>> for MultiValueEncoded<SA, T>
-where
-    SA: StorageMapperApi,
-    T: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static,
-{
 }
 
 impl<SA, T> TypeAbiFrom<UnorderedSetMapper<SA, T>> for MultiValueEncoded<SA, T>

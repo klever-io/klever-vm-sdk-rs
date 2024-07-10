@@ -4,12 +4,11 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           26
-// Total number of exported functions:  27
+// Upgrade:                              1
+// Endpoints:                           27
+// Total number of exported functions:  29
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!();
 klever_sc_wasm_adapter::panic_handler!();

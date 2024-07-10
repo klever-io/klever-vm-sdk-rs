@@ -1,5 +1,4 @@
 use core::ptr;
-use klever_sc_codec::CodecFrom;
 use crate::abi::TypeAbiFrom;
 use crate::api::ManagedTypeApi;
 
@@ -24,7 +23,7 @@ impl<'a> TestAddress<'a> {
         TestAddress { name }
     }
 
-    pub const fn eval_to_array(&self) -> [u8; 32] {
+    pub fn eval_to_array(&self) -> [u8; 32] {
         let result = [b'_'; 32];
         let expr_bytes = self.name.as_bytes();
         let mut len = expr_bytes.len();

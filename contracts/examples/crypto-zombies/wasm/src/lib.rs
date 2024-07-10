@@ -4,12 +4,11 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
+// Upgrade:                              1
 // Endpoints:                           16
-// Total number of exported functions:  17
+// Total number of exported functions:  18
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 klever_sc_wasm_adapter::allocator!();
 klever_sc_wasm_adapter::panic_handler!();
@@ -18,6 +17,7 @@ klever_sc_wasm_adapter::endpoints! {
     crypto_zombies
     (
         init => init
+        upgrade => upgrade
         set_crypto_kitties_sc_address => set_crypto_kitties_sc_address
         generate_random_dna => generate_random_dna
         create_random_zombie => create_random_zombie

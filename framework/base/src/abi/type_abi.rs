@@ -12,7 +12,7 @@ use crate::abi::type_abi_from::TypeAbiFrom;
 ///
 /// Will be automatically implemented for struct ad enum types via the `#[type_abi]` annotation.
 pub trait TypeAbi: TypeAbiFrom<Self> {
-    type Unmanaged: TypeAbiFrom<Self>;
+    type Unmanaged;
 
     fn type_names() -> TypeNames {
         TypeNames {

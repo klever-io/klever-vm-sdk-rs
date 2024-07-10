@@ -4,6 +4,7 @@ mod tx_exec_sync;
 mod tx_exec_te;
 mod tx_exec_upgrade;
 
+use unwrap_infallible::UnwrapInfallible;
 pub use tx_env_sc::*;
 pub use tx_exec_deploy::*;
 pub use tx_exec_sync::*;
@@ -28,6 +29,5 @@ where
     let mut loader = ManagedResultArgLoader::new(raw_result);
     let arg_id = ArgId::from(&b"sync result"[..]);
     let h: ArgErrorHandler<SA> = ArgErrorHandler::<SA>::from(arg_id);
-    let Ok(result) = RequestedResult::multi_decode_or_handle_err(&mut loader, h);
-    result
+    RequestedResult::multi_decode_or_handle_err(&mut loader, h).unwrap_infallible()
 }
