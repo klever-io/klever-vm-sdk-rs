@@ -1,5 +1,4 @@
 use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
 
 use crate::{storage, zombie_factory, zombie_helper};
 // use crypto_kitties_proxy::Kitty;

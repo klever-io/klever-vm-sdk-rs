@@ -6,7 +6,6 @@ use crate::{
     vm_hooks::VMHooksHandlerSource,
     world_mock::{KdaData, KdaInstance},
 };
-use crate::types::VMCodeMetadata;
 // use num_bigint::BigInt;
 // use num_traits::Zero;
 

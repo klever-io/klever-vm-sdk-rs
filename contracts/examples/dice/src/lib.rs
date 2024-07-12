@@ -1,7 +1,6 @@
 #![no_std]
 
 use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
 
 use rand::*;
 use crate::utils::{calculate_payout, check_bet, roll};

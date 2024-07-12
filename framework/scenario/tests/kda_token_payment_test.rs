@@ -1,6 +1,6 @@
 use klever_sc::{
-    codec::{self, DefaultErrorHandler, TopEncode},
-    types::{BigUint, KdaTokenPayment, TokenIdentifier},
+    codec::{self},
+    types::{KdaTokenPayment},
 };
 use klever_sc_scenario::api::StaticApi;
 

@@ -2,7 +2,6 @@
 #![allow(clippy::type_complexity)]
 
 use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
 
 pub mod erc1155_user_proxy;
 

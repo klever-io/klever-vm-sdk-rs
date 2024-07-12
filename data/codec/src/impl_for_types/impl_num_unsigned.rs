@@ -1,5 +1,5 @@
 use crate::{
-    dep_encode_num_mimic, num_conv::universal_decode_number, DecodeError, DecodeErrorHandler,
+    dep_encode_num_mimic, DecodeError, DecodeErrorHandler,
     EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode, NestedEncodeOutput,
     TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
 };

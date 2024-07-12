@@ -11,7 +11,7 @@ use crate::{
         multi_encode_iter_or_handle_err, multi_types::MultiValue2, EncodeErrorHandler,
         NestedDecode, NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
-    storage::{storage_clear, storage_get, storage_set, StorageKey},
+    storage::{storage_clear, storage_set, StorageKey},
     types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
 

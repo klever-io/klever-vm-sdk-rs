@@ -17,8 +17,6 @@ use crate::{
     }
 };
 use crate::abi::TypeAbiFrom;
-use crate::imports::UserMapper;
-use crate::storage::mappers::set_mapper::CurrentStorage;
 
 pub struct SemiFungibleTokenMapper<SA>
 where

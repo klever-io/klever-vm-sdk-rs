@@ -1,4 +1,3 @@
-use klever_sc::codec::TopEncode;
 use klever_sc::types::{AnnotatedValue, ManagedAddress};
 use scenario_set_account::AccountItem;
 use scenario_set_block::BlockItem;

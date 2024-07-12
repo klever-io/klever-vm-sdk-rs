@@ -1,7 +1,6 @@
 use std::path::{Path, PathBuf};
 
 use klever_chain_vm::world_mock::BlockchainState;
-use klever_sc_meta::find_workspace::find_current_workspace;
 
 use crate::{
     scenario::{run_trace::ScenarioTrace, run_vm::ScenarioVMRunner}

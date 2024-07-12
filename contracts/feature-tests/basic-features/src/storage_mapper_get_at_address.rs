@@ -1,7 +1,6 @@
 use klever_sc::storage::StorageKey;
 
 use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
 
 /// Module that calls another contract to read the content of a SetMapper remotely
 #[klever_sc::module]

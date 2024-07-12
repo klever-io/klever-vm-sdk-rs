@@ -1,5 +1,4 @@
 use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
 
 #[klever_sc::module]
 pub trait GlobalOperationModule {

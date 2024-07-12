@@ -2,8 +2,7 @@ use crate::{
     api::ManagedTypeApi,
     formatter::FormatBuffer,
     types::{
-        BigUint, ManagedAddress, ManagedBuffer, ManagedBufferBuilder,
-        ManagedRef,
+        ManagedBuffer, ManagedBufferBuilder,
     },
 };
 

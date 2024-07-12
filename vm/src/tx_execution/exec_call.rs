@@ -8,8 +8,6 @@ use crate::{
     with_shared::Shareable,
     world_mock::{AccountData, AccountKda, BlockchainState},
 };
-use num_bigint::BigUint;
-use num_traits::Zero;
 use std::collections::HashMap;
 use crate::tx_mock::CallType;
 use crate::types::VMCodeMetadata;

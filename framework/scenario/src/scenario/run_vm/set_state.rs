@@ -1,7 +1,6 @@
 use crate::scenario::model::SetStateStep;
 
 use klever_chain_vm::{
-    types::VMAddress,
     world_mock::{
         AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData,
         KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,

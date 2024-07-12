@@ -4,12 +4,11 @@ use super::StorageMapper;
 use crate::{
     api::{ErrorApiImpl, StorageMapperApi},
     storage::{
-        storage_clear, storage_get, storage_get_from_address, storage_get_len, storage_set,
+        storage_clear, storage_set,
         StorageKey,
     },
     types::{ManagedAddress, ManagedType},
 };
-use storage_get_from_address::storage_get_len_from_address;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 static ID_SUFFIX: &[u8] = b"addrId";

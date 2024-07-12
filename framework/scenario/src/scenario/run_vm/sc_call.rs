@@ -8,8 +8,6 @@ use klever_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxInput, TxResult, TxTokenTransfer},
 };
-use num_bigint::BigUint;
-use num_traits::Zero;
 use klever_sc::abi::TypeAbiFrom;
 use klever_sc::codec::TopDecodeMulti;
 

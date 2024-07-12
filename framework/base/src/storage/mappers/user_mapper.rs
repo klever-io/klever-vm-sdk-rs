@@ -9,7 +9,7 @@ use super::StorageMapper;
 use crate::{
     abi::{TypeAbi, TypeName},
     api::StorageMapperApi,
-    storage::{storage_get, storage_get_len, storage_set, StorageKey},
+    storage::{storage_set, StorageKey},
     types::{ManagedAddress, ManagedType, ManagedVec, MultiValueEncoded},
 };
 use crate::abi::TypeAbiFrom;
