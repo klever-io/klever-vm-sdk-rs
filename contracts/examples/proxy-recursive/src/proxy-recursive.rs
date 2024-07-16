@@ -1,12 +1,11 @@
 #![no_std]
 
 mod callee_proxy {
-    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait CalleeContract {
         #[endpoint(compute)]
-        fn compute(&self, amount: BigUint) -> SCResult<BigUint>;
+        fn compute(&self, amount: BigUint) -> BigUint;
     }
 }
 

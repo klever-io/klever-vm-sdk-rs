@@ -9,5 +9,5 @@ mod system_sc;
 pub use blockchain_vm::{BlockchainVM, BlockchainVMRef};
 pub use builtin_function_mocks::*;
 pub use exec_call::*;
-pub use exec_general_tx::*;
+pub(crate) use exec_general_tx::*;
 pub use system_sc::*;
