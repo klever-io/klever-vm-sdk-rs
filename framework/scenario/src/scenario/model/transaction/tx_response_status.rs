@@ -8,19 +8,6 @@ pub struct TxResponseStatus {
 }
 
 impl TxResponseStatus {
-    /// Creates a [`TxResponseStatus`]
-    pub(crate) fn new(status: u64, message: &str) -> Self {
-        Self {
-            status,
-            message: message.to_string(),
-        }
-    }
-
-    /// Creates a [`TxResponseStatus`] that signals an error.
-    pub(crate) fn signal_error(message: &str) -> Self {
-        Self::new(57, message)
-    }
-
     /// Checks if the transaction was successful.
     pub fn is_success(&self) -> bool {
         self.status == 0

@@ -2,8 +2,8 @@ use crate::{
     api::CallTypeApi,
     contract_base::SendRawWrapper,
     types::{
-        Code, CodeMetadata, FromSource, ManagedAddress, ManagedBuffer, Tx, TxCodeValue,
-        TxEmptyResultHandler, TxFromSourceValue, TxGas, TxPaymentKlvOnly, TxScEnv, UpgradeCall,
+        Code, CodeMetadata, ManagedAddress, ManagedBuffer, Tx, TxCodeValue,
+        TxEmptyResultHandler, TxGas, TxPaymentKlvOnly, TxScEnv, UpgradeCall,
     },
 };
 use crate::types::TxToSpecified;

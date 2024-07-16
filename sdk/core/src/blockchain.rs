@@ -6,13 +6,12 @@ use crate::data::{
     address::Address,
     kda::{KdaBalance, KdaBalanceResponse, KdaRolesResponse},
     transaction::{
-        ArgCreateTransaction, ResponseTxCost, SendTransactionResponse, SendTransactionsResponse,
+        ResponseTxCost, SendTransactionResponse,
         Transaction, TransactionInfo, TransactionOnNetwork, TransactionStatus, TxCostResponseData,
     },
     vm::{ResponseVmValue, VmValueRequest, VmValuesResponseData},
 };
 use anyhow::{anyhow, Result};
-use itertools::Itertools;
 use reqwest::Client;
 
 pub const MAINNET_GATEWAY: &str = "https://api.mainnet.klever.finance";

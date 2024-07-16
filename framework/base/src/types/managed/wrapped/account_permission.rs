@@ -3,7 +3,6 @@ use crate::{
     codec,
     codec::{
         derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        *
     },
     types::{ManagedAddress, ManagedBuffer, ManagedVec},
 };

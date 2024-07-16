@@ -13,13 +13,6 @@ impl MethodPayableMetadata {
         !matches!(self, MethodPayableMetadata::NotPayable)
     }
 
-    pub fn no_kda(&self) -> bool {
-        matches!(
-            self,
-            MethodPayableMetadata::NotPayable | MethodPayableMetadata::Klv
-        )
-    }
-
     pub fn abi_strings(&self) -> Vec<String> {
         match self {
             MethodPayableMetadata::NotPayable => Vec::new(),

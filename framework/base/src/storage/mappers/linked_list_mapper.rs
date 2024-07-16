@@ -13,11 +13,10 @@ use crate::{
         DecodeDefault, EncodeDefault, EncodeErrorHandler, NestedDecode, NestedEncode,
         TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
-    storage::{storage_get, storage_set, StorageKey},
+    storage::{storage_set, StorageKey},
     types::{heap::BoxedBytes, ManagedType, MultiValueEncoded},
 };
 use alloc::vec::Vec;
-use storage_get::storage_get_len;
 use crate::abi::TypeAbiFrom;
 use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::types::ManagedAddress;

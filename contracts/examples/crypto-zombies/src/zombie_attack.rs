@@ -1,5 +1,3 @@
-use klever_sc::imports::*;
-
 use crate::{storage, zombie_factory, zombie_feeding, zombie_helper};
 
 #[klever_sc::module]

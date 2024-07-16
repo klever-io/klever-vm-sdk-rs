@@ -63,7 +63,7 @@ pub trait TransferRoleProxyModule {
     fn execute_call(
         &self,
         _original_caller: ManagedAddress,
-        initial_payments: &PaymentsVec<Self::Api>,
+        _initial_payments: &PaymentsVec<Self::Api>,
         transaction: Tx<
             TxScEnv<Self::Api>,
             (),

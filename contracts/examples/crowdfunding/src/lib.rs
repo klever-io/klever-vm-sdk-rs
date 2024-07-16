@@ -1,8 +1,5 @@
 #![no_std]
 
-use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
-
 mod storage;
 mod storage_setters;
 mod crowdfunding_data;

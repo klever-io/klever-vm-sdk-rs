@@ -7,7 +7,7 @@ use crate::{
     api::ManagedTypeApi
     ,
     types::{
-        KlvOrMultiKdaPayment, ManagedAddress,
+        ManagedAddress,
         MultiKdaPayment,
     },
 };

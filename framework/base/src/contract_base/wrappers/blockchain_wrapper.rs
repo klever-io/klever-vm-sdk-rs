@@ -5,7 +5,6 @@ use crate::{
         const_handles, use_raw_handle, BigIntApiImpl, BlockchainApi, BlockchainApiImpl, ErrorApi,
         ErrorApiImpl, HandleConstraints, ManagedBufferApiImpl, ManagedTypeApi, StaticVarApiImpl,
     },
-    codec::TopDecode,
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
     types::{
         convert_buff_to_roles, AttributesInfo, BackTransfers, BigUint, KdaTokenData, KdaTokenType,

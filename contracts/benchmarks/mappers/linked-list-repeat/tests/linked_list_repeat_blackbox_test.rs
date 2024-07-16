@@ -1,5 +1,4 @@
 use benchmark_common::ExampleStruct;
-use linked_list_repeat::ProxyTrait;
 use linked_list_repeat::linked_list_repeat_proxy;
 use klever_sc_scenario::imports::*;
 

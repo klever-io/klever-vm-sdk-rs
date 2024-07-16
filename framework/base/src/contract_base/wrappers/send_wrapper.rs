@@ -13,7 +13,7 @@ use crate::{
         KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME,
         KLEVER_UPDATE_ACCOUNT_PERMISSION, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME,
     },
-    codec::{Empty, NestedEncode},
+    codec::{NestedEncode},
     kda::KDASystemSmartContractProxy,
     types::{
         AccountPermission, BigUint, ContractCall, ContractCallNoPayment, ITOPackInfo, ITOWhitelist,

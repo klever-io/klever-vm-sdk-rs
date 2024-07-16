@@ -1,7 +1,5 @@
 #![no_std]
 
-use klever_sc::imports::*;
-
 use klever_sc_modules::pause;
 
 #[klever_sc::contract]

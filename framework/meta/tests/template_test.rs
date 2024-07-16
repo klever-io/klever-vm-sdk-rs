@@ -90,16 +90,19 @@ fn template_test_current(template_name: &str, sub_path: &str, new_name: &str) {
     cargo_test(&target);
 }
 
+#[test]
 #[cfg_attr(not(feature = "template-test-released"), ignore)]
 fn template_released_adder() {
     template_test_released("adder", "released-adder");
 }
 
+#[test]
 #[cfg_attr(not(feature = "template-test-released"), ignore)]
 fn template_released_crypto_zombies() {
     template_test_released("crypto-zombies", "released-crypto-zombies");
 }
 
+#[test]
 #[cfg_attr(not(feature = "template-test-released"), ignore)]
 fn template_released_empty() {
     template_test_released("empty", "released-empty");

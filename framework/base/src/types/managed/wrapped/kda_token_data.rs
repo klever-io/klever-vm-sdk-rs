@@ -12,7 +12,6 @@ use crate::{
 };
 
 use crate as klever_sc;
-use crate::types::{ManagedVecItem}; // needed by the TypeAbi generated code
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 

@@ -9,8 +9,8 @@ use crate::{
         multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode, NestedEncode,
         TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
-    storage::{storage_get_from_address, StorageKey},
-    storage_clear, storage_get, storage_set,
+    storage::{StorageKey},
+    storage_clear, storage_set,
     types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
 use crate::abi::TypeAbiFrom;

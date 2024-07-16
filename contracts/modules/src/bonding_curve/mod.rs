@@ -1,6 +1,3 @@
-use klever_sc::imports::*;
-use klever_sc::derive_imports::*;
-
 pub mod curves;
 pub mod utils;
 use utils::{events, owner_endpoints, storage, user_endpoints};

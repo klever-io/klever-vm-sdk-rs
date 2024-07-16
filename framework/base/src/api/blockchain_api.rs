@@ -1,4 +1,3 @@
-use crate::types::CodeMetadata;
 use super::{HandleTypeInfo, ManagedTypeApi, ManagedTypeApiImpl, RawHandle};
 use crate::types::heap::{Address, Box, H256};
 

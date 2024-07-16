@@ -1,7 +1,7 @@
 
 use crate::tx_execution::{builtin_function_names::KLEVER_ASSET_TRIGGER_FUNC_NAME, BlockchainVMRef};
 
-use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxLog, TxResult};
+use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult};
 use crate::types::VMAddress;
 use crate::world_mock::KdaInstanceMetadata;
 
