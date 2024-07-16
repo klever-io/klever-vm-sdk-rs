@@ -1,5 +1,3 @@
-use klever_sc::imports::*;
-
 /// Used for testing overflow on small int types
 #[klever_sc::module]
 #[allow(clippy::redundant_clone)]

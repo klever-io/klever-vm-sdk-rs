@@ -1,7 +1,5 @@
 #![no_std]
 
-use klever_sc::imports::*;
-
 pub mod proxy_crypto_zombies;
 mod storage;
 mod zombie;

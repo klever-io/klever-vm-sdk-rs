@@ -1,7 +1,5 @@
 use crate::ExampleStruct;
 
-use klever_sc::imports::*;
-
 #[klever_sc::module]
 pub trait BenchmarkCommon {
     fn append_index(&self, base: &ManagedBuffer, index: usize) -> ManagedBuffer {

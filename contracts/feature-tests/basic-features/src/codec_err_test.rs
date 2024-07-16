@@ -1,4 +1,3 @@
-use klever_sc::imports::*;
 use crate::types::CodecErrorTestType;
 
 /// Test various serialization errors.

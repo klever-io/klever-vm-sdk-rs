@@ -1,5 +1,3 @@
-use klever_sc::imports::*;
-
 use crate::storage;
 
 #[klever_sc::module]

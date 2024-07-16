@@ -1,5 +1,4 @@
 mod dns_proxy {
-    use klever_sc::imports::*;
 
     #[klever_sc::proxy]
     pub trait Dns {

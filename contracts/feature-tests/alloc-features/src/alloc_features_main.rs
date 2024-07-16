@@ -1,7 +1,5 @@
 #![no_std]
 
-use klever_sc::imports::*;
-
 pub mod echo_alloc;
 pub mod echo_managed_alloc;
 pub mod elliptic_curve_features_legacy;

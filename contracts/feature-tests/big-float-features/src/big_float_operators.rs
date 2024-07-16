@@ -1,5 +1,3 @@
-use klever_sc::imports::*;
-
 /// Checks that BigFloat operators work as expected.
 #[klever_sc::module]
 #[allow(clippy::redundant_clone)]

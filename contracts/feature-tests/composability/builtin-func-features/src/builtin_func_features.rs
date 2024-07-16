@@ -2,8 +2,6 @@
 
 pub mod builtin_func_proxy;
 
-use klever_sc::imports::*;
-
 /// Test contract for investigating calls.
 #[klever_sc::contract]
 pub trait BuiltinFuncFeatures {

@@ -13,8 +13,6 @@ mod only_admin_mod;
 mod only_owner_derived_mod;
 mod only_owner_mod;
 
-use klever_sc::imports::*;
-
 /// Contract that tests that using modules works correctly.
 /// Also provides testing for the most common modules:
 /// - DnsModule

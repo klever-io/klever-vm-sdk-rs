@@ -1,7 +1,5 @@
 use klever_sc_modules::only_admin;
 
-use klever_sc::imports::*;
-
 #[klever_sc::module]
 #[only_admin]
 pub trait OnlyAdminTestModule:

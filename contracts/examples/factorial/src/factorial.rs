@@ -1,7 +1,5 @@
 #![no_std]
 
-use klever_sc::imports::*;
-
 #[klever_sc::contract]
 pub trait Factorial {
     #[init]
