@@ -433,6 +433,20 @@ where
         }
     }
 
+    /// `source_acc_addr` will be the one that this function will check if it has the permission specified in the other parameters for `target_acc_addr`
+    pub fn acc_has_perm(
+        &self,
+        ops: i64,
+        source_acc_addr: &ManagedAddress<A>,
+        target_acc_addr: &ManagedAddress<A>,
+    ) -> bool {
+        A::blockchain_api_impl().managed_acc_has_perm(
+            ops,
+            source_acc_addr.get_handle().get_raw_handle(),
+            target_acc_addr.get_handle().get_raw_handle(),
+        )
+    }
+
     pub fn get_kda_roles(&self, ticker: &TokenIdentifier<A>) -> ManagedVec<A, RolesInfo<A>> {
         // initializing outputs
         // the current version of VM does not set/overwrite them if the token is missing,

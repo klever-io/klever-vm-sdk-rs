@@ -138,6 +138,13 @@ pub trait BlockchainApiImpl: ManagedTypeApiImpl {
         data_handle: RawHandle,
     );
 
+    fn managed_acc_has_perm(
+        &self,
+        ops: i64,
+        source_acc_addr: RawHandle,
+        target_acc_addr: RawHandle,
+    ) -> bool;
+
     fn managed_get_kda_roles(&self, ticker_handle: RawHandle, roles_handle: RawHandle);
 
     fn managed_get_back_transfers(

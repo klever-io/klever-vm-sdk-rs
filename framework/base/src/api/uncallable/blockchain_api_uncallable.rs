@@ -156,6 +156,15 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn managed_acc_has_perm(
+        &self,
+        _ops: i64,
+        _source_acc_addr: RawHandle,
+        _target_acc_addr: RawHandle,
+    ) -> bool {
+        unreachable!()
+    }
+
     fn managed_get_kda_roles(&self, _ticker_handle: RawHandle, _roles_handle: RawHandle) {
         unreachable!()
     }

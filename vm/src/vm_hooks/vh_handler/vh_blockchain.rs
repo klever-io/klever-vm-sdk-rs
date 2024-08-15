@@ -219,6 +219,15 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
        todo!()
     }
 
+    fn managed_acc_has_perm(
+        &self,
+        _ops: i64,
+        _source_acc_addr: RawHandle,
+        _target_acc_addr: RawHandle,
+    ) -> i32 {
+       todo!()
+    }
+
     #[allow(clippy::too_many_arguments)]
     fn managed_get_kda_token_data(
         &self,

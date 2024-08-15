@@ -68,6 +68,12 @@ extern "C" {
 
     fn managedGetSftMetadata(ticker_handle: i32, nonce: u64, data_handle: i32);
 
+    fn managedAccHasPerm(
+        ops: i64,
+        source_acc_addr: RawHandle,
+        target_acc_addr: RawHandle,
+    ) -> bool;
+
     fn managedGetKDATokenData(
         address_handle: i32,
         ticker_handle: i32,
@@ -293,6 +299,21 @@ impl BlockchainApiImpl for VmApiImpl {
         }
     }
 
+    fn managed_acc_has_perm(
+        &self,
+        ops: i64,
+        source_acc_addr: RawHandle,
+        target_acc_addr: RawHandle,
+    ) -> bool {
+        unsafe {
+            managedAccHasPerm(
+                ops,
+                source_acc_addr,
+                target_acc_addr,
+            )
+        }
+    }
+
     fn managed_get_user_kda(
         &self,
         address_handle: RawHandle,
@@ -394,7 +415,7 @@ impl BlockchainApiImpl for VmApiImpl {
             managedGetCodeMetadata(address_handle, response_handle);
         }
     }
-    
+
     fn managed_is_builtin_function(&self, function_name_handle: Self::ManagedBufferHandle) -> bool {
         unsafe { managedIsBuiltinFunction(function_name_handle) }
     }
