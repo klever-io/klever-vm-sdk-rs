@@ -1,4 +1,5 @@
 mod account_data;
+mod account_permission;
 mod block_info;
 mod blockchain_mock;
 mod blockchain_mock_account_util;
@@ -12,6 +13,7 @@ mod kda_roles;
 pub mod reserved;
 
 pub use account_data::*;
+pub use account_permission::*;
 pub use block_info::*;
 pub use blockchain_mock::*;
 pub use blockchain_state::BlockchainState;

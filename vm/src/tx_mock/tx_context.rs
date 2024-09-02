@@ -1,8 +1,8 @@
 use crate::types::VMCodeMetadata;
 use crate::{
     tx_execution::BlockchainVMRef,
-    types::VMAddress,
-    world_mock::{AccountData, AccountKda, BlockchainState, FailingExecutor},
+    types::{VMAddress, VMCodeMetadata},
+    world_mock::{AccountData, AccountKda, AccountPermission, BlockchainState, FailingExecutor},
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
@@ -52,6 +52,7 @@ impl TxContext {
             contract_path: None,
             code_metadata: VMCodeMetadata::empty(),
             contract_owner: None,
+            permissions: vec![AccountPermission::default()],
         });
 
         let tx_input = TxInput {
@@ -167,6 +168,7 @@ impl TxContext {
             contract_path: Some(contract_path),
             code_metadata,
             contract_owner: Some(contract_owner),
+            permissions: vec![AccountPermission::default()],
         });
     }
 
