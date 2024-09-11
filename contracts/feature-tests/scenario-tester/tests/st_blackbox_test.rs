@@ -188,12 +188,7 @@ fn set_state_test() {
             CheckAccount::new()
                 .nonce(U64Value::from(3u64))
                 .balance("50")
-                .kda_nft_balance_and_attributes(
-                    "str:NFT-123456",
-                    "2",
-                    "0",
-                    Some(Vec::<u8>::new()),
-                ),
+                .kda_nft_balance_and_attributes("str:NFT-123456", "2", "0", Some(Vec::<u8>::new())),
         ),
     );
 

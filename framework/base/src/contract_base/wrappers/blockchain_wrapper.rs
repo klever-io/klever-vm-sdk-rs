@@ -1,5 +1,6 @@
 use core::marker::PhantomData;
 
+use crate::types::CodeMetadata;
 use crate::{
     api::{
         const_handles, use_raw_handle, BigIntApiImpl, BlockchainApi, BlockchainApiImpl, ErrorApi,
@@ -12,7 +13,6 @@ use crate::{
         PropertiesInfo, RolesInfo, RoyaltiesData, SFTMeta, TokenIdentifier, UserKDA,
     },
 };
-use crate::types::CodeMetadata;
 
 /// Interface to be used by the actual smart contract code.
 ///
@@ -305,7 +305,7 @@ where
         }
 
         UserKDA {
-            balance: balance,
+            balance,
             frozen_balance: BigUint::from_raw_handle(frozen_handle.get_raw_handle()),
             last_claim: LastClaim::from(ManagedBuffer::from_raw_handle(
                 last_claim_handle.get_raw_handle(),
@@ -488,10 +488,7 @@ where
     }
 
     /// Retrieves and deserializes token attributes from the SC account, with given token identifier and nonce.
-    pub fn get_token_attributes(
-        &self,
-        token_id: &TokenIdentifier<A>,
-    ) -> AttributesInfo {
+    pub fn get_token_attributes(&self, token_id: &TokenIdentifier<A>) -> AttributesInfo {
         let kda_data = self.get_kda_token_data(&self.get_sc_address(), token_id, 0);
         kda_data.attributes
     }

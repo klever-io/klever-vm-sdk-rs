@@ -27,8 +27,7 @@ pub trait PayableFeatures {
         if initial_supply > 0 {
             let caller = self.blockchain().get_caller();
 
-            self.send()
-                .kda_mint(&new_token_id, 0, &initial_supply);
+            self.send().kda_mint(&new_token_id, 0, &initial_supply);
             self.send()
                 .direct_kda(&caller, &new_token_id, 0, &initial_supply);
         }

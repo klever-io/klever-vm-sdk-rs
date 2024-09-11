@@ -38,7 +38,8 @@ pub(crate) fn address_expression(input: &str) -> Vec<u8> {
 
 /// Generates a 32-byte smart contract address based on the input.
 pub(crate) fn sc_address_expression(input: &str, vm_type: &VMIdentifier) -> Vec<u8> {
-    let mut address = create_address_from_prefix(input.as_bytes(), SC_ADDRESS_RESERVED_PREFIX_LENGTH, 32);
+    let mut address =
+        create_address_from_prefix(input.as_bytes(), SC_ADDRESS_RESERVED_PREFIX_LENGTH, 32);
     let mut vm = vm_type.vm_type;
     address[SC_ADDRESS_RESERVED_PREFIX_LENGTH - VM_TYPE_LENGTH..SC_ADDRESS_RESERVED_PREFIX_LENGTH]
         .swap_with_slice(&mut vm);

@@ -6,12 +6,12 @@ pub mod sc_config;
 mod wasm_cargo_toml_data;
 mod wasm_cargo_toml_generate;
 
-use std::path::Path;
 use crate::cli_args::{ContractCliAction, ContractCliArgs};
 use clap::Parser;
-use meta_config::MetaConfig;
 use klever_sc::contract_base::ContractAbiProvider;
+use meta_config::MetaConfig;
 use sc_config::ScConfig;
+use std::path::Path;
 
 /// Entry point in the program from the contract meta crates.
 pub fn cli_main<AbiObj: ContractAbiProvider>() {
@@ -53,18 +53,15 @@ fn process_original_abi<AbiObj: ContractAbiProvider>(cli_args: &ContractCliArgs)
     meta_config
 }
 
-pub fn multi_contract_config<AbiObj: ContractAbiProvider>(
-    contract_crate_path: &Path,
-) -> ScConfig
+#[allow(clippy::multiple_bound_locations)]
+pub fn multi_contract_config<AbiObj: ContractAbiProvider>(contract_crate_path: &Path) -> ScConfig
 where
-AbiObj: ContractAbiProvider
+    AbiObj: ContractAbiProvider,
 {
     let original_contract_abi = <AbiObj as ContractAbiProvider>::abi();
 
-    let sc_config = ScConfig::load_from_crate_or_default(
-        contract_crate_path,
-        &original_contract_abi,
-    );
+    let sc_config =
+        ScConfig::load_from_crate_or_default(contract_crate_path, &original_contract_abi);
 
     sc_config.validate_contract_variants();
     sc_config

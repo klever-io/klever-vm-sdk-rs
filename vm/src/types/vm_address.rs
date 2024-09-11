@@ -134,7 +134,6 @@ impl VMAddress {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::{display_util::address_hex, types::VMAddress};

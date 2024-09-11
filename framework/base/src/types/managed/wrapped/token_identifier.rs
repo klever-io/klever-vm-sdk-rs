@@ -67,17 +67,17 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
         if self.is_klv() {
             ManagedBuffer::from(&Self::KLV_REPRESENTATION[..])
         } else {
-            self.buffer 
+            self.buffer
         }
     }
 
-    /// Checks the KDA token identifier for validity. 
+    /// Checks the KDA token identifier for validity.
     /// Will fail if it encodes an invalid KDA token identifier.
     pub fn is_valid(&self) -> bool {
         if self.is_klv() {
             return true;
         }
-        self.is_valid_kda_identifier()        
+        self.is_valid_kda_identifier()
     }
 
     #[inline]

@@ -1,13 +1,13 @@
 mod all;
 mod info;
+pub mod install;
 mod local_deps;
 mod print_util;
 pub mod scen_test_gen;
 pub mod template;
-pub(crate) mod upgrade;
 mod test;
 mod test_coverage;
-pub mod install;
+pub(crate) mod upgrade;
 
 use crate::{
     cli_args::{StandaloneCliAction, StandaloneCliArgs},

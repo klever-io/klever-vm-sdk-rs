@@ -1,3 +1,4 @@
+use crate::types::VMCodeMetadata;
 use crate::{
     tx_execution::BlockchainVMRef,
     types::VMAddress,
@@ -9,9 +10,10 @@ use std::{
     collections::HashMap,
     sync::{Arc, Mutex, MutexGuard},
 };
-use crate::types::VMCodeMetadata;
 
-use super::{BackTransfers, BlockchainRng, BlockchainUpdate, TxCache, TxInput, TxManagedTypes, TxResult};
+use super::{
+    BackTransfers, BlockchainRng, BlockchainUpdate, TxCache, TxInput, TxManagedTypes, TxResult,
+};
 
 pub struct TxContext {
     pub vm_ref: BlockchainVMRef,
@@ -95,9 +97,9 @@ impl TxContext {
     }
 
     pub fn with_account_or_else<R, F, Else>(&self, address: &VMAddress, f: F, or_else: Else) -> R
-        where
-            F: FnOnce(&AccountData) -> R,
-            Else: FnOnce() -> R,
+    where
+        F: FnOnce(&AccountData) -> R,
+        Else: FnOnce() -> R,
     {
         self.tx_cache.with_account_or_else(address, f, or_else)
     }

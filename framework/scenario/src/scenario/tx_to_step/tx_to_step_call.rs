@@ -1,12 +1,12 @@
-use std::convert::From;
 use klever_sc::types::{
     Code, FunctionCall, NotPayable, RHListExec, Tx, TxEnv, TxFromSpecified, TxGas, TxPayment,
     TxToSpecified, UpgradeCall,
 };
+use std::convert::From;
 
 use crate::{
     imports::KleverscPath,
-    scenario_model::{ScCallStep, TxKDA, TxExpect, TxResponse},
+    scenario_model::{ScCallStep, TxExpect, TxKDA, TxResponse},
     ScenarioEnvExec,
 };
 

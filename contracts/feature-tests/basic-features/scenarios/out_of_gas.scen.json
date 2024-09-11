@@ -32,7 +32,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "5",
+                "status": "58",
                 "message": "str:not enough gas",
                 "logs": "*",
                 "gas": "*",

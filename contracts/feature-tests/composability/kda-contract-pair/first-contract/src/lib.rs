@@ -2,18 +2,13 @@
 
 use klever_sc::imports::*;
 
-const KDA_TRANSFER_STRING: &str = "KDATransfer";
 const SECOND_CONTRACT_ACCEPT_KDA_PAYMENT: &str = "acceptKdaPayment";
 const SECOND_CONTRACT_REJECT_KDA_PAYMENT: &str = "rejectKdaPayment";
 
 #[klever_sc::contract]
 pub trait FirstContract {
     #[init]
-    fn init(
-        &self,
-        kda_token_identifier: TokenIdentifier,
-        second_contract_address: ManagedAddress,
-    ) {
+    fn init(&self, kda_token_identifier: TokenIdentifier, second_contract_address: ManagedAddress) {
         self.set_contract_kda_token_identifier(&kda_token_identifier);
         self.set_second_contract_address(&second_contract_address);
     }
@@ -129,16 +124,14 @@ pub trait FirstContract {
         args: &ManagedVec<Self::Api, ManagedBuffer>,
     ) {
         let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(kda_token_identifier);
-        arg_buffer.push_arg(amount);
-        arg_buffer.push_arg(func_name);
         for arg in args.into_iter() {
             arg_buffer.push_arg_raw(arg);
         }
 
         self.tx()
             .to(to)
-            .raw_call(KDA_TRANSFER_STRING)
+            .raw_call(func_name.clone())
+            .single_kda(kda_token_identifier, 0u64, amount)
             .arguments_raw(arg_buffer)
             .sync_call();
     }

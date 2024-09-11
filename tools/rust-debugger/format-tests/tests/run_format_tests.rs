@@ -1,5 +1,3 @@
-#![feature(exit_status_error)]
-
 #[cfg(test)]
 use std::{io::BufRead, path::Path, process::Command};
 

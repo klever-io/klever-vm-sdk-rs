@@ -5,7 +5,6 @@ pub mod builtin_func_proxy;
 /// Test contract for investigating calls.
 #[klever_sc::contract]
 pub trait BuiltinFuncFeatures {
-
     #[init]
     fn init(&self) {}
 

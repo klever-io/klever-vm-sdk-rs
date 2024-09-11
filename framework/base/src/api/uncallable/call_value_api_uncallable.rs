@@ -19,7 +19,11 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_kda_value(&self, _dest: Self::BigIntHandle, _token_id_handle: Self::ManagedBufferHandle) {
+    fn load_kda_value(
+        &self,
+        _dest: Self::BigIntHandle,
+        _token_id_handle: Self::ManagedBufferHandle,
+    ) {
         unreachable!()
     }
 

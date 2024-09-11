@@ -1,4 +1,3 @@
-use alloc::string::ToString;
 use crate::{
     abi::{EndpointAbi, EndpointMutabilityAbi, EndpointTypeAbi, InputAbi, TypeAbi},
     api::{
@@ -8,6 +7,7 @@ use crate::{
     io::load_endpoint_args,
     types::ManagedType,
 };
+use alloc::string::ToString;
 
 pub const EXTERNAL_VIEW_CONSTRUCTOR_FLAG: &str = "<external view init>";
 

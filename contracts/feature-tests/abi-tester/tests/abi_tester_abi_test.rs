@@ -1,6 +1,6 @@
-use std::{fs, fs::File, io::Write};
 use klever_sc::abi::{EnumVariantDescription, TypeContents, TypeNames};
 use klever_sc::contract_base::ContractAbiProvider;
+use std::{fs, fs::File, io::Write};
 
 use klever_sc_meta::abi_json;
 use klever_sc_meta::abi_json::KdaAttributeAbiJson;
@@ -64,7 +64,6 @@ fn abi_tester_kda_attr_abi_generated_ok() {
         fs::read_to_string("./abi_tester_expected_kda_attr.kda-abi.json").unwrap()
     );
 }
-
 
 #[test]
 fn check_multi_contract_config() {

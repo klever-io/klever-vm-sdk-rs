@@ -1,4 +1,3 @@
-use unwrap_infallible::UnwrapInfallible;
 use super::{EndpointDynArgLoader, EndpointSingleArgLoader};
 use crate::{
     api::{
@@ -9,6 +8,7 @@ use crate::{
     err_msg,
     io::{ArgErrorHandler, ArgId},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 /// Argument count cannot change during execution, and it can get queried multiple times,
 /// so it makes sense to save it statically.

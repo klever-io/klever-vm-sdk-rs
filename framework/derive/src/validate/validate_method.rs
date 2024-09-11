@@ -73,9 +73,17 @@ fn validate_payment_args(m: &Method) {
         m.name
     );
     if !m.is_payable() {
-        assert!(num_payment_amount == 0, "`#[payment]` only allowed in payable endpoints or payable init (method: `{}`)", m.name);
+        assert!(
+            num_payment_amount == 0,
+            "`#[payment]` only allowed in payable endpoints or payable init (method: `{}`)",
+            m.name
+        );
 
-        assert!(num_payment_token == 0, "`#[payment_token]` only allowed in payable endpoints or payable init (method: `{}`)", m.name);
+        assert!(
+            num_payment_token == 0,
+            "`#[payment_token]` only allowed in payable endpoints or payable init (method: `{}`)",
+            m.name
+        );
     }
     validate_payment_args_not_reference(m);
 }

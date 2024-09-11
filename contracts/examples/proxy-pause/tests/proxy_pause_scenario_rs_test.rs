@@ -3,7 +3,10 @@ use klever_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
-    blockchain.register_contract("kleversc:output/proxy-pause.kleversc.json", proxy_pause::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:output/proxy-pause.kleversc.json",
+        proxy_pause::ContractBuilder,
+    );
 
     blockchain.register_contract(
         "kleversc:../check-pause/output/check-pause.kleversc.json",

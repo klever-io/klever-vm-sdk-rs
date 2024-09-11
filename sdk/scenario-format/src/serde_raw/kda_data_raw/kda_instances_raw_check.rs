@@ -63,9 +63,7 @@ impl<'de> Visitor<'de> for CheckKdaInstancesRawVisitor {
         if value == "*" {
             Ok(CheckKdaInstancesRaw::Star)
         } else {
-            Err(de::Error::custom(
-                "only '*' allowed as KDA instances value",
-            ))
+            Err(de::Error::custom("only '*' allowed as KDA instances value"))
         }
     }
 

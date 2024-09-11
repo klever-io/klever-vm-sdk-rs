@@ -1,13 +1,12 @@
 use crate::model::{
-    EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method,
-    PublicRole,
+    EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method, PublicRole,
 };
 
 use super::{
     attributes::{
         is_allow_multiple_var_args, is_init, is_only_admin, is_only_owner, is_only_user_account,
-        is_upgrade, EndpointAttribute, ExternalViewAttribute, LabelAttribute,
-        OutputNameAttribute, ViewAttribute,
+        is_upgrade, EndpointAttribute, ExternalViewAttribute, LabelAttribute, OutputNameAttribute,
+        ViewAttribute,
     },
     MethodAttributesPass1,
 };

@@ -80,9 +80,9 @@ pub(super) fn attr_one_string_arg(attr: &syn::Attribute) -> String {
             let mut iter = path.segments.into_iter();
             match iter.next() {
                 Some(syn::PathSegment {
-                         ident: _,
-                         arguments: syn::PathArguments::None,
-                     }) => String::new(),
+                    ident: _,
+                    arguments: syn::PathArguments::None,
+                }) => String::new(),
                 Some(_) => panic!("unexpected attribute argument tokens"),
                 None => panic!("unexpected attribute argument tokens"),
             }
@@ -140,9 +140,9 @@ fn attr_one_opt_token_tree_arg(attr: &syn::Attribute) -> Option<proc_macro2::Tok
             let mut iter = val.segments.into_iter();
             let arg_token_tree: Option<proc_macro2::TokenTree> = match iter.next() {
                 Some(syn::PathSegment {
-                         ident: _,
-                         arguments: syn::PathArguments::None,
-                     }) => None,
+                    ident: _,
+                    arguments: syn::PathArguments::None,
+                }) => None,
                 Some(_) => panic!("unexpected attribute argument tokens"),
                 None => None,
             };

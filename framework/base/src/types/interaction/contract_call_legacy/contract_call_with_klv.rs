@@ -1,10 +1,10 @@
 use crate::codec::TopEncodeMulti;
 
+use crate::types::ContractCallBase;
 use crate::{
     api::CallTypeApi,
     types::{BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier},
 };
-use crate::types::ContractCallBase;
 
 use super::{contract_call_no_payment::ContractCallNoPayment, ContractCall};
 

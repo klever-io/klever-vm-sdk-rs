@@ -1,22 +1,18 @@
 use core::{borrow::Borrow, marker::PhantomData};
 
 use super::StorageMapper;
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     codec::{
-        multi_types::PlaceholderOutput, DecodeErrorHandler,
-        EncodeErrorHandler, TopDecode, TopDecodeInput, TopEncode, TopEncodeMulti,
-        TopEncodeMultiOutput, TopEncodeOutput,
+        multi_types::PlaceholderOutput, DecodeErrorHandler, EncodeErrorHandler, TopDecode,
+        TopDecodeInput, TopEncode, TopEncodeMulti, TopEncodeMultiOutput, TopEncodeOutput,
     },
-    storage::{
-        storage_clear, storage_set,
-        StorageKey,
-    },
+    storage::{storage_clear, storage_set, StorageKey},
     types::{ManagedAddress, ManagedType},
 };
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 /// Manages a single serializable item in storage.
 pub struct SingleValueMapper<SA, T, A = CurrentStorage>
@@ -64,10 +60,10 @@ where
 }
 
 impl<SA, T, A> SingleValueMapper<SA, T, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: TopEncode + TopDecode,
 {
     /// Retrieves current value from storage.
     pub fn get(&self) -> T {
@@ -85,9 +81,9 @@ impl<SA, T, A> SingleValueMapper<SA, T, A>
 }
 
 impl<SA, T> SingleValueMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
     /// Saves argument to storage.
     ///

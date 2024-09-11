@@ -1,5 +1,7 @@
 use num_traits::Zero;
 
+use crate::tx_mock::CallType;
+use crate::types::{top_encode_big_uint, VMCodeMetadata};
 use crate::{
     tx_execution::execute_system_sc,
     tx_mock::{
@@ -9,8 +11,6 @@ use crate::{
     types::VMAddress,
     with_shared::Shareable,
 };
-use crate::tx_mock::CallType;
-use crate::types::{top_encode_big_uint, VMCodeMetadata};
 
 use super::{is_system_sc_address, BlockchainVMRef};
 
@@ -32,10 +32,6 @@ fn should_execute_sc_call(tx_input: &TxInput) -> bool {
 }
 
 fn should_add_transfer_value_log(tx_input: &TxInput) -> bool {
-    if tx_input.call_type != CallType::DirectCall {
-        return true;
-    }
-
     if tx_input.call_type == CallType::UpgradeFromSource {
         // already handled in upgradeContract builtin function
         return false;
@@ -59,7 +55,6 @@ pub(crate) fn create_transfer_value_log(tx_input: &TxInput, call_type: CallType)
         data,
     }
 }
-
 
 impl BlockchainVMRef {
     /// Executes without builtin functions, directly on the contract or the given lambda closure.

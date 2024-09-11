@@ -1,13 +1,13 @@
 use super::{
     builtin_func_trait::BuiltinFunction,
     builtin_function_names::*,
-    general::{ChangeOwner, UpgradeContract, KleverAssetTrigger, SetAccountName},
+    general::{ChangeOwner, KleverAssetTrigger, SetAccountName, UpgradeContract},
     transfer::KDAMultiTransfer,
     BuiltinFunctionKdaTransferInfo,
 };
 use crate::{
     tx_execution::BlockchainVMRef,
-    tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult}
+    tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult},
 };
 
 /// Container for builtin function logic.

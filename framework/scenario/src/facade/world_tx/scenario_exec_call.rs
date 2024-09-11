@@ -54,7 +54,8 @@ impl<'w> TxEnvMockDeployAddress for ScenarioEnvExec<'w> {
             .accounts
             .get(&from_value.to_vm_address())
             .expect("sender does not exist")
-            .nonce + 1;
+            .nonce
+            + 1;
         let new_address_value = address_annotated(self, &new_address);
 
         self.world.set_state_step(SetStateStep::new().new_address(

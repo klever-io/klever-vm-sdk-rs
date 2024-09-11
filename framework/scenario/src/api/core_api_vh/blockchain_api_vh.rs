@@ -196,13 +196,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         source_acc_addr: RawHandle,
         target_acc_addr: RawHandle,
     ) -> bool {
-        self.with_vm_hooks(|vh| {
-            vh.managed_acc_has_perm(
-                ops,
-                source_acc_addr,
-                target_acc_addr,
-            )
-        })
+        self.with_vm_hooks(|vh| vh.managed_acc_has_perm(ops, source_acc_addr, target_acc_addr) == 1)
     }
 
     fn managed_get_kda_token_data(

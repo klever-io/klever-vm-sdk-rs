@@ -3,7 +3,10 @@ use klever_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
-    blockchain.register_contract("kleversc:output/erc20.kleversc.json", erc20::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:output/erc20.kleversc.json",
+        erc20::ContractBuilder,
+    );
     blockchain
 }
 

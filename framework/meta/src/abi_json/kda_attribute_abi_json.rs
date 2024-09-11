@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 
-use klever_sc::abi::KdaAttributeAbi;
-use serde::{Deserialize, Serialize};
 use crate::abi_json::kda_attribute_json::KdaAttributeJson;
 use crate::abi_json::{convert_type_descriptions_to_json, TypeDescriptionJson};
+use klever_sc::abi::KdaAttributeAbi;
+use serde::{Deserialize, Serialize};
 
 /// Represents an entire KDA attribute ABI file. The type descriptions only show up here.
 #[derive(Serialize, Deserialize)]

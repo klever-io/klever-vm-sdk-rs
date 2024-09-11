@@ -2,13 +2,13 @@ use core::marker::PhantomData;
 use klever_sc_codec::{TopDecode, TopEncode};
 
 use super::{SingleValueMapper, StorageMapper};
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     api::{ErrorApiImpl, StorageMapperApi},
     codec::NestedEncode,
     storage::StorageKey,
     types::ManagedAddress,
 };
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 type FlagMapper<SA, A> = SingleValueMapper<SA, bool, A>;
 
@@ -57,11 +57,10 @@ where
 }
 
 impl<SA, T> WhitelistMapper<SA, T, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        T: TopDecode + TopEncode + NestedEncode + 'static,
+where
+    SA: StorageMapperApi,
+    T: TopDecode + TopEncode + NestedEncode + 'static,
 {
-
     pub fn contains(&self, item: &T) -> bool {
         let mapper = self.build_mapper_for_item(item);
         !mapper.is_empty()
@@ -82,9 +81,9 @@ impl<SA, T> WhitelistMapper<SA, T, ManagedAddress<SA>>
 }
 
 impl<SA, T> WhitelistMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopDecode + TopEncode + NestedEncode + 'static,
+where
+    SA: StorageMapperApi,
+    T: TopDecode + TopEncode + NestedEncode + 'static,
 {
     pub fn contains(&self, item: &T) -> bool {
         let mapper = self.build_mapper_for_item(item);

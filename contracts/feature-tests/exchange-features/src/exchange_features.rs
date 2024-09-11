@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[derive(
     ManagedVecItem,

@@ -1,36 +1,47 @@
 use klever_sc::imports::*;
 
-use crate::storage;
 use crate::crowdfunding_data::CrowdfundingData;
-use crate::crowdfunding_helpers::{name_to_id, discount_percentage_fee};
-
+use crate::crowdfunding_helpers::{discount_percentage_fee, name_to_id};
+use crate::storage;
 
 #[klever_sc::module]
-pub trait CrowdfundingMethods: storage::Storage 
-{
+pub trait CrowdfundingMethods: storage::Storage {
     #[payable("KLV")]
     #[endpoint]
     fn claim(&self, id: ManagedBuffer) {
-       let (token_identifier, payment) = self.call_value().klv_or_single_fungible_kda();
+        let (token_identifier, payment) = self.call_value().klv_or_single_fungible_kda();
 
-        require!(token_identifier == TokenIdentifier::from("KLV"), "Invalid token for claim!");
+        require!(
+            token_identifier == TokenIdentifier::from("KLV"),
+            "Invalid token for claim!"
+        );
         require!(payment == self.claim_fee().get(), "Invalid Fee for claim!");
-        require!(!self.crowdfunding(&id).is_empty(),"Crowdfunding does not exists!");
+        require!(
+            !self.crowdfunding(&id).is_empty(),
+            "Crowdfunding does not exists!"
+        );
 
         let mapper = self.crowdfunding(&id);
         let mut crowdfunding = mapper.get();
 
-        require!(crowdfunding.owner == self.blockchain().get_caller(), "You are not the owner!");
+        require!(
+            crowdfunding.owner == self.blockchain().get_caller(),
+            "You are not the owner!"
+        );
 
-        let available = crowdfunding.balance.clone().sub(crowdfunding.claimed.clone());
+        let available = crowdfunding
+            .balance
+            .clone()
+            .sub(crowdfunding.claimed.clone());
 
-        require!(available > BigUint::from(0u32), "Claim not available!");
+        require!(available > 0u32, "Claim not available!");
 
         let fee = self.service_fee().get();
 
         let claim_value = discount_percentage_fee(&available, fee);
 
-        self.send().direct_kda(&crowdfunding.owner, &crowdfunding.token, 0, &claim_value);
+        self.send()
+            .direct_kda(&crowdfunding.owner, &crowdfunding.token, 0, &claim_value);
 
         crowdfunding.claimed += &available;
 
@@ -47,18 +58,31 @@ pub trait CrowdfundingMethods: storage::Storage
     }
 
     #[endpoint]
-    fn create(&self, name: ManagedBuffer, logo: ManagedBuffer, description: ManagedBuffer, 
-        token: TokenIdentifier, target: BigUint, deadline: u64) {
+    fn create(
+        &self,
+        name: ManagedBuffer,
+        logo: ManagedBuffer,
+        description: ManagedBuffer,
+        token: TokenIdentifier,
+        target: BigUint,
+        deadline: u64,
+    ) {
         let id = name_to_id(&name);
 
         require!(id.len() > 3, "Invalid name!");
-        require!(deadline > self.blockchain().get_block_timestamp(), "Invalid deadline!");
+        require!(
+            deadline > self.blockchain().get_block_timestamp(),
+            "Invalid deadline!"
+        );
         require!(target > BigUint::default(), "Invalid target!");
-        require!(self.crowdfunding(&id).is_empty(), "Crowdfunding already exists!");
+        require!(
+            self.crowdfunding(&id).is_empty(),
+            "Crowdfunding already exists!"
+        );
 
         let caller = &self.blockchain().get_caller();
 
-        let crowdfunding = CrowdfundingData{
+        let crowdfunding = CrowdfundingData {
             id: id.clone(),
             title: name.clone(),
             logo: logo.clone(),
@@ -89,24 +113,23 @@ pub trait CrowdfundingMethods: storage::Storage
 
         for (i, _) in self.crowdfundings().iter().enumerate() {
             if i == 0 {
-               continue;
+                continue;
             }
 
-            self.crowdfundings().set(i, &self.crowdfundings().get(i+1))
+            self.crowdfundings()
+                .set(i, &self.crowdfundings().get(i + 1))
         }
 
         self.crowdfundings().set(limit, &id);
-
     }
 
-    
     #[endpoint]
     fn set_deadline(&self, crowdfunding_id: ManagedBuffer, deadline: u64) {
         let mapper = self.crowdfunding(&crowdfunding_id);
         let mut crowdfunding = mapper.get();
 
         let timestamp = self.blockchain().get_block_timestamp();
-        
+
         require!(deadline > timestamp, "Deadline already passed!");
 
         crowdfunding.deadline = deadline;
@@ -119,7 +142,10 @@ pub trait CrowdfundingMethods: storage::Storage
     fn donate(&self, crowdfunding_id: ManagedBuffer) {
         let (token_identifier, payment) = self.call_value().klv_or_single_fungible_kda();
 
-        require!(!self.crowdfunding(&crowdfunding_id).is_empty(),"Crowdfunding not found!");
+        require!(
+            !self.crowdfunding(&crowdfunding_id).is_empty(),
+            "Crowdfunding not found!"
+        );
 
         let mapper = self.crowdfunding(&crowdfunding_id);
         let mut crowdfunding = mapper.get();
@@ -128,7 +154,7 @@ pub trait CrowdfundingMethods: storage::Storage
             token_identifier == crowdfunding.token,
             "Invalid token for Crowdfunding!"
         );
-        
+
         crowdfunding.balance += payment;
         crowdfunding.donators += 1;
 

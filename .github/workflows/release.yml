@@ -29,16 +29,34 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get the release version from the tag
         shell: bash
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@nightly
+        run: |
+          rustup default stable
+          rustup update rustup target add ${{ matrix.target }}
+
+      - name: Cargo Cache
+        uses: actions/cache@v4
         with:
-          targets: ${{ matrix.target }}
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-
+
+      - name: Cargo Target Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-
 
       - name: Install dependencies
         shell: bash

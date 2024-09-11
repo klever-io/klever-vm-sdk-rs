@@ -19,7 +19,7 @@ pub trait KdaTransferWithFee {
     ) {
         self.token_fee(&token)
             .set(Fee::ExactValue(KdaTokenPayment::new(
-                fee_token, 0, fee_amount
+                fee_token, 0, fee_amount,
             )));
     }
 

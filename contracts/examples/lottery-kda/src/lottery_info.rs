@@ -1,6 +1,6 @@
 use klever_sc::{
     api::ManagedTypeApi,
-    types::{BigUint, TokenIdentifier, ManagedVec},
+    types::{BigUint, ManagedVec, TokenIdentifier},
 };
 
 use klever_sc::derive_imports::*;

@@ -3,10 +3,7 @@ use crate::codec::TopEncodeMulti;
 use crate::types::TokenIdentifier;
 use crate::{
     api::CallTypeApi,
-    types::{
-        BigUint, KdaTokenPayment, ManagedAddress,
-        ManagedBuffer, ManagedVec,
-    },
+    types::{BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec},
 };
 
 use super::{
@@ -46,8 +43,7 @@ where
     }
 }
 
-impl<SA, OriginalResult> ContractCallBase<SA>
-    for ContractCallWithKlvOrSingleKda<SA, OriginalResult>
+impl<SA, OriginalResult> ContractCallBase<SA> for ContractCallWithKlvOrSingleKda<SA, OriginalResult>
 where
     SA: CallTypeApi + 'static,
     OriginalResult: TopEncodeMulti,
@@ -101,11 +97,7 @@ where
     ) -> Self {
         ContractCallWithKlvOrSingleKda {
             basic: ContractCallNoPayment::new(to.clone(), endpoint_name),
-            payment: KdaTokenPayment::new(
-                token_identifier,
-                token_nonce,
-                amount,
-            ),
+            payment: KdaTokenPayment::new(token_identifier, token_nonce, amount),
         }
     }
 }

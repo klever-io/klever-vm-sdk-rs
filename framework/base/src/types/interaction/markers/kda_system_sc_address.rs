@@ -1,11 +1,11 @@
 use hex_literal::hex;
 use klever_sc_codec::{EncodeErrorHandler, TopEncode, TopEncodeOutput};
 
+use crate::abi::TypeAbiFrom;
 use crate::{
     api::{CallTypeApi, ManagedTypeApi},
     types::{AnnotatedValue, ManagedAddress, ManagedBuffer, TxScEnv, TxTo, TxToSpecified},
 };
-use crate::abi::TypeAbiFrom;
 
 /// Address of the system smart contract that manages KDA.
 const SYSTEM_SC_ADDRESS_BYTES: [u8; 32] =
@@ -20,8 +20,8 @@ pub struct KDASystemSCAddress;
 
 impl KDASystemSCAddress {
     pub fn to_managed_address<Api>(self) -> ManagedAddress<Api>
-        where
-            Api: ManagedTypeApi,
+    where
+        Api: ManagedTypeApi,
     {
         ManagedAddress::from(SYSTEM_SC_ADDRESS_BYTES)
     }
@@ -36,8 +36,8 @@ impl KDASystemSCAddress {
 }
 
 impl<Api> AnnotatedValue<TxScEnv<Api>, ManagedAddress<Api>> for KDASystemSCAddress
-    where
-        Api: CallTypeApi,
+where
+    Api: CallTypeApi,
 {
     fn annotation(&self, _env: &TxScEnv<Api>) -> ManagedBuffer<Api> {
         ManagedBuffer::from(SYSTEM_SC_ADDRESS_ANNOTATION)
@@ -53,9 +53,9 @@ impl<Api> TxToSpecified<TxScEnv<Api>> for KDASystemSCAddress where Api: CallType
 
 impl TopEncode for KDASystemSCAddress {
     fn top_encode_or_handle_err<O, H>(&self, output: O, h: H) -> Result<(), H::HandledErr>
-        where
-            O: TopEncodeOutput,
-            H: EncodeErrorHandler,
+    where
+        O: TopEncodeOutput,
+        H: EncodeErrorHandler,
     {
         SYSTEM_SC_ADDRESS_BYTES.top_encode_or_handle_err(output, h)
     }

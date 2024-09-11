@@ -8,7 +8,10 @@ fn world() -> ScenarioWorld {
         crowdfunding_erc20::ContractBuilder,
     );
 
-    blockchain.register_contract("kleversc:../erc20/output/erc20.kleversc.json", erc20::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:../erc20/output/erc20.kleversc.json",
+        erc20::ContractBuilder,
+    );
 
     blockchain
 }

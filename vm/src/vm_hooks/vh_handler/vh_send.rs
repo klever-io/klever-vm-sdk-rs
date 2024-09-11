@@ -1,8 +1,8 @@
 use crate::{
     tx_execution::builtin_function_names::{KLEVER_TRANSFER_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME},
-    tx_mock::{TxFunctionName, TxTokenTransfer}, 
+    tx_mock::{TxFunctionName, TxTokenTransfer},
     types::{top_encode_big_uint, top_encode_u64, RawHandle, VMAddress, VMCodeMetadata},
-    vm_hooks::VMHooksHandlerSource
+    vm_hooks::VMHooksHandlerSource,
 };
 use num_traits::Zero;
 
@@ -59,7 +59,12 @@ pub trait VMHooksSend: VMHooksHandlerSource {
     ) {
         let mut arguments = vec![contract_code, code_metadata.to_vec()];
         arguments.extend(args);
-        self.perform_execute_on_dest_context(to, klv_value, UPGRADE_CONTRACT_FUNC_NAME.into(), arguments);
+        self.perform_execute_on_dest_context(
+            to,
+            klv_value,
+            UPGRADE_CONTRACT_FUNC_NAME.into(),
+            arguments,
+        );
     }
 
     fn multi_transfer_kda_nft_execute(
@@ -82,7 +87,6 @@ pub trait VMHooksSend: VMHooksHandlerSource {
         self.perform_transfer_execute_multi(to, payments, gas_limit, endpoint_name, arg_buffer)
     }
 
-
     #[allow(clippy::too_many_arguments)]
     fn deploy_contract(
         &self,
@@ -101,8 +105,7 @@ pub trait VMHooksSend: VMHooksHandlerSource {
             .mb_to_code_metadata(code_metadata_handle);
         let arg_buffer = self.m_types_lock().mb_get_vec_of_bytes(arg_buffer_handle);
 
-        let (new_address, result) =
-            self.perform_deploy(klv_value, code, code_metadata, arg_buffer);
+        let (new_address, result) = self.perform_deploy(klv_value, code, code_metadata, arg_buffer);
 
         self.m_types_lock()
             .mb_set(new_address_handle, new_address.to_vec());
@@ -205,8 +208,7 @@ pub trait VMHooksSend: VMHooksHandlerSource {
             .mb_to_function_name(endpoint_name_handle);
         let arg_buffer = self.m_types_lock().mb_get_vec_of_bytes(arg_buffer_handle);
 
-        let result =
-            self.perform_execute_on_dest_context(to, klv_value, endpoint_name, arg_buffer);
+        let result = self.perform_execute_on_dest_context(to, klv_value, endpoint_name, arg_buffer);
 
         self.m_types_lock()
             .mb_set_vec_of_bytes(result_handle, result);

@@ -18,10 +18,13 @@ pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
     /// Retrieves the KLV call value from the VM.
     fn load_klv_value(&self, dest_handle: Self::BigIntHandle);
 
-
     /// Retrieves the call value from the VM by Token Name.
     /// Will return 0 in case of not existent.
-    fn load_kda_value(&self, dest_handle: Self::BigIntHandle, token_id_handle: Self::ManagedBufferHandle);
+    fn load_kda_value(
+        &self,
+        dest_handle: Self::BigIntHandle,
+        token_id_handle: Self::ManagedBufferHandle,
+    );
 
     /// Loads all KDA call values into a managed vec. Overwrites destination.
     fn load_all_kda_transfers(&self, dest_handle: Self::ManagedBufferHandle);

@@ -1,8 +1,6 @@
 use crate::{
     contract_base::SendRawWrapper,
-    types::{
-        BigUint, KdaTokenPaymentRefs, ManagedAddress, MultiKdaPayment, TxFrom, TxToSpecified,
-    },
+    types::{BigUint, KdaTokenPaymentRefs, ManagedAddress, MultiKdaPayment, TxFrom, TxToSpecified},
 };
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};

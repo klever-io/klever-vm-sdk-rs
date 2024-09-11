@@ -10,9 +10,7 @@ pub use upgrade_call::UpgradeCall;
 
 use crate::{
     formatter::SCLowerHex,
-    types::{
-        ManagedBuffer, ManagedBufferBuilder
-    },
+    types::{ManagedBuffer, ManagedBufferBuilder},
 };
 
 use super::TxEnv;

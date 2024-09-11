@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 mod distribution_module;
 pub mod nft_marketplace_proxy;
@@ -15,10 +15,7 @@ pub struct ExampleAttributes {
 }
 
 #[klever_sc::contract]
-pub trait SeedNftMinter:
-    distribution_module::DistributionModule
-    + nft_module::NftModule
-{
+pub trait SeedNftMinter: distribution_module::DistributionModule + nft_module::NftModule {
     #[init]
     fn init(
         &self,

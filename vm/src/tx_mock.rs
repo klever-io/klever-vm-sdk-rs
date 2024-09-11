@@ -12,13 +12,13 @@ mod tx_context;
 mod tx_context_ref;
 mod tx_context_stack;
 mod tx_input;
+mod tx_input_call_type;
 mod tx_input_function;
 mod tx_log;
 mod tx_managed_types;
 mod tx_panic;
 mod tx_result;
 mod tx_result_calls;
-mod tx_input_call_type;
 
 pub use blockchain_rng::*;
 pub use blockchain_update::BlockchainUpdate;

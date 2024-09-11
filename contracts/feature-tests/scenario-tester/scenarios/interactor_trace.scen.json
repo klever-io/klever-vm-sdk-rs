@@ -5,7 +5,7 @@
             "accounts": {
                 "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60": {
                     "nonce": "481",
-                    "balance": "106274669842530000003",
+                    "balance": "100000000000000",
                     "kda": {
                         "str:CAN-14dc0a": "1000",
                         "str:CAN-2abf4b": "1000",
@@ -27,6 +27,7 @@
         },
         {
             "step": "scDeploy",
+            "id": "deploy-scenario-tester",
             "tx": {
                 "from": "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60",
                 "contractCode": "kleversc:../output/scenario-tester.kleversc.json",
@@ -42,6 +43,7 @@
         },
         {
             "step": "scCall",
+            "id": "add-7",
             "tx": {
                 "from": "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60",
                 "to": "0x0000000000000000050028600ceb73ac22ec0b6f257aff7bed74dffa3ebfed60",
@@ -58,6 +60,7 @@
         },
         {
             "step": "scCall",
+            "id": "add-5",
             "tx": {
                 "from": "0xe32afedc904fe1939746ad973beb383563cf63642ba669b3040f9b9428a5ed60",
                 "to": "0x0000000000000000050028600ceb73ac22ec0b6f257aff7bed74dffa3ebfed60",

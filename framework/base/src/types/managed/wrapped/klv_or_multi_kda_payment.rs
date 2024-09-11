@@ -40,9 +40,7 @@ pub enum KlvOrMultiKdaPaymentRefs<'a, M: ManagedTypeApi> {
 impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
     pub fn as_refs(&self) -> KlvOrMultiKdaPaymentRefs<'_, M> {
         match self {
-            KlvOrMultiKdaPayment::Klv(klv_value) => {
-                KlvOrMultiKdaPaymentRefs::Klv(klv_value)
-            },
+            KlvOrMultiKdaPayment::Klv(klv_value) => KlvOrMultiKdaPaymentRefs::Klv(klv_value),
             KlvOrMultiKdaPayment::MultiKda(kda_payments) => {
                 KlvOrMultiKdaPaymentRefs::MultiKda(kda_payments)
             },

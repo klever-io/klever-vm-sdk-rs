@@ -68,12 +68,7 @@ pub trait DigitalCash:
     }
 
     #[view(getAmount)]
-    fn get_amount(
-        &self,
-        address: ManagedAddress,
-        token: TokenIdentifier,
-        nonce: u64,
-    ) -> BigUint {
+    fn get_amount(&self, address: ManagedAddress, token: TokenIdentifier, nonce: u64) -> BigUint {
         let deposit_mapper = self.deposit(&address);
         require!(!deposit_mapper.is_empty(), NON_EXISTENT_KEY_ERR_MSG);
 

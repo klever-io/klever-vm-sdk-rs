@@ -1,4 +1,4 @@
-use crowdfunding::crowdfunding_helpers::{name_to_id, discount_percentage_fee};
+use crowdfunding::crowdfunding_helpers::{discount_percentage_fee, name_to_id};
 use klever_sc::types::{BigUint, ManagedBuffer};
 use klever_sc_scenario::api::StaticApi;
 

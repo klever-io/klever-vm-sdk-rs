@@ -4,13 +4,16 @@ use crate::{constants::*, helpers, storage};
 
 #[klever_sc::module]
 pub trait PayFeeAndFund: storage::StorageModule + helpers::HelpersModule {
-    fn call_value_no_klv(&self) -> ManagedVec<KdaTokenPayment> {   
+    fn call_value_no_klv(&self) -> ManagedVec<KdaTokenPayment> {
         let mut payments: ManagedVec<KdaTokenPayment> = ManagedVec::new();
-        self.call_value().all_kda_transfers().iter().for_each(|payment| {
-            if payment.token_identifier != TokenIdentifier::klv() {
-                payments.push(payment.clone());
-            }
-        });
+        self.call_value()
+            .all_kda_transfers()
+            .iter()
+            .for_each(|payment| {
+                if payment.token_identifier != TokenIdentifier::klv() {
+                    payments.push(payment.clone());
+                }
+            });
 
         payments
     }
@@ -18,7 +21,7 @@ pub trait PayFeeAndFund: storage::StorageModule + helpers::HelpersModule {
     #[payable("*")]
     fn pay_fee_and_fund_kda(&self, address: ManagedAddress, valability: u64) {
         let mut payments = self.call_value_no_klv();
-        let fee = KdaTokenPayment::from(payments.get(0));
+        let fee = payments.get(0);
         let caller_address = self.blockchain().get_caller();
         self.update_fees(caller_address, &address, fee);
 

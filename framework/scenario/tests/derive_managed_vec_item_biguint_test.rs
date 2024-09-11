@@ -22,8 +22,7 @@ pub struct ManagedStructWithBigUint<M: ManagedTypeApi> {
 #[allow(clippy::assertions_on_constants)]
 fn struct_with_numbers_static() {
     assert_eq!(
-        <ManagedStructWithBigUint<StaticApi> as klever_sc::types::ManagedVecItem>::payload_size(
-        ),
+        <ManagedStructWithBigUint<StaticApi> as klever_sc::types::ManagedVecItem>::payload_size(),
         8
     );
     assert!(

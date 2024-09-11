@@ -1,4 +1,3 @@
-pub const NON_PAYABLE_FUNC_KLV: &str = "function does not accept KLV payment";
 pub const NON_PAYABLE_FUNC_KDA: &str = "function does not accept KDA payment";
 
 pub const BIG_INT_BITWISE_OPERATION_NEGATIVE: &str =

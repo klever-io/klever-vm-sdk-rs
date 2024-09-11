@@ -1,5 +1,12 @@
 use core::marker::PhantomData;
 
+use crate::abi::TypeAbiFrom;
+use crate::codec::{
+    multi_encode_iter_or_handle_err, multi_types::MultiValue2, EncodeErrorHandler, NestedDecode,
+    NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+};
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
+use crate::types::ManagedAddress;
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
@@ -7,15 +14,8 @@ use crate::{
     storage_clear,
     types::{ManagedType, MultiValueEncoded},
 };
-use crate::abi::TypeAbiFrom;
-use crate::codec::{
-    EncodeErrorHandler, multi_encode_iter_or_handle_err, multi_types::MultiValue2,
-    NestedDecode, NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
-};
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
-use crate::types::ManagedAddress;
 
-use super::{StorageMapper, unordered_set_mapper, UnorderedSetMapper};
+use super::{unordered_set_mapper, StorageMapper, UnorderedSetMapper};
 
 const VALUE_SUFIX: &[u8] = b"_value";
 const ID_SUFIX: &[u8] = b"_id";
@@ -85,11 +85,11 @@ where
 }
 
 impl<SA, K, V, A> BiDiMapper<SA, K, V, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
-        V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+    V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
 {
     fn get_id_key(&self, value: &V) -> StorageKey<SA> {
         let mut key = self.base_key.clone();
@@ -145,10 +145,10 @@ impl<SA, K, V, A> BiDiMapper<SA, K, V, A>
 }
 
 impl<SA, K, V> BiDiMapper<SA, K, V, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
-        V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
+    V: TopEncode + TopDecode + NestedEncode + NestedDecode + 'static + Default + PartialEq,
 {
     fn set_id(&mut self, value: &V, id: &K) {
         storage_set(self.get_id_key(value).as_ref(), id);

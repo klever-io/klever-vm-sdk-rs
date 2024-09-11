@@ -71,8 +71,7 @@ fn original_type_tokens(m: &Method) -> proc_macro2::TokenStream {
 
 pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2::TokenStream {
     let mut token_count = 0;
-    let mut token_expr =
-        quote! { klever_sc::types::TokenIdentifier::<Self::Api>::klv() };
+    let mut token_expr = quote! { klever_sc::types::TokenIdentifier::<Self::Api>::klv() };
     let mut nonce_count = 0;
     let mut nonce_expr = quote! { 0u64 };
     let mut payment_count = 0;
@@ -231,10 +230,7 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
     );
     assert!(token_count == 0, "No KDA payment allowed in #[init]");
     assert!(nonce_count == 0, "No SFT/NFT payment allowed in #[init]");
-    assert!(
-        multi_count == 0,
-        "No multi KDA payments allowed in #[init]"
-    );
+    assert!(multi_count == 0, "No multi KDA payments allowed in #[init]");
 
     let original_type = original_type_tokens(init_method);
     let return_type = quote! {

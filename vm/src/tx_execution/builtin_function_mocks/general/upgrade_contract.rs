@@ -1,4 +1,6 @@
-use crate::tx_execution::{builtin_function_names::UPGRADE_CONTRACT_FUNC_NAME, BlockchainVMRef, create_transfer_value_log};
+use crate::tx_execution::{
+    builtin_function_names::UPGRADE_CONTRACT_FUNC_NAME, create_transfer_value_log, BlockchainVMRef,
+};
 
 use crate::tx_mock::{BlockchainUpdate, CallType, TxCache, TxFunctionName, TxInput, TxResult};
 use crate::types::VMCodeMetadata;

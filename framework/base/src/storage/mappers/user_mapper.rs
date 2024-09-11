@@ -1,19 +1,18 @@
 use core::marker::PhantomData;
 
 use crate::codec::{
-    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti,
-    TopEncodeMultiOutput,
+    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 use super::StorageMapper;
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     abi::{TypeAbi, TypeName},
     api::StorageMapperApi,
     storage::{storage_set, StorageKey},
     types::{ManagedAddress, ManagedType, ManagedVec, MultiValueEncoded},
 };
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 const ADDRESS_TO_ID_SUFFIX: &[u8] = b"_address_to_id";
 const ID_TO_ADDRESS_SUFFIX: &[u8] = b"_id_to_address";
@@ -65,9 +64,9 @@ where
 }
 
 impl<SA, A> UserMapper<SA, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
 {
     fn get_user_id_key(&self, address: &ManagedAddress<SA>) -> StorageKey<SA> {
         let mut user_id_key = self.base_key.clone();
@@ -146,8 +145,8 @@ impl<SA, A> UserMapper<SA, A>
 }
 
 impl<SA> UserMapper<SA, CurrentStorage>
-    where
-        SA: StorageMapperApi,
+where
+    SA: StorageMapperApi,
 {
     fn set_user_id(&self, address: &ManagedAddress<SA>, id: usize) {
         storage_set(self.get_user_id_key(address).as_ref(), &id);

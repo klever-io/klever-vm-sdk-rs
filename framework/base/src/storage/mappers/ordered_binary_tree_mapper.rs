@@ -42,8 +42,8 @@ pub struct OrderedBinaryTreeNode<T: NestedEncode + NestedDecode + PartialOrd + P
 }
 
 impl<T> OrderedBinaryTreeNode<T>
-    where
-        T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
+where
+    T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
 {
     pub fn new(current_node_id: NodeId, data: T) -> Self {
         Self {
@@ -57,10 +57,10 @@ impl<T> OrderedBinaryTreeNode<T>
 }
 
 pub struct OrderedBinaryTreeMapper<SA, T, A = CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
 {
     address: A,
     key: StorageKey<SA>,
@@ -69,9 +69,9 @@ pub struct OrderedBinaryTreeMapper<SA, T, A = CurrentStorage>
 }
 
 impl<SA, T> StorageMapper<SA> for OrderedBinaryTreeMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone + 'static,
+where
+    SA: StorageMapperApi,
+    T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone + 'static,
 {
     #[inline]
     fn new(base_key: StorageKey<SA>) -> Self {
@@ -85,10 +85,10 @@ impl<SA, T> StorageMapper<SA> for OrderedBinaryTreeMapper<SA, T, CurrentStorage>
 }
 
 impl<SA, T, A> OrderedBinaryTreeMapper<SA, T, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
 {
     pub fn get_root(&self) -> Option<OrderedBinaryTreeNode<T>> {
         let root_key = self.build_root_key();
@@ -392,10 +392,10 @@ impl<SA, T, A> OrderedBinaryTreeMapper<SA, T, A>
 }
 
 impl<SA, T, A> OrderedBinaryTreeMapper<SA, T, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: NestedEncode + NestedDecode + PartialOrd + PartialEq + Clone,
 {
     fn get_node_by_id(&self, id: NodeId) -> Option<OrderedBinaryTreeNode<T>> {
         if id == NULL_NODE_ID {

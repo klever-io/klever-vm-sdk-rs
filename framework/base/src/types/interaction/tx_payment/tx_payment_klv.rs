@@ -1,11 +1,11 @@
+use crate::types::{AnnotatedValue, ManagedBuffer, TokenIdentifier, TxFrom, TxToSpecified};
 use crate::{
     contract_base::SendRawWrapper,
     types::{BigUint, ManagedAddress, ManagedVec},
 };
-use crate::types::{AnnotatedValue, ManagedBuffer, TokenIdentifier, TxFrom, TxToSpecified};
 
 use super::{
-    AnnotatedKlvPayment, FullPaymentData, FunctionCall, TxKlvValue, TxEnv, TxPayment,
+    AnnotatedKlvPayment, FullPaymentData, FunctionCall, TxEnv, TxKlvValue, TxPayment,
     TxPaymentKlvOnly,
 };
 

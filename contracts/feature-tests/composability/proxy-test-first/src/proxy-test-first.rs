@@ -12,7 +12,6 @@ static HARDCODED_ADDRESS: [u8; 32] =
 
 #[klever_sc::contract]
 pub trait ProxyTestFirst {
-
     #[storage_get("other_contract")]
     fn get_other_contract(&self) -> ManagedAddress;
 
@@ -61,7 +60,7 @@ pub trait ProxyTestFirst {
             .klv(payment)
             .code(code)
             .code_metadata(CodeMetadata::UPGRADEABLE)
-            .upgrade_async_call_and_exit();
+            .upgrade_sync_call();
     }
 
     #[payable("KLV")]

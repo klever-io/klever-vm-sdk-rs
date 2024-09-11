@@ -123,13 +123,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn wipe(
-        &self,
-        token: TokenIdentifier,
-        nonce: u64,
-        amount: BigUint,
-        address: ManagedAddress,
-    ) {
+    fn wipe(&self, token: TokenIdentifier, nonce: u64, amount: BigUint, address: ManagedAddress) {
         self.send().kda_wipe(&token, nonce, &amount, &address);
     }
 
@@ -198,11 +192,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn change_royalties_receiver(
-        &self,
-        token: TokenIdentifier,
-        address: ManagedAddress,
-    ) {
+    fn change_royalties_receiver(&self, token: TokenIdentifier, address: ManagedAddress) {
         self.send().kda_change_royalties_receiver(&token, &address);
     }
 
@@ -300,7 +290,7 @@ pub trait Kapps {
                 ito_percentage: 4,
                 ito_fixed: BigUint::from(5u64),
                 split_royalties: split,
-                transfer_percentage: transfer_percentage,
+                transfer_percentage,
             },
         );
     }
@@ -482,11 +472,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn ito_update_receiver_address(
-        &self,
-        token: TokenIdentifier,
-        receiver: ManagedAddress,
-    ) {
+    fn ito_update_receiver_address(&self, token: TokenIdentifier, receiver: ManagedAddress) {
         let _ = self.send().ito_update_receiver_address(&token, &receiver);
     }
 
@@ -507,12 +493,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn ito_update_times(
-        &self,
-        token: TokenIdentifier,
-        start_time: u64,
-        end_time: u64,
-    ) {
+    fn ito_update_times(&self, token: TokenIdentifier, start_time: u64, end_time: u64) {
         let _ = self.send().ito_update_times(&token, start_time, end_time);
     }
 
@@ -528,11 +509,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn ito_add_to_whitelist(
-        &self,
-        token: TokenIdentifier,
-        wl_address: ManagedAddress,
-    ) {
+    fn ito_add_to_whitelist(&self, token: TokenIdentifier, wl_address: ManagedAddress) {
         let mut split = ManagedVec::<Self::Api, ITOWhitelist<Self::Api>>::new();
         split.push(ITOWhitelist {
             address: wl_address,
@@ -543,11 +520,7 @@ pub trait Kapps {
     }
 
     #[endpoint]
-    fn ito_remove_from_whitelist(
-        &self,
-        token: TokenIdentifier,
-        wl_address: ManagedAddress,
-    ) {
+    fn ito_remove_from_whitelist(&self, token: TokenIdentifier, wl_address: ManagedAddress) {
         let mut split = ManagedVec::<Self::Api, ITOWhitelist<Self::Api>>::new();
         split.push(ITOWhitelist {
             address: wl_address,

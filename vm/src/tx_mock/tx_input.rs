@@ -1,12 +1,12 @@
 use num_bigint::BigUint;
 use num_traits::Zero;
 
+use crate::tx_mock::tx_input_call_type::CallType;
 use crate::{
     display_util::*,
     types::{VMAddress, H256},
 };
 use std::fmt;
-use crate::tx_mock::tx_input_call_type::CallType;
 
 use super::TxFunctionName;
 

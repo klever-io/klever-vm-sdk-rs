@@ -103,9 +103,7 @@ impl<M: ManagedTypeApi> From<crate::klever_sc::types::BigUint<M>> for BigUintVal
     }
 }
 
-impl<M: ManagedTypeApi> From<crate::klever_sc::types::AnnotatedKlvPayment<M>>
-    for BigUintValue
-{
+impl<M: ManagedTypeApi> From<crate::klever_sc::types::AnnotatedKlvPayment<M>> for BigUintValue {
     fn from(from: crate::klever_sc::types::AnnotatedKlvPayment<M>) -> Self {
         BigUintValue {
             value: from.value.to_alloc(),

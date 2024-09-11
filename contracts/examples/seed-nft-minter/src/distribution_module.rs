@@ -1,5 +1,5 @@
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 pub const MAX_DISTRIBUTION_PERCENTAGE: u64 = 100_000; // 100%
 

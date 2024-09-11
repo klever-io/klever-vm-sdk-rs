@@ -2,9 +2,9 @@ use crate::folder_structure::{
     DirectoryType::{Contract, Lib},
     RelevantDirectory,
 };
+use crate::version::FrameworkVersion;
 use colored::Colorize;
 use std::path::Path;
-use crate::version::FrameworkVersion;
 
 pub fn print_upgrading(dir: &RelevantDirectory) {
     if let Some((from_version, to_version)) = &dir.upgrade_in_progress {
@@ -72,14 +72,6 @@ pub fn print_rename(old_path: &Path, new_path: &Path) {
     );
 }
 
-pub fn print_postprocessing_after_39_1(path: &Path) {
-    println!(
-        "\n{}\n{}",
-        format!("Post-processing after 0.39.1 in {} ...", path.display()).green(),
-        "Re-generating wasm crate ...".green(),
-    );
-}
-
 pub fn print_tree_dir_metadata(dir: &RelevantDirectory, last_version: &FrameworkVersion) {
     match dir.dir_type {
         Contract => print!(" {}", "[contract]".blue()),
@@ -94,6 +86,7 @@ pub fn print_tree_dir_metadata(dir: &RelevantDirectory, last_version: &Framework
     };
 }
 
+#[allow(dead_code)]
 pub fn print_cargo_dep_remove(path: &Path, dep_name: &str) {
     println!(
         "{}/dependencies/{}",
@@ -102,6 +95,7 @@ pub fn print_cargo_dep_remove(path: &Path, dep_name: &str) {
     );
 }
 
+#[allow(dead_code)]
 pub fn print_cargo_dep_add(path: &Path, dep_name: &str) {
     println!(
         "{}/dependencies/{}",

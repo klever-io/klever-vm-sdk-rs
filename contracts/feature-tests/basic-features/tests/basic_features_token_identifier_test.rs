@@ -1,4 +1,4 @@
-use klever_sc::types::{TokenIdentifier, ManagedBuffer};
+use klever_sc::types::{ManagedBuffer, TokenIdentifier};
 use klever_sc_scenario::{api::StaticApi, *};
 
 use basic_features::token_identifier_features::TokenIdentifierFeatures;
@@ -15,13 +15,9 @@ fn test_token_identifier_klv() {
 #[test]
 fn test_token_identifier_is_valid() {
     let bf = basic_features::contract_obj::<StaticApi>();
-    let result = bf.token_identifier_is_valid_1(
-        TokenIdentifier::from(&b"ALC-6258"[..]),
-    );
+    let result = bf.token_identifier_is_valid_1(TokenIdentifier::from(&b"ALC-6258"[..]));
     assert!(result);
-    let result = bf.token_identifier_is_valid_1(
-        TokenIdentifier::from(&b"AL-C6258"[..]),
-    );
+    let result = bf.token_identifier_is_valid_1(TokenIdentifier::from(&b"AL-C6258"[..]));
     assert!(!result);
     let result = bf.token_identifier_is_valid_2(ManagedBuffer::from(&b"12345-6258"[..]));
     assert!(result);
@@ -33,8 +29,7 @@ fn test_token_identifier_is_valid() {
 fn test_token_identifier_compare() {
     let token_id = TokenIdentifier::<StaticApi>::from(&b"ALC-6258d2"[..]);
     let kda_token_id = token_id.clone();
-    let wrong_kda_token_id =
-        TokenIdentifier::from(&b"AAA-111111"[..]);
+    let wrong_kda_token_id = TokenIdentifier::from(&b"AAA-111111"[..]);
     let klv_token_id = TokenIdentifier::klv();
 
     assert!(token_id == kda_token_id);

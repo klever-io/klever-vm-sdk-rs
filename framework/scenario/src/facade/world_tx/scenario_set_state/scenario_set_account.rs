@@ -1,8 +1,6 @@
 use std::collections::btree_map::Entry;
 
-use klever_sc::types::{
-    AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, TokenIdentifier,
-};
+use klever_sc::types::{AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, TokenIdentifier};
 
 use crate::{
     imports::StaticApi,

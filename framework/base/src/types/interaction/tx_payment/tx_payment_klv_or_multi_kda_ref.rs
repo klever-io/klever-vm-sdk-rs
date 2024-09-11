@@ -1,14 +1,9 @@
 use crate::{
     proxy_imports::KlvOrMultiKdaPaymentRefs,
-    types::{
-        BigUint, ManagedAddress
-        , TxFrom, TxToSpecified,
-    },
+    types::{BigUint, ManagedAddress, TxFrom, TxToSpecified},
 };
 
-use super::{
-    FullPaymentData, FunctionCall, Klv, TxEnv, TxPayment,
-};
+use super::{FullPaymentData, FunctionCall, Klv, TxEnv, TxPayment};
 
 impl<'a, Env> TxPayment<Env> for KlvOrMultiKdaPaymentRefs<'a, Env::Api>
 where

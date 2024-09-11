@@ -1,7 +1,7 @@
 use crate::{
-    dep_encode_num_mimic, DecodeError, DecodeErrorHandler,
-    EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode, NestedEncodeOutput,
-    TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
+    dep_encode_num_mimic, DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput,
 };
 
 // No reversing needed for u8, because it is a single byte.
@@ -115,9 +115,9 @@ dep_decode_num_unsigned!(u64, 8);
 
 impl NestedDecode for usize {
     fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
-        where
-            I: NestedDecodeInput,
-            H: DecodeErrorHandler,
+    where
+        I: NestedDecodeInput,
+        H: DecodeErrorHandler,
     {
         u32::dep_decode_or_handle_err(input, h).map(|num| num as usize)
     }

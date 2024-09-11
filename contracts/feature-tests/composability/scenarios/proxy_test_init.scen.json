@@ -17,7 +17,7 @@
             "newAddresses": [
                 {
                     "creatorAddress": "sc:proxy-first",
-                    "creatorNonce": "1",
+                    "creatorNonce": "0",
                     "newAddress": "sc:proxy-second"
                 }
             ]

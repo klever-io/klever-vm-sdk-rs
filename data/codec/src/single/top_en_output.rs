@@ -1,8 +1,8 @@
+use crate::num_conv::top_encode_number_buffer;
 use crate::{
     num_conv::top_encode_number, EncodeError, EncodeErrorHandler, NestedEncodeOutput, TryStaticCast,
 };
 use alloc::vec::Vec;
-use crate::num_conv::top_encode_number_buffer;
 
 /// Specifies objects that can receive the result of a TopEncode computation.
 

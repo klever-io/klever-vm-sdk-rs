@@ -1,9 +1,9 @@
 use crate::only_nested::*;
+use klever_sc::derive_imports::*;
 use klever_sc::{
     api::ManagedTypeApi,
     types::{BigUint, Box, ManagedBuffer},
 };
-use klever_sc::derive_imports::*;
 
 /// Its only purpose is to test that the ABI generator works fine.
 #[type_abi]

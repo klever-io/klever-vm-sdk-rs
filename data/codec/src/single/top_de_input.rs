@@ -1,9 +1,9 @@
+use crate::num_conv::universal_decode_number_unchecked;
 use crate::{
     num_conv::universal_decode_number, transmute::vec_into_boxed_slice, DecodeError,
     DecodeErrorHandler, NestedDecodeInput, OwnedBytesNestedDecodeInput, TryStaticCast,
 };
 use alloc::{boxed::Box, vec::Vec};
-use crate::num_conv::universal_decode_number_unchecked;
 
 /// Trait that abstracts away an underlying API for a top-level object deserializer.
 /// The underlying API can provide pre-parsed i64/u64 or pre-bundled boxed slices.
@@ -28,8 +28,8 @@ pub trait TopDecodeInput: Sized {
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler;
+    where
+        H: DecodeErrorHandler;
 
     /// Retrieves the underlying data as a pre-parsed u64.
     /// Expected to panic if the conversion is not possible.
@@ -89,12 +89,12 @@ impl TopDecodeInput for Box<[u8]> {
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         (&*self).into_max_size_buffer_align_right(buffer, h)
     }
-    
+
     fn into_nested_buffer(self) -> Self::NestedBuffer {
         OwnedBytesNestedDecodeInput::new(self)
     }
@@ -116,12 +116,12 @@ impl TopDecodeInput for Vec<u8> {
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         self.as_slice().into_max_size_buffer_align_right(buffer, h)
     }
-    
+
     fn into_nested_buffer(self) -> Self::NestedBuffer {
         OwnedBytesNestedDecodeInput::new(self.into_boxed_slice())
     }
@@ -143,8 +143,8 @@ impl<'a> TopDecodeInput for &'a [u8] {
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         let len = self.len();
         if len > MAX_LEN {

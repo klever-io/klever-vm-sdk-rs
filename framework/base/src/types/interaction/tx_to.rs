@@ -1,6 +1,6 @@
-use crate::types::{AnnotatedValue, heap::Address, ManagedAddress};
+use crate::types::{heap::Address, AnnotatedValue, ManagedAddress};
 
-use super::{TxEnv};
+use super::TxEnv;
 
 pub trait TxTo<Env>
 where

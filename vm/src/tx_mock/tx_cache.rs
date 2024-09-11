@@ -60,9 +60,9 @@ impl TxCache {
     }
 
     pub fn with_account_or_else<R, F, Else>(&self, address: &VMAddress, f: F, or_else: Else) -> R
-        where
-            F: FnOnce(&AccountData) -> R,
-            Else: FnOnce() -> R,
+    where
+        F: FnOnce(&AccountData) -> R,
+        Else: FnOnce() -> R,
     {
         self.load_account_if_necessary(address);
         let accounts = self.accounts.lock().unwrap();
@@ -92,7 +92,7 @@ impl TxCache {
             .insert(account_data.address.clone(), account_data);
     }
 
-    pub fn increase_acount_nonce(&self, address: &VMAddress) {
+    pub fn increase_account_nonce(&self, address: &VMAddress) {
         // Smart contracts don't have nonces.
         if address.is_smart_contract_address() {
             return;
@@ -109,7 +109,7 @@ impl TxCache {
             .get_new_address(creator_address.clone(), current_nonce)
             .unwrap_or_else(|| {
                 let new_mock_address =
-                    VMAddress::generate_mock_address(&creator_address.to_vec(), current_nonce - 1);
+                    VMAddress::generate_mock_address(&creator_address.to_vec(), current_nonce);
                 println!(
                     "{}",
                     format!(
@@ -117,7 +117,7 @@ impl TxCache {
                         address_hex(creator_address),
                         address_hex(&new_mock_address)
                     )
-                        .yellow()
+                    .yellow()
                 );
                 new_mock_address
             })

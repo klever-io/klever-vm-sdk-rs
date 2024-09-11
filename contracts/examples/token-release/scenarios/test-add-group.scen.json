@@ -54,7 +54,7 @@
                     "kda": {
                         "str:FIRSTTOKEN-1234": {
                             "roles": [
-                                "KDARoleLocalMint"
+                                "KDARoleMint"
                             ]
                         }
                     },

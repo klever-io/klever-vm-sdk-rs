@@ -56,11 +56,11 @@ pub fn combine_instrumentation_results(
         .args(vec!["merge", "-o", "merged.profdata", "-sparse"])
         .args(profraw_files)
         .status()
-        else {
-            return Err(TestCoverageError::LlvmProfdata(
-                "can't merge profraw files".into(),
-            ));
-        };
+    else {
+        return Err(TestCoverageError::LlvmProfdata(
+            "can't merge profraw files".into(),
+        ));
+    };
 
     if !output.success() {
         return Err(TestCoverageError::LlvmProfdata(
@@ -109,11 +109,11 @@ pub fn export_coverage_summary(
             "--format=text",
         ])
         .output()
-        else {
-            return Err(TestCoverageError::LlvmCov(
-                "can't export coverage summary.".into(),
-            ));
-        };
+    else {
+        return Err(TestCoverageError::LlvmCov(
+            "can't export coverage summary.".into(),
+        ));
+    };
 
     if !output.status.success() {
         return Err(TestCoverageError::LlvmCov(

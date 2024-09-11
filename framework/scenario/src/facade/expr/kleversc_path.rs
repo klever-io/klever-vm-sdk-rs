@@ -62,6 +62,9 @@ pub mod tests {
 
     #[test]
     fn test_address_value() {
-        assert_eq_eval("output/adder.kleversc.json", "kleversc:output/adder.kleversc.json");
+        assert_eq_eval(
+            "output/adder.kleversc.json",
+            "kleversc:output/adder.kleversc.json",
+        );
     }
 }

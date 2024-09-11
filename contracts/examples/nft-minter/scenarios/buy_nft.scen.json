@@ -83,8 +83,8 @@
                     "nonce": "*",
                     "balance": "500",
                     "kda": {
-                        "str:FUNG-123456": "1000",
-                        "str:SEMIFUNG-123456": {
+                        "str:FUNG-1234": "1000",
+                        "str:SEMIFUNG-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -96,16 +96,14 @@
                                 }
                             ]
                         },
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft1.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:100,000"
                                 }
                             ]
@@ -117,30 +115,31 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "instances": [
                                 {
                                     "nonce": "2",
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft2.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:200,000"
                                 }
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "KDARoleNFTCreate"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:nftTokenId": "str:NFT-123456",
+                        "str:nftTokenId": "str:NFT-1234",
                         "str:priceTag|u64:1": "",
                         "str:priceTag|u64:2": {
-                            "1-token": "nested:str:SEMIFUNG-123456",
+                            "1-token": "nested:str:SEMIFUNG-1234",
                             "2-nonce": "u64:2",
                             "3-amount": "biguint:500"
                         }
@@ -157,7 +156,7 @@
                 "to": "sc:nft-minter",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:SEMIFUNG-123456",
+                        "tokenIdentifier": "str:SEMIFUNG-1234",
                         "nonce": "1",
                         "value": "500"
                     }
@@ -185,7 +184,7 @@
                 "to": "sc:nft-minter",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:SEMIFUNG-123456",
+                        "tokenIdentifier": "str:SEMIFUNG-1234",
                         "nonce": "2",
                         "value": "500"
                     }
@@ -212,7 +211,7 @@
                     "nonce": "*",
                     "balance": "500",
                     "kda": {
-                        "str:SEMIFUNG-123456": {
+                        "str:SEMIFUNG-1234": {
                             "instances": [
                                 {
                                     "nonce": "2",
@@ -227,8 +226,8 @@
                     "nonce": "*",
                     "balance": "500",
                     "kda": {
-                        "str:FUNG-123456": "1000",
-                        "str:SEMIFUNG-123456": {
+                        "str:FUNG-1234": "1000",
+                        "str:SEMIFUNG-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -240,16 +239,14 @@
                                 }
                             ]
                         },
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft1.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:100,000"
                                 },
                                 {
@@ -257,9 +254,7 @@
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft2.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:200,000"
                                 }
                             ]
@@ -271,15 +266,18 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "lastNonce": "2",
                             "roles": [
-                                "KDARoleNFTCreate"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:nftTokenId": "str:NFT-123456",
+                        "str:nftTokenId": "str:NFT-1234",
                         "str:priceTag|u64:1": "",
                         "str:priceTag|u64:2": ""
                     },

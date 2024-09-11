@@ -10,10 +10,13 @@ impl RepoVersion {
     pub fn url(&self) -> String {
         match self {
             RepoVersion::Master => {
-                "https://github.com/klever-io/klever-vm-sdk-rs/archive/refs/heads/master.zip".to_string()
+                "https://github.com/klever-io/klever-vm-sdk-rs/archive/refs/heads/master.zip"
+                    .to_string()
             },
             RepoVersion::Tag(tag) => {
-                format!("https://github.com/klever-io/klever-vm-sdk-rs/archive/refs/tags/v{tag}.zip")
+                format!(
+                    "https://github.com/klever-io/klever-vm-sdk-rs/archive/refs/tags/v{tag}.zip"
+                )
             },
         }
     }
@@ -26,7 +29,6 @@ impl RepoVersion {
             },
         }
     }
-
 
     pub fn get_tag(&self) -> FrameworkVersion {
         match self {

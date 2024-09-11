@@ -1,6 +1,9 @@
 use klever_sc_codec::TopEncodeMulti;
 
-use crate::types::{CodeMetadata, ManagedArgBuffer, ManagedBuffer, ManagedBufferBuilder, TxCodeSource, TxData, TxEnv};
+use crate::types::{
+    CodeMetadata, ManagedArgBuffer, ManagedBuffer, ManagedBufferBuilder, TxCodeSource, TxData,
+    TxEnv,
+};
 
 /// Holds deploy data: code, code metadata, and arguments.
 pub struct DeployCall<Env, CodeSource>

@@ -1,11 +1,6 @@
 use crate::{
-    api::{BlockchainApi, BlockchainApiImpl}
-    ,
-    types::{
-        AnnotatedValue, interaction::display_u64, ManagedBuffer
-        , TxEnv,
-        TxGasValue,
-    },
+    api::{BlockchainApi, BlockchainApiImpl},
+    types::{interaction::display_u64, AnnotatedValue, ManagedBuffer, TxEnv, TxGasValue},
 };
 
 /// Indicates that all remaining gas should be sent to a transaction.

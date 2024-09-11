@@ -18,9 +18,9 @@ pub struct StructOptField {
 
 impl TopEncode for StructOptField {
     fn top_encode_or_handle_err<O, H>(&self, output: O, h: H) -> Result<(), H::HandledErr>
-        where
-            O: TopEncodeOutput,
-            H: EncodeErrorHandler,
+    where
+        O: TopEncodeOutput,
+        H: EncodeErrorHandler,
     {
         let mut nested_buffer = output.start_nested_encode();
         self.field.dep_encode_or_handle_err(&mut nested_buffer, h)?;
@@ -34,9 +34,9 @@ impl TopEncode for StructOptField {
 
 impl TopDecode for StructOptField {
     fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
-        where
-            I: TopDecodeInput,
-            H: DecodeErrorHandler,
+    where
+        I: TopDecodeInput,
+        H: DecodeErrorHandler,
     {
         let mut nested_buffer = input.into_nested_buffer();
         let field = u32::dep_decode_or_handle_err(&mut nested_buffer, h)?;

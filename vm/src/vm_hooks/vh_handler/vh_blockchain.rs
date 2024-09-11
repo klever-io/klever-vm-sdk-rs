@@ -34,7 +34,7 @@ const VM_BUILTIN_FUNCTION_NAMES: [&str; 22] = [
     KLEVER_DEPOSIT_FUNC_NAME,
     KLEVER_ITO_TRIGGER_FUNC_NAME,
     CHANGE_OWNER_BUILTIN_FUNC_NAME,
-    UPGRADE_CONTRACT_FUNC_NAME,    
+    UPGRADE_CONTRACT_FUNC_NAME,
 ];
 
 pub trait VMHooksBlockchain: VMHooksHandlerSource {
@@ -167,6 +167,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         todo!()
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn reset_user_kda_values(
         &self,
         _address_handle: RawHandle,
@@ -194,29 +195,48 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         buckets_handle: RawHandle,
         mime_handle: RawHandle,
         metadata_handle: RawHandle,
-    ){
+    ) {
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
 
         if let Some(account) = self.account_data(&address) {
             if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
                 if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
-                    self.set_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle);
+                    self.set_user_kda_values(
+                        address_handle,
+                        ticker_handle,
+                        nonce,
+                        balance_handle,
+                        frozen_handle,
+                        last_claim_handle,
+                        buckets_handle,
+                        mime_handle,
+                        metadata_handle,
+                    );
                     return;
                 }
             }
         }
-        self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+        self.reset_user_kda_values(
+            address_handle,
+            ticker_handle,
+            nonce,
+            balance_handle,
+            frozen_handle,
+            last_claim_handle,
+            buckets_handle,
+            mime_handle,
+            metadata_handle,
+        )
     }
 
-    #[allow(clippy::too_many_arguments)]
     fn managed_get_sft_metadata(
         &self,
         _ticker_handle: RawHandle,
         _nonce: u64,
         _data_handle: RawHandle,
     ) {
-       todo!()
+        todo!()
     }
 
     fn managed_acc_has_perm(
@@ -225,7 +245,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         _source_acc_addr: RawHandle,
         _target_acc_addr: RawHandle,
     ) -> i32 {
-       todo!()
+        todo!()
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -301,11 +321,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         );
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        _token_id_handle: i32,
-        _roles_handle: i32,
-    ) {
+    fn managed_get_kda_roles(&self, _token_id_handle: i32, _roles_handle: i32) {
         todo!()
     }
 
@@ -317,10 +333,8 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         let back_transfers = self.back_transfers_lock();
         let mut m_types = self.m_types_lock();
         m_types.bi_overwrite(call_value_handle, back_transfers.call_value.clone().into());
-        m_types.mb_set_vec_of_kda_payments(
-            kda_transfer_value_handle,
-            &back_transfers.kda_transfers,
-        );
+        m_types
+            .mb_set_vec_of_kda_payments(kda_transfer_value_handle, &back_transfers.kda_transfers);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -340,7 +354,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         _minted_handle: RawHandle,
         _burned_handle: RawHandle,
         _royalties_handle: RawHandle,
-        _properties_handle: RawHandle,
+        properties_handle: RawHandle,
         _attributes_handle: RawHandle,
         _roles_handle: RawHandle,
         _issue_date_handle: RawHandle,
@@ -353,9 +367,8 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             prop += 1 << 4;
         }
 
-        m_types.bi_overwrite(_properties_handle, BigInt::from(prop));
+        m_types.bi_overwrite(properties_handle, BigInt::from(prop));
 
-    
         // if kda_data.frozen {
         //     m_types.mb_set(properties_handle, vec![1, 0]);
         // } else {
@@ -417,10 +430,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     fn managed_get_code_metadata(&self, address_handle: i32, response_handle: i32) {
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let Some(data) = self.account_data(&address) else {
-            self.vm_error(&format!(
-                "account not found: {}",
-                hex::encode(address.as_bytes())
-            ))
+            self.vm_error("account was not found")
         };
         let code_metadata_bytes = data.code_metadata.to_byte_array();
         self.m_types_lock()

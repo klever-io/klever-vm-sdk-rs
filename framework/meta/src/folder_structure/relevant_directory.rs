@@ -1,10 +1,10 @@
+use crate::version::FrameworkVersion;
 use crate::CargoTomlContents;
 use std::{
     fs::{self, DirEntry},
     path::{Path, PathBuf},
 };
 use toml::Value;
-use crate::version::FrameworkVersion;
 
 use super::version_req::VersionReq;
 

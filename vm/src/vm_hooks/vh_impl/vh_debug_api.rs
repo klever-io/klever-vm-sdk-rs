@@ -2,11 +2,12 @@ use std::sync::{Arc, MutexGuard};
 
 use klever_chain_vm_executor::BreakpointValue;
 
+use crate::tx_mock::CallType;
 use crate::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{
-        call_tx_input, CallTxData, BackTransfers, BlockchainUpdate, TxCache, TxContext, TxFunctionName,
-        TxInput, TxManagedTypes, TxPanic, TxResult,
+        call_tx_input, BackTransfers, BlockchainUpdate, CallTxData, TxCache, TxContext,
+        TxFunctionName, TxInput, TxManagedTypes, TxPanic, TxResult,
     },
     types::{VMAddress, VMCodeMetadata},
     vm_err_msg,
@@ -18,7 +19,6 @@ use crate::{
     },
     world_mock::{reserved::STORAGE_RESERVED_PREFIX, AccountData, BlockInfo},
 };
-use crate::tx_mock::CallType;
 
 /// A simple wrapper around a managed type container RefCell.
 ///
@@ -85,7 +85,8 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     }
 
     fn account_data(&self, address: &VMAddress) -> Option<AccountData> {
-        self.0.with_account_or_else(address, |account| Some(account.clone()), || None)
+        self.0
+            .with_account_or_else(address, |account| Some(account.clone()), || None)
     }
 
     fn account_code(&self, address: &VMAddress) -> Vec<u8> {
@@ -142,7 +143,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         };
 
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
-        tx_cache.increase_acount_nonce(contract_address);
+        tx_cache.increase_account_nonce(contract_address);
         let (tx_result, new_address, blockchain_updates) = self.0.vm_ref.deploy_contract(
             tx_input,
             contract_code,
@@ -224,7 +225,8 @@ impl DebugApiVMHooksHandler {
 
         let contract_address = &self.0.input_ref().to;
         let builtin_functions = &self.0.vm_ref.builtin_functions;
-        self.back_transfers_lock().new_from_result(contract_address, &tx_result, builtin_functions);
+        self.back_transfers_lock()
+            .new_from_result(contract_address, &tx_result, builtin_functions);
 
         tx_result.result_values
     }

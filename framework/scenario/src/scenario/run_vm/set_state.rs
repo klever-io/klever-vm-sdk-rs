@@ -1,12 +1,10 @@
 use crate::scenario::model::SetStateStep;
 
-use klever_chain_vm::{
-    world_mock::{
-        AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData,
-        KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
-    },
-};
 use klever_chain_vm::types::VMCodeMetadata;
+use klever_chain_vm::world_mock::{
+    AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData, KdaInstance,
+    KdaInstanceMetadata, KdaInstances, KdaRoles,
+};
 
 use super::ScenarioVMRunner;
 
@@ -167,9 +165,7 @@ fn convert_scenario_kda_instance_to_world_mock(
                 .as_ref()
                 .map(|attributes| attributes.value.clone())
                 .unwrap_or_default(),
-            can_burn: scenario_kda.can_burn.as_ref()
-                .map(|m| m.clone())
-                .unwrap_or_default(),
+            can_burn: scenario_kda.can_burn.unwrap_or_default(),
         },
     }
 }

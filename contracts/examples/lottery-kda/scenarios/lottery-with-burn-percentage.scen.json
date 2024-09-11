@@ -13,7 +13,14 @@
           "nonce": "0",
           "balance": "1,000,000",
           "kda": {
-            "str:LOTTERY-1234": "200"
+            "str:LOTTERY-1234": {
+              "instances": [
+                {
+                  "balance": "200",
+                  "canBurn": true
+                }
+              ]
+            }
           }
         },
         "sc:lottery": {
@@ -65,6 +72,7 @@
     },
     {
       "step": "checkState",
+      "id": "check-state-after-start",
       "accounts": {
         "sc:lottery": {
           "nonce": "0",
@@ -139,6 +147,7 @@
     },
     {
       "step": "checkState",
+      "id": "check-state-after-buying-tickets",
       "accounts": {
         "address:acc1": {
           "nonce": "2",

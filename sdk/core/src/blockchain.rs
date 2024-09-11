@@ -6,8 +6,8 @@ use crate::data::{
     address::Address,
     kda::{KdaBalance, KdaBalanceResponse, KdaRolesResponse},
     transaction::{
-        ResponseTxCost, SendTransactionResponse,
-        Transaction, TransactionInfo, TransactionOnNetwork, TransactionStatus, TxCostResponseData,
+        ResponseTxCost, SendTransactionResponse, Transaction, TransactionInfo,
+        TransactionOnNetwork, TransactionStatus, TxCostResponseData,
     },
     vm::{ResponseVmValue, VmValueRequest, VmValuesResponseData},
 };
@@ -218,7 +218,6 @@ impl CommunicationProxy {
             Some(b) => Ok(b.status),
         }
     }
-
 
     pub async fn send_transaction(&self, tx: &Transaction) -> Result<String> {
         let endpoint = self.get_endpoint(SEND_TRANSACTION_ENDPOINT);

@@ -1,6 +1,6 @@
-use core::ptr;
 use crate::abi::TypeAbiFrom;
 use crate::api::ManagedTypeApi;
+use core::ptr;
 
 use crate::types::{
     heap::Address, AnnotatedValue, ManagedAddress, ManagedBuffer, TxEnv, TxFrom, TxFromSpecified,

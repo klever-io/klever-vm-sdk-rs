@@ -39,7 +39,6 @@ fn process_only_admin_argument(attr: &syn::Attribute, arg_metadata: &mut TraitPr
     has_attr
 }
 
-
 fn process_kda_attribute_argument(
     attr: &syn::Attribute,
     arg_metadata: &mut TraitProperties,

@@ -1,20 +1,17 @@
 use super::{StorageClearable, StorageMapper};
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::{ErrorApiImpl, StorageMapperApi},
     codec::{
-        multi_encode_iter_or_handle_err, EncodeErrorHandler, TopDecode, TopEncode,
-        TopEncodeMulti, TopEncodeMultiOutput,
+        multi_encode_iter_or_handle_err, EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti,
+        TopEncodeMultiOutput,
     },
-    storage::{
-        storage_clear, storage_set,
-        StorageKey,
-    },
+    storage::{storage_clear, storage_set, StorageKey},
     types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
-use core::{marker::PhantomData, usize};
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
+use core::marker::PhantomData;
 
 const ITEM_SUFFIX: &[u8] = b".item";
 const LEN_SUFFIX: &[u8] = b".len";
@@ -59,9 +56,9 @@ where
 }
 
 impl<SA, T> VecMapper<SA, T, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         let mut len_key = base_key.clone();
@@ -171,9 +168,9 @@ where
 }
 
 impl<SA, T> VecMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
     fn save_count(&self, new_len: usize) {
         storage_set(self.len_key.as_ref(), &new_len);

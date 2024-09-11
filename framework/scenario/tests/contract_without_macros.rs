@@ -50,10 +50,8 @@ mod module_1 {
         fn callback(&self) {}
     }
 
-    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where
-        A: klever_sc::api::VMApi
-    {
-    }
+    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where A: klever_sc::api::VMApi
+    {}
 
     pub trait EndpointWrappers: VersionModule + klever_sc::contract_base::ContractBase {
         #[inline]
@@ -156,10 +154,8 @@ mod sample_adder {
         }
     }
 
-    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where
-        A: klever_sc::api::VMApi
-    {
-    }
+    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where A: klever_sc::api::VMApi
+    {}
 
     pub trait EndpointWrappers:
         Adder + klever_sc::contract_base::ContractBase + super::module_1::EndpointWrappers
@@ -289,8 +285,7 @@ mod sample_adder {
     impl klever_sc::contract_base::CallableContractBuilder for ContractBuilder {
         fn new_contract_obj<A: klever_sc::api::VMApi>(
             &self,
-        ) -> klever_sc::types::heap::Box<dyn klever_sc::contract_base::CallableContract>
-        {
+        ) -> klever_sc::types::heap::Box<dyn klever_sc::contract_base::CallableContract> {
             klever_sc::types::heap::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })
@@ -332,10 +327,8 @@ mod sample_adder {
 
         fn extract_opt_address(
             &mut self,
-        ) -> klever_sc::types::ManagedOption<
-            Self::Api,
-            klever_sc::types::ManagedAddress<Self::Api>,
-        > {
+        ) -> klever_sc::types::ManagedOption<Self::Api, klever_sc::types::ManagedAddress<Self::Api>>
+        {
             klever_sc::types::ManagedOption::none()
         }
 
@@ -375,8 +368,7 @@ mod sample_adder {
     where
         A: klever_sc::api::VMApi + 'static,
     {
-        pub address:
-            klever_sc::types::ManagedOption<A, klever_sc::types::ManagedAddress<A>>,
+        pub address: klever_sc::types::ManagedOption<A, klever_sc::types::ManagedAddress<A>>,
     }
 
     impl<A> klever_sc::contract_base::ProxyObjBase for ProxyTo<A>
@@ -388,21 +380,14 @@ mod sample_adder {
 
         fn extract_opt_address(
             &mut self,
-        ) -> klever_sc::types::ManagedOption<
-            Self::Api,
-            klever_sc::types::ManagedAddress<Self::Api>,
-        > {
-            core::mem::replace(
-                &mut self.address,
-                klever_sc::types::ManagedOption::none(),
-            )
+        ) -> klever_sc::types::ManagedOption<Self::Api, klever_sc::types::ManagedAddress<Self::Api>>
+        {
+            core::mem::replace(&mut self.address, klever_sc::types::ManagedOption::none())
         }
 
         fn extract_address(&mut self) -> klever_sc::types::ManagedAddress<Self::Api> {
-            let address = core::mem::replace(
-                &mut self.address,
-                klever_sc::types::ManagedOption::none(),
-            );
+            let address =
+                core::mem::replace(&mut self.address, klever_sc::types::ManagedOption::none());
             address.unwrap_or_sc_panic(klever_sc::err_msg::RECIPIENT_ADDRESS_NOT_SET)
         }
 

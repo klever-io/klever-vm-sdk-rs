@@ -1494,7 +1494,7 @@ dependencies = [
 [[package]]
 name = "klever-chain-vm-executor"
 version = "0.2.2"
-source = "git+https://github.com/klever-io/klever-vm-executor-rs?rev=d66cd0c#d66cd0c8bf37c103e0096deed177cc3994843d6e"
+source = "git+https://github.com/klever-io/klever-vm-executor-rs?rev=f128131#f128131b2a9ed6bd480c7cb97a0c5fc7b5efba38"
 
 [[package]]
 name = "klever-sc"

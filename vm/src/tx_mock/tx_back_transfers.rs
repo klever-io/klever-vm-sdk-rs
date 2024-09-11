@@ -2,7 +2,7 @@ use num_bigint::BigUint;
 
 use crate::{tx_execution::BuiltinFunctionContainer, types::VMAddress};
 
-use super::{TxResult, TxTokenTransfer, call_tx_input, CallType};
+use super::{call_tx_input, CallType, TxResult, TxTokenTransfer};
 
 #[derive(Default)]
 pub struct BackTransfers {

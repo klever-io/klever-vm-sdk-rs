@@ -1,5 +1,5 @@
-use klever_sc::storage::StorageKey;
 use klever_sc::imports::*;
+use klever_sc::storage::StorageKey;
 
 /// Storage mapper test.
 #[klever_sc::module]

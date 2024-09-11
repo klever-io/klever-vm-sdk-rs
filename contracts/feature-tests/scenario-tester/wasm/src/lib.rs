@@ -5,8 +5,8 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            2
-// Total number of exported functions:   4
+// Endpoints:                            4
+// Total number of exported functions:   6
 
 #![no_std]
 
@@ -20,5 +20,7 @@ klever_sc_wasm_adapter::endpoints! {
         upgrade => upgrade
         getSum => sum
         add => add
+        multi_param => multi_param
+        multi_return => multi_return
     )
 }

@@ -56,7 +56,7 @@ impl InterpretableFrom<KdaInstanceRaw> for KdaInstance {
             attributes: from
                 .attributes
                 .map(|b| BytesValue::interpret_from(b, context)),
-            can_burn: from.can_burn.map(|b| b.into()),
+            can_burn: from.can_burn,
         }
     }
 }
@@ -71,7 +71,7 @@ impl IntoRaw<KdaInstanceRaw> for KdaInstance {
             hash: self.hash.map(|n| n.original),
             uri: self.uri.into_iter().map(|b| b.original).collect(),
             attributes: self.attributes.map(|n| n.original),
-            can_burn: self.can_burn.map(| b | b.into()),
+            can_burn: self.can_burn,
         }
     }
 }

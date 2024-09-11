@@ -5,7 +5,7 @@ pub enum CallType {
     AsyncCall,
     TransferExecute,
     BackTransfer,
-    UpgradeFromSource
+    UpgradeFromSource,
 }
 
 impl CallType {

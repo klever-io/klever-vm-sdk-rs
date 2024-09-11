@@ -12,10 +12,7 @@ impl FormatByteReceiver for SimpleReceiver {
         self.0.push_str(core::str::from_utf8(bytes).unwrap());
     }
 
-    fn append_managed_buffer(
-        &mut self,
-        _item: &klever_sc::types::ManagedBuffer<UncallableApi>,
-    ) {
+    fn append_managed_buffer(&mut self, _item: &klever_sc::types::ManagedBuffer<UncallableApi>) {
         unimplemented!()
     }
 

@@ -6,16 +6,15 @@ use std::{
 };
 use toml::Value;
 
+use crate::cmd::standalone::upgrade::upgrade_settings::UpgradeSettings;
+use crate::version::FrameworkVersion;
 use crate::{
     cargo_toml_contents::{CARGO_TOML_DEPENDENCIES, CARGO_TOML_DEV_DEPENDENCIES},
-    cmd::standalone::all::call_contract_meta,
     folder_structure::{
-        DirectoryType, RelevantDirectory, VersionReq, CARGO_TOML_FILE_NAME, FRAMEWORK_CRATE_NAMES,
+        RelevantDirectory, VersionReq, CARGO_TOML_FILE_NAME, FRAMEWORK_CRATE_NAMES,
     },
     CargoTomlContents,
 };
-use crate::cmd::standalone::upgrade::upgrade_settings::UpgradeSettings;
-use crate::version::FrameworkVersion;
 
 use super::upgrade_print::*;
 
@@ -77,7 +76,11 @@ fn try_replace_file_name(file_name_str: &str, patterns: &[(&str, &str)]) -> Opti
 }
 
 /// Uses `CargoTomlContents`. Will only replace versions of framework crates.
-pub fn version_bump_in_cargo_toml(path: &Path, from_version: &FrameworkVersion, to_version: &FrameworkVersion) {
+pub fn version_bump_in_cargo_toml(
+    path: &Path,
+    from_version: &FrameworkVersion,
+    to_version: &FrameworkVersion,
+) {
     if is_cargo_toml_file(path) {
         let mut cargo_toml_contents = CargoTomlContents::load_from_file(path);
         upgrade_all_dependency_versions(
@@ -189,16 +192,6 @@ fn change_version_string(
         framework_crate_name,
         version_string_before.as_str(),
         version_string.as_str(),
-    );
-}
-
-pub fn re_generate_wasm_crate(dir: &RelevantDirectory) {
-    if dir.dir_type != DirectoryType::Contract {
-        return;
-    }
-    call_contract_meta(
-        &dir.path,
-        &["abi".to_string(), "--no-abi-git-version".to_string()],
     );
 }
 

@@ -1,5 +1,6 @@
 use core::convert::TryInto;
 
+use crate::types::ManagedRef;
 use crate::{
     abi::{TypeAbi, TypeAbiFrom, TypeName},
     api::{
@@ -7,14 +8,12 @@ use crate::{
         ManagedTypeApi, ManagedTypeApiImpl, RawHandle, StaticVarApiImpl,
     },
     codec::{
-        DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
-        NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
-        TopEncodeOutput, TryStaticCast,
+        DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode,
+        NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput, TryStaticCast,
     },
     formatter::{hex_util::encode_bytes_as_hex, FormatBuffer, FormatByteReceiver, SCDisplay},
     types::{heap::BoxedBytes, ManagedBuffer, ManagedBufferBuilder, ManagedType},
 };
-use crate::types::ManagedRef;
 
 use super::cast_to_i64::cast_to_i64;
 

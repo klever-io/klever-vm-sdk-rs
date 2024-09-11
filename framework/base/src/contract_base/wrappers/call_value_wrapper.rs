@@ -7,8 +7,7 @@ use crate::{
     },
     err_msg,
     types::{
-        BigUint, KdaTokenPayment,
-        KlvOrMultiKdaPayment, ManagedRef, ManagedVec, TokenIdentifier,
+        BigUint, KdaTokenPayment, KlvOrMultiKdaPayment, ManagedRef, ManagedVec, TokenIdentifier,
     },
 };
 
@@ -85,20 +84,12 @@ where
     /// Returns the token ID and the amount for fungible KDA transfers.
     ///
     /// The amount cannot be 0, since that would not qualify as an KDA transfer.
-    pub fn single_fungible_kda(
-        &self,
-    ) -> (
-        TokenIdentifier<A>,
-        BigUint<A>,
-    ) {
+    pub fn single_fungible_kda(&self) -> (TokenIdentifier<A>, BigUint<A>) {
         let payment = self.single_kda();
         if payment.token_nonce != 0 {
             A::error_api_impl().signal_error(err_msg::FUNGIBLE_TOKEN_EXPECTED_ERR_MSG.as_bytes());
         }
-        (
-            payment.token_identifier,
-            payment.amount,
-        )
+        (payment.token_identifier, payment.amount)
     }
 
     /// Accepts and returns either an KLV payment, or a single KDA token.
@@ -114,7 +105,7 @@ where
                 token_nonce: 0,
                 amount: self.klv_value().clone_value(),
             },
-            1 => kda_transfers.get(0).into(),
+            1 => kda_transfers.get(0),
             _ => A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_KDA_TRANSFERS.as_bytes()),
         }
     }
@@ -127,21 +118,13 @@ where
     /// but checks the nonce to be 0 and returns a tuple of just token identifier and amount, for convenience.
     ///
     /// In case no transfer of value happen, it will return a payment of 0 KLV.
-    pub fn klv_or_single_fungible_kda(
-        &self,
-    ) -> (
-        TokenIdentifier<A>,
-        BigUint<A>,
-    ) {
+    pub fn klv_or_single_fungible_kda(&self) -> (TokenIdentifier<A>, BigUint<A>) {
         let payment = self.klv_or_single_kda();
         if payment.token_nonce != 0 {
             A::error_api_impl().signal_error(err_msg::FUNGIBLE_TOKEN_EXPECTED_ERR_MSG.as_bytes());
         }
 
-        (
-            payment.token_identifier,
-            payment.amount,
-        )
+        (payment.token_identifier, payment.amount)
     }
 
     /// Accepts any sort of patyment, which is either:

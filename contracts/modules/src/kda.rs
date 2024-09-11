@@ -77,9 +77,7 @@ pub trait KdaModule {
     /// Retrieves and decode SFT token attributes
     fn get_sft_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
         let token_id = self.token_id().get();
-        let meta =
-            self.blockchain()
-                .get_sft_metadata(&token_id, token_nonce);
+        let meta = self.blockchain().get_sft_metadata(&token_id, token_nonce);
 
         meta.metadata.decode_attributes()
     }

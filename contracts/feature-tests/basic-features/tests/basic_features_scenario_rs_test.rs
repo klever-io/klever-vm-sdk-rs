@@ -385,8 +385,8 @@ fn storage_mapper_map_storage_rs() {
 
 #[test]
 #[ignore]
-fn storage_mapper_non_fungible_token_rs() {
-    world().run("scenarios/storage_mapper_non_fungible_token.scen.json");
+fn storage_mapper_semi_fungible_token_rs() {
+    world().run("scenarios/storage_mapper_semi_fungible_token.scen.json");
 }
 
 #[test]

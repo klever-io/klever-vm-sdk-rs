@@ -95,7 +95,7 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
             contains_custom_types: false,
         },
     );
-    
+
     m.insert(
         "KdaTokenPayment",
         RustTypeString {

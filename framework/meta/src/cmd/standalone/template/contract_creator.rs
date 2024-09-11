@@ -1,9 +1,6 @@
-use convert_case::{Case, Casing};
-use crate::{
-    cli_args::TemplateArgs,
-    version_history::{validate_template_tag, LAST_TEMPLATE_VERSION},
-};
 use crate::version::FrameworkVersion;
+use crate::{cli_args::TemplateArgs, version_history::LAST_TEMPLATE_VERSION};
+use convert_case::{Case, Casing};
 
 use super::{
     template_source::{template_sources, TemplateSource},
@@ -37,7 +34,6 @@ fn target_from_args(args: &TemplateArgs) -> ContractCreatorTarget {
 
 pub(crate) fn get_repo_version(args_tag: &Option<String>) -> RepoVersion {
     if let Some(tag) = args_tag {
-        assert!(validate_template_tag(tag), "invalid template tag");
         RepoVersion::Tag(tag.clone())
     } else {
         RepoVersion::Tag(LAST_TEMPLATE_VERSION.to_string())

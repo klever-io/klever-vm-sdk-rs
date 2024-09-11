@@ -4,8 +4,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
+// Upgrade:                              1
 // Endpoints:                            3
-// Total number of exported functions:   4
+// Total number of exported functions:   5
 
 #![no_std]
 
@@ -16,6 +17,7 @@ klever_sc_wasm_adapter::endpoints! {
     proxy_test_second
     (
         init => init
+        upgrade => upgrade
         payMe => pay_me
         payMeWithResult => pay_me_with_result_endpoint
         messageMe => message_me

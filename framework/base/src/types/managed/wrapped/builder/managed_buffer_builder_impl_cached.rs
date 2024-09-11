@@ -7,16 +7,16 @@ use super::ManagedBufferBuilderImpl;
 
 /// A ManagedBuffer builder implementation that caches data to the static cache locally in the contract.
 pub struct ManagedBufferBuilderImplCached<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     managed_buffer: ManagedBuffer<M>,
     static_cache: Option<StaticBufferRef<M>>,
 }
 
 impl<M> ManagedBufferBuilderImplCached<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     fn flush_to_managed_buffer(&mut self) {
         let old_static_cache = core::mem::take(&mut self.static_cache);
@@ -29,8 +29,8 @@ impl<M> ManagedBufferBuilderImplCached<M>
 }
 
 impl<M> ManagedBufferBuilderImpl<M> for ManagedBufferBuilderImplCached<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     /// Creates instance as lazily as possible.
     /// If possible, the slice is loaded into the static buffer.

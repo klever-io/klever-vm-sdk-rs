@@ -4,8 +4,8 @@ pub mod cli_args;
 pub mod cmd;
 pub mod ei;
 mod ei_check_json;
-pub mod kda_attr_file_json;
 pub mod folder_structure;
+pub mod kda_attr_file_json;
 mod kleversc_file_json;
 mod print_util;
 mod report_info_json;
@@ -18,6 +18,4 @@ pub mod version_history;
 extern crate lazy_static;
 
 pub use cargo_toml_contents::CargoTomlContents;
-pub use cmd::{
-    contract::{cli_main, multi_contract_config},
-};
+pub use cmd::contract::{cli_main, multi_contract_config};

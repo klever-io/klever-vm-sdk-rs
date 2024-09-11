@@ -1,16 +1,13 @@
+use convert_case::{Case, Casing};
+use klever_sc_meta::find_workspace::find_current_workspace;
+use klever_sc_meta::version_history::LAST_TEMPLATE_VERSION;
 use klever_sc_meta::{
     cmd::standalone::template::{
         template_names_from_repo, ContractCreator, ContractCreatorTarget, RepoSource, RepoVersion,
     },
     version_history,
 };
-use std::{
-    fs,
-    process::Command,
-};
-use convert_case::{Case, Casing};
-use klever_sc_meta::find_workspace::find_current_workspace;
-use klever_sc_meta::version_history::LAST_TEMPLATE_VERSION;
+use std::{fs, process::Command};
 
 const TEMPLATE_TEMP_DIR_NAME: &str = "template-test";
 const BUILD_CONTRACTS: bool = true;

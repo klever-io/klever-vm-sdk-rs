@@ -86,8 +86,8 @@ where
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         self.to_managed_buffer()
             .into_max_size_buffer_align_right(buffer, h)

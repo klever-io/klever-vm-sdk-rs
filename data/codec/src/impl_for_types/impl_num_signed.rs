@@ -1,7 +1,7 @@
 use crate::{
-    DecodeError, DecodeErrorHandler, dep_encode_num_mimic,
-    EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode, NestedEncodeOutput,
-    TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
+    dep_encode_num_mimic, DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput,
 };
 
 macro_rules! top_encode_num_signed {
@@ -56,9 +56,9 @@ dep_decode_num_signed!(i64, 8);
 
 impl NestedDecode for isize {
     fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
-        where
-            I: NestedDecodeInput,
-            H: DecodeErrorHandler,
+    where
+        I: NestedDecodeInput,
+        H: DecodeErrorHandler,
     {
         i32::dep_decode_or_handle_err(input, h).map(|num| num as isize)
     }

@@ -50,15 +50,7 @@ where
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> Result<(), &'static [u8]> {
-        self.transfer_kda_nft_execute(
-            to,
-            token,
-            0,
-            value,
-            gas_limit,
-            endpoint_name,
-            arg_buffer,
-        )
+        self.transfer_kda_nft_execute(to, token, 0, value, gas_limit, endpoint_name, arg_buffer)
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -73,11 +65,7 @@ where
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> Result<(), &'static [u8]> {
         let mut payments: ManagedVec<A, KdaTokenPayment<A>> = ManagedVec::new();
-        payments.push(KdaTokenPayment::new(
-            token.clone(),
-            nonce,
-            value.clone(),
-        ));
+        payments.push(KdaTokenPayment::new(token.clone(), nonce, value.clone()));
         self.multi_kda_transfer_execute(to, &payments, gas_limit, endpoint_name, arg_buffer)
     }
 

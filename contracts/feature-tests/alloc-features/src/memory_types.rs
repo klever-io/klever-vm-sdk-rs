@@ -3,7 +3,6 @@ use klever_sc::imports::*;
 /// Storage tests: direct load from storage to the heap.
 #[klever_sc::module]
 pub trait MemoryTypes {
-
     #[endpoint]
     #[label("alloc-mem-fail")]
     fn alloc_with_fail_memory(&self) -> i32 {

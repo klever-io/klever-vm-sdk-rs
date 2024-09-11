@@ -4,13 +4,13 @@ use super::{
     set_mapper::{self, CurrentStorage, StorageAddress},
     SetMapper, StorageClearable, StorageMapper,
 };
+use crate::contract_base::ErrorHelper;
 use crate::{
     api::StorageMapperApi,
     codec::{NestedDecode, NestedEncode, TopDecode, TopEncode},
     storage::{self, StorageKey},
     types::ManagedAddress,
 };
-use crate::contract_base::ErrorHelper;
 
 const MAPPED_STORAGE_VALUE_IDENTIFIER: &[u8] = b".storage";
 type Keys<'a, SA, A, T> = set_mapper::Iter<'a, SA, A, T>;
@@ -88,10 +88,10 @@ where
 }
 
 impl<SA, K, V> MapStorageMapper<SA, K, V, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode,
-        V: StorageMapper<SA> + StorageClearable,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode,
+    V: StorageMapper<SA> + StorageClearable,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         MapStorageMapper {
@@ -439,10 +439,10 @@ where
 }
 
 impl<'a, SA, K, V> OccupiedEntry<'a, SA, CurrentStorage, K, V>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone + 'static,
-        V: StorageMapper<SA> + StorageClearable,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone + 'static,
+    V: StorageMapper<SA> + StorageClearable,
 {
     /// Syntactic sugar, to more compactly express a get, update and set in one line.
     /// Takes whatever lies in storage, apples the given closure and saves the final value back to storage.

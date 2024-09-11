@@ -2,13 +2,13 @@ use std::fs;
 
 use klever_sc::abi::ContractAbi;
 
-use crate::{cli_args::BuildArgs, tools::check_tools_installed, CargoTomlContents};
 use crate::cmd::contract::wasm_cargo_toml_data::WasmCargoTomlData;
 use crate::cmd::contract::wasm_cargo_toml_generate::generate_wasm_cargo_toml;
 use crate::find_workspace::find_current_workspace;
 use crate::print_util::print_workspace_target_dir;
+use crate::{cli_args::BuildArgs, tools::check_tools_installed, CargoTomlContents};
 
-use super::sc_config::{ScConfig};
+use super::sc_config::ScConfig;
 
 const OUTPUT_RELATIVE_PATH: &str = "../output";
 const SNIPPETS_RELATIVE_PATH: &str = "../interact-rs";
@@ -27,8 +27,7 @@ pub struct MetaConfig {
 
 impl MetaConfig {
     pub fn create(original_contract_abi: ContractAbi, load_abi_git_version: bool) -> MetaConfig {
-        let output_contracts =
-            ScConfig::load_from_crate_or_default("..", &original_contract_abi);
+        let output_contracts = ScConfig::load_from_crate_or_default("..", &original_contract_abi);
 
         MetaConfig {
             load_abi_git_version,
@@ -175,7 +174,6 @@ fn copy_to_wasm_unmanaged_ei() {
         fs::copy(WASM_LIB_PATH, WASM_NO_MANAGED_EI_LIB_PATH).unwrap();
     }
 }
-
 
 #[cfg(test)]
 mod tests {

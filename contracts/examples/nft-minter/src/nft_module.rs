@@ -1,7 +1,8 @@
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 const NFT_AMOUNT: u32 = 1;
+const ROYALTIES_MAX: u32 = 10_000;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
@@ -20,22 +21,20 @@ pub trait NftModule {
     fn issue_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(self.nft_token_id().is_empty(), "Token already issued");
 
-        self.send()
-            .kda_system_sc_proxy()
-            .issue_non_fungible(
-                &token_name,
-                &token_ticker,
-                &PropertiesInfo {
-                    can_freeze: true,
-                    can_wipe: true,
-                    can_pause: true,
-                    can_mint: true,
-                    can_burn: true,
-                    can_change_owner: false,
-                    can_add_roles: true,
-                    limit_transfer: false,
-                },
-            );
+        self.send().kda_system_sc_proxy().issue_non_fungible(
+            &token_name,
+            &token_ticker,
+            &PropertiesInfo {
+                can_freeze: true,
+                can_wipe: true,
+                can_pause: true,
+                can_mint: true,
+                can_burn: true,
+                can_change_owner: false,
+                can_add_roles: true,
+                limit_transfer: false,
+            },
+        );
     }
 
     #[only_owner]
@@ -43,16 +42,14 @@ pub trait NftModule {
     fn set_local_roles(&self, address: ManagedAddress) {
         self.require_token_issued();
 
-        self.send()
-            .kda_system_sc_proxy()
-            .set_special_roles(
-                &address,
-                &self.nft_token_id().get(),
-                true,
-                false,
-                false,
-                true,
-            )
+        self.send().kda_system_sc_proxy().set_special_roles(
+            &address,
+            &self.nft_token_id().get(),
+            true,
+            false,
+            false,
+            true,
+        )
     }
 
     // endpoints
@@ -114,9 +111,59 @@ pub trait NftModule {
 
     // private
 
-    
     fn require_token_issued(&self) {
         require!(!self.nft_token_id().is_empty(), "Token not issued");
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn mint_nft<T: TopEncode>(
+        &self,
+        name: ManagedBuffer,
+        royalties: BigUint,
+        attributes: T,
+        _uri: ManagedBuffer,
+        selling_price: BigUint,
+        token_used_as_payment: TokenIdentifier,
+        token_used_as_payment_nonce: u64,
+    ) -> u64 {
+        self.require_token_issued();
+        require!(royalties <= ROYALTIES_MAX, "Royalties cannot exceed 100%");
+
+        let nft_token_id = self.nft_token_id().get();
+
+        let result = self
+            .send()
+            .kda_mint(&nft_token_id, 0, &BigUint::from(NFT_AMOUNT));
+
+        // get nonce of the minted NFT
+        let nft_nonce = if let Some(first_result_bytes) = result.try_get(0) {
+            first_result_bytes.parse_as_u64().unwrap()
+        } else {
+            panic!("Failed to get nonce from mint result")
+        };
+
+        let mut serialized_attributes = ManagedBuffer::new();
+        if let core::result::Result::Err(err) = attributes.top_encode(&mut serialized_attributes) {
+            sc_panic!("Attributes encode error: {}", err.message_bytes());
+        }
+
+        // update metadata
+        self.send().kda_system_sc_proxy().update_metadata(
+            &nft_token_id,
+            nft_nonce,
+            &self.blockchain().get_sc_address(),
+            &ManagedBuffer::new(),
+            &serialized_attributes,
+            &name,
+        );
+
+        self.price_tag(nft_nonce).set(&PriceTag {
+            token: token_used_as_payment,
+            nonce: token_used_as_payment_nonce,
+            amount: selling_price,
+        });
+
+        nft_nonce
     }
 
     // storage

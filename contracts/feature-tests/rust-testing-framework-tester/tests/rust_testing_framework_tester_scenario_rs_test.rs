@@ -4,7 +4,7 @@ fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
     blockchain.register_contract(
-        "kleversc:output/rust-testing-framework-tester.kleversc.json",
+        "file:output/rust-testing-framework-tester.wasm",
         rust_testing_framework_tester::ContractBuilder,
     );
     blockchain

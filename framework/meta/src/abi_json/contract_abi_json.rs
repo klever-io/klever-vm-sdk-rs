@@ -1,8 +1,8 @@
 use super::*;
+use crate::abi_json::kda_attribute_json::KdaAttributeJson;
 use klever_sc::abi::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
-use crate::abi_json::kda_attribute_json::KdaAttributeJson;
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -40,12 +40,15 @@ pub struct ContractAbiJson {
 
 impl From<&ContractAbi> for ContractAbiJson {
     fn from(abi: &ContractAbi) -> Self {
-       ContractAbiJson {
+        ContractAbiJson {
             build_info: Some(BuildInfoAbiJson::from(&abi.build_info)),
             docs: abi.docs.iter().map(|d| d.to_string()).collect(),
             name: abi.name.to_string(),
             constructor: abi.constructors.first().map(ConstructorAbiJson::from),
-            upgrade_constructor: abi.upgrade_constructors.first().map(ConstructorAbiJson::from),
+            upgrade_constructor: abi
+                .upgrade_constructors
+                .first()
+                .map(ConstructorAbiJson::from),
             endpoints: abi.endpoints.iter().map(EndpointAbiJson::from).collect(),
             events: abi.events.iter().map(EventAbiJson::from).collect(),
             types: convert_type_descriptions_to_json(&abi.type_descriptions),
@@ -66,7 +69,7 @@ pub fn convert_type_descriptions_to_json(
         if type_description.contents.is_specified() {
             types.insert(
                 type_names.abi.clone(),
-                TypeDescriptionJson::from(type_description)
+                TypeDescriptionJson::from(type_description),
             );
         }
     }

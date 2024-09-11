@@ -77,12 +77,9 @@ impl TxCache {
         kda_metadata: KdaInstanceMetadata,
     ) {
         self.with_account_mut(address, |account| {
-            account.kda.increase_balance(
-                kda_token_identifier.to_vec(),
-                nonce,
-                value,
-                kda_metadata,
-            );
+            account
+                .kda
+                .increase_balance(kda_token_identifier.to_vec(), nonce, value, kda_metadata);
         });
     }
 

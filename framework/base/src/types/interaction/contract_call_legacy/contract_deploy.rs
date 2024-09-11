@@ -83,7 +83,9 @@ where
 
     pub fn push_endpoint_arg<T: TopEncodeMulti>(&mut self, endpoint_arg: &T) {
         let h = ExitCodecErrorHandler::<SA>::from(err_msg::CONTRACT_CALL_ENCODE_ERROR);
-        endpoint_arg.multi_encode_or_handle_err(&mut self.arg_buffer, h).unwrap_infallible();
+        endpoint_arg
+            .multi_encode_or_handle_err(&mut self.arg_buffer, h)
+            .unwrap_infallible();
     }
 
     fn resolve_gas_limit(&self) -> u64 {

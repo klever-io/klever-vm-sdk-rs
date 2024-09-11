@@ -18,7 +18,7 @@ pub use contract_call_with_multi_kda::ContractCallWithMultiKda;
 pub use contract_deploy::{new_contract_deploy, ContractDeploy};
 pub use typed_function_call::TypedFunctionCall;
 
-/// Using max u64 to represent maximum possible gas,
+/// Using max i64 to represent maximum possible gas,
 /// so that the value zero is not reserved and can be specified explicitly.
 /// Leaving the gas limit unspecified will replace it with `api.get_gas_left()`.
-pub(crate) const UNSPECIFIED_GAS_LIMIT: u64 = u64::MAX;
+pub(crate) const UNSPECIFIED_GAS_LIMIT: u64 = i64::MAX as u64;

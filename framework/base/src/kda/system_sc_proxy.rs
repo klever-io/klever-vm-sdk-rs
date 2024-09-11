@@ -101,6 +101,7 @@ where
         )
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn issue(
         &self,
         token_type: KdaTokenType,
@@ -119,7 +120,7 @@ where
         };
 
         let send_wrapper = SendWrapper::<SA>::new();
-        let result = send_wrapper.kda_create(
+        send_wrapper.kda_create(
             asset_type,
             token_display_name,
             token_ticker,
@@ -130,9 +131,7 @@ where
             max_supply,
             properties,
             &RoyaltiesData::default(),
-        );
-
-        result
+        )
     }
 
     /// Produces a contract call to the KDA system SC,
@@ -187,7 +186,7 @@ where
     /// which causes it to burn fungible KDA tokens owned by the SC.
     pub fn burn(&self, token_identifier: &TokenIdentifier<SA>, amount: &BigUint<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.kda_burn(&token_identifier, 0, &amount);
+        send_wrapper.kda_burn(token_identifier, 0, amount);
     }
 
     /// The manager of an KDA token may choose to suspend all transactions of the token,
@@ -200,7 +199,7 @@ where
     /// The reverse operation of `pause`.
     pub fn unpause(&self, token_identifier: &TokenIdentifier<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.kda_resume(&token_identifier)
+        send_wrapper.kda_resume(token_identifier)
     }
 
     /// The manager of an KDA token may freeze the tokens held by a specific account.

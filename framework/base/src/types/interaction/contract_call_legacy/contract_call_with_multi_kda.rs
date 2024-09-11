@@ -1,10 +1,10 @@
 use crate::codec::TopEncodeMulti;
 
+use crate::types::ContractCallBase;
 use crate::{
     api::CallTypeApi,
     types::{BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier},
 };
-use crate::types::ContractCallBase;
 
 use super::{contract_call_no_payment::ContractCallNoPayment, ContractCall, ContractCallWithKlv};
 
@@ -85,10 +85,6 @@ where
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
     ) -> Self {
-        self.with_kda_transfer((
-            payment_token,
-            payment_nonce,
-            payment_amount,
-        ))
+        self.with_kda_transfer((payment_token, payment_nonce, payment_amount))
     }
 }

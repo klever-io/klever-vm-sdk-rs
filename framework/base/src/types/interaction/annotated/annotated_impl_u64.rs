@@ -1,6 +1,6 @@
 use crate::types::ManagedBuffer;
 
-use super::{AnnotatedValue, display_u64, TxEnv};
+use super::{display_u64, AnnotatedValue, TxEnv};
 
 impl<Env> AnnotatedValue<Env, u64> for u64
 where

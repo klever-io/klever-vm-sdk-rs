@@ -1,9 +1,7 @@
 use crate::{
     api::ManagedTypeApi,
     formatter::FormatBuffer,
-    types::{
-        ManagedBuffer, ManagedBufferBuilder,
-    },
+    types::{ManagedBuffer, ManagedBufferBuilder},
 };
 
 use super::TxEnv;

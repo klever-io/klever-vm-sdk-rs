@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           26
-// Total number of exported functions:  27
+// Endpoints:                           22
+// Total number of exported functions:  23
 
 #![no_std]
 
@@ -34,10 +34,6 @@ klever_sc_wasm_adapter::endpoints! {
         pause => pause_endpoint
         unpause => unpause_endpoint
         isPaused => paused_status
-        stake => stake
-        unstake => unstake
-        voteSlashMember => vote_slash_member
-        slashMember => slash_member
         isAdmin => is_admin
         addAdmin => add_admin
         removeAdmin => remove_admin

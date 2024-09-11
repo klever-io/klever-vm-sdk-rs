@@ -1,7 +1,5 @@
 use klever_sc::abi::{ContractAbi, EndpointAbi};
-use klever_sc_meta::cmd::contract::sc_config::{
-    ScConfigSerde, ScConfig,
-};
+use klever_sc_meta::cmd::contract::sc_config::{ScConfig, ScConfigSerde};
 
 fn get_serialized_toml() -> ScConfigSerde {
     toml::from_str(

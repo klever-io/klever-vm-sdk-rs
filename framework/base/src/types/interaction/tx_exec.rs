@@ -4,10 +4,10 @@ mod tx_exec_sync;
 mod tx_exec_te;
 mod tx_exec_upgrade;
 
-use unwrap_infallible::UnwrapInfallible;
 pub use tx_env_sc::*;
 pub use tx_exec_deploy::*;
 pub use tx_exec_sync::*;
+use unwrap_infallible::UnwrapInfallible;
 
 use crate::{
     api::CallTypeApi,

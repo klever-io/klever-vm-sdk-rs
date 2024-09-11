@@ -6,7 +6,7 @@ use crate::{
 
 use num_bigint::BigUint;
 
-use super::{CallbackPayments, CallType, Promise, TxFunctionName};
+use super::{CallType, CallbackPayments, Promise, TxFunctionName};
 
 #[derive(Debug, Clone)]
 
@@ -55,8 +55,7 @@ pub fn callback_tx_input(
     } else {
         args.push(result.result_message.clone().into_bytes());
     }
-    let callback_payments =
-        extract_callback_payments(&data.from, result, builtin_functions);
+    let callback_payments = extract_callback_payments(&data.from, result, builtin_functions);
     TxInput {
         from: data.to.clone(),
         to: data.from.clone(),
@@ -85,7 +84,7 @@ fn extract_callback_payments(
             if !token_transfers.is_empty() {
                 callback_payments.kda_values = token_transfers.transfers;
             } else {
-                callback_payments.klv_value = call.call_value.clone();
+                callback_payments.klv_value.clone_from(&call.call_value);
             }
             break;
         }
@@ -93,11 +92,7 @@ fn extract_callback_payments(
     callback_payments
 }
 
-pub fn promise_tx_input(
-    address: &VMAddress,
-    promise: &Promise,
-    result: &TxResult,
-) -> TxInput {
+pub fn promise_tx_input(address: &VMAddress, promise: &Promise, result: &TxResult) -> TxInput {
     let mut args: Vec<Vec<u8>> = Vec::new();
     let serialized_bytes = result.result_status.to_be_bytes().to_vec();
     args.push(serialized_bytes);

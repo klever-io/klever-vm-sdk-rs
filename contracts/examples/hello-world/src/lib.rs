@@ -4,9 +4,8 @@ use klever_sc::imports::*;
 
 #[klever_sc::contract]
 pub trait HelloWorld: ContractBase {
-
     #[init]
-    fn init (&self) {}
+    fn init(&self) {}
 
     #[event("message")]
     fn message(&self, msg: &str);
@@ -28,5 +27,4 @@ pub trait HelloWorld: ContractBase {
 
         self.message("Hello World!");
     }
-
 }

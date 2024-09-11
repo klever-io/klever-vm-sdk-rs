@@ -10,17 +10,17 @@ fn world() -> ScenarioWorld {
     blockchain
 }
 
-// #[test]
-// fn claim_rs() {
-//     world().run("scenarios/claim.scen.json");
-// }
+#[test]
+fn claim_rs() {
+    world().run("scenarios/claim.scen.json");
+}
 
 #[test]
 fn deploy_rs() {
     world().run("scenarios/deploy.scen.json");
 }
 
-// #[test]
-// fn setup_fees_and_transfer_rs() {
-//     world().run("scenarios/setup_fees_and_transfer.scen.json");
-// }
+#[test]
+fn setup_fees_and_transfer_rs() {
+    world().run("scenarios/setup_fees_and_transfer.scen.json");
+}

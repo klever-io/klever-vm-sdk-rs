@@ -115,7 +115,10 @@ impl KdaObject {
         }
 
         if !uris_expr.is_empty() {
-            inst_for_nonce.uri = uris_expr.into_iter().map(|uri| BytesValue::from(uri)).collect()
+            inst_for_nonce.uri = uris_expr
+                .into_iter()
+                .map(|uri| BytesValue::from(uri))
+                .collect()
         }
     }
 

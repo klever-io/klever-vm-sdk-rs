@@ -1,4 +1,3 @@
-use unwrap_infallible::UnwrapInfallible;
 use crate::{
     api::{ManagedTypeApi, RawHandle},
     codec,
@@ -7,11 +6,10 @@ use crate::{
         *,
     },
     contract_base::ExitCodecErrorHandler,
-    types::{
-        BigUint, ManagedBuffer, ManagedType,
-    },
     derive::TypeAbi,
+    types::{BigUint, ManagedBuffer, ManagedType},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 use crate as klever_sc; // needed by the TypeAbi generated code
 
@@ -40,7 +38,7 @@ where
         let circulation_supply_handle = get_raw_handle(&v, 4);
         let meta_handle = get_raw_handle(&v, 8);
 
-        SFTMeta{
+        SFTMeta {
             max_supply: BigUint::from_raw_handle(max_supply_handle),
             circulation_supply: BigUint::from_raw_handle(circulation_supply_handle),
             metadata: SFTMetadata::from(ManagedBuffer::from_raw_handle(meta_handle)),
@@ -65,7 +63,6 @@ where
     }
 }
 
-
 impl<M: ManagedTypeApi> SFTMetadata<M> {
     pub fn try_decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
         T::top_decode(self.attributes.clone())
@@ -75,10 +72,10 @@ impl<M: ManagedTypeApi> SFTMetadata<M> {
         T::top_decode_or_handle_err(
             self.attributes.clone(),
             ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        ).unwrap_infallible()
+        )
+        .unwrap_infallible()
     }
 }
-
 
 pub fn get_raw_handle<M: ManagedTypeApi>(mb: &ManagedBuffer<M>, pos: usize) -> RawHandle {
     let mut dest_slice = [0u8; 4];

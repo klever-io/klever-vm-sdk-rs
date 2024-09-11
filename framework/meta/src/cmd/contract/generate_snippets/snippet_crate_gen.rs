@@ -1,9 +1,9 @@
+use crate::version_history;
 use colored::Colorize;
 use std::{
     fs::{self, File, OpenOptions},
     io::Write,
 };
-use crate::version_history;
 
 static SNIPPETS_SOURCE_FILE_NAME: &str = "interactor_main.rs";
 static SC_CONFIG_PATH: &str = "../sc-config.toml";

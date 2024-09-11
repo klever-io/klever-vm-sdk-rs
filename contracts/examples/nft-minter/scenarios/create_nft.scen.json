@@ -18,17 +18,18 @@
                 "from": "address:owner",
                 "to": "sc:nft-minter",
                 "function": "createNft",
+
                 "arguments": [
                     "str:NFT 1",
                     "5000",
-                    "str:www.mycoolnft.com/nft1.jpg",
+                    "",
                     "500"
                 ],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
+                "out": ["01"],
                 "status": "0",
                 "message": "",
                 "gas": "*",
@@ -51,16 +52,16 @@
                 "arguments": [
                     "str:NFT 2",
                     "5000",
-                    "str:www.mycoolnft.com/nft2.jpg",
+                    "",
                     "500",
-                    "str:SEMIFUNG-123456",
+                    "str:SEMIFUNG-1234",
                     "2"
                 ],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],
+                "out": ["02"],
                 "status": "0",
                 "message": "",
                 "gas": "*",
@@ -74,16 +75,14 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft1.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:100,000"
                                 },
                                 {
@@ -91,27 +90,28 @@
                                     "balance": "1",
                                     "creator": "sc:nft-minter",
                                     "royalties": "5000",
-                                    "uri": [
-                                        "str:www.mycoolnft.com/nft2.jpg"
-                                    ],
+                                    "uri": [],
                                     "attributes": "u64:200,000"
                                 }
                             ],
                             "lastNonce": "2",
                             "roles": [
-                                "KDARoleNFTCreate"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:nftTokenId": "str:NFT-123456",
+                        "str:nftTokenId": "str:NFT-1234",
                         "str:priceTag|u64:1": {
                             "1-token": "nested:str:KLV",
                             "2-nonce": "u64:0",
                             "3-amount": "biguint:500"
                         },
                         "str:priceTag|u64:2": {
-                            "1-token": "nested:str:SEMIFUNG-123456",
+                            "1-token": "nested:str:SEMIFUNG-1234",
                             "2-nonce": "u64:2",
                             "3-amount": "biguint:500"
                         }

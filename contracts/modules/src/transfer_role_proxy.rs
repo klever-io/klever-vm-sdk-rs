@@ -35,11 +35,7 @@ pub trait TransferRoleProxyModule {
     ) where
         T: TopEncodeMulti,
     {
-        self.execute_call(
-            original_caller,
-            transaction.payment,
-            transaction,
-        );
+        self.execute_call(original_caller, transaction.payment, transaction);
     }
 
     fn transfer_to_contract_raw(
@@ -59,7 +55,7 @@ pub trait TransferRoleProxyModule {
 
         self.execute_call(original_caller, payments, transaction)
     }
-    
+
     fn execute_call(
         &self,
         _original_caller: ManagedAddress,
@@ -72,8 +68,8 @@ pub trait TransferRoleProxyModule {
             (),
             FunctionCall<Self::Api>,
             (),
-        >)
-    {
+        >,
+    ) {
         require!(
             self.destination_whitelist().contains(transaction.to),
             "Destination address not whitelisted"
@@ -85,7 +81,6 @@ pub trait TransferRoleProxyModule {
             remaining_gas > cb_gas_needed,
             "Not enough gas to launch async call"
         );
-
 
         transaction.sync_call();
     }

@@ -59,8 +59,8 @@
                             ],
                             "lastNonce": "7",
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn",
+                                "KDARoleMint",
+                                "KDARoleBurn",
                                 "KDARoleNFTCreate",
                                 "KDARoleNFTAddQuantity",
                                 "KDARoleNFTBurn"

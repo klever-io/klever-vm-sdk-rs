@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 pub mod nft_marketplace_proxy;
 mod nft_module;
@@ -21,15 +21,16 @@ pub trait NftMinter: nft_module::NftModule {
     #[allow(clippy::redundant_closure)]
     #[only_owner]
     #[endpoint(createNft)]
+
     fn create_nft(
         &self,
-        _name: ManagedBuffer,
-        _royalties: BigUint,
-        _uri: ManagedBuffer,
-        _selling_price: BigUint,
+        name: ManagedBuffer,
+        royalties: BigUint,
+        uri: ManagedBuffer,
+        selling_price: BigUint,
         opt_token_used_as_payment: OptionalValue<TokenIdentifier>,
         opt_token_used_as_payment_nonce: OptionalValue<u64>,
-    ) {
+    ) -> u64 {
         let token_used_as_payment = match opt_token_used_as_payment {
             OptionalValue::Some(token) => token,
             OptionalValue::None => TokenIdentifier::klv(),
@@ -39,7 +40,7 @@ pub trait NftMinter: nft_module::NftModule {
             "Invalid token_used_as_payment arg, not a valid token ID"
         );
 
-        let _token_used_as_payment_nonce = if token_used_as_payment.is_klv() {
+        let token_used_as_payment_nonce = if token_used_as_payment.is_klv() {
             0
         } else {
             match opt_token_used_as_payment_nonce {
@@ -48,10 +49,19 @@ pub trait NftMinter: nft_module::NftModule {
             }
         };
 
-        let _attributes = ExampleAttributes {
+        let attributes = ExampleAttributes {
             creation_timestamp: self.blockchain().get_block_timestamp(),
         };
-        todo!()
+
+        self.mint_nft(
+            name,
+            royalties,
+            attributes,
+            uri,
+            selling_price,
+            token_used_as_payment,
+            token_used_as_payment_nonce,
+        )
     }
 
     // The marketplace SC will send the funds directly to the initial caller, i.e. the owner
@@ -73,4 +83,3 @@ pub trait NftMinter: nft_module::NftModule {
             .execute_on_dest_context::<IgnoreValue>();
     }
 }
-

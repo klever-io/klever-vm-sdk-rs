@@ -1,15 +1,15 @@
-use core::marker::PhantomData;
 use crate::codec::{EncodeError, EncodeErrorHandler, NestedEncodeOutput, TryStaticCast};
+use core::marker::PhantomData;
 
+use crate::imports::{ManagedBufferBuilderImpl, ManagedBufferImplDefault};
 use crate::{
     api::ManagedTypeApi,
     formatter::{
         hex_util::{byte_to_binary_digits, byte_to_hex_digits},
         FormatBuffer, FormatByteReceiver, SCBinary, SCCodec, SCDisplay, SCLowerHex,
     },
-    types::{ManagedBuffer},
+    types::ManagedBuffer,
 };
-use crate::imports::{ManagedBufferBuilderImpl, ManagedBufferImplDefault};
 
 const HEX_CONVERSION_BUFFER_LEN: usize = 32;
 const BIN_CONVERSION_BUFFER_LEN: usize = 32;
@@ -95,9 +95,9 @@ where
 }
 
 impl<M, Impl> NestedEncodeOutput for ManagedBufferBuilder<M, Impl>
-    where
-        M: ManagedTypeApi,
-        Impl: ManagedBufferBuilderImpl<M>,
+where
+    M: ManagedTypeApi,
+    Impl: ManagedBufferBuilderImpl<M>,
 {
     fn write(&mut self, bytes: &[u8]) {
         self.append_bytes(bytes);
@@ -154,8 +154,8 @@ where
 }
 
 impl<M> FormatBuffer for ManagedBufferBuilder<M, ManagedBufferImplDefault<M>>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     fn append_ascii(&mut self, ascii: &[u8]) {
         self.append_bytes(ascii)

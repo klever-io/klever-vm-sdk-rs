@@ -1,6 +1,5 @@
 {
   "name": "storage mapper get at address",
-  "gasSchedule": "v3",
   "steps": [
     {
       "step": "setState",
@@ -13,7 +12,8 @@
         "sc:to-be-called": {
           "nonce": "0",
           "balance": "0",
-          "code": "kleversc:../output/basic-features.kleversc.json"
+          "code": "kleversc:../output/basic-features.kleversc.json",
+          "codeMetadata": "0x0400"
         },
         "address:an_account": {
           "nonce": "0",

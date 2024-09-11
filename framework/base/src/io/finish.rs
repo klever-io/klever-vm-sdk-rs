@@ -10,8 +10,8 @@ use crate::{
     contract_base::ExitCodecErrorHandler,
     err_msg,
     types::{
-        BigInt, BigUint, ManagedBuffer, ManagedBufferBuilder, ManagedSCError, ManagedType,
-        SCError, StaticSCError,
+        BigInt, BigUint, ManagedBuffer, ManagedBufferBuilder, ManagedSCError, ManagedType, SCError,
+        StaticSCError,
     },
 };
 

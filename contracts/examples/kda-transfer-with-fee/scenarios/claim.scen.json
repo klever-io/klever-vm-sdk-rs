@@ -28,21 +28,22 @@
         },
         {
             "step": "checkState",
+            "id": "checkState-after-claim",
             "accounts": {
                 "address:owner": {
                     "nonce": "6",
                     "balance": "0",
-                    "kdaValue": {
-                        "str:USDC-aaaaaa": "22",
-                        "str:WKLV-012345": "100"
+                    "kda": {
+                        "str:USDC-aaaa": "22",
+                        "str:WKLV-0123": "100"
                     },
                     "storage": {}
                 },
                 "address:user1": {
                     "nonce": "2",
                     "balance": "0",
-                    "kdaValue": {
-                        "str:MFNFT-567890": {
+                    "kda": {
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -54,15 +55,15 @@
                                 }
                             ]
                         },
-                        "str:USDC-aaaaaa": "418",
-                        "str:WKLV-012345": "500"
+                        "str:USDC-aaaa": "418",
+                        "str:WKLV-0123": "500"
                     }
                 },
                 "address:user2": {
                     "nonce": "3",
                     "balance": "0",
-                    "kdaValue": {
-                        "str:MFNFT-567890": {
+                    "kda": {
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "3",
@@ -70,16 +71,16 @@
                                 }
                             ]
                         },
-                        "str:USDC-aaaaaa": "60",
-                        "str:WKLV-012345": "400"
+                        "str:USDC-aaaa": "60",
+                        "str:WKLV-0123": "400"
                     }
                 },
                 "sc:kda-transfer-with-fee": {
                     "nonce": "0",
                     "storage": {
-                        "str:token_fee|nested:str:USDC-aaaaaa": "u8:2|u32:1000",
-                        "str:token_fee|nested:str:MFNFT-567890": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:5",
-                        "str:token_fee|nested:str:WKLV-012345": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:10"
+                        "str:token_fee|nested:str:USDC-aaaa": "u8:2|u32:1000",
+                        "str:token_fee|nested:str:MFNFT-5678": "u8:1|nested:str:USDC-aaaa|u64:0|biguint:5",
+                        "str:token_fee|nested:str:WKLV-0123": "u8:1|nested:str:USDC-aaaa|u64:0|biguint:10"
                     },
                     "code": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                     "owner": "address:owner"

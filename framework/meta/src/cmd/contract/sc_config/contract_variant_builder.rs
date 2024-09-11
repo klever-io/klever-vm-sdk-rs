@@ -1,17 +1,16 @@
+use crate::cmd::contract::sc_config::contract_variant_settings::ContractVariantProfile;
+use crate::cmd::contract::sc_config::sc_config_model::SC_CONFIG_FILE_NAMES;
+use crate::ei::parse_check_ei;
 use klever_sc::abi::{ContractAbi, EndpointAbi};
 use std::{
     collections::{BTreeSet, HashMap, HashSet},
     fs,
     path::{Path, PathBuf},
 };
-use crate::cmd::contract::sc_config::sc_config_model::SC_CONFIG_FILE_NAMES;
-use crate::cmd::contract::sc_config::contract_variant_settings::ContractVariantProfile;
-use crate::ei::parse_check_ei;
 
 use super::{
     contract_variant_settings::{parse_allocator, parse_stack_size},
-    ScConfigSerde, ContractVariant, ScConfig, ContractVariantSerde,
-    ContractVariantSettings,
+    ContractVariant, ContractVariantSerde, ContractVariantSettings, ScConfig, ScConfigSerde,
 };
 
 /// Temporary structure, to help create instances of `OutputContract`. Not publicly exposed.
@@ -55,9 +54,8 @@ impl ContractVariantBuilder {
         let external_view = cms.external_view.unwrap_or_default();
         let mut collected_endpoints = Vec::new();
         if external_view {
-            collected_endpoints.push(
-                klever_sc::external_view_contract::external_view_contract_constructor_abi(),
-            )
+            collected_endpoints
+                .push(klever_sc::external_view_contract::external_view_contract_constructor_abi())
         }
         let default = ContractVariantBuilder::default();
         (
@@ -345,6 +343,7 @@ impl ScConfig {
             SC_CONFIG_FILE_NAMES
                 .iter()
                 .map(|name| PathBuf::from(contract_crate_path.as_ref()).join(name)),
-        original_abi)
+            original_abi,
+        )
     }
 }

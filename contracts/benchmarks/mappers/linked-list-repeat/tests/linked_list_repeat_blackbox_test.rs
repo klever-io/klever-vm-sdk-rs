@@ -1,6 +1,6 @@
 use benchmark_common::ExampleStruct;
-use linked_list_repeat::linked_list_repeat_proxy;
 use klever_sc_scenario::imports::*;
+use linked_list_repeat::linked_list_repeat_proxy;
 
 const WASM_PATH: KleverscPath = KleverscPath::new("output/linked-list-repeat.kleversc.json");
 const LLR_ADDRESS: TestSCAddress = TestSCAddress::new("llr");

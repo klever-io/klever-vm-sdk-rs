@@ -1,15 +1,11 @@
 use core::marker::PhantomData;
 
 use crate::{
-    api::{
-        CallTypeApi,
-    },
+    api::CallTypeApi,
     types::{BigUint, KdaTokenPayment, ManagedVec},
 };
 
-use super::{
-    contract_call_no_payment::ContractCallNoPayment, ContractCallWithKlv,
-};
+use super::{contract_call_no_payment::ContractCallNoPayment, ContractCallWithKlv};
 
 impl<SA, OriginalResult> ContractCallWithKlv<SA, OriginalResult>
 where
@@ -30,7 +26,6 @@ where
         self,
         payments: ManagedVec<SA, KdaTokenPayment<SA>>,
     ) -> Self {
-
         ContractCallWithKlv {
             basic: ContractCallNoPayment {
                 _phantom: PhantomData,

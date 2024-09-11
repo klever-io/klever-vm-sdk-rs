@@ -1,12 +1,12 @@
+use crate::types::TxToSpecified;
 use crate::{
     api::CallTypeApi,
     contract_base::SendRawWrapper,
     types::{
-        Code, CodeMetadata, ManagedAddress, ManagedBuffer, Tx, TxCodeValue,
-        TxEmptyResultHandler, TxGas, TxPaymentKlvOnly, TxScEnv, UpgradeCall,
+        Code, CodeMetadata, ManagedAddress, ManagedBuffer, Tx, TxCodeValue, TxEmptyResultHandler,
+        TxGas, TxPaymentKlvOnly, TxScEnv, UpgradeCall,
     },
 };
-use crate::types::TxToSpecified;
 
 impl<Api, Payment, Gas, CodeValue, RH>
     Tx<
@@ -28,7 +28,7 @@ where
     /// Launches the upgrade async call.
     ///
     /// TODO: change return type to `!`.
-    pub fn upgrade_async_call_and_exit(self) {
+    pub fn upgrade_sync_call(self) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
         self.payment.with_klv_value(&self.env, |klv_value| {
             SendRawWrapper::<Api>::new().upgrade_contract(

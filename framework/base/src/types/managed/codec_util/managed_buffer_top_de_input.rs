@@ -3,8 +3,12 @@ use crate::codec::{
 };
 use alloc::boxed::Box;
 
-use crate::{api::ManagedTypeApi, err_msg, types::{BigInt, BigUint, ManagedBuffer}};
-use crate::api::{BigIntApiImpl, const_handles, ManagedTypeApiImpl, use_raw_handle};
+use crate::api::{const_handles, use_raw_handle, BigIntApiImpl, ManagedTypeApiImpl};
+use crate::{
+    api::ManagedTypeApi,
+    err_msg,
+    types::{BigInt, BigUint, ManagedBuffer},
+};
 
 use super::ManagedBufferNestedDecodeInput;
 
@@ -21,14 +25,14 @@ where
     fn into_boxed_slice_u8(self) -> Box<[u8]> {
         self.to_boxed_bytes().into_box()
     }
-    
+
     fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
     ) -> Result<usize, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         let len = self.len();
         if len > MAX_LEN {
@@ -42,8 +46,8 @@ where
     }
 
     fn into_i64<H>(self, h: H) -> Result<i64, H::HandledErr>
-        where
-            H: DecodeErrorHandler,
+    where
+        H: DecodeErrorHandler,
     {
         let big_int_temp: M::BigIntHandle = use_raw_handle(const_handles::BIG_INT_TEMPORARY_1);
         M::managed_type_impl().mb_to_big_int_signed(self.handle.clone(), big_int_temp.clone());

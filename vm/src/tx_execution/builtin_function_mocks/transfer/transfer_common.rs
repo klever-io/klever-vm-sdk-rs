@@ -1,7 +1,7 @@
+use crate::tx_mock::CallType;
 use crate::{
     tx_execution::{
-        builtin_function_mocks::builtin_func_trait::BuiltinFunctionKdaTransferInfo,
-        BlockchainVMRef,
+        builtin_function_mocks::builtin_func_trait::BuiltinFunctionKdaTransferInfo, BlockchainVMRef,
     },
     tx_mock::{
         BlockchainUpdate, TxCache, TxFunctionName, TxInput, TxLog, TxResult, TxTokenTransfer,
@@ -10,7 +10,6 @@ use crate::{
 };
 use num_bigint::BigUint;
 use num_traits::Zero;
-use crate::tx_mock::CallType;
 
 pub(super) struct ParsedTransferBuiltinFunCall {
     pub destination: VMAddress,
@@ -69,7 +68,6 @@ pub(super) fn execute_transfer_builtin_func<F>(
 where
     F: FnOnce(),
 {
-
     let exec_input = TxInput {
         from: tx_input.from,
         to: parsed_tx.destination,

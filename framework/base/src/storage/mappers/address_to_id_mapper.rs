@@ -1,15 +1,12 @@
 use core::marker::PhantomData;
 
 use super::StorageMapper;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     api::{ErrorApiImpl, StorageMapperApi},
-    storage::{
-        storage_clear, storage_set,
-        StorageKey,
-    },
+    storage::{storage_clear, storage_set, StorageKey},
     types::{ManagedAddress, ManagedType},
 };
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 static ID_SUFFIX: &[u8] = b"addrId";
 static ADDRESS_SUFFIX: &[u8] = b"addr";
@@ -21,9 +18,9 @@ pub type AddressId = u64;
 pub const NULL_ID: AddressId = 0;
 
 pub struct AddressToIdMapper<SA, A = CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
 {
     _phantom_api: PhantomData<SA>,
     address: A,
@@ -31,8 +28,8 @@ pub struct AddressToIdMapper<SA, A = CurrentStorage>
 }
 
 impl<SA> StorageMapper<SA> for AddressToIdMapper<SA>
-    where
-        SA: StorageMapperApi,
+where
+    SA: StorageMapperApi,
 {
     fn new(base_key: StorageKey<SA>) -> Self {
         AddressToIdMapper {
@@ -44,8 +41,8 @@ impl<SA> StorageMapper<SA> for AddressToIdMapper<SA>
 }
 
 impl<SA> AddressToIdMapper<SA, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
+where
+    SA: StorageMapperApi,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         AddressToIdMapper {
@@ -57,9 +54,9 @@ impl<SA> AddressToIdMapper<SA, ManagedAddress<SA>>
 }
 
 impl<SA, A> AddressToIdMapper<SA, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
 {
     pub fn contains_id(&self, id: AddressId) -> bool {
         let key = self.id_to_address_key(id);
@@ -118,8 +115,8 @@ impl<SA, A> AddressToIdMapper<SA, A>
 }
 
 impl<SA> AddressToIdMapper<SA, CurrentStorage>
-    where
-        SA: StorageMapperApi,
+where
+    SA: StorageMapperApi,
 {
     pub fn get_id_or_insert(&self, address: &ManagedAddress<SA>) -> AddressId {
         let current_id = self

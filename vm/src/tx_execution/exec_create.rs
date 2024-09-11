@@ -1,10 +1,10 @@
+use crate::types::VMCodeMetadata;
 use crate::{
     tx_mock::{TxCache, TxInput, TxResult},
     types::VMAddress,
     with_shared::Shareable,
     world_mock::BlockchainState,
 };
-use crate::types::VMCodeMetadata;
 
 use super::BlockchainVMRef;
 

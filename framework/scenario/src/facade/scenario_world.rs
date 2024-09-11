@@ -3,9 +3,7 @@ use std::path::{Path, PathBuf};
 use klever_chain_vm::world_mock::BlockchainState;
 
 use crate::{
-    scenario::{run_trace::ScenarioTrace, run_vm::ScenarioVMRunner}
-
-    ,
+    scenario::{run_trace::ScenarioTrace, run_vm::ScenarioVMRunner},
     vm_go_tool::run_vm_go_tool,
 };
 

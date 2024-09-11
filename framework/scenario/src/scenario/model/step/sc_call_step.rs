@@ -1,12 +1,12 @@
-use unwrap_infallible::UnwrapInfallible;
 use klever_sc::{
     abi::TypeAbiFrom,
     types::{ContractCallBase, H256},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 use crate::{
     api::StaticApi,
-    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxKDA, TxExpect, U64Value},
+    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxExpect, TxKDA, U64Value},
     scenario_model::TxResponse,
 };
 
@@ -95,7 +95,9 @@ impl ScCallStep {
     }
 
     pub fn multi_kda_transfer<T>(mut self, tokens: T) -> Self
-    where T: IntoIterator<Item = TxKDA> {
+    where
+        T: IntoIterator<Item = TxKDA>,
+    {
         if self.tx.klv_value.value > 0u32.into() {
             panic!("Cannot transfer both KLV and KDA");
         }
@@ -111,7 +113,9 @@ impl ScCallStep {
     }
 
     pub fn tx_hash<T>(mut self, tx_hash_expr: T) -> Self
-    where H256: From<T>, {
+    where
+        H256: From<T>,
+    {
         self.explicit_tx_hash = Some(H256::from(tx_hash_expr));
         self
     }

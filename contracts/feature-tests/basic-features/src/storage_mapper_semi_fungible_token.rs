@@ -1,5 +1,5 @@
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct RgbColor {
@@ -13,11 +13,8 @@ pub trait SemiFungibleTokenMapperFeatures {
     #[payable("KLV")]
     #[endpoint]
     fn issue_sft(&self, token_ticker: ManagedBuffer) {
-        self.semi_fungible_token_mapper().issue(     
-            &ManagedBuffer::new(),
-            &token_ticker,
-            Some(0),
-        );
+        self.semi_fungible_token_mapper()
+            .issue(&ManagedBuffer::new(), &token_ticker, Some(0));
     }
 
     #[endpoint]
@@ -26,12 +23,9 @@ pub trait SemiFungibleTokenMapperFeatures {
     }
 
     #[endpoint]
-    fn mapper_sft_mint(
-        &self,
-        amount: BigUint,
-        attributes: RgbColor,
-    ) -> KdaTokenPayment<Self::Api>  {
-        let token_nonce = self.semi_fungible_token_mapper()
+    fn mapper_sft_mint(&self, amount: BigUint, attributes: RgbColor) -> KdaTokenPayment<Self::Api> {
+        let token_nonce = self
+            .semi_fungible_token_mapper()
             .sft_mint(&amount, &attributes);
         let token_id = self.semi_fungible_token_mapper().get_token_id();
 
@@ -43,7 +37,7 @@ pub trait SemiFungibleTokenMapperFeatures {
         &self,
         token_nonce: u64,
         amount: BigUint,
-    ) -> KdaTokenPayment<Self::Api>  {
+    ) -> KdaTokenPayment<Self::Api> {
         self.semi_fungible_token_mapper()
             .sft_add_quantity(token_nonce, &amount)
     }
@@ -54,12 +48,13 @@ pub trait SemiFungibleTokenMapperFeatures {
         to: ManagedAddress,
         amount: BigUint,
         attributes: RgbColor,
-    ) -> KdaTokenPayment<Self::Api>  {
-        let token_nonce = self.semi_fungible_token_mapper()
+    ) -> KdaTokenPayment<Self::Api> {
+        let token_nonce = self
+            .semi_fungible_token_mapper()
             .sft_mint(&amount, &attributes);
 
         let token_id = self.semi_fungible_token_mapper().get_token_id();
-        
+
         self.send().direct_kda(&to, &token_id, token_nonce, &amount);
 
         KdaTokenPayment::new(token_id, token_nonce, amount)
@@ -79,7 +74,7 @@ pub trait SemiFungibleTokenMapperFeatures {
     #[endpoint]
     fn mapper_sft_burn(&self, token_nonce: u64, amount: BigUint) {
         self.semi_fungible_token_mapper()
-            .sft_burn(token_nonce,  &amount);
+            .sft_burn(token_nonce, &amount);
     }
 
     #[endpoint]
@@ -96,5 +91,4 @@ pub trait SemiFungibleTokenMapperFeatures {
     #[view(getSemiFungibleTokenId)]
     #[storage_mapper("semiFungibleTokenMapper")]
     fn semi_fungible_token_mapper(&self) -> SemiFungibleTokenMapper;
-    
 }

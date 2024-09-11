@@ -2,12 +2,19 @@ use core::marker::PhantomData;
 
 pub use super::queue_mapper::Iter;
 use super::{QueueMapper, StorageClearable, StorageMapper};
-use crate::{abi::{TypeAbi, TypeDescriptionContainer, TypeName}, api::StorageMapperApi, codec::{
-    self, multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode,
-    NestedEncode, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
-}, storage::{storage_get_from_address, storage_set, StorageKey}, storage_get, storage_get_len, types::{ManagedAddress, ManagedRef, ManagedType, MultiValueEncoded}};
 use crate::abi::TypeAbiFrom;
 use crate::storage::storage_get_len_from_address;
+use crate::{
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
+    api::StorageMapperApi,
+    codec::{
+        self, multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode, NestedEncode,
+        TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    },
+    storage::{storage_get_from_address, storage_set, StorageKey},
+    storage_get, storage_get_len,
+    types::{ManagedAddress, ManagedRef, ManagedType, MultiValueEncoded},
+};
 
 const NULL_ENTRY: u32 = 0;
 const NODE_ID_IDENTIFIER: &[u8] = b".node_id";
@@ -104,11 +111,10 @@ where
 }
 
 impl<SA, T> SetMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode,
 {
-
     fn set_node_id(&self, value: &T, node_id: u32) {
         storage_set(
             self.build_named_value_key(NODE_ID_IDENTIFIER, value)
@@ -162,10 +168,10 @@ impl<SA, T> SetMapper<SA, T, CurrentStorage>
 }
 
 impl<SA, A, T> SetMapper<SA, T, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode,
 {
     pub fn build_named_value_key(&self, name: &[u8], value: &T) -> StorageKey<SA> {
         let mut named_key = self.base_key.clone();
@@ -179,7 +185,7 @@ impl<SA, A, T> SetMapper<SA, T, A>
     pub fn iter(&self) -> Iter<SA, A, T> {
         self.queue_mapper.iter()
     }
-    
+
     pub fn iter_from(&self, value: &T) -> Iter<SA, A, T> {
         let node_id = self.get_node_id(value);
         self.queue_mapper.iter_from_node_id(node_id)

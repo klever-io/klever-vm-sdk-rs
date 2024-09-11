@@ -1,5 +1,6 @@
 use klever_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
 
+use crate::scenario_model::CheckKdaData;
 use crate::{
     scenario::model::{
         BigUintValue, BytesKey, BytesValue, CheckKda, CheckKdaInstances, CheckKdaMap,
@@ -11,7 +12,6 @@ use crate::{
     },
 };
 use std::collections::BTreeMap;
-use crate::scenario_model::CheckKdaData;
 
 #[derive(Debug, Default, Clone)]
 pub struct CheckAccount {
@@ -65,8 +65,8 @@ impl CheckAccount {
     }
 
     pub fn code_metadata<V>(mut self, code_metadata_expr: V) -> Self
-        where
-            BytesValue: InterpretableFrom<V>,
+    where
+        BytesValue: InterpretableFrom<V>,
     {
         self.code_metadata = CheckValue::Equal(BytesValue::interpret_from(
             code_metadata_expr,
@@ -119,11 +119,11 @@ impl CheckAccount {
         balance_expr: V,
         attributes_expr: Option<T>,
     ) -> Self
-        where
-            BytesKey: From<K>,
-            U64Value: From<N>,
-            BigUintValue: From<V>,
-            T: TopEncode,
+    where
+        BytesKey: From<K>,
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        T: TopEncode,
     {
         let token_id = BytesKey::from(token_id_expr);
 

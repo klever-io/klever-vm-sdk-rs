@@ -272,9 +272,9 @@ where
 }
 
 impl<SA, T> QueueMapper<SA, T, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         QueueMapper {
@@ -287,10 +287,10 @@ impl<SA, T> QueueMapper<SA, T, ManagedAddress<SA>>
 }
 
 impl<SA, A, T> QueueMapper<SA, T, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        T: TopEncode + TopDecode + 'static,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    T: TopEncode + TopDecode + 'static,
 {
     fn build_node_id_named_key(&self, name: &[u8], node_id: u32) -> StorageKey<SA> {
         let mut named_key = self.base_key.clone();

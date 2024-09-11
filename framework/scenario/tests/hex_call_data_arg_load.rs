@@ -117,5 +117,3 @@ fn test_opt_multi_arg_2() {
         },
     }
 }
-
-

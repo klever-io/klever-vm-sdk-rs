@@ -7,11 +7,11 @@ use super::{
         process_storage_get_attribute, process_storage_is_empty_attribute,
         process_storage_mapper_attribute, process_storage_set_attribute,
     },
-    extract_method_args, process_allow_multiple_var_args_attribute,
-    process_endpoint_attribute, process_external_view_attribute, process_init_attribute,
-    process_label_names_attribute, process_only_admin_attribute, process_only_owner_attribute,
+    extract_method_args, process_allow_multiple_var_args_attribute, process_endpoint_attribute,
+    process_external_view_attribute, process_init_attribute, process_label_names_attribute,
+    process_only_admin_attribute, process_only_owner_attribute,
     process_only_user_account_attribute, process_output_names_attribute, process_payable_attribute,
-    process_view_attribute, process_upgrade_attribute,
+    process_upgrade_attribute, process_view_attribute,
 };
 
 pub struct MethodAttributesPass1 {
@@ -135,7 +135,7 @@ fn validate_method(method: &Method) {
         matches!(
             method.public_role,
             PublicRole::Init(_) | PublicRole::Endpoint(_) | PublicRole::Upgrade(_)
-                ) || method.label_names.is_empty(),
+        ) || method.label_names.is_empty(),
         "Labels can only be placed on endpoints and constructors. Method '{}' is neither.",
         &method.name.to_string()
     )

@@ -1,5 +1,5 @@
-use quote::ToTokens;
 use super::{attr_names::*, util::*};
+use quote::ToTokens;
 
 /// unlike the others, this is standard Rust,
 /// all doc comments get automatically transformed into "doc" attributes

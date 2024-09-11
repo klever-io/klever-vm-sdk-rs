@@ -5,9 +5,7 @@ use crate::{
     },
     contract_base::CallValueWrapper,
     err_msg,
-    types::{
-        BigUint, KdaTokenPayment, ManagedRef, ManagedType, ManagedVec, TokenIdentifier,
-    },
+    types::{BigUint, KdaTokenPayment, ManagedRef, ManagedType, ManagedVec, TokenIdentifier},
 };
 
 /// Called initially in the generated code whenever no payable annotation is provided.
@@ -88,9 +86,7 @@ pub fn arg_payment_nonce<A>() -> u64
 where
     A: CallValueApi + ManagedTypeApi,
 {
-    CallValueWrapper::<A>::new()
-        .klv_or_single_kda()
-        .token_nonce
+    CallValueWrapper::<A>::new().klv_or_single_kda().token_nonce
 }
 
 /// Initializes an argument annotated with `#[payment_multi]`.

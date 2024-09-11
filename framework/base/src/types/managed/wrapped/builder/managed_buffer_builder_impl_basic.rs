@@ -6,15 +6,15 @@ use super::ManagedBufferBuilderImpl;
 ///
 /// It is the ManagedBuffer itself, we just append to it each time.
 pub struct ManagedBufferBuilderImplBasic<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     managed_buffer: ManagedBuffer<M>,
 }
 
 impl<M> ManagedBufferBuilderImpl<M> for ManagedBufferBuilderImplBasic<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     #[inline]
     fn new_from_slice(slice: &[u8]) -> Self {

@@ -174,13 +174,13 @@ pub fn get_discriminant(
     let next_value = match previous_disc.last() {
         // there are previous explicit discriminants
         Some(ExplicitDiscriminant {
-                 variant_index: prev_index,
-                 value: prev_value,
-             }) if *prev_index < variant_index - 1 => prev_value + variant_index - prev_index,
+            variant_index: prev_index,
+            value: prev_value,
+        }) if *prev_index < variant_index - 1 => prev_value + variant_index - prev_index,
         Some(ExplicitDiscriminant {
-                 variant_index: _,
-                 value: prev_value,
-             }) => prev_value + 1,
+            variant_index: _,
+            value: prev_value,
+        }) => prev_value + 1,
 
         // vec is empty, return index
         None => variant_index,

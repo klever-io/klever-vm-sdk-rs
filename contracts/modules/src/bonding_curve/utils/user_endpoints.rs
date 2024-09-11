@@ -246,11 +246,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
         bonding_curve.payment_token()
     }
 
-    fn check_given_token(
-        &self,
-        accepted_token: &TokenIdentifier,
-        given_token: &TokenIdentifier,
-    ) {
+    fn check_given_token(&self, accepted_token: &TokenIdentifier, given_token: &TokenIdentifier) {
         require!(
             given_token == accepted_token,
             "Only {} tokens accepted",

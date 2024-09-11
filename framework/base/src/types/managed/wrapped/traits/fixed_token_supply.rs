@@ -2,7 +2,6 @@ use crate::imports::{BigUint, ErrorApiImpl, ManagedTypeApi};
 
 /// Trait for tokens with a fixed supply. It provides methods to manage and calculate token distribution based on supply.
 pub trait FixedSupplyToken<M: ManagedTypeApi> {
-
     fn get_total_supply(&self) -> BigUint<M>;
 
     fn into_part(self, payment_amount: &BigUint<M>) -> Self;

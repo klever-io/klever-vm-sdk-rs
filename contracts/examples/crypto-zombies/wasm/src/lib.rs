@@ -23,7 +23,7 @@ klever_sc_wasm_adapter::endpoints! {
         create_random_zombie => create_random_zombie
         is_ready => is_ready
         dna_digits => dna_digits
-        zombies_count => zombies_count
+        zombie_last_index => zombie_last_index
         zombies => zombies
         zombie_owner => zombie_owner
         crypto_kitties_sc_address => crypto_kitties_sc_address

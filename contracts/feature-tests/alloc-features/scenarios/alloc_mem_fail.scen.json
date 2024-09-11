@@ -1,5 +1,4 @@
 {
-  "gasSchedule": "v3",
   "steps": [
     {
       "step": "setState",
@@ -28,7 +27,7 @@
       },
       "expect": {
         "out": [],
-        "status": "4",
+        "status": "57",
         "message": "str:memory allocation forbidden",
         "logs": "*",
         "gas": "*",

@@ -1,0 +1,107 @@
+name: 'Maximize build disk space'
+description: 'Maximize the available disk space for your build job'
+inputs:
+  remove-dotnet:
+    description: 'Removes .NET runtime and libraries.'
+    required: false
+    default: 'true'
+  remove-swift:
+    description: 'Removes Swift compiler and libraries.'
+    required: false
+    default: 'true'
+  remove-android:
+    description: 'Removes Android SDKs and Tools.'
+    required: false
+    default: 'true'
+  remove-haskell:
+    description: 'Removes Haskell compiler and libraries.'
+    required: false
+    default: 'true'
+  remove-codeql:
+    description: 'Removes CodeQL tools.'
+    required: false
+    default: 'true'
+  remove-agent-tool:
+    description: 'Removes Azure Pipelines agent tools.'
+    required: false
+    default: 'true'
+  remove-browser-files:
+    description: 'Removes browser files.'
+    required: false
+    default: 'true'
+  remove-extra-modules:
+    description: 'Removes extra modules.'
+    required: false
+    default: 'true'
+  remove-docker-images:
+    description: 'Removes Docker images.'
+    required: false
+    default: 'true'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Disk space report before modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        sudo free -h
+        echo
+        sudo swapon --show
+        echo
+
+        echo "Available storage:"
+        sudo df -h
+        echo
+    
+    - name: Maximize build disk space
+      shell: bash
+      run: |
+        echo "Removing unwanted software... "
+        if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
+          sudo rm -rf /usr/share/dotnet
+        fi
+        if [[ ${{ inputs.remove-swift }} == 'true' ]]; then
+          sudo rm -rf /usr/share/swift
+        fi
+        if [[ ${{ inputs.remove-android }} == 'true' ]]; then
+          sudo rm -rf /usr/local/lib/android
+        fi
+        if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
+          sudo rm -rf /opt/ghc
+        fi
+        if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+        fi
+        if [[ ${{ inputs.remove-agent-tool }} == 'true' ]]; then
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        fi
+        if [[ ${{ inputs.remove-browser-files }} == 'true' ]]; then
+          sudo rm -rf \
+              /opt/google/chrome \
+              /opt/microsoft/msedge \
+              /opt/microsoft/powershell \
+              /usr/local/share/chromium \
+              /usr/local/share/powershell
+        fi
+        if [[ ${{ inputs.remove-extra-modules }} == 'true' ]]; then
+          sudo rm -rf \
+              /usr/lib/mono \
+              /usr/local/lib/node_modules
+        fi
+        if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
+          sudo docker image prune --all --force
+        fi
+        echo "... done"
+
+    - name: Disk space report after modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        sudo free -h
+        echo
+        sudo swapon --show
+        echo
+
+        echo "Available storage:"
+        sudo df -h

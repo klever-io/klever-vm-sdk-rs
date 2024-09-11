@@ -3,15 +3,13 @@ pub use tx_payment_klv_value::TxKlvValue;
 pub use tx_payment_multi_kda::TxPaymentMultiKda;
 pub use tx_payment_not_payable::NotPayable;
 
-use crate::{
-    api::ManagedTypeApi
-    ,
-    types::{
-        ManagedAddress,
-        MultiKdaPayment,
-    },
+use crate::types::{
+    AnnotatedValue, BigUint, FunctionCall, ManagedBuffer, TxEnv, TxFrom, TxToSpecified,
 };
-use crate::types::{AnnotatedValue, BigUint, FunctionCall, ManagedBuffer, TxEnv, TxFrom, TxToSpecified};
+use crate::{
+    api::ManagedTypeApi,
+    types::{ManagedAddress, MultiKdaPayment},
+};
 
 mod tx_payment_klv;
 mod tx_payment_klv_or_multi_kda;

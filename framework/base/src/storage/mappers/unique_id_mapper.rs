@@ -1,9 +1,11 @@
 use crate::codec::{
-    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti,
-    TopEncodeMultiOutput,
+    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 use super::{StorageMapper, VecMapper};
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
+use crate::types::ManagedAddress;
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::{ErrorApiImpl, StorageMapperApi},
@@ -11,9 +13,6 @@ use crate::{
     storage_set,
     types::{ManagedType, MultiValueEncoded},
 };
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
-use crate::types::ManagedAddress;
 
 pub type UniqueId = usize;
 const EMPTY_ENTRY: UniqueId = 0;
@@ -58,9 +57,9 @@ where
 }
 
 impl<SA, A> UniqueIdMapper<SA, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
 {
     #[inline]
     pub fn len(&self) -> usize {
@@ -88,8 +87,8 @@ impl<SA, A> UniqueIdMapper<SA, A>
 }
 
 impl<SA> UniqueIdMapper<SA, CurrentStorage>
-    where
-        SA: StorageMapperApi,
+where
+    SA: StorageMapperApi,
 {
     /// Initializes the mapper's length. This may not be set again afterwards.
     pub fn set_initial_len(&mut self, len: usize) {

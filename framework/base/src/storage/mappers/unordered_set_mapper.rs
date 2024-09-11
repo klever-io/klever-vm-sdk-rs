@@ -2,19 +2,19 @@ use core::marker::PhantomData;
 
 pub use super::vec_mapper::Iter;
 use super::{StorageClearable, StorageMapper, VecMapper};
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     codec::{
-        multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode, NestedEncode,
-        TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+        multi_encode_iter_or_handle_err, EncodeErrorHandler, NestedDecode, NestedEncode, TopDecode,
+        TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
-    storage::{StorageKey},
+    storage::StorageKey,
     storage_clear, storage_set,
     types::{ManagedAddress, ManagedType, MultiValueEncoded},
 };
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
 
 const ITEM_INDEX: &[u8] = b".index";
 const NULL_ENTRY: usize = 0;
@@ -47,9 +47,9 @@ where
 }
 
 impl<SA, T> UnorderedSetMapper<SA, T, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         UnorderedSetMapper {
@@ -123,9 +123,9 @@ where
 }
 
 impl<SA, T> UnorderedSetMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode,
 {
     fn set_index(&self, value: &T, index: usize) {
         storage_set(self.item_index_key(value).as_ref(), &index);

@@ -1,6 +1,6 @@
 {
   "name": "overflow",
-  "gasSchedule": "v3",
+  "gasSchedule": "dummy",
   "steps": [
     {
       "step": "setState",

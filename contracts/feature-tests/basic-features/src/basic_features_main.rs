@@ -17,6 +17,7 @@ pub mod managed_address_features;
 pub mod managed_buffer_features;
 pub mod managed_vec_features;
 pub mod non_zero_features;
+pub mod small_num_overflow_test_ops;
 pub mod storage_direct_load;
 pub mod storage_direct_store;
 pub mod storage_mapper_fungible_token;
@@ -25,8 +26,8 @@ pub mod storage_mapper_linked_list;
 pub mod storage_mapper_map;
 pub mod storage_mapper_map_storage;
 pub mod storage_mapper_non_fungible_token;
-pub mod storage_mapper_semi_fungible_token;
 pub mod storage_mapper_queue;
+pub mod storage_mapper_semi_fungible_token;
 pub mod storage_mapper_set;
 pub mod storage_mapper_single;
 pub mod storage_mapper_token_attributes;
@@ -37,7 +38,6 @@ pub mod storage_raw_api_features;
 pub mod struct_eq;
 pub mod token_identifier_features;
 pub mod types;
-pub mod small_num_overflow_test_ops;
 
 #[klever_sc::contract]
 pub trait BasicFeatures:

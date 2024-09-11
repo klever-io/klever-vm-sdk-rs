@@ -2,8 +2,8 @@ use klever_sc::{
     codec::multi_types::OptionalValue,
     types::{
         heap::{Address, BoxedBytes},
-        BigFloat, BigInt, BigUint, KdaTokenPayment, ManagedAddress,
-        ManagedBuffer, ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
+        BigFloat, BigInt, BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer,
+        ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 use klever_sc_scenario::imports::*;
@@ -60,7 +60,7 @@ fn main() {
 
     let token_identifier: TokenIdentifier<DebugApi> = TokenIdentifier::from("MYTOK-123456");
     push!(to_check, token_identifier, "\"MYTOK-123456\"");
-    
+
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
         ManagedByteArray::new_from_bytes(b"test");
     push!(to_check, managed_byte_array, "(4) 0x74657374");

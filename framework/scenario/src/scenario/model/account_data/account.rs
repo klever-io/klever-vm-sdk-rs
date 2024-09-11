@@ -1,7 +1,5 @@
 use crate::{
-    scenario::model::{
-        AddressValue, BigUintValue, BytesKey, BytesValue, Kda, KdaObject, U64Value,
-    },
+    scenario::model::{AddressValue, BigUintValue, BytesKey, BytesValue, Kda, KdaObject, U64Value},
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         serde_raw::AccountRaw,
@@ -72,9 +70,7 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_balance(nonce_expr.clone(), balance_expr);
 
         if let Some(attributes_expr) = opt_attributes_expr {
@@ -96,18 +92,16 @@ impl Account {
         hash_expr: Option<T>,
         uris_expr: Vec<T>,
     ) -> Self
-        where
-            BytesKey: From<K>,
-            U64Value: From<N>,
-            BigUintValue: From<V>,
-            BytesValue: From<T>,
+    where
+        BytesKey: From<K>,
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        BytesValue: From<T>,
         AddressValue: From<A>,
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
 
         kda_obj_ref.set_token_all_properties(
             nonce_expr,
@@ -129,9 +123,7 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_last_nonce(last_nonce_expr);
 
         self
@@ -144,9 +136,7 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_roles(roles);
 
         self

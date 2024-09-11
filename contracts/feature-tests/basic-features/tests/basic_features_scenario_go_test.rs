@@ -360,8 +360,8 @@ fn storage_mapper_map_storage_go() {
 }
 
 #[test]
-fn storage_mapper_non_fungible_token_go() {
-    world().run("scenarios/storage_mapper_non_fungible_token.scen.json");
+fn storage_mapper_semi_fungible_token_go() {
+    world().run("scenarios/storage_mapper_semi_fungible_token.scen.json");
 }
 
 #[test]
@@ -410,7 +410,6 @@ fn storage_raw_api_features_go() {
 }
 
 #[test]
-#[ignore = "the error message has changed, re-enable when we move to VM 1.5"]
 fn storage_reserved_go() {
     world().run("scenarios/storage_reserved.scen.json");
 }

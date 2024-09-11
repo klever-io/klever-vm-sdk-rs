@@ -1,14 +1,12 @@
 use crate::{
     api::ManagedTypeApi,
-    types::{
-        BigUint, KdaTokenPaymentMultiValue, KdaTokenType, ManagedVecItem,
-        TokenIdentifier,
-    },
+    types::{BigUint, KdaTokenPaymentMultiValue, KdaTokenType, ManagedVecItem, TokenIdentifier},
 };
 
 use super::ManagedVec;
 
 use crate as klever_sc; // needed by the codec and TypeAbi generated code
+use crate::types::ManagedVecItemPayloadBuffer;
 use crate::{
     codec::{
         self,
@@ -17,7 +15,6 @@ use crate::{
     },
     derive::type_abi,
 };
-use crate::types::ManagedVecItemPayloadBuffer;
 
 #[type_abi]
 #[derive(TopEncode, NestedEncode, Clone, PartialEq, Eq, Debug)]
@@ -32,11 +29,7 @@ pub type MultiKdaPayment<Api> = ManagedVec<Api, KdaTokenPayment<Api>>;
 
 impl<M: ManagedTypeApi> KdaTokenPayment<M> {
     #[inline]
-    pub fn new(
-        token_identifier: TokenIdentifier<M>,
-        token_nonce: u64,
-        amount: BigUint<M>,
-    ) -> Self {
+    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
         KdaTokenPayment {
             token_identifier,
             token_nonce,
@@ -53,61 +46,29 @@ impl<M: ManagedTypeApi> KdaTokenPayment<M> {
     }
 
     pub fn token_type(&self) -> KdaTokenType {
-            if self.token_nonce == 0 {
-                KdaTokenType::Fungible
-            } else if self.amount == 1u64 {
-                KdaTokenType::NonFungible
-            } else  {
-                KdaTokenType::SemiFungible
-            } 
+        if self.token_nonce == 0 {
+            KdaTokenType::Fungible
+        } else if self.amount == 1u64 {
+            KdaTokenType::NonFungible
+        } else {
+            KdaTokenType::SemiFungible
+        }
     }
 
     #[inline]
-    pub fn into_tuple(
-        self,
-    ) -> (
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    ) {
-        (
-            self.token_identifier,
-            self.token_nonce,
-            self.amount,
-        )
+    pub fn into_tuple(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
+        (self.token_identifier, self.token_nonce, self.amount)
     }
 
     #[inline]
-    pub fn into_tuple_with_royalties(
-        self,
-    ) -> (
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    ) {
-        (
-            self.token_identifier,
-            self.token_nonce,
-            self.amount,
-        )
+    pub fn into_tuple_with_royalties(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
+        (self.token_identifier, self.token_nonce, self.amount)
     }
 }
 
-impl<M: ManagedTypeApi>
-    From<(
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    )> for KdaTokenPayment<M>
-{
+impl<M: ManagedTypeApi> From<(TokenIdentifier<M>, u64, BigUint<M>)> for KdaTokenPayment<M> {
     #[inline]
-    fn from(
-        value: (
-            TokenIdentifier<M>,
-            u64,
-            BigUint<M>,
-        ),
-    ) -> Self {
+    fn from(value: (TokenIdentifier<M>, u64, BigUint<M>)) -> Self {
         let (token_identifier, token_nonce, amount) = value;
         Self::new(token_identifier, token_nonce, amount)
     }

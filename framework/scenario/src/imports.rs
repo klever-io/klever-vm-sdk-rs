@@ -15,7 +15,7 @@ pub use crate::{
     scenario::{
         model::{
             Account, AddressValue, BytesValue, CheckAccount, CheckStateStep, ScCallStep,
-            ScDeployStep, ScQueryStep, Scenario, SetStateStep, TransferStep, TxKDA, TxExpect,
+            ScDeployStep, ScQueryStep, Scenario, SetStateStep, TransferStep, TxExpect, TxKDA,
             TypedResponse, TypedScCall, TypedScDeploy,
         },
         ScenarioRunner,

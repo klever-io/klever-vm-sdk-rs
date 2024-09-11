@@ -58,7 +58,6 @@ impl From<&Vec<u8>> for VMCodeMetadata {
     }
 }
 
-
 impl From<u16> for VMCodeMetadata {
     #[inline]
     fn from(value: u16) -> Self {

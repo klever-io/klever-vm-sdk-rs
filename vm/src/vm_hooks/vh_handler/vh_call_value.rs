@@ -7,10 +7,8 @@ use super::VMHooksManagedTypes;
 
 pub trait VMHooksCallValue: VMHooksHandlerSource + VMHooksManagedTypes {
     fn check_not_payable(&self) {
-        if self.input_ref().klv_value > num_bigint::BigUint::zero() {
-            self.vm_error(vm_err_msg::NON_PAYABLE_FUNC_KLV);
-        }
-        if self.kda_num_transfers() > 0 {
+        if self.input_ref().klv_value > num_bigint::BigUint::zero() || self.kda_num_transfers() > 0
+        {
             self.vm_error(vm_err_msg::NON_PAYABLE_FUNC_KDA);
         }
     }

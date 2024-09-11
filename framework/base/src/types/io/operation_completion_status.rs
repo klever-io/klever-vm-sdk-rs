@@ -3,7 +3,6 @@ use klever_sc_codec::{
     DecodeError, DecodeErrorHandler, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
 };
 
-
 use crate::{
     abi::{
         ExplicitEnumVariantDescription, TypeAbi, TypeAbiFrom, TypeContents, TypeDescription,
@@ -45,7 +44,10 @@ impl OperationCompletionStatus {
 
 impl TopEncode for OperationCompletionStatus {
     fn top_encode_or_handle_err<O, H>(&self, output: O, _h: H) -> Result<(), H::HandledErr>
-        where O: TopEncodeOutput, H: EncodeErrorHandler  {
+    where
+        O: TopEncodeOutput,
+        H: EncodeErrorHandler,
+    {
         output.set_slice_u8(self.output_bytes());
         Ok(())
     }
@@ -53,7 +55,10 @@ impl TopEncode for OperationCompletionStatus {
 
 impl TopDecode for OperationCompletionStatus {
     fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
-        where I: TopDecodeInput, H: DecodeErrorHandler {
+    where
+        I: TopDecodeInput,
+        H: DecodeErrorHandler,
+    {
         const BUFFER_LEN: usize = 16;
         let mut buffer = [0u8; BUFFER_LEN];
         let len = input.into_max_size_buffer_align_right(&mut buffer, h)?;
@@ -66,7 +71,6 @@ impl TopDecode for OperationCompletionStatus {
         } else {
             Err(h.handle_error(DecodeError::INVALID_VALUE))
         }
-
     }
 }
 
@@ -135,7 +139,7 @@ mod tests {
         );
         check_top_encode_decode(
             OperationCompletionStatus::InterruptedBeforeOutOfGas,
-            INTERRUPTED_STR.as_bytes()
+            INTERRUPTED_STR.as_bytes(),
         );
     }
 }

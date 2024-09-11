@@ -1,7 +1,7 @@
 use adder::*;
 use klever_sc::types::{ReturnsNewAddress, TestAddress, TestSCAddress};
-use klever_sc_scenario::*;
 use klever_sc_scenario::imports::KleverscPath;
+use klever_sc_scenario::*;
 
 const OWNER_ADDRESS: TestAddress = TestAddress::new("owner");
 const ADDER_ADDRESS: TestSCAddress = TestSCAddress::new("adder");
@@ -18,7 +18,6 @@ fn world() -> ScenarioWorld {
 fn adder_blackbox_raw() {
     let mut world = world();
 
-    
     world.start_trace();
 
     world.account(OWNER_ADDRESS).nonce(1);
@@ -42,7 +41,7 @@ fn adder_blackbox_raw() {
         .sum()
         .returns(ExpectValue(5u32))
         .run();
-    
+
     world
         .tx()
         .from(OWNER_ADDRESS)
@@ -58,10 +57,12 @@ fn adder_blackbox_raw() {
         .sum()
         .returns(ExpectValue(6u32))
         .run();
-    
+
     world.check_account(OWNER_ADDRESS);
 
-    world.check_account(ADDER_ADDRESS).check_storage("str:sum", "6");
+    world
+        .check_account(ADDER_ADDRESS)
+        .check_storage("str:sum", "6");
 
     world
         .tx()
@@ -71,9 +72,9 @@ fn adder_blackbox_raw() {
         .upgrade(100u64)
         .code(CODE_PATH)
         .run();
-     world
+    world
         .check_account(ADDER_ADDRESS)
         .check_storage("str:sum", "100");
-     
+
     world.write_scenario_trace("trace1.scen.json");
 }

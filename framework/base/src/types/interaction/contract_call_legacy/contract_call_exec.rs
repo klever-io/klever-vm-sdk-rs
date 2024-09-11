@@ -1,16 +1,16 @@
+use crate::types::{decode_result, TRANSFER_EXECUTE_DEFAULT_LEFTOVER, UNSPECIFIED_GAS_LIMIT};
 use crate::{
-    api::{HandleConstraints, StaticVarApiImpl, use_raw_handle},
+    api::{use_raw_handle, HandleConstraints, StaticVarApiImpl},
     codec::TopDecodeMulti,
 };
 use crate::{
     api::{BlockchainApiImpl, CallTypeApi},
     contract_base::SendRawWrapper,
-    formatter::SCLowerHex
-    ,
-    types::{BigUint, KdaTokenPayment, ManagedBuffer, ManagedBufferBuilder, ManagedType,
-            ManagedVec},
+    formatter::SCLowerHex,
+    types::{
+        BigUint, KdaTokenPayment, ManagedBuffer, ManagedBufferBuilder, ManagedType, ManagedVec,
+    },
 };
-use crate::types::{decode_result, TRANSFER_EXECUTE_DEFAULT_LEFTOVER, UNSPECIFIED_GAS_LIMIT};
 
 use super::{ContractCallNoPayment, ContractCallWithKlv};
 
@@ -125,7 +125,7 @@ where
 
     pub(super) fn transfer_execute_multi_kda(self, payments: ManagedVec<SA, KdaTokenPayment<SA>>) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
-        let _ = SendRawWrapper::<SA>::new().multi_kda_transfer_execute(
+        _ = SendRawWrapper::<SA>::new().multi_kda_transfer_execute(
             &self.to,
             &payments,
             gas_limit,
@@ -135,6 +135,6 @@ where
     }
 
     pub(super) fn transfer_execute_kda(self, payments: ManagedVec<SA, KdaTokenPayment<SA>>) {
-        let _ = self.transfer_execute_multi_kda(payments);
+        self.transfer_execute_multi_kda(payments);
     }
 }

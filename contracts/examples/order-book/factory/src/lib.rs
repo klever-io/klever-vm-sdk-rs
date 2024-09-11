@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct TokenIdPair<M: ManagedTypeApi> {

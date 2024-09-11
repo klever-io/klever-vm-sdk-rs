@@ -40,7 +40,6 @@ pub trait UseModule:
     + klever_sc_modules::kda::KdaModule
     + klever_sc_modules::features::FeaturesModule
     + klever_sc_modules::pause::PauseModule
-    + klever_sc_modules::staking::StakingModule
     + klever_sc_modules::only_admin::OnlyAdminModule
     + klever_sc_modules::ongoing_operation::OngoingOperationModule
 {

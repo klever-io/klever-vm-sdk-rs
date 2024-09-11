@@ -2,14 +2,14 @@ use core::marker::PhantomData;
 
 use crate::codec::TopEncodeMulti;
 
+use crate::types::{ContractCallBase, ManagedArgBuffer, Tx, TxScEnv, UNSPECIFIED_GAS_LIMIT};
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, KdaTokenPayment, FunctionCall,
-        KlvOrMultiKdaPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
+        BigUint, FunctionCall, KdaTokenPayment, KlvOrMultiKdaPayment, ManagedAddress,
+        ManagedBuffer, ManagedVec, TokenIdentifier,
     },
 };
-use crate::types::{ContractCallBase, ManagedArgBuffer, Tx, TxScEnv, UNSPECIFIED_GAS_LIMIT};
 
 use super::{
     contract_call_with_klv::ContractCallWithKlv,
@@ -154,11 +154,7 @@ where
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
     ) -> ContractCallWithKlvOrSingleKda<SA, OriginalResult> {
-        self.with_klv_or_single_kda_transfer((
-            payment_token,
-            payment_nonce,
-            payment_amount,
-        ))
+        self.with_klv_or_single_kda_transfer((payment_token, payment_nonce, payment_amount))
     }
 
     pub fn into_function_call(self) -> FunctionCall<SA> {

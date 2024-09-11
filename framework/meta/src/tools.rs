@@ -1,9 +1,9 @@
+pub mod find_workspace;
 mod git_describe;
 pub mod twiggy;
+mod wasm_extractor;
 mod wasm_opt;
 mod wasm_to_wat;
-pub mod find_workspace;
-mod wasm_extractor;
 
 pub use git_describe::git_describe;
 pub use wasm_extractor::WasmInfo;

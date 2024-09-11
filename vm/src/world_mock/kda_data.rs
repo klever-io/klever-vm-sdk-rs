@@ -195,8 +195,8 @@ impl AccountKda {
                 "KDARoleNFTAddQuantity".as_bytes().to_vec(),
             ],
             VMTokenType::Fungible => vec![
-                "KDARoleLocalMint".as_bytes().to_vec(),
-                "KDARoleLocalBurn".as_bytes().to_vec(),
+                "KDARoleMint".as_bytes().to_vec(),
+                "KDARoleBurn".as_bytes().to_vec(),
                 "KDARoleLocalTransfer".as_bytes().to_vec(),
             ],
         }

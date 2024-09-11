@@ -50,10 +50,7 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("*")]
-    fn payable_any_2(
-        &self,
-        #[payment] payment: BigUint,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_any_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
         let token = self.call_value().klv_or_single_kda().token_identifier;
         (payment, token).into()
     }
@@ -87,10 +84,7 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("KLV")]
-    fn payable_klv_2(
-        &self,
-        #[payment] payment: BigUint,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_klv_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
         let token = self.call_value().klv_or_single_kda().token_identifier;
         (payment, token).into()
     }

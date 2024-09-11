@@ -12,8 +12,8 @@
                     "nonce": "0",
                     "balance": "1000",
                     "kda": {
-                        "str:FUNG-123456": "1000",
-                        "str:SEMIFUNG-123456": {
+                        "str:FUNG-1234": "1000",
+                        "str:SEMIFUNG-1234": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -73,15 +73,24 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:NFT-123456": {
+                        "str:NFT-1234": {
                             "lastNonce": "0",
+                            "instances": [
+                                {
+                                    "type": "1",
+                                    "nonce": "0",
+                                    "balance": "0",
+                                    "creator": "sc:nft-minter",
+                                    "royalties": "5000"
+                                }
+                            ],
                             "roles": [
                                 "KDARoleNFTCreate"
                             ]
                         }
                     },
                     "storage": {
-                        "str:nftTokenId": "str:NFT-123456"
+                        "str:nftTokenId": "str:NFT-1234"
                     },
                     "code": "kleversc:../output/nft-minter.kleversc.json",
                     "owner": "address:owner"

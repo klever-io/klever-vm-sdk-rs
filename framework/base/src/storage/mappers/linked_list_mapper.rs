@@ -1,6 +1,9 @@
 use core::marker::PhantomData;
 
 use super::{StorageClearable, StorageMapper};
+use crate::abi::TypeAbiFrom;
+use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
+use crate::types::ManagedAddress;
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
@@ -10,16 +13,13 @@ use crate::{
             NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
             TopEncodeOrDefault,
         },
-        DecodeDefault, EncodeDefault, EncodeErrorHandler, NestedDecode, NestedEncode,
-        TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+        DecodeDefault, EncodeDefault, EncodeErrorHandler, NestedDecode, NestedEncode, TopDecode,
+        TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
     },
     storage::{storage_set, StorageKey},
     types::{heap::BoxedBytes, ManagedType, MultiValueEncoded},
 };
 use alloc::vec::Vec;
-use crate::abi::TypeAbiFrom;
-use crate::storage::mappers::set_mapper::{CurrentStorage, StorageAddress};
-use crate::types::ManagedAddress;
 
 const NULL_ENTRY: u32 = 0;
 const INFO_IDENTIFIER: &[u8] = b".info";
@@ -119,9 +119,9 @@ where
 }
 
 impl<SA, T> LinkedListMapper<SA, T, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         LinkedListMapper {
@@ -287,9 +287,9 @@ where
 }
 
 impl<SA, T> LinkedListMapper<SA, T, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        T: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
 {
     fn set_info(&mut self, value: LinkedListInfo) {
         storage_set(self.build_name_key(INFO_IDENTIFIER).as_ref(), &value);

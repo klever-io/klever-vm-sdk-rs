@@ -1,11 +1,11 @@
-use alloc::string::{String, ToString};
 use crate::abi::{TypeAbi, TypeDescriptionContainerImpl, TypeName};
+use alloc::string::{String, ToString};
 
 #[derive(Clone, Debug)]
 pub struct KdaAttributeAbi {
     pub ticker: String,
     pub ty: TypeName,
-    pub type_descriptions: TypeDescriptionContainerImpl
+    pub type_descriptions: TypeDescriptionContainerImpl,
 }
 
 impl KdaAttributeAbi {
@@ -15,7 +15,7 @@ impl KdaAttributeAbi {
         KdaAttributeAbi {
             ticker: arg_name.to_string(),
             ty: T::type_name(),
-            type_descriptions
+            type_descriptions,
         }
     }
 }

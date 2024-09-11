@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 pub mod dummy_module;
 
@@ -20,7 +20,7 @@ pub struct StructWithManagedTypes<M: ManagedTypeApi> {
 pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[init]
     fn init(&self) -> ManagedBuffer {
-        self.total_value().set(&BigUint::from(1u32));
+        self.total_value().set(BigUint::from(1u32));
         b"constructor-result".into()
     }
 
@@ -43,14 +43,12 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[endpoint]
     fn get_klv_balance(&self) -> BigUint {
-        self.blockchain()
-            .get_sc_balance(&TokenIdentifier::klv(), 0)
+        self.blockchain().get_sc_balance(&TokenIdentifier::klv(), 0)
     }
 
     #[endpoint]
     fn get_kda_balance(&self, token_id: TokenIdentifier, nonce: u64) -> BigUint {
-        self.blockchain()
-            .get_sc_balance(&token_id, nonce)
+        self.blockchain().get_sc_balance(&token_id, nonce)
     }
 
     #[payable("KLV")]
@@ -64,12 +62,8 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     fn recieve_klv_half(&self) {
         let caller = self.blockchain().get_caller();
         let payment_amount = &*self.call_value().klv_value() / 2u32;
-        self.send().direct_kda(
-            &caller,
-            &TokenIdentifier::klv(),
-            0,
-            &payment_amount,
-        );
+        self.send()
+            .direct_kda(&caller, &TokenIdentifier::klv(), 0, &payment_amount);
     }
 
     #[payable("*")]

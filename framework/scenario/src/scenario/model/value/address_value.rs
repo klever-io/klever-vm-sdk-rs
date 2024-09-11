@@ -1,6 +1,8 @@
-use std::fmt;
 use klever_sc::api::ManagedTypeApi;
-use klever_sc::types::{AnnotatedValue, ManagedAddress, ManagedBuffer, TxEnv, TxFrom, TxFromSpecified};
+use klever_sc::types::{
+    AnnotatedValue, ManagedAddress, ManagedBuffer, TxEnv, TxFrom, TxFromSpecified,
+};
+use std::fmt;
 
 use crate::klever_sc::types::{Address, TestAddress, TestSCAddress};
 
@@ -154,10 +156,9 @@ impl From<TestSCAddress<'_>> for AddressValue {
     }
 }
 
-
 impl<M> From<&AddressValue> for ManagedAddress<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     #[inline]
     fn from(address_value: &AddressValue) -> Self {
@@ -166,8 +167,8 @@ impl<M> From<&AddressValue> for ManagedAddress<M>
 }
 
 impl<Env> TxFrom<Env> for AddressValue
-    where
-        Env: TxEnv,
+where
+    Env: TxEnv,
 {
     fn resolve_address(&self, _env: &Env) -> ManagedAddress<Env::Api> {
         self.into()
@@ -175,8 +176,8 @@ impl<Env> TxFrom<Env> for AddressValue
 }
 
 impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for AddressValue
-    where
-        Env: TxEnv,
+where
+    Env: TxEnv,
 {
     fn annotation(&self, _env: &Env) -> klever_sc::types::ManagedBuffer<Env::Api> {
         ManagedBuffer::from(self.original.to_string())
@@ -191,16 +192,16 @@ impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for AddressValue
     }
 
     fn with_value_ref<F, R>(&self, _env: &Env, f: F) -> R
-        where
-            F: FnOnce(&ManagedAddress<Env::Api>) -> R,
+    where
+        F: FnOnce(&ManagedAddress<Env::Api>) -> R,
     {
         f(&ManagedAddress::from_address(&self.value))
     }
 }
 
 impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for &AddressValue
-    where
-        Env: TxEnv,
+where
+    Env: TxEnv,
 {
     fn annotation(&self, _env: &Env) -> klever_sc::types::ManagedBuffer<Env::Api> {
         ManagedBuffer::from(self.original.to_string())
@@ -215,8 +216,8 @@ impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for &AddressValue
     }
 
     fn with_value_ref<F, R>(&self, _env: &Env, f: F) -> R
-        where
-            F: FnOnce(&ManagedAddress<Env::Api>) -> R,
+    where
+        F: FnOnce(&ManagedAddress<Env::Api>) -> R,
     {
         f(&ManagedAddress::from_address(&self.value))
     }
@@ -225,8 +226,8 @@ impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for &AddressValue
 impl<Env> TxFromSpecified<Env> for AddressValue where Env: TxEnv {}
 
 impl<Env> TxFrom<Env> for &AddressValue
-    where
-        Env: TxEnv,
+where
+    Env: TxEnv,
 {
     fn resolve_address(&self, _env: &Env) -> ManagedAddress<Env::Api> {
         ManagedAddress::from_address(&self.value)

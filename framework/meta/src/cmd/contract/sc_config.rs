@@ -15,6 +15,6 @@ pub use contract_variant_settings::{ContractVariantProfile, ContractVariantSetti
 pub use sc_config_model::ScConfig;
 pub use sc_config_proxy::ProxyConfigSerde;
 pub use sc_config_serde::{
-    ContractVariantProfileSerde, ContractVariantSerde, ScConfigSerde,
-    MultiContractGeneralSettingsSerde,
+    ContractVariantProfileSerde, ContractVariantSerde, MultiContractGeneralSettingsSerde,
+    ScConfigSerde,
 };

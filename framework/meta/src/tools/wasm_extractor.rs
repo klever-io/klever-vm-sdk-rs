@@ -1,7 +1,9 @@
+use crate::ei::EIVersion;
 use colored::Colorize;
 use std::fs;
-use wasmparser::{BinaryReaderError, DataSectionReader, FunctionBody, ImportSectionReader, Parser, Payload};
-use crate::ei::EIVersion;
+use wasmparser::{
+    BinaryReaderError, DataSectionReader, FunctionBody, ImportSectionReader, Parser, Payload,
+};
 
 const ERROR_FAIL_ALLOCATOR: &[u8; 27] = b"memory allocation forbidden";
 const MEMORY_GROW_OPCODE: u8 = 0x40;
@@ -14,7 +16,6 @@ pub struct WasmInfo {
 }
 
 impl WasmInfo {
-
     pub fn extract_wasm_info(
         output_wasm_path: &str,
         extract_imports_enabled: bool,

@@ -66,7 +66,6 @@ fn execute(state: &BlockchainState, accounts: &CheckAccounts) {
                 hex::encode(actual_code_metadata),
             );
 
-
             if let CheckStorage::Equal(eq) = &expected_account.storage {
                 let default_value = &Vec::new();
                 for (expected_key, expected_value) in eq.storages.iter() {
@@ -211,7 +210,7 @@ pub fn check_kda_data(
 
     if !expected.frozen.check(u64::from(actual.frozen)) {
         errors.push(format!(
-            "bad last nonce. Address: {}. Token Name: {}. Want: {}. Have: {}\n",
+            "bad frozen. Address: {}. Token Name: {}. Want: {}. Have: {}\n",
             address, token, expected.frozen, &actual.frozen
         ));
     }

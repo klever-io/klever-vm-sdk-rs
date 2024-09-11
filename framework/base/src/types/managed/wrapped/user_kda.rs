@@ -1,4 +1,3 @@
-use unwrap_infallible::UnwrapInfallible;
 use crate::{
     api::ManagedTypeApi,
     codec,
@@ -8,8 +7,9 @@ use crate::{
     },
     contract_base::ExitCodecErrorHandler,
     derive::{ManagedVecItem, TypeAbi},
-    types::{BigUint, get_u32, get_raw_handle, ManagedBuffer, ManagedType, ManagedVec},
+    types::{get_raw_handle, get_u32, BigUint, ManagedBuffer, ManagedType, ManagedVec},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 use crate as klever_sc; // needed by the TypeAbi generated code
 
@@ -57,7 +57,6 @@ pub struct UserBucket<M: ManagedTypeApi> {
     pub delegation: ManagedBuffer<M>,
 }
 
-
 impl<M: ManagedTypeApi> UserKDA<M> {
     pub fn try_decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
         T::top_decode(self.metadata.clone())
@@ -67,6 +66,7 @@ impl<M: ManagedTypeApi> UserKDA<M> {
         T::top_decode_or_handle_err(
             self.metadata.clone(),
             ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        ).unwrap_infallible()
+        )
+        .unwrap_infallible()
     }
 }

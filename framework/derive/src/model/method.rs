@@ -92,7 +92,6 @@ impl Method {
         }
     }
 
-
     pub fn is_allow_multiple_var_args(&self) -> bool {
         match &self.public_role {
             PublicRole::Init(init_metadata) => init_metadata.allow_multiple_var_args,

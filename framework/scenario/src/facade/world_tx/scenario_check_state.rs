@@ -1,9 +1,7 @@
 use std::collections::{btree_map::Entry, BTreeMap};
 
 use klever_chain_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
-use klever_sc::types::{
-    AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, TokenIdentifier,
-};
+use klever_sc::types::{AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, TokenIdentifier};
 
 use crate::{
     api::StaticApi,
@@ -15,9 +13,9 @@ use crate::{
         ScenarioRunner,
     },
     scenario_model::{
-        AddressKey, BytesKey, BytesValue, CheckAccount, CheckKda, CheckKdaData,
-        CheckKdaInstances, CheckKdaMap, CheckKdaMapContents, CheckStateStep, CheckStorage,
-        CheckStorageDetails, CheckValue,
+        AddressKey, BytesKey, BytesValue, CheckAccount, CheckKda, CheckKdaData, CheckKdaInstances,
+        CheckKdaMap, CheckKdaMapContents, CheckStateStep, CheckStorage, CheckStorageDetails,
+        CheckValue,
     },
     ScenarioTxEnvData, ScenarioWorld,
 };

@@ -1,5 +1,5 @@
-use alloc::string::{String, ToString};
 use super::*;
+use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
 #[derive(Clone, Debug)]
@@ -51,7 +51,6 @@ pub struct EndpointAbi {
 }
 
 impl EndpointAbi {
-
     /// Used in code generation.
     ///
     /// TODO: replace with builder pattern to gt rid of the too many arguments.

@@ -5,7 +5,7 @@ use klever_chain_scenario_format::{
 };
 use klever_sc::{
     api::ManagedTypeApi,
-    types::{AnnotatedValue, BigUint, ManagedBuffer, TxKlvValue, TxGasValue},
+    types::{AnnotatedValue, BigUint, ManagedBuffer, TxGasValue, TxKlvValue},
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

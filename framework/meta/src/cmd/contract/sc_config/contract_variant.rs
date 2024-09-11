@@ -167,7 +167,7 @@ impl ContractVariant {
     /// Should correspond to all wasm exported functions.
     pub fn all_exported_function_names(&self) -> Vec<String> {
         let mut result = vec!["init".to_string()];
-        if !self.abi.upgrade_constructors.is_empty() { 
+        if !self.abi.upgrade_constructors.is_empty() {
             result.push("upgrade".to_string())
         }
         result.append(&mut self.endpoint_names());

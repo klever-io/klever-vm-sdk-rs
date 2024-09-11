@@ -18,8 +18,8 @@ pub trait Mergeable<M: ManagedTypeApi> {
     fn merge_with(&mut self, other: Self);
 
     fn merge_with_multiple(&mut self, others: ManagedVec<M, Self>)
-        where
-            Self: Sized + ManagedVecItem,
+    where
+        Self: Sized + ManagedVecItem,
     {
         for item in &others {
             self.merge_with(item);

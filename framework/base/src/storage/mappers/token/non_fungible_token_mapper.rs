@@ -4,20 +4,21 @@ use super::{
     TokenMapperState,
 };
 
+use crate::abi::TypeAbiFrom;
 use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
-    codec::{
-        EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput,
-    },
+    codec::{EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput},
     contract_base::{BlockchainWrapper, SendWrapper},
     imports::{AttributesInfo, UserKDA},
-    kda::KDASystemSmartContractProxy, storage::StorageKey, storage_get,
+    kda::KDASystemSmartContractProxy,
+    storage::StorageKey,
+    storage_get,
     types::{
-        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, PropertiesInfo, TokenIdentifier
-    }
+        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
+        PropertiesInfo, TokenIdentifier,
+    },
 };
-use crate::abi::TypeAbiFrom;
 
 pub struct NonFungibleTokenMapper<SA>
 where
@@ -100,7 +101,6 @@ where
             },
         );
 
-
         self.set_token_id(token_id.clone());
 
         token_id
@@ -110,7 +110,7 @@ where
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id();
 
-        system_sc_proxy.mint(&token_id, &amount)
+        system_sc_proxy.mint(&token_id, amount)
     }
 
     pub fn nft_mint_to_address(

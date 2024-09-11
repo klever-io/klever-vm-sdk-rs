@@ -1,6 +1,6 @@
 use klever_sc::imports::*;
 
-use crate::{storage, crowdfunding_data::CrowdfundingData};
+use crate::{crowdfunding_data::CrowdfundingData, storage};
 
 #[klever_sc::module]
 pub trait CrowdfundingViews: storage::Storage {
@@ -13,7 +13,7 @@ pub trait CrowdfundingViews: storage::Storage {
             let crowdfunding = self.crowdfunding(&id).get();
             vec.push(crowdfunding);
         }
-        
+
         vec
     }
 
@@ -30,7 +30,10 @@ pub trait CrowdfundingViews: storage::Storage {
     }
 
     #[view(getCrowdfundingsByHolder)]
-    fn get_crowdfundings_by_holder(&self, address: &ManagedAddress) -> ManagedVec<CrowdfundingData<Self::Api>>{
+    fn get_crowdfundings_by_holder(
+        &self,
+        address: &ManagedAddress,
+    ) -> ManagedVec<CrowdfundingData<Self::Api>> {
         let mut vec = ManagedVec::new();
         let ids = self.crowdfundings_holders_values(address);
 

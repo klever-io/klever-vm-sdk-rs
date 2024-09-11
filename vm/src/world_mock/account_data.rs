@@ -2,9 +2,9 @@ use num_bigint::BigUint;
 use num_traits::Zero;
 
 use super::AccountKda;
+use crate::types::VMCodeMetadata;
 use crate::{display_util::key_hex, types::VMAddress};
 use std::{collections::HashMap, fmt, fmt::Write};
-use crate::types::VMCodeMetadata;
 
 pub type AccountStorage = HashMap<Vec<u8>, Vec<u8>>;
 

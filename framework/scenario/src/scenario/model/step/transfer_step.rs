@@ -1,6 +1,4 @@
-use crate::scenario::model::{
-    AddressValue, BigUintValue, BytesValue, TxKDA, TxTransfer, U64Value,
-};
+use crate::scenario::model::{AddressValue, BigUintValue, BytesValue, TxKDA, TxTransfer, U64Value};
 
 #[derive(Debug, Default, Clone)]
 pub struct TransferStep {

@@ -3,8 +3,7 @@ use crate::{
     generate::{
         auto_impl::generate_auto_impls, auto_impl_proxy::generate_all_proxy_trait_imports,
         contract_gen::*, endpoints_mod_gen::generate_endpoints_mod,
-        function_selector::generate_function_selector_body, proxy_gen,
-        supertrait_gen,
+        function_selector::generate_function_selector_body, proxy_gen, supertrait_gen,
     },
     model::ContractTrait,
 };
@@ -24,7 +23,7 @@ pub fn contract_implementation(
     let auto_impls = generate_auto_impls(contract);
     let endpoints_mod = generate_endpoints_mod(contract, is_contract_main);
     let function_selector_body = generate_function_selector_body(contract);
-    
+
     // this definition is common to release and debug mode
     let supertraits_main = supertrait_gen::main_supertrait_decl(contract.supertraits.as_slice());
     let main_definition = quote! {

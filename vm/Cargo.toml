@@ -33,4 +33,4 @@ colored = "2.1.0"
 [dependencies.klever-chain-vm-executor]
 git = "https://github.com/klever-io/klever-vm-executor-rs"
 version = "0.2.2"
-rev = "d66cd0c"
+rev = "f128131"

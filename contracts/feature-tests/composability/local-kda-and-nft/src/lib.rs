@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 // used as mock attributes for NFTs
 #[derive(TopEncode, TopDecode, TypeAbi)]
@@ -28,25 +28,23 @@ pub trait LocalKdaAndKdaNft {
     ) {
         let _caller = self.blockchain().get_caller();
 
-        self.send()
-            .kda_system_sc_proxy()
-            .issue_fungible(
-                &token_display_name,
-                0,
-                &token_ticker,
-                &initial_supply,
-                &BigUint::zero(),
-                &PropertiesInfo {
-                    can_freeze: true,
-                    can_wipe: true,
-                    can_pause: true,
-                    can_mint: true,
-                    can_burn: true,
-                    can_change_owner: true,
-                    can_add_roles: true,
-                    limit_transfer: false,
-                },
-            );
+        self.send().kda_system_sc_proxy().issue_fungible(
+            &token_display_name,
+            0,
+            &token_ticker,
+            &initial_supply,
+            &BigUint::zero(),
+            &PropertiesInfo {
+                can_freeze: true,
+                can_wipe: true,
+                can_pause: true,
+                can_mint: true,
+                can_burn: true,
+                can_change_owner: true,
+                can_add_roles: true,
+                limit_transfer: false,
+            },
+        );
     }
 
     #[endpoint(localMint)]
@@ -66,34 +64,30 @@ pub trait LocalKdaAndKdaNft {
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         let _caller = self.blockchain().get_caller();
 
-        self.send()
-            .kda_system_sc_proxy()
-            .issue_non_fungible(
-                &token_display_name,
-                &token_ticker,
-                &PropertiesInfo {
-                    can_freeze: true,
-                    can_wipe: true,
-                    can_pause: true,
-                    can_mint: true,
-                    can_burn: true,
-                    can_change_owner: true,
-                    can_add_roles: true,
-                    limit_transfer: false,
-                },
-            );
+        self.send().kda_system_sc_proxy().issue_non_fungible(
+            &token_display_name,
+            &token_ticker,
+            &PropertiesInfo {
+                can_freeze: true,
+                can_wipe: true,
+                can_pause: true,
+                can_mint: true,
+                can_burn: true,
+                can_change_owner: true,
+                can_add_roles: true,
+                limit_transfer: false,
+            },
+        );
     }
 
     #[endpoint(nftAddQuantity)]
     fn nft_add_quantity(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
-        self.send()
-            .kda_mint(&token_identifier, nonce, &amount);
+        self.send().kda_mint(&token_identifier, nonce, &amount);
     }
 
     #[endpoint(nftBurn)]
     fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
-        self.send()
-            .kda_burn(&token_identifier, nonce, &amount);
+        self.send().kda_burn(&token_identifier, nonce, &amount);
     }
 
     #[endpoint]
@@ -136,9 +130,14 @@ pub trait LocalKdaAndKdaNft {
         allow_deposit: bool,
         allow_transfer: bool,
     ) {
-        self.send()
-            .kda_system_sc_proxy()
-            .set_special_roles(&address, &token_identifier, allow_mint, allow_set_ito_price, allow_deposit, allow_transfer);
+        self.send().kda_system_sc_proxy().set_special_roles(
+            &address,
+            &token_identifier,
+            allow_mint,
+            allow_set_ito_price,
+            allow_deposit,
+            allow_transfer,
+        );
     }
 
     // views

@@ -1,8 +1,5 @@
-use crate::types::{
-    BigUint, ManagedAddress
-    , TxFrom, TxToSpecified,
-};
 use crate::types::KlvOrMultiKdaPayment;
+use crate::types::{BigUint, ManagedAddress, TxFrom, TxToSpecified};
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};
 

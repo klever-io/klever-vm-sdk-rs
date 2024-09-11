@@ -2,7 +2,7 @@
     "name": "example scenario file",
     "comment": "comments are nice",
     "checkGas": false,
-    "gasSchedule": "v3",
+    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "externalSteps",
@@ -60,8 +60,8 @@
                             ],
                             "lastNonce": "7",
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn",
+                                "KDARoleMint",
+                                "KDARoleBurn",
                                 "KDARoleNFTCreate",
                                 "KDARoleNFTAddQuantity",
                                 "KDARoleNFTBurn"
@@ -420,8 +420,8 @@
                             ],
                             "lastNonce": "*",
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn",
+                                "KDARoleMint",
+                                "KDARoleBurn",
                                 "KDARoleNFTCreate",
                                 "KDARoleNFTAddQuantity",
                                 "KDARoleNFTBurn"

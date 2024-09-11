@@ -18,7 +18,6 @@ pub fn install(args: &InstallArgs) {
     }
 }
 
-
 fn install_wasm32(_wasm32_args: &InstallWasm32Args) {
     install_wasm_tools::install_wasm32_target();
 }

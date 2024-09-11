@@ -1,5 +1,5 @@
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 use crate::bonding_curve::{
     curves::{curve_function::CurveFunction, linear_function::LinearFunction},

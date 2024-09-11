@@ -25,7 +25,7 @@ impl ScCallMandos {
             kda: Vec::new(),
             function: function.to_owned(),
             arguments: Vec::new(),
-            gas_limit: u64::MAX,
+            gas_limit: i64::MAX as u64,
             gas_price: 0,
         }
     }

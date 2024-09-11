@@ -1,15 +1,13 @@
 use crate::codec::{TopDecodeMulti, TopEncodeMulti};
 
-use crate::{
-    api::CallTypeApi, types::ManagedBuffer,
-};
 use crate::types::{BackTransfers, ManagedArgBuffer};
+use crate::{api::CallTypeApi, types::ManagedBuffer};
 
 use super::{ContractCallNoPayment, ContractCallWithKlv};
 
 pub trait ContractCallBase<SA>
 where
-        SA: CallTypeApi + 'static,
+    SA: CallTypeApi + 'static,
 {
     type OriginalResult: TopEncodeMulti;
 
@@ -33,7 +31,10 @@ where
     /// Used by the generated proxies to add arguments to a call.
     #[doc(hidden)]
     fn proxy_arg<T: TopEncodeMulti>(&mut self, endpoint_arg: &T) {
-        self.get_mut_basic().function_call.arg_buffer.push_multi_arg(endpoint_arg);
+        self.get_mut_basic()
+            .function_call
+            .arg_buffer
+            .push_multi_arg(endpoint_arg);
     }
 
     /// Serializes and pushes a value to the arguments buffer.
@@ -52,7 +53,10 @@ where
     ///
     /// No serialization occurs, just direct conversion to ManagedBuffer.
     fn push_raw_argument<RawArg: Into<ManagedBuffer<SA>>>(&mut self, raw_arg: RawArg) {
-        self.get_mut_basic().function_call.arg_buffer.push_arg_raw(raw_arg.into())
+        self.get_mut_basic()
+            .function_call
+            .arg_buffer
+            .push_arg_raw(raw_arg.into())
     }
 
     /// For cases where we build the contract call by hand.
@@ -86,8 +90,8 @@ where
     fn execute_on_dest_context_with_back_transfers<RequestedResult>(
         self,
     ) -> (RequestedResult, BackTransfers<SA>)
-        where
-            RequestedResult: TopDecodeMulti,
+    where
+        RequestedResult: TopDecodeMulti,
     {
         let result = self.execute_on_dest_context();
         let back_transfers =

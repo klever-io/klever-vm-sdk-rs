@@ -1,4 +1,6 @@
-use crate::tx_execution::{builtin_function_names::KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, BlockchainVMRef};
+use crate::tx_execution::{
+    builtin_function_names::KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, BlockchainVMRef,
+};
 
 use crate::tx_mock::{BlockchainUpdate, TxCache, TxInput, TxResult};
 

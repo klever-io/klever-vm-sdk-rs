@@ -4,20 +4,20 @@ use super::{
     TokenMapperState,
 };
 
-use crate::{
-    abi::{TypeAbi, TypeName},
-    api::{ErrorApiImpl, AssetType, CallTypeApi, StorageMapperApi},
-    codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput},
-    contract_base::{BlockchainWrapper, SendWrapper},
-    storage::StorageKey, storage_get,
-    types::{
-        RoyaltiesData, PropertiesInfo,
-        BigUint, KdaTokenPayment, ManagedAddress,
-        ManagedBuffer, ManagedType, TokenIdentifier,
-    },
-};
 use crate::abi::TypeAbiFrom;
 use crate::types::Tx;
+use crate::{
+    abi::{TypeAbi, TypeName},
+    api::{AssetType, CallTypeApi, ErrorApiImpl, StorageMapperApi},
+    codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput},
+    contract_base::{BlockchainWrapper, SendWrapper},
+    storage::StorageKey,
+    storage_get,
+    types::{
+        BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedType, PropertiesInfo,
+        RoyaltiesData, TokenIdentifier,
+    },
+};
 
 pub struct FungibleTokenMapper<SA>
 where
@@ -89,9 +89,16 @@ where
 
         let send_wrapper = SendWrapper::<SA>::new();
         let token_id = send_wrapper.kda_create(
-            AssetType::Fungible, token_display_name, token_ticker, num_decimals, 
+            AssetType::Fungible,
+            token_display_name,
+            token_ticker,
+            num_decimals,
             &Self::get_sc_address(),
-             &ManagedBuffer::new(), initial_supply, max_supply, &PropertiesInfo::default(), &RoyaltiesData::default(),
+            &ManagedBuffer::new(),
+            initial_supply,
+            max_supply,
+            &PropertiesInfo::default(),
+            &RoyaltiesData::default(),
         );
 
         self.set_token_id(token_id.clone());

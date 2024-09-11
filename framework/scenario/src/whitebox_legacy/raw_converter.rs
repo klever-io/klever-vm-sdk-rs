@@ -1,12 +1,13 @@
 use std::collections::BTreeMap;
 
+use crate::scenario_model::U64Value;
 use crate::{
     klever_sc::types::heap::Address,
     scenario_format::serde_raw::{
         AccountRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw, CheckKdaDataRaw,
         CheckKdaInstanceRaw, CheckKdaInstancesRaw, CheckKdaMapContentsRaw, CheckKdaMapRaw,
         CheckKdaRaw, CheckLogsRaw, CheckStorageDetailsRaw, CheckStorageRaw, CheckValueListRaw,
-        KdaFullRaw, KdaInstanceRaw, KdaRaw, TxCallRaw, TxKDARaw, TxExpectRaw, TxQueryRaw,
+        KdaFullRaw, KdaInstanceRaw, KdaRaw, TxCallRaw, TxExpectRaw, TxKDARaw, TxQueryRaw,
         ValueSubTree,
     },
 };
@@ -15,7 +16,6 @@ use klever_chain_vm::{
     world_mock::{AccountData, KdaData},
 };
 use num_traits::Zero;
-use crate::scenario_model::U64Value;
 
 use super::{ScCallMandos, ScQueryMandos, TxExpectMandos};
 
@@ -304,15 +304,15 @@ pub(crate) fn u64_as_raw_opt(value: u64) -> Option<ValueSubTree> {
 }
 
 pub(crate) fn bytes_as_raw<B>(bytes: B) -> ValueSubTree
-    where
-        B: AsRef<[u8]>,
+where
+    B: AsRef<[u8]>,
 {
     ValueSubTree::Str(bytes_to_hex(bytes))
 }
 
 pub(crate) fn bytes_to_hex<B>(bytes: B) -> String
-    where
-        B: AsRef<[u8]>,
+where
+    B: AsRef<[u8]>,
 {
     format!("0x{}", hex::encode(bytes))
 }

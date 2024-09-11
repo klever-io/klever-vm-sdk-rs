@@ -2,11 +2,11 @@ use crate::{
     klever_sc::types::heap::Address, scenario::model::ScDeployStep, scenario_model::TxResponse,
 };
 
+use klever_chain_vm::types::VMCodeMetadata;
 use klever_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxFunctionName, TxInput, TxResult},
 };
-use klever_chain_vm::types::VMCodeMetadata;
 
 use super::{check_tx_output, tx_input_util::generate_tx_hash, ScenarioVMRunner};
 

@@ -4,19 +4,21 @@ use super::{
     TokenMapperState,
 };
 
+use crate::abi::TypeAbiFrom;
 use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
-    codec::{
-        EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
-    },
+    codec::{EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput},
     contract_base::{BlockchainWrapper, SendWrapper},
-    imports::{KdaTokenPayment, SFTMeta}, kda::KDASystemSmartContractProxy, storage::StorageKey, storage_get,
+    imports::{KdaTokenPayment, SFTMeta},
+    kda::KDASystemSmartContractProxy,
+    storage::StorageKey,
+    storage_get,
     types::{
-        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, PropertiesInfo, TokenIdentifier
-    }
+        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
+        PropertiesInfo, TokenIdentifier,
+    },
 };
-use crate::abi::TypeAbiFrom;
 
 pub struct SemiFungibleTokenMapper<SA>
 where
@@ -80,7 +82,7 @@ where
         &mut self,
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
-        precision: Option<u32>
+        precision: Option<u32>,
     ) -> TokenIdentifier<SA> {
         check_not_set(self);
 
@@ -101,21 +103,16 @@ where
             },
         );
 
-
         self.set_token_id(token_id.clone());
 
         token_id
     }
 
-    pub fn sft_mint<T: TopEncode>(
-        &self, 
-        amount: &BigUint<SA>,
-        attributes: &T,
-    ) -> u64 {
+    pub fn sft_mint<T: TopEncode>(&self, amount: &BigUint<SA>, attributes: &T) -> u64 {
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id();
 
-        let output = system_sc_proxy.mint(&token_id, &amount);
+        let output = system_sc_proxy.mint(&token_id, amount);
 
         let nonce = if let Some(first_result_bytes) = output.try_get(0) {
             first_result_bytes.parse_as_u64().unwrap()
@@ -130,8 +127,14 @@ where
         let empty_addr = ManagedAddress::default();
         let empty = ManagedBuffer::new();
 
-        
-        system_sc_proxy.update_metadata(&token_id, nonce, &empty_addr, &empty,&encoded_buffer, &ManagedBuffer::new());
+        system_sc_proxy.update_metadata(
+            &token_id,
+            nonce,
+            &empty_addr,
+            &empty,
+            &encoded_buffer,
+            &ManagedBuffer::new(),
+        );
 
         nonce
     }
@@ -147,21 +150,17 @@ where
         send_wrapper.kda_mint_with_address(&token_id, 0, amount, to, 0)
     }
 
-    pub fn sft_add_quantity(
-        &self, 
-        nonce: u64,
-        amount: &BigUint<SA>,
-    ) -> KdaTokenPayment<SA> {
+    pub fn sft_add_quantity(&self, nonce: u64, amount: &BigUint<SA>) -> KdaTokenPayment<SA> {
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id();
 
-        let _ = system_sc_proxy.sft_add_quantity(&token_id, nonce, &amount);
+        let _ = system_sc_proxy.sft_add_quantity(&token_id, nonce, amount);
 
         KdaTokenPayment::new(token_id, nonce, amount.clone())
     }
 
     pub fn sft_add_quantity_and_send(
-        &self, 
+        &self,
         to: &ManagedAddress<SA>,
         nonce: u64,
         amount: &BigUint<SA>,
@@ -175,10 +174,7 @@ where
 
     fn send_payment(&self, to: &ManagedAddress<SA>, payment: &KdaTokenPayment<SA>) {
         let send_wrapper = SendWrapper::<SA>::new();
-        send_wrapper.direct_payment(
-            to,
-            &payment
-        );
+        send_wrapper.direct_payment(to, payment);
     }
 
     pub fn sft_burn(&self, token_nonce: u64, amount: &BigUint<SA>) {
@@ -208,12 +204,12 @@ where
         let b_wrapper = BlockchainWrapper::new();
         let token_id = self.get_token_id_ref();
 
-        b_wrapper.get_sft_metadata(&token_id, token_nonce)
+        b_wrapper.get_sft_metadata(token_id, token_nonce)
     }
 
     pub fn get_sft_meta_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
         let meta = self.get_sft_meta(token_nonce);
-        
+
         meta.metadata.decode_attributes()
     }
 }

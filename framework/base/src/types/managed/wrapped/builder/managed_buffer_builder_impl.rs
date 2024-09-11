@@ -1,8 +1,8 @@
 use crate::{api::ManagedTypeApi, types::ManagedBuffer};
 
 pub trait ManagedBufferBuilderImpl<M>
-    where
-        M: ManagedTypeApi,
+where
+    M: ManagedTypeApi,
 {
     fn new_from_slice(slice: &[u8]) -> Self;
 

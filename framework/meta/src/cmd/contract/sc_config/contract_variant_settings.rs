@@ -1,10 +1,10 @@
 mod contract_allocator;
 mod stack_size;
 
-use serde::Deserialize;
+use crate::cmd::contract::sc_config::ContractVariantProfileSerde;
 pub use contract_allocator::{parse_allocator, ContractAllocator};
+use serde::Deserialize;
 pub use stack_size::*;
-use crate::cmd::contract::sc_config::{ContractVariantProfileSerde};
 
 use crate::ei::EIVersion;
 

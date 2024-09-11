@@ -13,8 +13,8 @@
                     "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleBurn"
                             ]
                         }
                     },
@@ -88,8 +88,8 @@
                     "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleBurn"
                             ]
                         }
                     },

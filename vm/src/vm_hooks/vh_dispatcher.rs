@@ -475,10 +475,6 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_current_tx_hash");
     }
 
-    fn get_prev_tx_hash(&self, data_offset: MemPtr) {
-        panic!("Unavailable: get_prev_tx_hash");
-    }
-
     fn managed_sc_address(&self, destination_handle: i32) {
         self.handler.managed_sc_address(destination_handle);
     }
@@ -619,13 +615,9 @@ impl VMHooks for VMHooksDispatcher {
             .managed_get_sft_metadata(ticker_handle, nonce as u64, data_handle);
     }
 
-    fn managed_acc_has_perm(
-        &self,
-        ops: i64,
-        source_acc_addr: i32,
-        target_acc_addr: i32,
-    ) -> i32 {
-        self.handler.managed_acc_has_perm(ops, source_acc_addr, target_acc_addr)
+    fn managed_acc_has_perm(&self, ops: i64, source_acc_addr: i32, target_acc_addr: i32) -> i32 {
+        self.handler
+            .managed_acc_has_perm(ops, source_acc_addr, target_acc_addr)
     }
 
     fn managed_get_back_transfers(&self, kda_transfer_value_handle: i32, call_value_handle: i32) {

@@ -3,13 +3,14 @@ use scenario_set_account::AccountItem;
 use scenario_set_block::BlockItem;
 use scenario_set_new_address::NewAddressItem;
 
-use crate::{scenario::ScenarioRunner, scenario_model::{
-    AddressKey,
-    SetStateStep,
-}, ScenarioTxEnvData, ScenarioWorld};
 use crate::api::StaticApi;
 use crate::scenario::tx_to_step::{address_annotated, u64_annotated};
 use crate::scenario_model::NewAddress;
+use crate::{
+    scenario::ScenarioRunner,
+    scenario_model::{AddressKey, SetStateStep},
+    ScenarioTxEnvData, ScenarioWorld,
+};
 
 mod scenario_set_account;
 mod scenario_set_block;

@@ -64,10 +64,10 @@ where
 }
 
 impl<SA, K, V> MapMapper<SA, K, V, CurrentStorage>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode,
-        V: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode,
+    V: TopEncode + TopDecode,
 {
     fn set_mapped_value(&self, key: &K, value: &V) {
         storage_set(
@@ -100,10 +100,10 @@ impl<SA, K, V> MapMapper<SA, K, V, CurrentStorage>
 }
 
 impl<SA, K, V> MapMapper<SA, K, V, ManagedAddress<SA>>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode,
-        V: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode,
+    V: TopEncode + TopDecode,
 {
     pub fn new_from_address(address: ManagedAddress<SA>, base_key: StorageKey<SA>) -> Self {
         MapMapper {
@@ -117,11 +117,11 @@ impl<SA, K, V> MapMapper<SA, K, V, ManagedAddress<SA>>
 }
 
 impl<'a, SA, A, K, V> IntoIterator for &'a MapMapper<SA, K, V, A>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode,
-        V: TopEncode + TopDecode,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode,
+    V: TopEncode + TopDecode,
 {
     type Item = (K, V);
 
@@ -345,11 +345,11 @@ where
 }
 
 impl<'a, SA, A, K, V> Entry<'a, SA, A, K, V>
-    where
-        SA: StorageMapperApi,
-        A: StorageAddress<SA>,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
-        V: TopEncode + TopDecode + 'static,
+where
+    SA: StorageMapperApi,
+    A: StorageAddress<SA>,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
+    V: TopEncode + TopDecode + 'static,
 {
     /// Returns a reference to this entry's key.
     pub fn key(&self) -> &K {
@@ -453,10 +453,10 @@ where
 }
 
 impl<'a, SA, K, V> VacantEntry<'a, SA, CurrentStorage, K, V>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
-        V: TopEncode + TopDecode + 'static,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
+    V: TopEncode + TopDecode + 'static,
 {
     /// Sets the value of the entry with the `VacantEntry`'s key,
     /// and returns an `OccupiedEntry`.
@@ -489,12 +489,11 @@ where
 }
 
 impl<'a, SA, K, V> OccupiedEntry<'a, SA, CurrentStorage, K, V>
-    where
-        SA: StorageMapperApi,
-        K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
-        V: TopEncode + TopDecode + 'static,
+where
+    SA: StorageMapperApi,
+    K: TopEncode + TopDecode + NestedEncode + NestedDecode + Clone,
+    V: TopEncode + TopDecode + 'static,
 {
-
     /// Take ownership of the key and value from the map.
     pub fn remove_entry(self) -> (K, V) {
         let value = self.map.remove(&self.key).unwrap();

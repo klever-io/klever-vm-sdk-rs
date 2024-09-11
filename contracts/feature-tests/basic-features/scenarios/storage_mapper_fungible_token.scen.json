@@ -12,126 +12,26 @@
                 "address:an_account": {
                     "nonce": "0",
                     "balance": "100"
-                },
-                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        },
-                        "str:TICKER-222222": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
-                    },
-                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
                 }
             }
         },
         {
             "step": "scCall",
-            "id": "issue-default-callback-non-zero-initial-supply",
+            "id": "issue-non-zero-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "issue_fungible_default_callback",
+                "function": "issue_fungible",
                 "arguments": [
                     "str:TICKER",
                     "1000"
                 ],
-                "gasLimit": "100,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "",
-                "logs": "*",
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "checkState",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": "1000"
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-000000"
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                },
-                "address:an_account": {
-                    "nonce": "*",
-                    "balance": "*"
-                },
-                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        },
-                        "str:TICKER-222222": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
-                    },
-                    "storage": {
-                        "str:nrIssuedTokens": "1"
-                    },
-                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
-                }
-            }
-        },
-        {
-            "step": "setState",
-            "comment": "reset the token ID so we can issue again",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": "1000"
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": ""
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                }
-            }
-        },
-        {
-            "step": "scCall",
-            "id": "issue-default-callback-zero-initial-supply",
-            "tx": {
-                "from": "address:an_account",
-                "to": "sc:basic-features",
-                "function": "issue_fungible_default_callback",
-                "arguments": [
-                    "str:TICKER",
-                    "0"
-                ],
-                "gasLimit": "100,000,000",
+                "gasLimit": "200,000,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [
-                    "str:TICKER-111111"
+                    "str:TICKER-3H48"
                 ],
                 "status": "",
                 "logs": "*",
@@ -141,43 +41,22 @@
         },
         {
             "step": "checkState",
+            "id": "check-state after issue-non-zero-initial-supply",
             "accounts": {
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-000000": "1000"
+                        "str:TICKER-3H48": "1000"
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-111111"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
                     "balance": "*"
-                },
-                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        },
-                        "str:TICKER-222222": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
-                    },
-                    "storage": {
-                        "str:nrIssuedTokens": "2"
-                    },
-                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
                 }
             }
         },
@@ -189,10 +68,18 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-000000": "1000"
+                        "str:TICKER-3H48": "1000"
                     },
                     "storage": {
                         "str:fungibleTokenMapper": ""
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                },
+                "0x000000000000000000010000000000000000000000000000000000000001FFFF": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "str:KDA/TICKER-3H48": ""
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 }
@@ -200,104 +87,21 @@
         },
         {
             "step": "scCall",
-            "id": "issue-custom-callback-non-zero-initial-supply",
+            "id": "issue-zero-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "issue_fungible_custom_callback",
-                "arguments": [
-                    "str:TICKER",
-                    "2000"
-                ],
-                "gasLimit": "100,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "",
-                "logs": "*",
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "checkState",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": "1000",
-                        "str:TICKER-222222": "2000"
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-222222"
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                },
-                "address:an_account": {
-                    "nonce": "*",
-                    "balance": "*"
-                },
-                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        },
-                        "str:TICKER-222222": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
-                    },
-                    "storage": {
-                        "str:nrIssuedTokens": "3"
-                    },
-                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
-                }
-            }
-        },
-        {
-            "step": "setState",
-            "comment": "reset the token ID so we can issue again",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-000000": "1000",
-                        "str:TICKER-222222": "2000"
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": ""
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                }
-            }
-        },
-        {
-            "step": "scCall",
-            "id": "issue-custom-callback-initial-supply",
-            "tx": {
-                "from": "address:an_account",
-                "to": "sc:basic-features",
-                "function": "issue_fungible_custom_callback",
+                "function": "issue_fungible",
                 "arguments": [
                     "str:TICKER",
                     "0"
                 ],
-                "gasLimit": "100,000,000",
+                "gasLimit": "200,000,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [
-                    "str:TICKER-333333"
+                    "str:TICKER-3H48"
                 ],
                 "status": "",
                 "logs": "*",
@@ -312,39 +116,33 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-000000": "1000",
-                        "str:TICKER-222222": "2000"
+                        "str:TICKER-3H48": "1000"
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
                     "balance": "*"
-                },
-                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
+                }
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "reset the token ID so we can issue again",
+            "accounts": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-000000": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        },
-                        "str:TICKER-222222": {
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
+                        "str:TICKER-3H48": "1000"
                     },
                     "storage": {
-                        "str:nrIssuedTokens": "4"
+                        "str:fungibleTokenMapper": ""
                     },
-                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 }
             }
         },
@@ -356,76 +154,10 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-333333": "3000"
+                        "str:TICKER-3H48": "3000"
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333"
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                }
-            }
-        },
-        {
-            "step": "scCall",
-            "id": "simulate-set-local-roles",
-            "tx": {
-                "from": "address:an_account",
-                "to": "sc:basic-features",
-                "function": "set_local_roles_fungible",
-                "arguments": [],
-                "gasLimit": "100,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "",
-                "logs": "*",
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "checkState",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-333333": "3000"
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333",
-                        "str:rolesSet": "true"
-                    },
-                    "code": "kleversc:../output/basic-features.kleversc.json"
-                },
-                "+": ""
-            }
-        },
-        {
-            "step": "setState",
-            "comment": "actually set roles",
-            "accounts": {
-                "sc:basic-features": {
-                    "nonce": "0",
-                    "balance": "0",
-                    "kda": {
-                        "str:TICKER-333333": {
-                            "instances": [
-                                {
-                                    "nonce": "",
-                                    "balance": "3000"
-                                }
-                            ],
-                            "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
-                            ]
-                        }
-                    },
-                    "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333",
-                        "str:rolesSet": "true"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 }
@@ -446,7 +178,7 @@
             },
             "expect": {
                 "out": [
-                    "nested:str:TICKER-333333|u64:0|biguint:1000"
+                    "nested:str:TICKER-3H48|u64:0|biguint:1000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -461,7 +193,7 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-333333": {
+                        "str:TICKER-3H48": {
                             "instances": [
                                 {
                                     "nonce": "",
@@ -469,14 +201,15 @@
                                 }
                             ],
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333",
-                        "str:rolesSet": "true"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 },
@@ -499,7 +232,7 @@
             },
             "expect": {
                 "out": [
-                    "nested:str:TICKER-333333|u64:0|biguint:2000"
+                    "nested:str:TICKER-3H48|u64:0|biguint:2000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -514,14 +247,14 @@
                     "nonce": "*",
                     "balance": "100",
                     "kda": {
-                        "str:TICKER-333333": "2000"
+                        "str:TICKER-3H48": "2000"
                     }
                 },
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-333333": {
+                        "str:TICKER-3H48": {
                             "instances": [
                                 {
                                     "nonce": "",
@@ -529,14 +262,15 @@
                                 }
                             ],
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333",
-                        "str:rolesSet": "true"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 },
@@ -571,7 +305,7 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-333333": {
+                        "str:TICKER-3H48": {
                             "instances": [
                                 {
                                     "nonce": "",
@@ -579,18 +313,36 @@
                                 }
                             ],
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
                             ]
                         }
                     },
                     "storage": {
-                        "str:fungibleTokenMapper": "str:TICKER-333333",
-                        "str:rolesSet": "true"
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "+": ""
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "set balance",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": "2000"
+                    },
+                    "storage": {
+                        "str:fungibleTokenMapper": "str:TICKER-3H48"
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                }
             }
         },
         {
@@ -606,7 +358,7 @@
             },
             "expect": {
                 "out": [
-                    "3000"
+                    "2000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -622,7 +374,7 @@
                 "to": "sc:basic-features",
                 "function": "burn_fungible",
                 "arguments": [
-                    "3000"
+                    "2000"
                 ],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"
@@ -664,7 +416,7 @@
                 "to": "sc:basic-features",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:TICKER-333333",
+                        "tokenIdentifier": "str:TICKER-3H48",
                         "value": "500"
                     }
                 ],
@@ -710,15 +462,15 @@
                 "to": "sc:basic-features",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:TICKER-333333",
+                        "tokenIdentifier": "str:TICKER-3H48",
                         "value": "100"
                     },
                     {
-                        "tokenIdentifier": "str:TICKER-333333",
+                        "tokenIdentifier": "str:TICKER-3H48",
                         "value": "100"
                     },
                     {
-                        "tokenIdentifier": "str:TICKER-333333",
+                        "tokenIdentifier": "str:TICKER-3H48",
                         "value": "100"
                     }
                 ],
@@ -745,7 +497,7 @@
             },
             "expect": {
                 "out": [
-                    "str:TICKER-333333"
+                    "str:TICKER-3H48"
                 ],
                 "status": "0",
                 "message": "",
@@ -760,7 +512,7 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:TICKER-000000": "1000",
+                        "str:TICKER-3H48": "1000",
                         "str:TICKER-222222": "2000"
                     },
                     "storage": {
@@ -768,29 +520,6 @@
                     },
                     "code": "kleversc:../output/basic-features.kleversc.json"
                 }
-            }
-        },
-        {
-            "step": "scCall",
-            "id": "issue-and-set-all-roles-fungible",
-            "tx": {
-                "from": "address:an_account",
-                "to": "sc:basic-features",
-                "function": "issue_and_set_all_roles_fungible",
-                "arguments": [
-                    "str:TICKER"
-                ],
-                "gasLimit": "100,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [
-                    "str:TICKER-444444"
-                ],
-                "status": "",
-                "logs": "*",
-                "gas": "*",
-                "refund": "*"
             }
         }
     ]

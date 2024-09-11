@@ -1,7 +1,7 @@
 #![no_std]
 
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 use klever_sc_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
@@ -314,11 +314,8 @@ pub trait RewardsDistribution:
         if total == 0 || reward_token_id.is_klv() {
             return (total, None);
         }
-        let reward_payment = KdaTokenPayment::new(
-            reward_token_id.clone(),
-            reward_token_nonce,
-            total,
-        );
+        let reward_payment =
+            KdaTokenPayment::new(reward_token_id.clone(), reward_token_nonce, total);
         (BigUint::zero(), Some(reward_payment))
     }
 

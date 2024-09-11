@@ -101,7 +101,7 @@
                                 }
                             ],
                             "roles": [
-                                "KDARoleLocalMint"
+                                "KDARoleMint"
                             ]
                         }
                     },

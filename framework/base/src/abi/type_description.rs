@@ -1,5 +1,5 @@
-use alloc::{string::String, vec::Vec};
 use alloc::string::ToString;
+use alloc::{string::String, vec::Vec};
 
 use super::TypeNames;
 

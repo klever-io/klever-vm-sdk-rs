@@ -27,7 +27,7 @@ pub trait SignatureOperationsModule: storage::StorageModule + helpers::HelpersMo
             klv_funds += paid_fee_token.amount;
         } else {
             let kda_fee =
-            KdaTokenPayment::new(paid_fee_token.token_identifier, 0, paid_fee_token.amount);
+                KdaTokenPayment::new(paid_fee_token.token_identifier, 0, paid_fee_token.amount);
             kda_funds.push(kda_fee);
         }
 
@@ -70,8 +70,7 @@ pub trait SignatureOperationsModule: storage::StorageModule + helpers::HelpersMo
             .update(|collected_fees| *collected_fees += fee_cost);
 
         if deposit.klv_funds > 0 {
-            self.send()
-                .direct_klv(&caller_address, &deposit.klv_funds);
+            self.send().direct_klv(&caller_address, &deposit.klv_funds);
         }
         if !deposit.kda_funds.is_empty() {
             self.send()

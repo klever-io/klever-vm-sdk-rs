@@ -1,10 +1,17 @@
 use std::{ffi::OsStr, fs, process::Command};
 
 use super::ContractVariant;
-use crate::{abi_json::ContractAbiJson, cli_args::BuildArgs, ei::EIVersion, kleversc_file_json::{save_kleversc_file_json, KleverscFileJson}, print_util::*, tools};
 use crate::ei_check_json::EiCheckJson;
 use crate::report_info_json::ReportInfoJson;
 use crate::tools::WasmInfo;
+use crate::{
+    abi_json::ContractAbiJson,
+    cli_args::BuildArgs,
+    ei::EIVersion,
+    kleversc_file_json::{save_kleversc_file_json, KleverscFileJson},
+    print_util::*,
+    tools,
+};
 
 impl ContractVariant {
     pub fn build_contract(&self, build_args: &BuildArgs, output_path: &str) {
@@ -83,7 +90,10 @@ impl ContractVariant {
     fn pack_kleversc_file(&self, build_args: &BuildArgs, output_path: &str, wasm_info: WasmInfo) {
         let output_wasm_path = format!("{output_path}/{}", self.wasm_output_name(build_args));
         let compiled_bytes = fs::read(output_wasm_path).expect("failed to open compiled contract");
-        let output_kleversc_path = format!("{output_path}/{}", self.kleversc_file_output_name(build_args));
+        let output_kleversc_path = format!(
+            "{output_path}/{}",
+            self.kleversc_file_output_name(build_args)
+        );
         print_pack_kleversc_file(&output_kleversc_path);
         print_contract_size(compiled_bytes.len());
         let mut abi = ContractAbiJson::from(&self.abi);
@@ -130,7 +140,7 @@ impl ContractVariant {
                 build_args.extract_imports,
                 &self.settings.check_ei,
             )
-                .expect("error occurred while extracting imports from .wasm ");
+            .expect("error occurred while extracting imports from .wasm ");
         }
 
         let output_imports_json_path = format!(

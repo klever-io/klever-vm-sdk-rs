@@ -62,7 +62,6 @@ fn validate_endpoint_var_args_order(endpoint_abi: &EndpointAbi) -> Result<(), St
     Ok(())
 }
 
-
 #[cfg(test)]
 mod tests {
     use klever_sc::abi::{InputAbi, TypeNames};

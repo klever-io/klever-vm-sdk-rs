@@ -6,7 +6,10 @@ const ADDER_PATH_EXPR: &str = "kleversc:output/adder.kleversc.json";
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
-    blockchain.register_contract("kleversc:output/adder.kleversc.json", adder::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:output/adder.kleversc.json",
+        adder::ContractBuilder,
+    );
     blockchain
 }
 

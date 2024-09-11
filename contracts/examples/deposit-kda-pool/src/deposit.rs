@@ -28,7 +28,7 @@ pub trait DepositKDAPoolContract {
         self.send().deposit_kda_pool(
             &self.pool_id().get().into_managed_buffer(),
             &token_identifier,
-            &BigUint::from(payment),
+            &payment,
         )
     }
 }

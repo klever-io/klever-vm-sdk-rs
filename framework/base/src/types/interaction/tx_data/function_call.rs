@@ -5,18 +5,17 @@ use klever_sc_codec::{
     TopEncodeMultiOutput,
 };
 
-use crate::{
-    abi::{TypeAbi, TypeName},
-    api::ManagedTypeApi
-    ,
-    types::{
-        ManagedAddress, ManagedBuffer, ManagedVec,
-        MultiValueEncoded,
-    },
-};
 use crate::abi::TypeAbiFrom;
 use crate::api::{CallTypeApi, KLEVER_TRANSFER_FUNC_NAME};
-use crate::types::{ContractCallNoPayment, KdaTokenPayment, KdaTokenPaymentRefs, ManagedArgBuffer, TypedFunctionCall};
+use crate::types::{
+    ContractCallNoPayment, KdaTokenPayment, KdaTokenPaymentRefs, ManagedArgBuffer,
+    TypedFunctionCall,
+};
+use crate::{
+    abi::{TypeAbi, TypeName},
+    api::ManagedTypeApi,
+    types::{ManagedAddress, ManagedBuffer, ManagedVec, MultiValueEncoded},
+};
 
 /// Encodes a function call on the blockchain, composed of a function name and its encoded arguments.
 ///
@@ -100,12 +99,12 @@ where
     Api: ManagedTypeApi,
 {
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
-        where
-            O: TopEncodeMultiOutput,
-            H: EncodeErrorHandler
+    where
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
     {
         if self.function_name.is_empty() {
-            return Ok(())
+            return Ok(());
         }
 
         output.push_single_value(&self.function_name, h)?;
@@ -118,13 +117,13 @@ where
 }
 
 impl<Api> TopDecodeMulti for FunctionCall<Api>
-    where
-        Api: ManagedTypeApi,
+where
+    Api: ManagedTypeApi,
 {
     fn multi_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
-        where
-            I: TopDecodeMultiInput,
-            H: DecodeErrorHandler,
+    where
+        I: TopDecodeMultiInput,
+        H: DecodeErrorHandler,
     {
         if !input.has_next() {
             return Ok(FunctionCall::empty());
@@ -142,11 +141,11 @@ impl<Api> TopDecodeMulti for FunctionCall<Api>
 
 impl<Api> TypeAbiFrom<Self> for FunctionCall<Api> where Api: ManagedTypeApi {}
 impl<Api> TypeAbi for FunctionCall<Api>
-    where
-        Api: ManagedTypeApi,
+where
+    Api: ManagedTypeApi,
 {
     type Unmanaged = Self;
-    
+
     fn type_name() -> TypeName {
         crate::abi::type_name_variadic::<ManagedBuffer<Api>>()
     }
@@ -161,8 +160,8 @@ impl<Api> TypeAbi for FunctionCall<Api>
 }
 
 impl<Api> FunctionCall<Api>
-    where
-        Api: ManagedTypeApi,
+where
+    Api: ManagedTypeApi,
 {
     pub fn convert_to_transfer_kda_call(
         self,

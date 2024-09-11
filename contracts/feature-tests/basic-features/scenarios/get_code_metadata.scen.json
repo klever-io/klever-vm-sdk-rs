@@ -83,7 +83,7 @@
       "expect": {
         "out": [],
         "status": "62",
-        "message": "str:account not found: 000000000000000000006d697373696e675f5f5f5f5f5f5f5f5f5f5f5f5f5f5f"
+        "message": "str:account was not found"
       }
     }
   ]

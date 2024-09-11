@@ -1,13 +1,9 @@
 use klever_chain_vm::tx_mock::TxResult;
-use klever_vm_sdk::data::transaction::{
-    ApiLogs, ApiSmartContractResult,
-};
+use klever_vm_sdk::data::transaction::{ApiLogs, ApiSmartContractResult};
 
 use crate::klever_sc::types::Address;
 
-use super::{
-    Log, TxExpect, TxResponseStatus,
-};
+use super::{Log, TxExpect, TxResponseStatus};
 
 #[derive(Debug, Default, Clone)]
 /// The response of a transaction.
@@ -80,5 +76,4 @@ impl TxResponse {
     pub fn is_success(&self) -> bool {
         self.tx_error.is_success()
     }
-
 }

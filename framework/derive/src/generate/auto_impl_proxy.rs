@@ -4,7 +4,7 @@ use crate::{
     parse::split_path_last,
 };
 use proc_macro2::Ident;
-use syn::{Pat, punctuated::Punctuated, token::PathSep};
+use syn::{punctuated::Punctuated, token::PathSep, Pat};
 
 /// Path to a Rust module containing a contract call proxy.
 pub type ProxyModulePath = Punctuated<syn::PathSegment, PathSep>;

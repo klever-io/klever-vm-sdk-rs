@@ -9,7 +9,7 @@
 
 #![no_std]
 
-klever_sc_wasm_adapter::allocator!();
+klever_sc_wasm_adapter::allocator!(static64k);
 klever_sc_wasm_adapter::panic_handler!();
 
 klever_sc_wasm_adapter::endpoints! {

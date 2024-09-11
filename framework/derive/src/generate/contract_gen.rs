@@ -1,7 +1,4 @@
-use super::{
-    method_call_gen::generate_call_method,
-    method_gen,
-};
+use super::{method_call_gen::generate_call_method, method_gen};
 use crate::model::{ContractTrait, MethodImpl, PublicRole};
 
 pub fn extract_method_impls(contract_trait: &ContractTrait) -> Vec<proc_macro2::TokenStream> {

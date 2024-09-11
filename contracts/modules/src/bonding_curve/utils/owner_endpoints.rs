@@ -134,8 +134,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             let bonding_curve: BondingCurve<Self::Api, T> =
                 serializer.top_decode_from_managed_buffer(&self.bonding_curve(&token).get());
 
-            if !bonding_curve.payment.token_identifier.is_klv()
-            {
+            if !bonding_curve.payment.token_identifier.is_klv() {
                 tokens_to_claim.push(KdaTokenPayment::new(
                     bonding_curve.payment.token_identifier,
                     bonding_curve.payment.token_nonce,

@@ -1,7 +1,7 @@
 use super::*;
-use alloc::{string::String, vec::Vec};
-use alloc::string::ToString;
 use crate::abi::kda_attribute_abi::KdaAttributeAbi;
+use alloc::string::ToString;
+use alloc::{string::String, vec::Vec};
 
 #[derive(Debug, Default, Clone)]
 pub struct ContractAbi {
@@ -36,10 +36,12 @@ impl ContractAbi {
         self.constructors
             .extend_from_slice(other.constructors.as_slice());
         self.endpoints.extend_from_slice(other.endpoints.as_slice());
-        self.upgrade_constructors.extend_from_slice(other.upgrade_constructors.as_slice());
+        self.upgrade_constructors
+            .extend_from_slice(other.upgrade_constructors.as_slice());
         self.events.extend_from_slice(other.events.as_slice());
         self.type_descriptions.insert_all(&other.type_descriptions);
-        self.kda_attributes.extend_from_slice(other.kda_attributes.as_slice())
+        self.kda_attributes
+            .extend_from_slice(other.kda_attributes.as_slice())
     }
 
     /// A type can provide more than 1 type descripions.

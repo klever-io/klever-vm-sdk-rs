@@ -58,7 +58,8 @@ pub trait VMHooksHandlerSource: Debug {
     ///
     /// Can be optimized, but is not a priority right now.
     fn current_account_data(&self) -> AccountData {
-        self.account_data(&self.input_ref().to).expect("missing current account")
+        self.account_data(&self.input_ref().to)
+            .expect("missing current account")
     }
 
     fn account_code(&self, address: &VMAddress) -> Vec<u8>;

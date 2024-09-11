@@ -10,7 +10,7 @@ fn init_go() {
 }
 
 #[test]
-#[ignore]
+#[ignore = "Halts execution during execute_on_dest_context; Go SDK does not propagate error, triggering fail instead"]
 fn reject_transfer_go() {
     world().run("scenarios/reject_transfer.scen.json");
 }

@@ -1,5 +1,5 @@
-use klever_sc::imports::*;
 use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[type_abi]
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
