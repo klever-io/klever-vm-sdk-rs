@@ -1,4 +1,3 @@
-use crate::types::VMCodeMetadata;
 use crate::{
     tx_execution::BlockchainVMRef,
     types::{VMAddress, VMCodeMetadata},

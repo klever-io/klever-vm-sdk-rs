@@ -1,5 +1,3 @@
-use crate::tx_mock::CallType;
-use crate::types::VMCodeMetadata;
 use crate::{
     tx_mock::{
         call_tx_input, callback_tx_input, merge_results, promise_tx_input, BlockchainUpdate,
