@@ -206,7 +206,8 @@
                 "kdaValue": [
                     {
                         "tokenIdentifier": "str:MFNFT-5678",
-                        "nonce": "1"
+                        "nonce": "1",
+                        "value": "1"
                     },
                     {
                         "tokenIdentifier": "str:USDC-aaaa",
@@ -214,7 +215,8 @@
                     },
                     {
                         "tokenIdentifier": "str:MFNFT-5678",
-                        "nonce": "2"
+                        "nonce": "2",
+                        "value": "1"
                     },
                     {
                         "tokenIdentifier": "str:USDC-aaaa",
