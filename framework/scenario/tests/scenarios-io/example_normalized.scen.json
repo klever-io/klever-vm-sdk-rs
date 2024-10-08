@@ -130,7 +130,9 @@
                             ]
                         }
                     },
-                    "username": "str:myusername.klever"
+                    "username": "str:myusername.klever",
+                    "owner": "address:alice",
+                    "permissions": []
                 },
                 "address:smart_contract_address": {
                     "nonce": "0x00",
@@ -153,7 +155,8 @@
                         }
                     },
                     "code": "kleversc:smart-contract.kleversc.json",
-                    "owner": "address:alice"
+                    "owner": "address:alice",
+                    "permissions": []
                 }
             },
             "newAddresses": [
