@@ -1,14 +1,12 @@
-use crate::tx_mock::CallType;
-use crate::types::VMCodeMetadata;
 use crate::{
     tx_mock::{
         call_tx_input, callback_tx_input, merge_results, promise_tx_input, BlockchainUpdate,
-        CallTxData, Promise, TxCache, TxContext, TxContextStack, TxInput, TxPanic, TxResult,
-        TxResultCalls,
+        CallTxData, CallType, Promise, TxCache, TxContext, TxContextStack, TxInput, TxPanic,
+        TxResult, TxResultCalls,
     },
-    types::VMAddress,
+    types::{VMAddress, VMCodeMetadata},
     with_shared::Shareable,
-    world_mock::{AccountData, AccountKda, BlockchainState},
+    world_mock::{AccountData, AccountKda, AccountPermission, BlockchainState},
 };
 use std::collections::HashMap;
 
@@ -238,6 +236,7 @@ impl BlockchainVMRef {
                 contract_path: None,
                 code_metadata: VMCodeMetadata::empty(),
                 contract_owner: None,
+                permissions: vec![AccountPermission::default()],
             });
             Ok(tx_cache.into_blockchain_updates())
         })

@@ -4,7 +4,7 @@ use crate::{
     tx_execution::vm_builtin_function_names::*,
     types::{RawHandle, VMAddress},
     vm_hooks::VMHooksHandlerSource,
-    world_mock::{KdaData, KdaInstance},
+    world_mock::{AccountData, KdaData, KdaInstance},
 };
 // use num_bigint::BigInt;
 // use num_traits::Zero;
@@ -241,11 +241,44 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
 
     fn managed_acc_has_perm(
         &self,
-        _ops: i64,
-        _source_acc_addr: RawHandle,
-        _target_acc_addr: RawHandle,
+        ops: i64,
+        source_acc_addr: RawHandle,
+        target_acc_addr: RawHandle,
     ) -> i32 {
-        todo!()
+        let source_address = VMAddress::from_slice(self.m_types_lock().mb_get(source_acc_addr));
+        let target_address = VMAddress::from_slice(self.m_types_lock().mb_get(target_acc_addr));
+
+        let source_account: AccountData = match self.account_data(&source_address) {
+            None => {
+                self.vm_error(&format!(
+                    "account not found: {}",
+                    hex::encode(source_address.as_bytes())
+                ));
+            },
+            Some(src_acc) => src_acc,
+        };
+
+        let target_account: AccountData = match self.account_data(&target_address) {
+            None => {
+                self.vm_error(&format!(
+                    "account not found: {}",
+                    hex::encode(target_address.as_bytes())
+                ));
+            },
+            Some(tgt_acc) => tgt_acc,
+        };
+
+        for perm in source_account.permissions {
+            if let Some(signer_address) = perm.address {
+                if signer_address == target_account.address
+                    && perm.operations & (ops as u64) == (ops as u64)
+                {
+                    return 1;
+                }
+            }
+        }
+
+        0
     }
 
     #[allow(clippy::too_many_arguments)]

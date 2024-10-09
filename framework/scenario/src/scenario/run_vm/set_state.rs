@@ -1,9 +1,11 @@
 use crate::scenario::model::SetStateStep;
 
-use klever_chain_vm::types::VMCodeMetadata;
-use klever_chain_vm::world_mock::{
-    AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData, KdaInstance,
-    KdaInstanceMetadata, KdaInstances, KdaRoles,
+use klever_chain_vm::{
+    types::VMCodeMetadata,
+    world_mock::{
+        AccountData, AccountKda, AccountPermission, BlockInfo as CrateBlockInfo, BlockchainState,
+        KdaData, KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
+    },
 };
 
 use super::ScenarioVMRunner;
@@ -31,6 +33,21 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .map(|(k, v)| (k.value.clone(), convert_mandos_kda_to_world_mock(v)))
                 .collect(),
         );
+
+        let perms = account
+            .permissions
+            .clone()
+            .into_iter()
+            .filter_map(|permission| {
+                let address = permission.address?.to_vm_address();
+                let operations = permission.perm?.value;
+
+                Some(AccountPermission {
+                    address: Some(address),
+                    operations,
+                })
+            })
+            .collect::<Vec<AccountPermission>>();
 
         state.validate_and_add_account(AccountData {
             address: address.to_vm_address(),
@@ -64,6 +81,7 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .owner
                 .as_ref()
                 .map(|address_value| address_value.to_vm_address()),
+            permissions: perms,
         });
     }
     for new_address in set_state_step.new_addresses.iter() {

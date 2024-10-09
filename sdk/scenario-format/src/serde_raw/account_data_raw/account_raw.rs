@@ -3,6 +3,8 @@ use std::collections::BTreeMap;
 
 use crate::serde_raw::{KdaRaw, ValueSubTree};
 
+use super::PermissionRaw;
+
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountRaw {
@@ -41,4 +43,7 @@ pub struct AccountRaw {
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<ValueSubTree>,
+
+    #[serde(default)]
+    pub permissions: Vec<PermissionRaw>,
 }
