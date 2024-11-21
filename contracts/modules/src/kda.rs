@@ -48,17 +48,23 @@ pub trait KdaModule {
                 &initial_supply,
                 &max_supply,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             KdaTokenType::NonFungible => self.send().kda_system_sc_proxy().issue_non_fungible(
                 &token_display_name,
                 &token_ticker,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             KdaTokenType::SemiFungible => self.send().kda_system_sc_proxy().issue_semi_fungible(
                 &token_display_name,
                 &token_ticker,
                 precision,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             _ => panic!("Invalid token type"),
         }

@@ -15,8 +15,8 @@ use crate::{
     storage::StorageKey,
     storage_get,
     types::{
-        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
-        PropertiesInfo, TokenIdentifier,
+        AttributesInfo, BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType,
+        ManagedVec, PropertiesInfo, TokenIdentifier, URI,
     },
 };
 
@@ -101,6 +101,13 @@ where
                 can_add_roles: true,
                 limit_transfer: false,
             },
+            &AttributesInfo {
+                is_paused: false,
+                is_nft_mint_stopped: false,
+                is_nft_metadata_change_stopped: false,
+                is_royalties_change_stopped: false,
+            },
+            &ManagedVec::<SA, URI<SA>>::new(),
         );
 
         self.set_token_id(token_id.clone());

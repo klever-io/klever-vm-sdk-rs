@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
 use crate::contract_base::{BlockchainWrapper, SendRawWrapper};
-use crate::types::{GasLeft, ReturnsRawResult, ToSelf, Tx};
+use crate::types::{AttributesInfo, GasLeft, ReturnsRawResult, ToSelf, Tx};
 use crate::{
     api::{
         AssetTriggerType, AssetType, BlockchainApi, BlockchainApiImpl, BuyType, CallTypeApi,
@@ -455,6 +455,7 @@ where
 
         let mut uri_bytes = ManagedBuffer::<A>::new();
         let _ = uris.dep_encode(&mut uri_bytes);
+
         arg_buffer.push_arg(uri_bytes);
 
         self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
@@ -572,6 +573,8 @@ where
         initial_supply: &BigUint<A>,
         max_supply: &BigUint<A>,
         properties: &PropertiesInfo,
+        attributes: &AttributesInfo,
+        uris: &ManagedVec<A, URI<A>>,
         royalties: &RoyaltiesData<A>,
     ) -> TokenIdentifier<A> {
         let mut arg_buffer = ManagedArgBuffer::new();
@@ -580,6 +583,9 @@ where
         let mut royalties_bytes = ManagedBuffer::<A>::new();
 
         let _ = royalties.dep_encode(&mut royalties_bytes);
+
+        let mut uri_bytes = ManagedBuffer::<A>::new();
+        let _ = uris.dep_encode(&mut uri_bytes);
 
         arg_buffer.push_arg(asset_type as u32);
         arg_buffer.push_arg(name);
@@ -597,6 +603,11 @@ where
         arg_buffer.push_arg(properties.can_change_owner);
         arg_buffer.push_arg(properties.can_add_roles);
         arg_buffer.push_arg(properties.limit_transfer);
+        arg_buffer.push_arg(attributes.is_paused);
+        arg_buffer.push_arg(attributes.is_nft_mint_stopped);
+        arg_buffer.push_arg(attributes.is_royalties_change_stopped);
+        arg_buffer.push_arg(attributes.is_nft_metadata_change_stopped);
+        arg_buffer.push_arg(uri_bytes);
         arg_buffer.push_arg(royalties_bytes);
 
         let result = self.call_kda_built_in_function(

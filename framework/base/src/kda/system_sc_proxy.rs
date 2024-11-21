@@ -4,8 +4,8 @@ use crate::{
     api::{AssetType, CallTypeApi, SendApi, StorageReadApi},
     contract_base::{BlockchainWrapper, SendWrapper},
     types::{
-        BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedVec, PropertiesInfo,
-        RoyaltiesData, TokenIdentifier,
+        AttributesInfo, BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedVec,
+        PropertiesInfo, RoyaltiesData, TokenIdentifier, URI,
     },
 };
 
@@ -42,6 +42,7 @@ where
 
     /// Produces a contract call to the KDA system SC,
     /// which causes it to issue a new fungible KDA token.
+    #[allow(clippy::too_many_arguments)]
     pub fn issue_fungible(
         &self,
         token_display_name: &ManagedBuffer<SA>,
@@ -50,6 +51,8 @@ where
         initial_supply: &BigUint<SA>,
         max_supply: &BigUint<SA>,
         properties: &PropertiesInfo,
+        attributes: &AttributesInfo,
+        uris: &ManagedVec<SA, URI<SA>>,
     ) -> TokenIdentifier<SA> {
         self.issue(
             KdaTokenType::Fungible,
@@ -59,6 +62,8 @@ where
             initial_supply,
             max_supply,
             properties,
+            attributes,
+            uris,
         )
     }
 
@@ -69,6 +74,8 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: &PropertiesInfo,
+        attributes: &AttributesInfo,
+        uris: &ManagedVec<SA, URI<SA>>,
     ) -> TokenIdentifier<SA> {
         self.issue(
             KdaTokenType::NonFungible,
@@ -78,6 +85,8 @@ where
             &BigUint::zero(),
             &BigUint::zero(),
             properties,
+            attributes,
+            uris,
         )
     }
 
@@ -89,6 +98,8 @@ where
         token_ticker: &ManagedBuffer<SA>,
         num_decimals: u32,
         properties: &PropertiesInfo,
+        attributes: &AttributesInfo,
+        uris: &ManagedVec<SA, URI<SA>>,
     ) -> TokenIdentifier<SA> {
         self.issue(
             KdaTokenType::SemiFungible,
@@ -98,6 +109,8 @@ where
             &BigUint::zero(),
             &BigUint::zero(),
             properties,
+            attributes,
+            uris,
         )
     }
 
@@ -111,6 +124,8 @@ where
         initial_supply: &BigUint<SA>,
         max_supply: &BigUint<SA>,
         properties: &PropertiesInfo,
+        attributes: &AttributesInfo,
+        uris: &ManagedVec<SA, URI<SA>>,
     ) -> TokenIdentifier<SA> {
         let asset_type = match token_type {
             KdaTokenType::Fungible => AssetType::Fungible,
@@ -130,6 +145,8 @@ where
             initial_supply,
             max_supply,
             properties,
+            attributes,
+            uris,
             &RoyaltiesData::default(),
         )
     }

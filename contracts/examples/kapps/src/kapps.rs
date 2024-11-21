@@ -54,6 +54,12 @@ pub trait Kapps {
         let to = self.blockchain().get_sc_address();
         let supply = BigUint::from(100000u64);
 
+        let mut uris = ManagedVec::<Self::Api, URI<Self::Api>>::new();
+        uris.push(URI {
+            key: ManagedBuffer::from("Klever"),
+            value: ManagedBuffer::from("https://kleverscan.org/"),
+        });
+
         let result = self.send().kda_create(
             klever_sc::api::AssetType::Fungible,
             &ManagedBuffer::from("TEST"),
@@ -73,6 +79,13 @@ pub trait Kapps {
                 can_add_roles: true,
                 limit_transfer: false,
             },
+            &AttributesInfo {
+                is_paused: true,
+                is_nft_mint_stopped: false,
+                is_royalties_change_stopped: false,
+                is_nft_metadata_change_stopped: false,
+            },
+            &uris,
             &RoyaltiesData::default(),
         );
 
@@ -104,6 +117,8 @@ pub trait Kapps {
                 can_add_roles: true,
                 limit_transfer: false,
             },
+            &AttributesInfo::default(),
+            &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             &RoyaltiesData::default(),
         );
 

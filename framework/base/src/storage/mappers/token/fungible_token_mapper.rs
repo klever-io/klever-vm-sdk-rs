@@ -14,8 +14,8 @@ use crate::{
     storage::StorageKey,
     storage_get,
     types::{
-        BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedType, PropertiesInfo,
-        RoyaltiesData, TokenIdentifier,
+        AttributesInfo, BigUint, KdaTokenPayment, ManagedAddress, ManagedBuffer, ManagedType,
+        ManagedVec, PropertiesInfo, RoyaltiesData, TokenIdentifier, URI,
     },
 };
 
@@ -98,6 +98,8 @@ where
             initial_supply,
             max_supply,
             &PropertiesInfo::default(),
+            &AttributesInfo::default(),
+            &ManagedVec::<SA, URI<SA>>::new(),
             &RoyaltiesData::default(),
         );
 

@@ -39,6 +39,8 @@ pub trait Child {
                 can_add_roles: true,
                 limit_transfer: false,
             },
+            &AttributesInfo::default(),
+            &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             &RoyaltiesData::default(),
         );
     }

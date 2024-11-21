@@ -20,6 +20,7 @@ pub struct ScenarioWorld {
     pub(crate) backend: Backend,
 }
 
+#[allow(clippy::large_enum_variant)]
 pub(crate) enum Backend {
     Debugger(DebuggerBackend),
     VmGoBackend,
