@@ -54,7 +54,7 @@ pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
         owner: acc.contract_owner.as_ref().map(vm_address_as_raw),
         storage: storage_raw,
         username: None,
-        permissions: vec![],
+        permissions: None,
     }
 }
 

@@ -30,5 +30,9 @@ pub trait StaticVarApiImpl {
 
     fn set_call_value_multi_kda_handle(&self, handle: RawHandle);
 
+    fn set_call_value_multi_kda_no_klv_handle(&self, handle: RawHandle);
+
     fn get_call_value_multi_kda_handle(&self) -> RawHandle;
+
+    fn get_call_value_multi_kda_no_klv_handle(&self) -> RawHandle;
 }

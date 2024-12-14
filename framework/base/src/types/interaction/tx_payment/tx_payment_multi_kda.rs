@@ -17,7 +17,7 @@ where
 
 impl<Env> TxPaymentMultiKda<Env> for MultiKdaPayment<Env::Api> where Env: TxEnv {}
 impl<Env> TxPaymentMultiKda<Env> for &MultiKdaPayment<Env::Api> where Env: TxEnv {}
-impl<'a, Env> TxPaymentMultiKda<Env> for ManagedRef<'a, Env::Api, MultiKdaPayment<Env::Api>> where
+impl<Env> TxPaymentMultiKda<Env> for ManagedRef<'_, Env::Api, MultiKdaPayment<Env::Api>> where
     Env: TxEnv
 {
 }
@@ -77,7 +77,7 @@ where
     }
 }
 
-impl<'a, Env> TxPayment<Env> for ManagedRef<'a, Env::Api, MultiKdaPayment<Env::Api>>
+impl<Env> TxPayment<Env> for ManagedRef<'_, Env::Api, MultiKdaPayment<Env::Api>>
 where
     Env: TxEnv,
 {

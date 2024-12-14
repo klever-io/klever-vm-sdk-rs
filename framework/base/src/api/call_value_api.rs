@@ -29,6 +29,9 @@ pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
     /// Loads all KDA call values into a managed vec. Overwrites destination.
     fn load_all_kda_transfers(&self, dest_handle: Self::ManagedBufferHandle);
 
+    /// Loads all KDA call values into a managed vec. No KLV. Overwrites destination.
+    fn load_all_kda_transfers_no_klv(&self, dest_handle: Self::ManagedBufferHandle);
+
     /// Gets the total number of KDA transfers (Fungible/SFT/NFT).
     ///
     /// It is redundant, since the number can also be retrieved from `load_all_kda_transfers`,

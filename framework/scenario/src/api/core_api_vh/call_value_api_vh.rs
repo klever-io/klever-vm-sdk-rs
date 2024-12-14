@@ -38,6 +38,13 @@ impl<VHB: VMHooksApiBackend> CallValueApiImpl for VMHooksApi<VHB> {
         });
     }
 
+    fn load_all_kda_transfers_no_klv(&self, dest_handle: Self::ManagedBufferHandle) {
+        self.assert_live_handle(&dest_handle);
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_multi_kda_without_klv_call_value(dest_handle.get_raw_handle_unchecked())
+        });
+    }
+
     fn kda_num_transfers(&self) -> usize {
         self.with_vm_hooks(|vh| vh.get_num_kda_transfers()) as usize
     }

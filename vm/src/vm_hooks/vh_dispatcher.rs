@@ -524,6 +524,11 @@ impl VMHooks for VMHooksDispatcher {
         self.handler.load_all_kda_transfers(multi_call_value_handle)
     }
 
+    fn managed_get_multi_kda_without_klv_call_value(&self, multi_call_value_handle: i32) {
+        self.handler
+            .load_all_kda_transfers_no_klv(multi_call_value_handle)
+    }
+
     fn managed_get_kda_balance(
         &self,
         address_handle: i32,

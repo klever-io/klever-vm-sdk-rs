@@ -45,5 +45,6 @@ pub struct AccountRaw {
     pub owner: Option<ValueSubTree>,
 
     #[serde(default)]
-    pub permissions: Vec<PermissionRaw>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<Vec<PermissionRaw>>,
 }

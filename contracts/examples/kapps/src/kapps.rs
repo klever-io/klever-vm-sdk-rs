@@ -20,6 +20,10 @@ pub trait Kapps {
     fn deposit_check(&self) -> bool {
         let payments = self.call_value().all_kda_transfers();
         payments.iter().for_each(|payment| {
+            if payment.amount == BigUint::zero() {
+                return;
+            }
+
             self.test_event(
                 &self.blockchain().get_caller(),
                 &payment.token_identifier,

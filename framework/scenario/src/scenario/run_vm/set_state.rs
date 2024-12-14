@@ -34,20 +34,20 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .collect(),
         );
 
-        let perms = account
-            .permissions
-            .clone()
-            .into_iter()
-            .filter_map(|permission| {
-                let address = permission.address?.to_vm_address();
-                let operations = permission.perm?.value;
-
-                Some(AccountPermission {
-                    address: Some(address),
-                    operations,
+        let perm = account.permissions.as_ref().map(|permissions| {
+            permissions
+                .clone()
+                .into_iter()
+                .filter_map(|permission| {
+                    let address = permission.address?.to_vm_address();
+                    let operations = permission.perm?.value;
+                    Some(AccountPermission {
+                        address: Some(address),
+                        operations,
+                    })
                 })
-            })
-            .collect::<Vec<AccountPermission>>();
+                .collect()
+        });
 
         state.validate_and_add_account(AccountData {
             address: address.to_vm_address(),
@@ -81,7 +81,7 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .owner
                 .as_ref()
                 .map(|address_value| address_value.to_vm_address()),
-            permissions: perms,
+            permissions: perm,
         });
     }
     for new_address in set_state_step.new_addresses.iter() {

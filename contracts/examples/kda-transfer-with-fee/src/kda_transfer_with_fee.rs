@@ -55,6 +55,9 @@ pub trait KdaTransferWithFee {
 
         let mut payments_iter = payments.iter();
         while let Some(payment) = payments_iter.next() {
+            if payment.amount == BigUint::zero() {
+                continue;
+            }
             let fee_type = self.token_fee(&payment.token_identifier).get();
             match &fee_type {
                 Fee::ExactValue(fee) => {

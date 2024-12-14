@@ -7,7 +7,7 @@ pub trait PayFeeAndFund: storage::StorageModule + helpers::HelpersModule {
     fn call_value_no_klv(&self) -> ManagedVec<KdaTokenPayment> {
         let mut payments: ManagedVec<KdaTokenPayment> = ManagedVec::new();
         self.call_value()
-            .all_kda_transfers()
+            .all_kda_transfers_no_klv()
             .iter()
             .for_each(|payment| {
                 if payment.token_identifier != TokenIdentifier::klv() {

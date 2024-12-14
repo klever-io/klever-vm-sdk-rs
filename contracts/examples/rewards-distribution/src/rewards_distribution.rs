@@ -256,7 +256,7 @@ pub trait RewardsDistribution:
         raffle_id_end: u64,
         reward_tokens: MultiValueEncoded<MultiValue2<TokenIdentifier, u64>>,
     ) {
-        let nfts = self.call_value().all_kda_transfers();
+        let nfts = self.call_value().all_kda_transfers_no_klv();
         self.validate_nft_payments(&nfts);
         self.validate_raffle_id_range(raffle_id_start, raffle_id_end);
 

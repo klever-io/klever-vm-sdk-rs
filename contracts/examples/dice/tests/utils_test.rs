@@ -10,7 +10,7 @@ fn test_check_bet() {
 
     let mut is_winner: bool = check_bet(bet_value, BetType::UNDER, lucky_number);
 
-    assert_eq!(true, is_winner);
+    assert!(is_winner);
 
     // Bet Under 50 - Roll 50 - Win
 
@@ -19,7 +19,7 @@ fn test_check_bet() {
 
     is_winner = check_bet(bet_value, BetType::UNDER, lucky_number);
 
-    assert_eq!(true, is_winner);
+    assert!(is_winner);
 
     // Bet Under 30 - Roll 50 - Lose
 
@@ -28,7 +28,7 @@ fn test_check_bet() {
 
     is_winner = check_bet(bet_value, BetType::UNDER, lucky_number);
 
-    assert_eq!(false, is_winner);
+    assert!(!is_winner);
 
     // Bet Over 50 - Roll 80 - Win
 
@@ -37,7 +37,7 @@ fn test_check_bet() {
 
     is_winner = check_bet(bet_value, BetType::OVER, lucky_number);
 
-    assert_eq!(true, is_winner);
+    assert!(is_winner);
 
     // Bet Over 80 - Roll 80 - Win
 
@@ -46,7 +46,7 @@ fn test_check_bet() {
 
     is_winner = check_bet(bet_value, BetType::OVER, lucky_number);
 
-    assert_eq!(true, is_winner);
+    assert!(is_winner);
 
     // Bet Over 80 - Roll 60 - Lose
 
@@ -55,5 +55,5 @@ fn test_check_bet() {
 
     is_winner = check_bet(bet_value, BetType::OVER, lucky_number);
 
-    assert_eq!(false, is_winner);
+    assert!(!is_winner);
 }

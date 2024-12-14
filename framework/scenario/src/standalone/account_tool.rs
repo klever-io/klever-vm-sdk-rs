@@ -59,7 +59,7 @@ pub async fn retrieve_account_as_scenario_set_state(
             code: retrieve_code(account.code),
             code_metadata: None, // TODO: retrieve code metadata
             owner: None,
-            permissions: vec![],
+            permissions: None,
         },
     );
 

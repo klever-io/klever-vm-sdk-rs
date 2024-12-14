@@ -17,7 +17,7 @@ pub trait PayableFeatures {
     ) -> MultiValue2<BigUint, ManagedVec<Self::Api, KdaTokenPayment<Self::Api>>> {
         (
             self.call_value().klv_value().clone_value(),
-            self.call_value().all_kda_transfers().clone_value(),
+            self.call_value().all_kda_transfers_no_klv().clone_value(),
         )
             .into()
     }

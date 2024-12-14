@@ -268,14 +268,19 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             Some(tgt_acc) => tgt_acc,
         };
 
-        for perm in source_account.permissions {
-            if let Some(signer_address) = perm.address {
-                if signer_address == target_account.address
-                    && perm.operations & (ops as u64) == (ops as u64)
-                {
-                    return 1;
+        match source_account.permissions {
+            None => return 0,
+            Some(permissions) => {
+                for perm in permissions {
+                    if let Some(signer_address) = perm.address {
+                        if signer_address == target_account.address
+                            && perm.operations & (ops as u64) == (ops as u64)
+                        {
+                            return 1;
+                        }
+                    }
                 }
-            }
+            },
         }
 
         0

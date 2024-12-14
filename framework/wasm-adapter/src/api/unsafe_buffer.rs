@@ -12,9 +12,11 @@ static mut BUFFER_1: [u8; BUFFER_1_SIZE] = [0u8; BUFFER_1_SIZE];
 static mut BUFFER_2: [u8; BUFFER_2_SIZE] = [0u8; BUFFER_2_SIZE];
 
 pub(crate) unsafe fn buffer_1_ptr() -> *mut u8 {
+    #[allow(static_mut_refs)]
     BUFFER_1.as_mut_ptr()
 }
 
 pub(crate) unsafe fn buffer_2_ptr() -> *mut u8 {
+    #[allow(static_mut_refs)]
     BUFFER_2.as_mut_ptr()
 }

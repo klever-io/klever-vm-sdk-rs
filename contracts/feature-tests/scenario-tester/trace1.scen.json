@@ -8,13 +8,11 @@
                     "balance": "300",
                     "kda": {
                         "str:TOKEN-123456": "500"
-                    },
-                    "permissions": []
+                    }
                 },
                 "address:owner": {
                     "nonce": "1",
-                    "balance": "100",
-                    "permissions": []
+                    "balance": "100"
                 }
             }
         },

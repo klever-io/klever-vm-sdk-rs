@@ -10,6 +10,8 @@ extern "C" {
 
     fn managedGetMultiKDACallValue(resultHandle: i32);
 
+    fn managedGetMultiKDAWithoutKLVCallValue(resultHandle: i32);
+
     fn getNumKDATransfers() -> i32;
 }
 
@@ -45,6 +47,12 @@ impl CallValueApiImpl for VmApiImpl {
     fn load_all_kda_transfers(&self, dest_handle: Self::ManagedBufferHandle) {
         unsafe {
             managedGetMultiKDACallValue(dest_handle);
+        }
+    }
+
+    fn load_all_kda_transfers_no_klv(&self, dest_handle: Self::ManagedBufferHandle) {
+        unsafe {
+            managedGetMultiKDAWithoutKLVCallValue(dest_handle);
         }
     }
 

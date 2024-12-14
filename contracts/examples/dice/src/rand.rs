@@ -26,6 +26,7 @@ impl Rand {
         seed: ManagedByteArray<M, SEED_SIZE>,
         salt: ManagedByteArray<M, SALT_SIZE>,
     ) -> Self {
+        #[allow(static_mut_refs)]
         unsafe {
             // it's more efficient to load all the data in static buffers
             // instead of reading byte by byte

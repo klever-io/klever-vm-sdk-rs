@@ -1,0 +1,100 @@
+name: "Download koperator"
+description: "Downloads koperator based on platform and version from versions.json"
+
+inputs:
+  gcp_files_url:
+    description: "URL to the versions.json file"
+    required: true
+  platform:
+    description: "Platform to download for (e.g., linux, darwin, darwin-arm64, win32)"
+    required: true
+
+outputs:
+  operator_path:
+    description: "Path to the downloaded and extracted operator"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install jq (if missing)
+      shell: bash
+      run: |
+        if ! command -v jq &> /dev/null; then
+          echo "jq not found. Installing jq..."
+          case "${{ inputs.platform }}" in
+            "linux"|"linux-arm64")
+              sudo apt-get update && sudo apt-get install -y jq
+              ;;
+            "darwin"|"darwin-arm64")
+              brew install jq || echo "Make sure Homebrew is installed to proceed."
+              ;;
+            "win32")
+              curl -sSL -o jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
+              chmod +x jq.exe
+              mv jq.exe /usr/local/bin/jq
+              ;;
+            *)
+              echo "Unsupported platform for jq installation: ${{ inputs.platform }}"
+              exit 1
+              ;;
+          esac
+        else
+          echo "jq is already installed."
+        fi
+
+    - name: Fetch versions.json
+      id: fetch_versions
+      shell: bash
+      run: |
+        VERSION_URL="${{inputs.gcp_files_url}}/versions.json"
+        echo "VERSION_URL=$VERSION_URL" >> $GITHUB_ENV
+        curl -sSL $VERSION_URL -o versions.json || { echo "Failed to download versions.json"; exit 1; }
+
+    - name: Parse version for platform
+      id: parse_version
+      shell: bash
+      run: |
+        VERSION=$(jq -r ".${{ inputs.platform }}.koperator.version" versions.json)
+        DEPENDENCIES=$(jq -r ".${{ inputs.platform }}.koperator.dependencies[]" versions.json 2>/dev/null || echo "")
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "DEPENDENCIES=$DEPENDENCIES" >> $GITHUB_ENV
+        echo "Parsed version: $VERSION"
+        echo "Parsed dependencies: $DEPENDENCIES"
+
+    - name: Download koperator
+      shell: bash
+      run: |
+        mkdir -p "$HOME/koperator"
+        OPERATOR_URL="${{inputs.gcp_files_url}}/koperator/${{ inputs.platform }}/v$VERSION/klevergo-operator.tar.gz"
+        echo "Downloading operator from $OPERATOR_URL"
+        curl -sSL $OPERATOR_URL -o "$HOME/koperator/klevergo-operator.tar.gz" || { echo "Failed to download operator"; exit 1; }
+
+    - name: Extract koperator
+      shell: bash
+      run: |
+        tar -xzf "$HOME/koperator/klevergo-operator.tar.gz" -C "$HOME/koperator"
+        echo "Operator extracted to $HOME/koperator"
+        echo "OPERATOR_PATH=$HOME/koperator" >> $GITHUB_ENV
+
+    - name: Export dependencies
+      shell: bash
+      run: |
+        echo "LD_LIBRARY_PATH=$HOME/koperator:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "PATH=$HOME/koperator:$PATH" >> $GITHUB_ENV
+
+    - name: Verify installation
+      shell: bash
+      run: |
+        echo "Checking koperator installation..."
+        which operator || { echo "Operator binary not found"; exit 1; }
+        echo "Verifying libvmexeccapi file..."
+        if ! find "$HOME/koperator" -name "libvmexeccapi*" | grep -q "."; then
+          echo "libvmexeccapi file not found after extraction."
+          exit 1
+        fi
+        echo "libvmexeccapi file found."
+        echo "Checking paths..."
+        echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+        echo "PATH=$PATH"
+        echo "Installation complete"
+        operator --version || { echo "Operator failed to execute"; exit 1; }

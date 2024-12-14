@@ -11,6 +11,7 @@ static mut NEXT_HANDLE: i32 = const_handles::NEW_HANDLE_START_FROM;
 static mut NUM_ARGUMENTS: i32 = 0;
 static mut CALL_VALUE_KLV_HANDLE: i32 = const_handles::UNINITIALIZED_HANDLE;
 static mut CALL_VALUE_MULTI_KDA_HANDLE: i32 = const_handles::UNINITIALIZED_HANDLE;
+static mut CALL_VALUE_MULTI_KDA_NO_KLV_HANDLE: i32 = const_handles::UNINITIALIZED_HANDLE;
 
 // The compiler seems to enjoy inlining this method no matter how many times it shows up.
 // Hence the rather drastic directive.
@@ -76,7 +77,17 @@ impl StaticVarApiImpl for VmApiImpl {
         }
     }
 
+    fn set_call_value_multi_kda_no_klv_handle(&self, handle: RawHandle) {
+        unsafe {
+            CALL_VALUE_MULTI_KDA_NO_KLV_HANDLE = handle;
+        }
+    }
+
     fn get_call_value_multi_kda_handle(&self) -> RawHandle {
         unsafe { CALL_VALUE_MULTI_KDA_HANDLE }
+    }
+
+    fn get_call_value_multi_kda_no_klv_handle(&self) -> RawHandle {
+        unsafe { CALL_VALUE_MULTI_KDA_NO_KLV_HANDLE }
     }
 }

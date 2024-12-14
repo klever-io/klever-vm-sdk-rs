@@ -20,7 +20,7 @@ impl<'a> KleverscPath<'a> {
     }
 }
 
-impl<'a> KleverscPath<'a> {
+impl KleverscPath<'_> {
     pub fn eval_to_expr(&self) -> String {
         format!("{KLEVERSC_PREFIX}{}", self.path)
     }
@@ -30,7 +30,7 @@ impl<'a> KleverscPath<'a> {
     }
 }
 
-impl<'a, Env> AnnotatedValue<Env, ManagedBuffer<Env::Api>> for KleverscPath<'a>
+impl<Env> AnnotatedValue<Env, ManagedBuffer<Env::Api>> for KleverscPath<'_>
 where
     Env: ScenarioTxEnv,
 {
@@ -44,9 +44,9 @@ where
     }
 }
 
-impl<'a, Env> TxCodeValue<Env> for KleverscPath<'a> where Env: ScenarioTxEnv {}
+impl<Env> TxCodeValue<Env> for KleverscPath<'_> where Env: ScenarioTxEnv {}
 
-impl<'a> RegisterCodeSource for KleverscPath<'a> {
+impl RegisterCodeSource for KleverscPath<'_> {
     fn into_code(self, env_data: ScenarioTxEnvData) -> Vec<u8> {
         self.resolve_contents(&env_data.interpreter_context())
     }

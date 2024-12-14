@@ -18,6 +18,7 @@ pub const BIG_INT_TEMPORARY_2: RawHandle = -15;
 pub const MBUF_CONST_EMPTY: RawHandle = -20;
 pub const CALL_VALUE_MULTI_KDA: RawHandle = -21;
 pub const CALL_VALUE_SINGLE_KDA_TOKEN_NAME: RawHandle = -22;
+pub const CALL_VALUE_MULTI_KDA_NO_KLV: RawHandle = -23;
 pub const MBUF_TEMPORARY_1: RawHandle = -25;
 pub const MBUF_TEMPORARY_2: RawHandle = -26;
 

@@ -10,5 +10,5 @@ where
 
 impl<Env> TxKlvValue<Env> for BigUint<Env::Api> where Env: TxEnv {}
 impl<Env> TxKlvValue<Env> for &BigUint<Env::Api> where Env: TxEnv {}
-impl<'a, Env> TxKlvValue<Env> for ManagedRef<'a, Env::Api, BigUint<Env::Api>> where Env: TxEnv {}
+impl<Env> TxKlvValue<Env> for ManagedRef<'_, Env::Api, BigUint<Env::Api>> where Env: TxEnv {}
 impl<Env> TxKlvValue<Env> for u64 where Env: TxEnv {}

@@ -42,7 +42,7 @@ impl<'a> TestAddress<'a> {
     }
 }
 
-impl<'a, Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for TestAddress<'a>
+impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for TestAddress<'_>
 where
     Env: TxEnv,
 {
@@ -58,7 +58,7 @@ where
     }
 }
 
-impl<'a, Env> TxFrom<Env> for TestAddress<'a>
+impl<Env> TxFrom<Env> for TestAddress<'_>
 where
     Env: TxEnv,
 {
@@ -67,10 +67,10 @@ where
         expr.into()
     }
 }
-impl<'a, Env> TxFromSpecified<Env> for TestAddress<'a> where Env: TxEnv {}
-impl<'a, Env> TxTo<Env> for TestAddress<'a> where Env: TxEnv {}
-impl<'a, Env> TxToSpecified<Env> for TestAddress<'a> where Env: TxEnv {}
-impl<'a, Api> TypeAbiFrom<TestAddress<'a>> for ManagedAddress<Api> where Api: ManagedTypeApi {}
+impl<Env> TxFromSpecified<Env> for TestAddress<'_> where Env: TxEnv {}
+impl<Env> TxTo<Env> for TestAddress<'_> where Env: TxEnv {}
+impl<Env> TxToSpecified<Env> for TestAddress<'_> where Env: TxEnv {}
+impl<Api> TypeAbiFrom<TestAddress<'_>> for ManagedAddress<Api> where Api: ManagedTypeApi {}
 
 #[cfg(test)]
 pub mod tests {

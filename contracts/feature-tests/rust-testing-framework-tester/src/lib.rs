@@ -94,7 +94,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[payable("*")]
     #[endpoint]
     fn receive_multi_kda(&self) -> ManagedVec<KdaTokenPayment<Self::Api>> {
-        self.call_value().all_kda_transfers().clone_value()
+        self.call_value().all_kda_transfers_no_klv().clone_value()
     }
 
     #[payable("*")]

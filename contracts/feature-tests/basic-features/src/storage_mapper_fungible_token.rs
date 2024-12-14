@@ -53,7 +53,7 @@ pub trait FungibleTokenMapperFeatures {
     #[payable("*")]
     #[endpoint]
     fn require_all_same_token_fungible(&self) {
-        let payments = self.call_value().all_kda_transfers();
+        let payments = self.call_value().all_kda_transfers_no_klv();
         self.fungible_token_mapper()
             .require_all_same_token(&payments);
     }

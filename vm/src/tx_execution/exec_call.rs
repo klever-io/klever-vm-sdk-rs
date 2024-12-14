@@ -6,7 +6,7 @@ use crate::{
     },
     types::{VMAddress, VMCodeMetadata},
     with_shared::Shareable,
-    world_mock::{AccountData, AccountKda, AccountPermission, BlockchainState},
+    world_mock::{AccountData, AccountKda, BlockchainState},
 };
 use std::collections::HashMap;
 
@@ -236,7 +236,7 @@ impl BlockchainVMRef {
                 contract_path: None,
                 code_metadata: VMCodeMetadata::empty(),
                 contract_owner: None,
-                permissions: vec![AccountPermission::default()],
+                permissions: None,
             });
             Ok(tx_cache.into_blockchain_updates())
         })

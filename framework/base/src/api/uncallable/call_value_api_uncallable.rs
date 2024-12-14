@@ -31,6 +31,10 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn load_all_kda_transfers_no_klv(&self, _dest_handle: Self::ManagedBufferHandle) {
+        unreachable!()
+    }
+
     fn kda_num_transfers(&self) -> usize {
         unreachable!()
     }

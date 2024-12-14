@@ -57,14 +57,14 @@ where
     }
 }
 
-impl<'a, M, T> ExactSizeIterator for ManagedVecRefIterator<'a, M, T>
+impl<M, T> ExactSizeIterator for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,
 {
 }
 
-impl<'a, M, T> DoubleEndedIterator for ManagedVecRefIterator<'a, M, T>
+impl<M, T> DoubleEndedIterator for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,
@@ -88,7 +88,7 @@ where
     }
 }
 
-impl<'a, M, T> Clone for ManagedVecRefIterator<'a, M, T>
+impl<M, T> Clone for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,

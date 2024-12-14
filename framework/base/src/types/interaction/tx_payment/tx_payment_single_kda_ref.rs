@@ -5,7 +5,7 @@ use crate::{
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};
 
-impl<'a, Env> TxPayment<Env> for KdaTokenPaymentRefs<'a, Env::Api>
+impl<Env> TxPayment<Env> for KdaTokenPaymentRefs<'_, Env::Api>
 where
     Env: TxEnv,
 {

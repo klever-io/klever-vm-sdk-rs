@@ -19,7 +19,7 @@ pub struct AccountData {
     pub contract_path: Option<Vec<u8>>,
     pub code_metadata: VMCodeMetadata,
     pub contract_owner: Option<VMAddress>,
-    pub permissions: Vec<AccountPermission>,
+    pub permissions: Option<Vec<AccountPermission>>,
 }
 
 impl AccountData {
@@ -34,7 +34,7 @@ impl AccountData {
             contract_path: None,
             code_metadata: VMCodeMetadata::empty(),
             contract_owner: None,
-            permissions: vec![],
+            permissions: None,
         }
     }
 }

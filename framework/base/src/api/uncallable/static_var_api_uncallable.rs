@@ -53,7 +53,15 @@ impl StaticVarApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn set_call_value_multi_kda_no_klv_handle(&self, _handle: RawHandle) {
+        unreachable!()
+    }
+
     fn get_call_value_multi_kda_handle(&self) -> RawHandle {
+        unreachable!()
+    }
+
+    fn get_call_value_multi_kda_no_klv_handle(&self) -> RawHandle {
         unreachable!()
     }
 }

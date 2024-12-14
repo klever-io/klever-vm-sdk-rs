@@ -43,7 +43,7 @@ jobs:
       - name: Lint
         run: |
           cargo fmt --all -- --check
-          cargo clippy -- -D warnings  
+          cargo clippy -- -D warnings
 
   wasm_test:
     needs: clippy_check
@@ -62,18 +62,11 @@ jobs:
           rustup default stable
           rustup target add wasm32-unknown-unknown
 
-      - name: Install external prerequisites
-        run: |
-          mkdir $HOME/koperator
-
-          curl -o $HOME/koperator/operator ${{vars.KOPERATOR_URL}}
-          chmod +x $HOME/koperator/operator
-
-          curl -o $HOME/koperator/libvmexeccapi.so ${{vars.LIBVMEXECCAPI_URL}}
-
-          export LD_LIBRARY_PATH=$HOME/koperator
-          export PATH="$HOME/koperator:$PATH"
-          operator --version
+      - name: Setup koperator
+        uses: ./.github/actions/koperator-setup
+        with:
+          gcp_files_url: ${{ vars.GCP_FILES_URL }}
+          platform: "linux"
 
       - name: Cargo Cache
         uses: actions/cache@v4
@@ -105,8 +98,6 @@ jobs:
 
       - name: Create operator account
         run: |
-          export LD_LIBRARY_PATH="$HOME/koperator"
-          export PATH="$HOME/koperator:$PATH"
           cd "$HOME/koperator"
           operator account create
 
@@ -115,8 +106,6 @@ jobs:
 
       - name: Run the wasm tests
         run: |
-          export LD_LIBRARY_PATH="$HOME/koperator"
-          export PATH="$HOME/koperator:$PATH"
           export OPERATOR_KEY_FILE="$HOME/koperator/walletKey.pem"
 
           cargo test --features klever-sc-scenario/run-go-tests

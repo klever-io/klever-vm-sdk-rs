@@ -40,7 +40,7 @@ impl Address {
     }
 }
 
-impl<'a> From<&'a PublicKey> for Address {
+impl From<&PublicKey> for Address {
     fn from(public_key: &PublicKey) -> Address {
         let bytes = public_key.to_bytes();
 

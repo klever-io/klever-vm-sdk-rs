@@ -26,7 +26,7 @@ impl<'a> TestSCAddress<'a> {
     }
 }
 
-impl<'a, Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for TestSCAddress<'a>
+impl<Env> AnnotatedValue<Env, ManagedAddress<Env::Api>> for TestSCAddress<'_>
 where
     Env: TxEnv,
 {
@@ -42,14 +42,14 @@ where
     }
 }
 
-impl<'a> TestSCAddress<'a> {
+impl TestSCAddress<'_> {
     pub fn to_address(&self) -> Address {
         let expr: [u8; 32] = self.eval_to_array();
         expr.into()
     }
 }
 
-impl<'a, Env> TxFrom<Env> for TestSCAddress<'a>
+impl<Env> TxFrom<Env> for TestSCAddress<'_>
 where
     Env: TxEnv,
 {
@@ -58,11 +58,11 @@ where
         expr.into()
     }
 }
-impl<'a, Env> TxFromSpecified<Env> for TestSCAddress<'a> where Env: TxEnv {}
-impl<'a, Env> TxTo<Env> for TestSCAddress<'a> where Env: TxEnv {}
-impl<'a, Env> TxToSpecified<Env> for TestSCAddress<'a> where Env: TxEnv {}
+impl<Env> TxFromSpecified<Env> for TestSCAddress<'_> where Env: TxEnv {}
+impl<Env> TxTo<Env> for TestSCAddress<'_> where Env: TxEnv {}
+impl<Env> TxToSpecified<Env> for TestSCAddress<'_> where Env: TxEnv {}
 
-impl<'a> TestSCAddress<'a> {
+impl TestSCAddress<'_> {
     pub fn eval_to_array(&self) -> [u8; 32] {
         let result = *b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00______________________";
         let expr_bytes = self.name.as_bytes();
@@ -91,7 +91,7 @@ impl<'a> TestSCAddress<'a> {
     }
 }
 
-impl<'a, Api> TypeAbiFrom<TestSCAddress<'a>> for ManagedAddress<Api> where Api: ManagedTypeApi {}
+impl<Api> TypeAbiFrom<TestSCAddress<'_>> for ManagedAddress<Api> where Api: ManagedTypeApi {}
 
 #[cfg(test)]
 pub mod tests {

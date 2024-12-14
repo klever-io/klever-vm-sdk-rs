@@ -75,9 +75,27 @@ impl<VHB: VMHooksApiBackend> StaticVarApiImpl for VMHooksApi<VHB> {
         })
     }
 
+    fn set_call_value_multi_kda_no_klv_handle(&self, handle: RawHandle) {
+        self.with_static_data(|data| {
+            data.static_vars_cell
+                .borrow_mut()
+                .call_value_multi_kda_no_klv_handle = handle;
+        })
+    }
+
     fn get_call_value_multi_kda_handle(&self) -> RawHandle {
         self.with_static_data(|data| {
             use_raw_handle(data.static_vars_cell.borrow().call_value_multi_kda_handle)
+        })
+    }
+
+    fn get_call_value_multi_kda_no_klv_handle(&self) -> RawHandle {
+        self.with_static_data(|data| {
+            use_raw_handle(
+                data.static_vars_cell
+                    .borrow()
+                    .call_value_multi_kda_no_klv_handle,
+            )
         })
     }
 }

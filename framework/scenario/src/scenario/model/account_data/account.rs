@@ -21,7 +21,7 @@ pub struct Account {
     pub code: Option<BytesValue>,
     pub code_metadata: Option<BytesValue>,
     pub owner: Option<AddressValue>,
-    pub permissions: Vec<Permission>,
+    pub permissions: Option<Vec<Permission>>,
 }
 
 impl Account {
@@ -208,11 +208,12 @@ impl InterpretableFrom<AccountRaw> for Account {
                 .code_metadata
                 .map(|c| BytesValue::interpret_from(c, context)),
             owner: from.owner.map(|v| AddressValue::interpret_from(v, context)),
-            permissions: from
-                .permissions
-                .into_iter()
-                .map(|permission| Permission::interpret_from(permission, context))
-                .collect(),
+            permissions: from.permissions.map(|permissions| {
+                permissions
+                    .into_iter()
+                    .map(|permission| Permission::interpret_from(permission, context))
+                    .collect()
+            }),
         }
     }
 }
@@ -237,11 +238,12 @@ impl IntoRaw<AccountRaw> for Account {
             code: self.code.map(|n| n.original),
             code_metadata: self.code_metadata.map(|n| n.original),
             owner: self.owner.map(|n| n.original),
-            permissions: self
-                .permissions
-                .into_iter()
-                .map(|permission| permission.into_raw())
-                .collect(),
+            permissions: self.permissions.map(|permissions| {
+                permissions
+                    .into_iter()
+                    .map(|permission| permission.into_raw())
+                    .collect()
+            }),
         }
     }
 }

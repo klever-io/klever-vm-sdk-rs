@@ -48,7 +48,7 @@ impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
     }
 }
 
-impl<'a, M: ManagedTypeApi> KlvOrMultiKdaPaymentRefs<'a, M> {
+impl<M: ManagedTypeApi> KlvOrMultiKdaPaymentRefs<'_, M> {
     pub fn to_owned_payment(&self) -> KlvOrMultiKdaPayment<M> {
         match self {
             KlvOrMultiKdaPaymentRefs::Klv(klv_value) => {

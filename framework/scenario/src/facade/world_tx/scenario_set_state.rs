@@ -96,7 +96,7 @@ impl<'w> SetStateBuilderBase<'w> {
     }
 }
 
-impl<'w> SetStateBuilder<'w, ()> {}
+impl SetStateBuilder<'_, ()> {}
 
 impl<'w, Item> SetStateBuilder<'w, Item>
 where
@@ -170,7 +170,7 @@ where
     pub fn commit(self) {}
 }
 
-impl<'w, Current> Drop for SetStateBuilder<'w, Current>
+impl<Current> Drop for SetStateBuilder<'_, Current>
 where
     Current: SetStateBuilderItem,
 {

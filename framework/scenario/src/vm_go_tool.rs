@@ -3,6 +3,7 @@ use std::{io::ErrorKind, path::Path, process::Command};
 
 const RUNNER_TOOL_NAME: &str = "operator";
 const RUNNER_TOOL_NAME_LEGACY: &str = "mandos-test";
+const DEFAULT_KVM_TIMEOUT: &str = "10000"; // milliseconds
 
 /// Just marks that the tool was not found.
 struct ToolNotFound;
@@ -31,6 +32,11 @@ pub fn run_vm_go_tool(absolute_path: &Path) {
 }
 
 fn run_scenario_tool(tool_name: &str, path: &Path) -> Result<(), ToolNotFound> {
+    // Allow configurable timeout with a default fallback
+    let timeout =
+        std::env::var("KVM_EXECUTION_TIMEOUT").unwrap_or_else(|_| DEFAULT_KVM_TIMEOUT.to_string());
+    std::env::set_var("KVM_EXECUTION_TIMEOUT", &timeout);
+
     // read OPERATOR_KEY_FILE to set the key-file or use the default value
     let key_file =
         std::env::var("OPERATOR_KEY_FILE").unwrap_or_else(|_| "./walletKey.pem".to_string());
