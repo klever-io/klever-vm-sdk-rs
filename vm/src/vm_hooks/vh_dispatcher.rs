@@ -77,7 +77,7 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_kda_balance")
     }
 
-    fn get_kda_nft_name_length(
+    fn get_kda_name_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
@@ -87,7 +87,7 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_kda_nft_name_length")
     }
 
-    fn get_kda_nft_uri_length(
+    fn get_kda_uri_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
