@@ -68,6 +68,7 @@ pub const EI_1_3_ADDED_NAMES: &[&str] = &[
     "managedGetCodeMetadata",
     "managedGetSftMetadata",
     "managedGetUserKDA",
+    "managedGetKDARoles",
     "managedIsBuiltinFunction",
 ];
 
@@ -89,7 +90,13 @@ fn test_added_names(base: &[&str], added: &[&str], expected_result: &[&str]) {
         );
         check.insert(added_name);
     }
-    assert_eq!(check, list_to_set(expected_result));
+    let mut actual_sorted: Vec<_> = check.into_iter().collect();
+    let mut expected_sorted: Vec<_> = list_to_set(expected_result).into_iter().collect();
+
+    actual_sorted.sort();
+    expected_sorted.sort();
+
+    assert_eq!(actual_sorted, expected_sorted);
 }
 
 #[test]
