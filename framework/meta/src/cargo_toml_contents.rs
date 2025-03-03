@@ -303,10 +303,15 @@ fn is_dep_path_above(dep: &Value) -> bool {
 }
 
 pub fn change_from_base_to_adapter_path(base_path: &str) -> String {
-    format!(
-        "../{}",
-        base_path.to_string().replace("base", "wasm-adapter")
-    )
+    // Check if the path is relative (starts with "../")
+    if base_path.starts_with("../") {
+        // For relative paths, add an additional "../" to account for
+        // wasm-adapter being one directory level deeper than base
+        return format!("../{}", base_path.replace("base", "wasm-adapter"));
+    }
+    
+    // For non-relative paths, just replace "base" with "wasm-adapter"
+    base_path.replace("base", "wasm-adapter")
 }
 
 fn remove_quotes(var: &Value) -> String {
