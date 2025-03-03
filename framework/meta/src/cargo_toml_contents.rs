@@ -329,4 +329,14 @@ mod tests {
             adapter_path
         );
     }
+
+    #[test]
+    fn test_change_from_base_to_adapter_absolute_path() {
+        let base_path = "framework/base";
+        let adapter_path = "framework/wasm-adapter".to_string();
+        assert_eq!(
+            super::change_from_base_to_adapter_path(base_path),
+            adapter_path
+        );
+    }
 }
