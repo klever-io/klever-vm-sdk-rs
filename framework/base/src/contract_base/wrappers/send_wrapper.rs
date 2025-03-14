@@ -814,7 +814,13 @@ where
         amount: &BigUint<A>,
         currency_amount: &BigUint<A>,
     ) {
-        self.buy(BuyType::ITO, token.as_managed_buffer(), currency, amount, currency_amount)
+        self.buy(
+            BuyType::ITO,
+            token.as_managed_buffer(),
+            currency,
+            amount,
+            currency_amount,
+        )
     }
 
     /// Allows synchronous buy NFT. Execution is resumed afterwards.
@@ -824,7 +830,13 @@ where
         currency: &TokenIdentifier<A>,
         amount: &BigUint<A>,
     ) {
-        self.buy(BuyType::Market, order_id, currency, amount, &BigUint::zero())
+       self.buy(
+            BuyType::Market,
+            order_id,
+            currency,
+            amount,
+            &BigUint::zero(),
+        )
     }
 
     /// Allows synchronous cancel NFT market order. Execution is resumed afterwards.
