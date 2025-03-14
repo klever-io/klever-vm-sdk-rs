@@ -830,7 +830,7 @@ where
         currency: &TokenIdentifier<A>,
         amount: &BigUint<A>,
     ) {
-       self.buy(
+        self.buy(
             BuyType::Market,
             order_id,
             currency,

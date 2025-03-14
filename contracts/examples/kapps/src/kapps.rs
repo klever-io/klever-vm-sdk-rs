@@ -405,7 +405,7 @@ pub trait Kapps {
         currency_amount: BigUint,
     ) {
         self.send()
-            .buy(buy_type, &id, &currency, &amount,&currency_amount);
+            .buy(buy_type, &id, &currency, &amount, &currency_amount);
     }
 
     #[payable("*")]
