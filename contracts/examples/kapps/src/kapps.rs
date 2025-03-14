@@ -402,8 +402,9 @@ pub trait Kapps {
         id: ManagedBuffer,
         currency: TokenIdentifier,
         amount: BigUint,
+        currency_amount: BigUint,
     ) {
-        self.send().buy(buy_type, &id, &currency, &amount);
+        self.send().buy(buy_type, &id, &currency, &amount,&currency_amount);
     }
 
     #[payable("*")]
