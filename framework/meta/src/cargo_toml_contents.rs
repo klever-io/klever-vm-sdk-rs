@@ -309,7 +309,7 @@ pub fn change_from_base_to_adapter_path(base_path: &str) -> String {
         // wasm-adapter being one directory level deeper than base
         return format!("../{}", base_path.replace("base", "wasm-adapter"));
     }
-    
+
     // For non-relative paths, just replace "base" with "wasm-adapter"
     base_path.replace("base", "wasm-adapter")
 }
