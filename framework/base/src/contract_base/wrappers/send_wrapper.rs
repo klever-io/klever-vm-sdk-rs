@@ -792,6 +792,7 @@ where
         id: &ManagedBuffer<A>,
         currency: &TokenIdentifier<A>,
         amount: &BigUint<A>,
+        currency_amount: &BigUint<A>,
     ) {
         let mut arg_buffer = ManagedArgBuffer::new();
         let func_name = KLEVER_BUY_FUNC_NAME;
@@ -800,6 +801,7 @@ where
         arg_buffer.push_arg(id);
         arg_buffer.push_arg(currency);
         arg_buffer.push_arg(amount);
+        arg_buffer.push_arg(currency_amount);
 
         self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }
@@ -810,8 +812,15 @@ where
         token: &TokenIdentifier<A>,
         currency: &TokenIdentifier<A>,
         amount: &BigUint<A>,
+        currency_amount: &BigUint<A>,
     ) {
-        self.buy(BuyType::ITO, token.as_managed_buffer(), currency, amount)
+        self.buy(
+            BuyType::ITO,
+            token.as_managed_buffer(),
+            currency,
+            amount,
+            currency_amount,
+        )
     }
 
     /// Allows synchronous buy NFT. Execution is resumed afterwards.
@@ -821,7 +830,13 @@ where
         currency: &TokenIdentifier<A>,
         amount: &BigUint<A>,
     ) {
-        self.buy(BuyType::Market, order_id, currency, amount)
+        self.buy(
+            BuyType::Market,
+            order_id,
+            currency,
+            amount,
+            &BigUint::zero(),
+        )
     }
 
     /// Allows synchronous cancel NFT market order. Execution is resumed afterwards.
