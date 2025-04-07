@@ -9,9 +9,9 @@ publish = false
 path = "src/large_storage.rs"
 
 [dependencies.klever-sc]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/base"
 
 [dev-dependencies.klever-sc-scenario]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/scenario"

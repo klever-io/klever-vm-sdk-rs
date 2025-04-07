@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "klever-sc",
-            "version": "0.43.3"
+            "version": "0.44.0"
         }
     },
     "docs": [

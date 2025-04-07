@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc-scenario"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
 
 authors = [
@@ -41,12 +41,12 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.klever-sc]
-version = "=0.43.3"
+version = "=0.44.0"
 features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.klever-sc-meta]
-version = "=0.43.3"
+version = "=0.44.0"
 path = "../meta"
 
 [dependencies.klever-chain-scenario-format]

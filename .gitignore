@@ -52,3 +52,7 @@ tags
 # Developer scripts
 *local-dev-tools*
 *.patch
+
+# pem files
+*.pem
+*.key

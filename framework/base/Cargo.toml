@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
 rust-version = "1.78"
 
@@ -29,7 +29,7 @@ num-traits = { version = "=0.2.19", default-features = false }
 unwrap-infallible = "0.1.5"
 
 [dependencies.klever-sc-derive]
-version = "=0.43.3"
+version = "=0.44.0"
 path = "../derive"
 
 [dependencies.klever-sc-codec]
