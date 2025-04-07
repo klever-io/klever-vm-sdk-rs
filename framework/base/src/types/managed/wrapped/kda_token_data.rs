@@ -275,7 +275,7 @@ pub struct RolesInfo<M: ManagedTypeApi> {
     pub has_role_mint: bool,
     pub has_role_set_ito_prices: bool,
     pub has_role_deposit: bool,
-    has_role_transfer: bool,
+    pub has_role_transfer: bool,
 }
 
 #[type_abi]
