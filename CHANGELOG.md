@@ -30,3 +30,15 @@ They are:
 - Rename crates to klever
 - Refactor blockchain calls and builtin functions
 - Main features at this time:
+
+## [sc 0.44.0] - 2025-04-07
+
+- Support contract deletion (`delete_contract`) and new deploy-delete example
+- Introduce `upgrade()` endpoint for on-chain state updates in smart contracts
+- Replace `klever_sc::imports!()` macros with direct `use` statements across all contracts
+- Introduce auto-generated proxy modules (e.g., `AdderProxy`, `LinkedListRepeatProxy`)
+- Rewrite test scenarios to use builder-based transactions and new `.kleversc.json` artifacts
+- Add benchmarks using new `mb_builder_benchmark()` for testing `ManagedBuffer` writes
+- Cleanup: remove outdated wasm comments, unused macros, and internal features
+- Upgrade dependencies: `syn`, `proc-macro2`, `sha2`, `base64`, and others
+- MultiversX SDK sync upgrades: from `0.43.4` to `0.50.4`
