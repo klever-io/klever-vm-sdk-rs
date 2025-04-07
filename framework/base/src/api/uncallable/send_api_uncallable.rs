@@ -56,6 +56,7 @@ impl SendApiImpl for UncallableApi {
         _source_contract_address_handle: RawHandle,
         _code_metadata_handle: RawHandle,
         _arg_buffer_handle: RawHandle,
+        _result_handle: RawHandle,
     ) {
         unreachable!()
     }
@@ -67,6 +68,16 @@ impl SendApiImpl for UncallableApi {
         _amount_handle: RawHandle,
         _code_handle: RawHandle,
         _code_metadata_handle: RawHandle,
+        _arg_buffer_handle: RawHandle,
+        _result_handle: RawHandle,
+    ) {
+        unreachable!()
+    }
+
+    fn delete_contract(
+        &self,
+        _address_handle: RawHandle,
+        _gas: u64,
         _arg_buffer_handle: RawHandle,
     ) {
         unreachable!()

@@ -1,5 +1,5 @@
 // use klever_chain_vm::mem_conv;
-use klever_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
+use klever_sc::api::{RawHandle, SendApi, SendApiImpl};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};
 
@@ -90,11 +90,8 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         source_contract_address_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     ) {
-        // Note: the result handle is a mistake in the EI.
-        // The upgrade contract operation is an async call, so no results can be returned.
-        let unused_result_handle = const_handles::MBUF_TEMPORARY_1;
-
         self.with_vm_hooks(|vh| {
             vh.managed_upgrade_from_source_contract(
                 sc_address_handle,
@@ -103,7 +100,7 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
                 source_contract_address_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
-                unused_result_handle,
+                result_handle,
             )
         });
     }
@@ -116,11 +113,8 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
         code_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     ) {
-        // Note: the result handle is a mistake in the EI.
-        // The upgrade contract operation is an async call, so no results can be returned.
-        let unused_result_handle = const_handles::MBUF_TEMPORARY_1;
-
         self.with_vm_hooks(|vh| {
             vh.managed_upgrade_contract(
                 sc_address_handle,
@@ -129,8 +123,19 @@ impl<VHB: VMHooksApiBackend> SendApiImpl for VMHooksApi<VHB> {
                 code_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
-                unused_result_handle,
+                result_handle,
             )
+        });
+    }
+
+    fn delete_contract(
+        &self,
+        sc_address_handle: RawHandle,
+        gas: u64,
+        arg_buffer_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_delete_contract(sc_address_handle, gas as i64, arg_buffer_handle)
         });
     }
 

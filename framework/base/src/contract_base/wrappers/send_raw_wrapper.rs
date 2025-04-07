@@ -154,9 +154,10 @@ where
         source_contract_address: &ManagedAddress<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
-    ) {
+    ) -> ManagedVec<A, ManagedBuffer<A>> {
         let code_metadata_handle = const_handles::MBUF_TEMPORARY_1;
         self.load_code_metadata_to_mb(code_metadata, code_metadata_handle);
+        let result_handle = A::static_var_api_impl().next_handle();
         A::send_api_impl().upgrade_from_source_contract(
             sc_address.get_handle().get_raw_handle(),
             gas,
@@ -164,7 +165,10 @@ where
             source_contract_address.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
-        )
+            result_handle,
+        );
+
+        ManagedVec::from_raw_handle(result_handle)
     }
 
     /// Upgrades a child contract of the currently executing contract.
@@ -178,9 +182,10 @@ where
         code: &ManagedBuffer<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
-    ) {
+    ) -> ManagedVec<A, ManagedBuffer<A>> {
         let code_metadata_handle = const_handles::MBUF_TEMPORARY_1;
         self.load_code_metadata_to_mb(code_metadata, code_metadata_handle);
+        let result_handle = A::static_var_api_impl().next_handle();
         A::send_api_impl().upgrade_contract(
             sc_address.get_handle().get_raw_handle(),
             gas,
@@ -188,7 +193,24 @@ where
             code.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
-        )
+            result_handle,
+        );
+
+        ManagedVec::from_raw_handle(result_handle)
+    }
+
+    /// Deletes a contract.
+    pub fn delete_contract(
+        &self,
+        address: &ManagedAddress<A>,
+        gas: u64,
+        arg_buffer: &ManagedArgBuffer<A>,
+    ) {
+        A::send_api_impl().delete_contract(
+            address.get_handle().get_raw_handle(),
+            gas,
+            arg_buffer.get_handle().get_raw_handle(),
+        );
     }
 
     /// Same shard, in-line execution of another contract.

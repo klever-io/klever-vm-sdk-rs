@@ -1,5 +1,5 @@
 use crate::api::VmApiImpl;
-use klever_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
+use klever_sc::api::{RawHandle, SendApi, SendApiImpl};
 
 extern "C" {
     fn managedMultiTransferKDANFTExecute(
@@ -65,6 +65,8 @@ extern "C" {
         argumentsHandle: i32,
         resultHandle: i32,
     );
+
+    fn managedDeleteContract(addressHandle: i32, gas: i64, argumentsHandle: i32);
 
     fn managedUpgradeFromSourceContract(
         dstHandle: i32,
@@ -172,9 +174,9 @@ impl SendApiImpl for VmApiImpl {
         source_contract_address_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     ) {
         unsafe {
-            let unused_result_handle = const_handles::MBUF_TEMPORARY_1;
             managedUpgradeFromSourceContract(
                 sc_address_handle,
                 gas as i64,
@@ -182,7 +184,7 @@ impl SendApiImpl for VmApiImpl {
                 source_contract_address_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
-                unused_result_handle,
+                result_handle,
             );
         }
     }
@@ -195,9 +197,9 @@ impl SendApiImpl for VmApiImpl {
         code_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     ) {
         unsafe {
-            let unused_result_handle = const_handles::MBUF_TEMPORARY_1;
             managedUpgradeContract(
                 sc_address_handle,
                 gas as i64,
@@ -205,11 +207,14 @@ impl SendApiImpl for VmApiImpl {
                 code_handle,
                 code_metadata_handle,
                 arg_buffer_handle,
-                unused_result_handle,
+                result_handle,
             );
+        }
+    }
 
-            // Note: the result handle is a mistake in the EI.
-            // The upgrade contract operation is an async call, so no results can be returned.
+    fn delete_contract(&self, address_handle: RawHandle, gas: u64, arg_buffer_handle: RawHandle) {
+        unsafe {
+            managedDeleteContract(address_handle, gas as i64, arg_buffer_handle);
         }
     }
 

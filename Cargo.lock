@@ -671,6 +671,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "deployer"
+version = "0.0.0"
+dependencies = [
+ "klever-sc",
+ "klever-sc-scenario",
+]
+
+[[package]]
+name = "deployer-meta"
+version = "0.0.0"
+dependencies = [
+ "deployer",
+ "klever-sc-meta",
+]
+
+[[package]]
 name = "deposit-kda-pool"
 version = "0.0.0"
 dependencies = [
@@ -1502,6 +1518,22 @@ checksum = "707907fe3c25f5424cce2cb7e1cbcafee6bdbe735ca90ef77c29e84591e5b9da"
 dependencies = [
  "equivalent",
  "hashbrown 0.15.1",
+]
+
+[[package]]
+name = "instance"
+version = "0.0.0"
+dependencies = [
+ "klever-sc",
+ "klever-sc-scenario",
+]
+
+[[package]]
+name = "instance-meta"
+version = "0.0.0"
+dependencies = [
+ "instance",
+ "klever-sc-meta",
 ]
 
 [[package]]

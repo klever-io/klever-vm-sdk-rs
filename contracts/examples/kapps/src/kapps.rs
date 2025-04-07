@@ -84,7 +84,7 @@ pub trait Kapps {
                 limit_transfer: false,
             },
             &AttributesInfo {
-                is_paused: true,
+                is_paused: false,
                 is_nft_mint_stopped: false,
                 is_royalties_change_stopped: false,
                 is_nft_metadata_change_stopped: false,
