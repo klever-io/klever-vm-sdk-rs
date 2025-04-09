@@ -22,7 +22,10 @@ path = "../../../vm"
 
 [dev-dependencies]
 glob = "0.3.0"
-home = "0.5.3"
+home = "0.5.11"
 
 [workspace]
 members = ["."]
+
+[dependencies]
+hex = "0.4"
