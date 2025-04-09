@@ -13,16 +13,16 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:USDC-aaaaaa": "500",
-                        "str:WKLV-012345": "500"
+                        "str:USDC-aaaa": "500",
+                        "str:WKLV-0123": "500"
                     }
                 },
                 "address:user2": {
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:WKLV-012345": "500",
-                        "str:MFNFT-567890": {
+                        "str:WKLV-0123": "500",
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -54,7 +54,7 @@
             "id": "1",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/kda-transfer-with-fee.wasm",
+                "contractCode": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                 "arguments": [],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
@@ -79,15 +79,15 @@
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:USDC-aaaaaa": "500",
-                        "str:WKLV-012345": "500"
+                        "str:USDC-aaaa": "500",
+                        "str:WKLV-0123": "500"
                     }
                 },
                 "address:user2": {
                     "nonce": "0",
                     "balance": "0",
                     "kda": {
-                        "str:MFNFT-567890": {
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -103,13 +103,13 @@
                                 }
                             ]
                         },
-                        "str:WKLV-012345": "500"
+                        "str:WKLV-0123": "500"
                     }
                 },
                 "sc:kda-transfer-with-fee": {
                     "nonce": "0",
                     "storage": {},
-                    "code": "file:../output/kda-transfer-with-fee.wasm",
+                    "code": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                     "owner": "address:owner"
                 }
             }

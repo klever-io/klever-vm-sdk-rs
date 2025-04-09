@@ -1,5 +1,3 @@
-klever_sc::imports!();
-
 /// Example of a module that contains the constructor.
 #[klever_sc::module]
 pub trait InternalModuleInit {

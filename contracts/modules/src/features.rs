@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 pub const FEATURE_NOT_SET: u8 = 0;
 pub const FEATURE_ON: u8 = 1;
@@ -35,7 +35,7 @@ pub trait FeaturesModule {
     }
 }
 
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
 
 #[derive(TopEncode)]
 pub struct FeatureName<M>(ManagedBuffer<M>)

@@ -1,35 +1,21 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::module]
 pub trait FungibleTokenMapperFeatures {
     #[payable("KLV")]
     #[endpoint]
-    fn issue_fungible_default_callback(
+    fn issue_fungible(
         &self,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
-    ) {
+    ) -> TokenIdentifier {
         self.fungible_token_mapper().issue(
             &ManagedBuffer::new(),
             &token_ticker,
             &initial_supply,
             &initial_supply,
             0,
-        );
-    }
-
-    #[payable("KLV")]
-    #[endpoint]
-    fn issue_fungible_custom_callback(&self, token_ticker: ManagedBuffer, initial_supply: BigUint) {
-        let token_identifier = self.fungible_token_mapper().issue(
-            &ManagedBuffer::new(),
-            &token_ticker,
-            &initial_supply,
-            &initial_supply,
-            0,
-        );
-
-        self.fungible_token_mapper().set_token_id(token_identifier);
+        )
     }
 
     #[endpoint]
@@ -67,7 +53,7 @@ pub trait FungibleTokenMapperFeatures {
     #[payable("*")]
     #[endpoint]
     fn require_all_same_token_fungible(&self) {
-        let payments = self.call_value().all_kda_transfers();
+        let payments = self.call_value().all_kda_transfers_no_klv();
         self.fungible_token_mapper()
             .require_all_same_token(&payments);
     }
@@ -75,7 +61,4 @@ pub trait FungibleTokenMapperFeatures {
     #[view(getFungibleTokenId)]
     #[storage_mapper("fungibleTokenMapper")]
     fn fungible_token_mapper(&self) -> FungibleTokenMapper;
-
-    #[storage_mapper("rolesSet")]
-    fn roles_set(&self) -> SingleValueMapper<bool>;
 }

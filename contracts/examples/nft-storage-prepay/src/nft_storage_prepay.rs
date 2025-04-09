@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::contract]
 pub trait NftStoragePrepay {
@@ -42,7 +42,7 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.send().direct_klv(&owner, &total_reserved);
+        self.tx().to(&owner).klv(&total_reserved).transfer();
     }
 
     // endpoints
@@ -71,7 +71,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.send().direct_klv(&caller, &amount);
+        self.tx().to(&caller).klv(&amount).transfer();
     }
 
     // views

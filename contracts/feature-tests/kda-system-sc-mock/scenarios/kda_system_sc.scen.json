@@ -13,12 +13,12 @@
                     "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleBurn"
                             ]
                         }
                     },
-                    "code": "file:../output/kda-system-sc-mock.wasm"
+                    "code": "kleversc:../output/kda-system-sc-mock.kleversc.json"
                 }
             }
         },
@@ -88,15 +88,15 @@
                     "kda": {
                         "str:TICKER-000000": {
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn"
+                                "KDARoleMint",
+                                "KDARoleBurn"
                             ]
                         }
                     },
                     "storage": {
                         "str:nrIssuedTokens": "1"
                     },
-                    "code": "file:../output/kda-system-sc-mock.wasm"
+                    "code": "kleversc:../output/kda-system-sc-mock.kleversc.json"
                 }
             }
         },

@@ -2,9 +2,11 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/map-repeat");
 
-    blockchain.register_contract("file:output/map-repeat.wasm", map_repeat::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:output/map-repeat.kleversc.json",
+        map_repeat::ContractBuilder,
+    );
     blockchain
 }
 

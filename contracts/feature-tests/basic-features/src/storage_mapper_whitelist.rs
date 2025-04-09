@@ -1,4 +1,5 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
+use klever_sc::storage::StorageKey;
 
 #[klever_sc::module]
 pub trait StorageMapperWhitelistFeatures {
@@ -19,7 +20,9 @@ pub trait StorageMapperWhitelistFeatures {
 
     #[endpoint]
     fn check_contains_at_address(&self, address: ManagedAddress, item: ManagedBuffer) -> bool {
-        self.whitelist_mapper().contains_at_address(&address, &item)
+        let mapper =
+            WhitelistMapper::new_from_address(address, StorageKey::from("whitelistMapper"));
+        mapper.contains(&item)
     }
 
     #[endpoint]
@@ -29,8 +32,9 @@ pub trait StorageMapperWhitelistFeatures {
 
     #[endpoint]
     fn require_contains_at_address(&self, address: ManagedAddress, item: ManagedBuffer) {
-        self.whitelist_mapper()
-            .require_whitelisted_at_address(&address, &item);
+        let mapper =
+            WhitelistMapper::new_from_address(address, StorageKey::from("whitelistMapper"));
+        mapper.require_whitelisted(&item)
     }
 
     #[storage_mapper("whitelistMapper")]

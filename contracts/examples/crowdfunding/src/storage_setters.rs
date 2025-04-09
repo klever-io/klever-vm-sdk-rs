@@ -1,6 +1,3 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
-
 use crate::storage;
 
 #[klever_sc::module]

@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// All crypto functions provided by Arwen exposed here.
 #[klever_sc::module]

@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Standard smart contract module for managing a single KDA.
 ///
@@ -17,8 +17,9 @@ pub trait KdaModule {
         KdaTokenType is an enum (u8):
         0 - Fungible,
         1 - NonFungible,
+        2 - SemiFungible
 
-        Note: Only Fungible have decimals
+        Note: Only Fungible and SemiFungible have decimals
     */
     #[payable("KLV")]
     #[only_owner]
@@ -47,17 +48,23 @@ pub trait KdaModule {
                 &initial_supply,
                 &max_supply,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             KdaTokenType::NonFungible => self.send().kda_system_sc_proxy().issue_non_fungible(
                 &token_display_name,
                 &token_ticker,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             KdaTokenType::SemiFungible => self.send().kda_system_sc_proxy().issue_semi_fungible(
                 &token_display_name,
                 &token_ticker,
                 precision,
                 &PropertiesInfo::default(),
+                &AttributesInfo::default(),
+                &ManagedVec::<Self::Api, URI<Self::Api>>::new(),
             ),
             _ => panic!("Invalid token type"),
         }
@@ -73,15 +80,12 @@ pub trait KdaModule {
         self.send().kda_burn(&token_id, token_nonce, amount);
     }
 
-    // TODO: review this
-    fn get_token_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
-        let own_sc_address = self.blockchain().get_sc_address();
+    /// Retrieves and decode SFT token attributes
+    fn get_sft_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
         let token_id = self.token_id().get();
-        let token_data =
-            self.blockchain()
-                .get_kda_token_data(&own_sc_address, &token_id, token_nonce);
+        let meta = self.blockchain().get_sft_metadata(&token_id, token_nonce);
 
-        token_data.decode_attributes()
+        meta.metadata.decode_attributes()
     }
 
     fn require_token_issued(&self) {

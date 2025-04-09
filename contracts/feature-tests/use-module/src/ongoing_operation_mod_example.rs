@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use klever_sc_modules::ongoing_operation::{
     self, CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,

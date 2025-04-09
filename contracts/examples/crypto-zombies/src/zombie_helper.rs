@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use crate::storage;
 
@@ -31,7 +31,10 @@ pub trait ZombieHelper: storage::Storage {
     fn withdraw(&self) {
         let caller_address = self.blockchain().get_caller();
         let collected_fees = self.collected_fees().get();
-        self.send().direct_klv(&caller_address, &collected_fees);
+        self.tx()
+            .to(&caller_address)
+            .klv(&collected_fees)
+            .transfer();
         self.collected_fees().clear();
     }
 

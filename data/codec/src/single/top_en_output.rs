@@ -1,10 +1,10 @@
+use crate::num_conv::top_encode_number_buffer;
 use crate::{
     num_conv::top_encode_number, EncodeError, EncodeErrorHandler, NestedEncodeOutput, TryStaticCast,
 };
 use alloc::vec::Vec;
 
 /// Specifies objects that can receive the result of a TopEncode computation.
-
 /// in principle from NestedEncode performed on nested items.
 ///
 /// All methods consume the object, so they can only be called once.
@@ -20,13 +20,13 @@ pub trait TopEncodeOutput: Sized {
     fn set_slice_u8(self, bytes: &[u8]);
 
     fn set_u64(self, value: u64) {
-        let mut buffer = [0u8; 8];
+        let mut buffer = top_encode_number_buffer();
         let slice = top_encode_number(value, false, &mut buffer);
         self.set_slice_u8(slice);
     }
 
     fn set_i64(self, value: i64) {
-        let mut buffer = [0u8; 8];
+        let mut buffer = top_encode_number_buffer();
         let slice = top_encode_number(value as u64, true, &mut buffer);
         self.set_slice_u8(slice);
     }

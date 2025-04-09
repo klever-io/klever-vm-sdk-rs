@@ -1,0 +1,411 @@
+{
+    "name": "storage",
+    "steps": [
+        {
+            "step": "setState",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                },
+                "address:an_account": {
+                    "nonce": "0",
+                    "balance": "0"
+                },
+                "0x000000000000000000000000000000000000000000000000000000000002ffff": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "code": "kleversc:../../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json"
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "issue-and-set-token-meta",
+            "comment": "returns the token id on VM 1.4, but nothing on VM 1.5",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "issue_sft",
+                "arguments": [
+                    "str:TICKER"
+                ],
+                "gasLimit": "200,000,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": "*",
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "reset the token ID so we can set it again",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "roles": [
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
+                            ]
+                        }
+                    },
+                    "storage": {
+                        "str:nonFungibleTokenMapper": ""
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-set-token-id",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_set_token_id",
+                "arguments": [
+                    "str:TICKER-3H48"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-mint",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_mint",
+                "arguments": [
+                    "1000",
+                    "u8:1|u8:2|u8:3"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "nested:str:TICKER-3H48|u64:1|biguint:1000"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-mint-and-send",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_mint_and_send",
+                "arguments": [
+                    "address:an_account",
+                    "2000",
+                    "u8:4|u8:5|u8:6"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "nested:str:TICKER-3H48|u64:2|biguint:2000"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "id": "check-state after mint",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "1000",
+                                    "attributes": "u8:1|u8:2|u8:3"
+                                }
+                            ],
+                            "lastNonce": "2",
+                            "roles": [
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
+                            ]
+                        }
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                },
+                "address:an_account": {
+                    "nonce": "*",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "2",
+                                    "balance": "2000",
+                                    "attributes": "u8:4|u8:5|u8:6"
+                                }
+                            ],
+                            "lastNonce": "2"
+                        }
+                    }
+                },
+                "+": ""
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-add-quantity",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_add_quantity",
+                "arguments": [
+                    "1",
+                    "5000"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "nested:str:TICKER-3H48|u64:1|biguint:5000"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-add-quantity-and-send",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_add_quantity_and_send",
+                "arguments": [
+                    "address:an_account",
+                    "1",
+                    "7000"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "nested:str:TICKER-3H48|u64:1|biguint:7000"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "id": "check-state after add quantity",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "6000",
+                                    "attributes": "u8:1|u8:2|u8:3"
+                                }
+                            ],
+                            "lastNonce": "2",
+                            "roles": [
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
+                            ]
+                        }
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                },
+                "address:an_account": {
+                    "nonce": "*",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "2",
+                                    "balance": "2000",
+                                    "attributes": "u8:4|u8:5|u8:6"
+                                },
+                                {
+                                    "nonce": "1",
+                                    "balance": "7000",
+                                    "attributes": "u8:1|u8:2|u8:3"
+                                }
+                            ],
+                            "lastNonce": "2"
+                        }
+                    }
+                },
+                "+": ""
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-sft-burn",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "mapper_sft_burn",
+                "arguments": [
+                    "1",
+                    "2000"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "id": "check-state after burn",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "4000",
+                                    "attributes": "u8:1|u8:2|u8:3"
+                                }
+                            ],
+                            "lastNonce": "2",
+                            "roles": [
+                                "KDARoleMint",
+                                "KDARoleSetITOPrices",
+                                "KDARoleDeposit",
+                                "KDARoleTransfer"
+                            ]
+                        }
+                    },
+                    "code": "kleversc:../output/basic-features.kleversc.json"
+                },
+                "address:an_account": {
+                    "nonce": "*",
+                    "balance": "0",
+                    "kda": {
+                        "str:TICKER-3H48": {
+                            "instances": [
+                                {
+                                    "nonce": "2",
+                                    "balance": "2000",
+                                    "attributes": "u8:4|u8:5|u8:6"
+                                },
+                                {
+                                    "nonce": "1",
+                                    "balance": "7000",
+                                    "attributes": "u8:1|u8:2|u8:3"
+                                }
+                            ],
+                            "lastNonce": "2"
+                        }
+                    }
+                },
+                "+": ""
+            }
+        },
+        {
+            "step": "scQuery",
+            "id": "mapper-sft-get-balance",
+            "tx": {
+                "to": "sc:basic-features",
+                "function": "mapper_sft_get_balance",
+                "arguments": [
+                    "1"
+                ]
+            },
+            "expect": {
+                "out": [
+                    "4000"
+                ],
+                "status": "",
+                "logs": "*"
+            }
+        },
+        {
+            "step": "scQuery",
+            "id": "mapper-sft-get-attributes",
+            "tx": {
+                "to": "sc:basic-features",
+                "function": "mapper_get_sft_attributes",
+                "arguments": [
+                    "1"
+                ]
+            },
+            "expect": {
+                "out": [
+                    "u8:1|u8:2|u8:3"
+                ],
+                "status": "",
+                "logs": "*"
+            }
+        },
+        {
+            "step": "scQuery",
+            "id": "mapper-sft-token-id",
+            "tx": {
+                "to": "sc:basic-features",
+                "function": "getSemiFungibleTokenId",
+                "arguments": []
+            },
+            "expect": {
+                "out": [
+                    "str:TICKER-3H48"
+                ],
+                "status": "",
+                "logs": "*"
+            }
+        }
+    ]
+}

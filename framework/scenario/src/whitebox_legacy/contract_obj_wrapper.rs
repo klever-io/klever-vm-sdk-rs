@@ -6,7 +6,7 @@ use crate::{
     klever_sc::{
         codec::{TopDecode, TopEncode},
         contract_base::{CallableContract, ContractBase},
-        types::{heap::Address},
+        types::heap::Address,
     },
     scenario_model::{Account, BytesValue, ScCallStep, SetStateStep},
     testing_framework::raw_converter::bytes_to_hex,
@@ -347,7 +347,7 @@ impl BlockchainStateWrapper {
         let vm_address = to_vm_address(address);
         match self.world.get_mut_state().accounts.get_mut(&vm_address) {
             Some(acc) => {
-                acc.klv_balance = balance.clone();
+                acc.klv_balance.clone_from(balance);
 
                 self.add_mandos_set_account(address);
             },
@@ -403,6 +403,7 @@ impl BlockchainStateWrapper {
             None,
             None,
             &[],
+            true,
         );
     }
 
@@ -419,6 +420,7 @@ impl BlockchainStateWrapper {
         name: Option<&[u8]>,
         hash: Option<&[u8]>,
         uris: &[Vec<u8>],
+        can_burn: bool,
     ) {
         let vm_address = to_vm_address(address);
         match self.world.get_mut_state().accounts.get_mut(&vm_address) {
@@ -434,10 +436,9 @@ impl BlockchainStateWrapper {
                         name: name.unwrap_or_default().to_vec(),
                         hash: hash.map(|h| h.to_vec()),
                         uri: uris.to_vec(),
-                        can_burn: true,
+                        can_burn,
                     },
                 );
-
                 self.add_mandos_set_account(address);
             },
             None => panic!(
@@ -680,7 +681,7 @@ impl BlockchainStateWrapper {
             .to(sc_wrapper.address_ref())
             .function(TxFunctionName::WHITEBOX_CALL.as_str())
             .klv_value(klv_payment)
-            .gas_limit(u64::MAX)
+            .gas_limit(i64::MAX as u64)
             .no_expect();
 
         sc_call_step.explicit_tx_hash = Some(H256::zero());

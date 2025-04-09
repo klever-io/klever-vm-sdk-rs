@@ -1,7 +1,5 @@
-use std::{collections::HashMap, fmt::Debug};
-
 use num_bigint::BigUint;
-use num_traits::Zero;
+use std::{collections::HashMap, fmt::Debug};
 
 use crate::{tx_mock::BlockchainUpdate, types::VMAddress};
 

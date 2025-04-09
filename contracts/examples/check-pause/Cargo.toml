@@ -9,17 +9,17 @@ publish = false
 path = "src/check_pause.rs"
 
 [dev-dependencies]
-num-bigint = "0.4.2"
+num-bigint = "0.4"
 
 [dependencies.klever-sc]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/base"
 
 [dependencies.klever-sc-modules]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../contracts/modules"
 
 [dev-dependencies.klever-sc-scenario]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/scenario"
 

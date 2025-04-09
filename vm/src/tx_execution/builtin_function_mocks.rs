@@ -1,6 +1,5 @@
 mod builtin_func_container;
 mod builtin_func_trait;
-mod kda_nft;
 mod general;
 mod transfer;
 pub mod vm_builtin_function_names;

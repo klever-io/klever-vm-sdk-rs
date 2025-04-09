@@ -1,6 +1,3 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
-
 #[klever_sc::module]
 pub trait EventsModule {
     #[event("buy-token")]

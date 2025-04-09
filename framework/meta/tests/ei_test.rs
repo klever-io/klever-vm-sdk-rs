@@ -63,6 +63,13 @@ pub const EI_1_2_ADDED_NAMES: &[&str] = &[
 /// Planned to be released with VM 1.5.
 pub const EI_1_3_ADDED_NAMES: &[&str] = &[
     "managedGetBackTransfers",
+    "managedAccHasPerm",
+    "managedGetMultiKDAWithoutKLVCallValue",
+    "managedGetCodeMetadata",
+    "managedGetSftMetadata",
+    "managedGetUserKDA",
+    "managedGetKDARoles",
+    "managedIsBuiltinFunction",
 ];
 
 fn list_to_set<'a>(list: &[&'a str]) -> HashSet<&'a str> {
@@ -83,7 +90,13 @@ fn test_added_names(base: &[&str], added: &[&str], expected_result: &[&str]) {
         );
         check.insert(added_name);
     }
-    assert_eq!(check, list_to_set(expected_result));
+    let mut actual_sorted: Vec<_> = check.into_iter().collect();
+    let mut expected_sorted: Vec<_> = list_to_set(expected_result).into_iter().collect();
+
+    actual_sorted.sort();
+    expected_sorted.sort();
+
+    assert_eq!(actual_sorted, expected_sorted);
 }
 
 #[test]

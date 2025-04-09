@@ -77,7 +77,7 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_kda_balance")
     }
 
-    fn get_kda_nft_name_length(
+    fn get_kda_name_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
@@ -87,7 +87,7 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_kda_nft_name_length")
     }
 
-    fn get_kda_nft_uri_length(
+    fn get_kda_uri_length(
         &self,
         address_offset: MemPtr,
         token_id_offset: MemPtr,
@@ -475,10 +475,6 @@ impl VMHooks for VMHooksDispatcher {
         panic!("Unavailable: get_current_tx_hash");
     }
 
-    fn get_prev_tx_hash(&self, data_offset: MemPtr) {
-        panic!("Unavailable: get_prev_tx_hash");
-    }
-
     fn managed_sc_address(&self, destination_handle: i32) {
         self.handler.managed_sc_address(destination_handle);
     }
@@ -525,8 +521,12 @@ impl VMHooks for VMHooksDispatcher {
     }
 
     fn managed_get_multi_kda_call_value(&self, multi_call_value_handle: i32) {
+        self.handler.load_all_kda_transfers(multi_call_value_handle)
+    }
+
+    fn managed_get_multi_kda_without_klv_call_value(&self, multi_call_value_handle: i32) {
         self.handler
-            .load_all_kda_transfers(multi_call_value_handle)
+            .load_all_kda_transfers_no_klv(multi_call_value_handle)
     }
 
     fn managed_get_kda_balance(
@@ -550,7 +550,7 @@ impl VMHooks for VMHooksDispatcher {
         buckets_handle: i32,
         mime_handle: i32,
         metadata_handle: i32,
-    ){
+    ) {
         self.handler.managed_get_user_kda(
             address_handle,
             token_id_handle,
@@ -573,6 +573,7 @@ impl VMHooks for VMHooksDispatcher {
         id_handle: i32,
         name_handle: i32,
         creator_handle: i32,
+        admin_handle: i32,
         logo_handle: i32,
         uris_handle: i32,
         initial_supply_handle: i32,
@@ -609,15 +610,19 @@ impl VMHooks for VMHooksDispatcher {
         );
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        token_id_handle: i32,
-        roles_handle: i32,
-    ) {
-        self.handler.managed_get_kda_roles(
-            token_id_handle,
-            roles_handle,
-        );
+    fn managed_get_kda_roles(&self, token_id_handle: i32, roles_handle: i32) {
+        self.handler
+            .managed_get_kda_roles(token_id_handle, roles_handle);
+    }
+
+    fn managed_get_sft_metadata(&self, ticker_handle: i32, nonce: i64, data_handle: i32) {
+        self.handler
+            .managed_get_sft_metadata(ticker_handle, nonce as u64, data_handle);
+    }
+
+    fn managed_acc_has_perm(&self, ops: i64, source_acc_addr: i32, target_acc_addr: i32) -> i32 {
+        self.handler
+            .managed_acc_has_perm(ops, source_acc_addr, target_acc_addr)
     }
 
     fn managed_get_back_transfers(&self, kda_transfer_value_handle: i32, call_value_handle: i32) {
@@ -779,11 +784,15 @@ impl VMHooks for VMHooksDispatcher {
     }
 
     fn managed_get_code_metadata(&self, address_handle: i32, response_handle: i32) {
-        panic!("Unavailable: managed_get_code_metadata")
+        self.handler
+            .managed_get_code_metadata(address_handle, response_handle);
     }
 
     fn managed_is_builtin_function(&self, function_name_handle: i32) -> i32 {
-        panic!("Unavailable: managed_is_builtin_function")
+        bool_to_i32(
+            self.handler
+                .managed_is_builtin_function(function_name_handle),
+        )
     }
 
     fn big_float_new_from_parts(

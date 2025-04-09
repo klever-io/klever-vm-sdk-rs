@@ -1,3 +1,6 @@
+use klever_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+
+use crate::scenario_model::CheckKdaData;
 use crate::{
     scenario::model::{
         BigUintValue, BytesKey, BytesValue, CheckKda, CheckKdaInstances, CheckKdaMap,
@@ -19,6 +22,7 @@ pub struct CheckAccount {
     pub username: CheckValue<BytesValue>,
     pub storage: CheckStorage,
     pub code: CheckValue<BytesValue>,
+    pub code_metadata: CheckValue<BytesValue>,
     pub owner: CheckValue<BytesValue>,
 }
 
@@ -55,6 +59,17 @@ impl CheckAccount {
     {
         self.code = CheckValue::Equal(BytesValue::interpret_from(
             code_expr,
+            &InterpreterContext::default(),
+        ));
+        self
+    }
+
+    pub fn code_metadata<V>(mut self, code_metadata_expr: V) -> Self
+    where
+        BytesValue: InterpretableFrom<V>,
+    {
+        self.code_metadata = CheckValue::Equal(BytesValue::interpret_from(
+            code_metadata_expr,
             &InterpreterContext::default(),
         ));
         self
@@ -97,6 +112,52 @@ impl CheckAccount {
         self
     }
 
+    pub fn kda_nft_balance_and_attributes<K, N, V, T>(
+        mut self,
+        token_id_expr: K,
+        nonce_expr: N,
+        balance_expr: V,
+        attributes_expr: Option<T>,
+    ) -> Self
+    where
+        BytesKey: From<K>,
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        T: TopEncode,
+    {
+        let token_id = BytesKey::from(token_id_expr);
+
+        if let CheckKdaMap::Unspecified = &self.kda {
+            let mut check_kda = CheckKda::Full(CheckKdaData::default());
+
+            if let Some(attributes_expr) = attributes_expr {
+                check_kda.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    top_encode_to_vec_u8_or_panic(&attributes_expr),
+                );
+            } else {
+                check_kda.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    Vec::<u8>::new(),
+                );
+            }
+
+            let mut new_kda_map = BTreeMap::new();
+            let _ = new_kda_map.insert(token_id, check_kda);
+
+            let new_check_kda_map = CheckKdaMapContents {
+                contents: new_kda_map,
+                other_kdas_allowed: true,
+            };
+
+            self.kda = CheckKdaMap::Equal(new_check_kda_map);
+        }
+
+        self
+    }
+
     pub fn check_storage(mut self, key: &str, value: &str) -> Self {
         let mut details = match self.storage {
             CheckStorage::Star => CheckStorageDetails::default(),
@@ -124,6 +185,7 @@ impl InterpretableFrom<Box<CheckAccountRaw>> for CheckAccount {
             username: CheckValue::<BytesValue>::interpret_from(from.username, context),
             storage: CheckStorage::interpret_from(from.storage, context),
             code: CheckValue::<BytesValue>::interpret_from(from.code, context),
+            code_metadata: CheckValue::<BytesValue>::interpret_from(from.code_metadata, context),
             owner: CheckValue::<BytesValue>::interpret_from(from.owner, context),
         }
     }
@@ -139,6 +201,7 @@ impl IntoRaw<CheckAccountRaw> for CheckAccount {
             username: self.username.into_raw(),
             storage: self.storage.into_raw(),
             code: self.code.into_raw_explicit(), // TODO: convert back to into_raw after VM CI upgrade
+            code_metadata: self.code_metadata.into_raw(),
             owner: self.owner.into_raw_explicit(), // TODO: convert back to into_raw after VM CI upgrade
         }
     }

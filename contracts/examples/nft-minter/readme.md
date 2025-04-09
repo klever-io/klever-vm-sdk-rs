@@ -20,7 +20,7 @@ To issue the NFT (i.e. create the NFT "brand"), you need to use the `issueToken`
 fn issue_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer)
 ```
 
-`token_name` is the disply name that will be shown on the explorer in the user's balance, while `token_ticker` is the prefix of the token identifier that will be created. The token identifier is the token ticker + a dash (`-`) and 6 random hex characters. This is done to be able to differentiate between tokens with the same ticker. More information can be found here: https://docs.klever.finance/tokens/kda-tokens
+`token_name` is the disply name that will be shown on the explorer in the user's balance, while `token_ticker` is the prefix of the token identifier that will be created. The token identifier is the token ticker + a dash (`-`) and 6 random hex characters. This is done to be able to differentiate between tokens with the same ticker. More information can be found here: https://docs.klever.org/tokens/kda-tokens
 
 Once the issue is complete, you have to set the NFTCreate local role, which can be done through the `setLocalRoles` endpoint. No arguments and no payment required.  
 

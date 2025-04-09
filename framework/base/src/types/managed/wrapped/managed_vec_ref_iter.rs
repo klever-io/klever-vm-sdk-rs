@@ -34,7 +34,7 @@ where
     type Item = T::Ref<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next_byte_start = self.byte_start + T::PAYLOAD_SIZE;
+        let next_byte_start = self.byte_start + T::payload_size();
         if next_byte_start > self.byte_end {
             return None;
         }
@@ -52,28 +52,28 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let remaining = (self.byte_end - self.byte_start) / T::PAYLOAD_SIZE;
+        let remaining = (self.byte_end - self.byte_start) / T::payload_size();
         (remaining, Some(remaining))
     }
 }
 
-impl<'a, M, T> ExactSizeIterator for ManagedVecRefIterator<'a, M, T>
+impl<M, T> ExactSizeIterator for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,
 {
 }
 
-impl<'a, M, T> DoubleEndedIterator for ManagedVecRefIterator<'a, M, T>
+impl<M, T> DoubleEndedIterator for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        if self.byte_start + T::PAYLOAD_SIZE > self.byte_end {
+        if self.byte_start + T::payload_size() > self.byte_end {
             return None;
         }
-        self.byte_end -= T::PAYLOAD_SIZE;
+        self.byte_end -= T::payload_size();
 
         let result = unsafe {
             T::from_byte_reader_as_borrow(|dest_slice| {
@@ -88,7 +88,7 @@ where
     }
 }
 
-impl<'a, M, T> Clone for ManagedVecRefIterator<'a, M, T>
+impl<M, T> Clone for ManagedVecRefIterator<'_, M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem,

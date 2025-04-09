@@ -1,12 +1,8 @@
 #![allow(deprecated)] // TODO: migrate tests
 
-use adder::*;
-use num_traits::ToPrimitive;
-
 use basic_features::BasicFeatures;
 use klever_sc::{
     codec::Empty,
-    contract_base::ContractBase,
     err_msg,
     types::{Address, BigUint, KdaTokenPayment, ManagedVec, TokenIdentifier},
 };
@@ -24,14 +20,6 @@ const SC_WASM_PATH: &str = "output/rust-testing-framework-tester.wasm";
 const ADDER_WASM_PATH: &str = "../../examples/adder/output/adder.wasm";
 const BASIC_FEATURES_WASM_PATH: &str =
     "../../feature-tests/basic-features/output/basic-features.wasm";
-
-const NFT_TOKEN_ID: &[u8] = b"NFT-123456";
-const NFT_AMOUNT: u64 = 1;
-const FIRST_NFT_NONCE: u64 = 5;
-const FIRST_ATTRIBUTES: &[u8] = b"FirstAttributes";
-const FIRST_ROYALTIES: u64 = 1_000;
-const SECOND_ROYALTIES: u64 = 5_000;
-const FIRST_URIS: &[&[u8]] = &[b"FirstUri", b"SecondUri"];
 
 #[test]
 fn test_add() {
@@ -1324,13 +1312,4 @@ fn dump_state_all_test() {
         .assert_ok();
 
     wrapper.dump_state();
-}
-
-fn uris_to_vec(uris: &[&[u8]]) -> Vec<Vec<u8>> {
-    let mut out = Vec::new();
-    for uri in uris {
-        out.push((*uri).to_vec());
-    }
-
-    out
 }

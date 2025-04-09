@@ -1,5 +1,3 @@
-klever_sc::imports!();
-
 /// Example of a module that lies in the same crate.
 #[klever_sc::module]
 pub trait InternalModuleB {

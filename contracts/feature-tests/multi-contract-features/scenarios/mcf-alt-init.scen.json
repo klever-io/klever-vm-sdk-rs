@@ -18,7 +18,7 @@
             "id": "alt impl deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/multi-contract-alt-impl.wasm",
+                "contractCode": "kleversc:../output/multi-contract-alt-impl.kleversc.json",
                 "arguments": [],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"

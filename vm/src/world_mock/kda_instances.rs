@@ -34,12 +34,7 @@ impl KdaInstances {
         self.0.insert(instance.nonce, instance);
     }
 
-    pub fn increase_balance(
-        &mut self,
-        nonce: u64,
-        value: &BigUint,
-        metadata: KdaInstanceMetadata,
-    ) {
+    pub fn increase_balance(&mut self, nonce: u64, value: &BigUint, metadata: KdaInstanceMetadata) {
         let instance = self.0.entry(nonce).or_insert_with(|| KdaInstance {
             nonce,
             balance: BigUint::zero(),
@@ -57,9 +52,9 @@ impl KdaInstances {
             .0
             .entry(nonce)
             .and_modify(|instance| {
-                instance.balance = value.clone();
+                instance.balance.clone_from(value);
                 instance.nonce = nonce;
-                instance.metadata = metadata.clone();
+                instance.metadata.clone_from(&metadata);
             })
             .or_insert_with(|| KdaInstance {
                 nonce,

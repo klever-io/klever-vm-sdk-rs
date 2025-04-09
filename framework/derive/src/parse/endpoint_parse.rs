@@ -1,13 +1,12 @@
 use crate::model::{
-    EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method,
-    PublicRole,
+    EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method, PublicRole,
 };
 
 use super::{
     attributes::{
-        is_init, is_only_admin, is_only_owner, is_only_user_account, is_upgrade,
-        EndpointAttribute, ExternalViewAttribute, LabelAttribute,
-        OutputNameAttribute, ViewAttribute,
+        is_allow_multiple_var_args, is_init, is_only_admin, is_only_owner, is_only_user_account,
+        is_upgrade, EndpointAttribute, ExternalViewAttribute, LabelAttribute, OutputNameAttribute,
+        ViewAttribute,
     },
     MethodAttributesPass1,
 };
@@ -27,6 +26,7 @@ pub fn process_init_attribute(
         check_single_role(&*method);
         method.public_role = PublicRole::Init(InitMetadata {
             payable: pass_1_data.payable.clone(),
+            allow_multiple_var_args: pass_1_data.allow_multiple_var_args,
         });
         true
     } else {
@@ -42,18 +42,26 @@ pub fn process_upgrade_attribute(
     let has_attr = is_upgrade(attr);
     if has_attr {
         check_single_role(&*method);
-        method.public_role = PublicRole::Endpoint(EndpointMetadata {
-            public_name: proc_macro2::Ident::new("upgrade", proc_macro2::Span::call_site()),
+        method.public_role = PublicRole::Upgrade(InitMetadata {
             payable: first_pass_data.payable.clone(),
-            only_owner: false,
-            only_admin: false,
-            only_user_account: false,
-            mutability: EndpointMutabilityMetadata::Mutable,
+            allow_multiple_var_args: first_pass_data.allow_multiple_var_args,
         });
         true
     } else {
         false
     }
+}
+
+pub fn process_allow_multiple_var_args_attribute(
+    attr: &syn::Attribute,
+    pass_1_data: &mut MethodAttributesPass1,
+) -> bool {
+    let is_allow_multiple_var_args = is_allow_multiple_var_args(attr);
+    if is_allow_multiple_var_args {
+        pass_1_data.allow_multiple_var_args = true;
+    }
+
+    is_allow_multiple_var_args
 }
 
 pub fn process_only_owner_attribute(
@@ -108,6 +116,7 @@ pub fn process_endpoint_attribute(
                 only_admin: pass_1_data.only_admin,
                 only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Mutable,
+                allow_multiple_var_args: pass_1_data.allow_multiple_var_args,
             });
         })
         .is_some()
@@ -132,6 +141,7 @@ pub fn process_view_attribute(
                 only_admin: pass_1_data.only_admin,
                 only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Readonly,
+                allow_multiple_var_args: pass_1_data.allow_multiple_var_args,
             });
         })
         .is_some()
@@ -156,6 +166,7 @@ pub fn process_external_view_attribute(
                 only_admin: pass_1_data.only_admin,
                 only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Readonly,
+                allow_multiple_var_args: pass_1_data.allow_multiple_var_args,
             });
         })
         .is_some()

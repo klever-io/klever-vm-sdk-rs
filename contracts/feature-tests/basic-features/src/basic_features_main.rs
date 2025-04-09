@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(never_type)]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 pub mod big_num_methods;
 pub mod big_num_operators;
@@ -18,14 +17,17 @@ pub mod managed_address_features;
 pub mod managed_buffer_features;
 pub mod managed_vec_features;
 pub mod non_zero_features;
+pub mod small_num_overflow_test_ops;
 pub mod storage_direct_load;
 pub mod storage_direct_store;
 pub mod storage_mapper_fungible_token;
+pub mod storage_mapper_get_at_address;
 pub mod storage_mapper_linked_list;
 pub mod storage_mapper_map;
 pub mod storage_mapper_map_storage;
 pub mod storage_mapper_non_fungible_token;
 pub mod storage_mapper_queue;
+pub mod storage_mapper_semi_fungible_token;
 pub mod storage_mapper_set;
 pub mod storage_mapper_single;
 pub mod storage_mapper_token_attributes;
@@ -67,10 +69,13 @@ pub trait BasicFeatures:
     + storage_mapper_whitelist::StorageMapperWhitelistFeatures
     + storage_mapper_fungible_token::FungibleTokenMapperFeatures
     + storage_mapper_non_fungible_token::NonFungibleTokenMapperFeatures
+    + storage_mapper_semi_fungible_token::SemiFungibleTokenMapperFeatures
     + storage_mapper_unique_id_mapper::UniqueIdMapperFeatures
     + struct_eq::StructEquals
+    + small_num_overflow_test_ops::SmallIntOverflow
     + token_identifier_features::TokenIdentifierFeatures
     + non_zero_features::TypeFeatures
+    + storage_mapper_get_at_address::StorageMapperGetAtAddress
 {
     #[init]
     fn init(&self) {}
@@ -93,4 +98,7 @@ pub trait BasicFeatures:
 
         arg1
     }
+
+    #[storage_mapper("coolTree")]
+    fn cool_tree(&self) -> OrderedBinaryTreeMapper<Self::Api, BigUint>;
 }

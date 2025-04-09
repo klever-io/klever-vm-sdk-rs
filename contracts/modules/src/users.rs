@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Standard smart contract module that when added to a smart contract manages a list of users.
 ///

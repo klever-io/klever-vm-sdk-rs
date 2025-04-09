@@ -1,0 +1,23 @@
+{
+    "kdaAttribute": {
+        "ticker": "OnlyInKda",
+        "type": "OnlyShowsUpInKdaAttr"
+    },
+    "types": {
+        "OnlyShowsUpAsNested10": {
+            "type": "struct",
+            "docs": [
+                "Tests that the ABI generator also fetches types that only appear as fields."
+            ]
+        },
+        "OnlyShowsUpInKdaAttr": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "field",
+                    "type": "OnlyShowsUpAsNested10"
+                }
+            ]
+        }
+    }
+}

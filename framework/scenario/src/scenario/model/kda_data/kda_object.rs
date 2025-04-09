@@ -1,5 +1,8 @@
 use super::KdaInstance;
-use crate::scenario::model::{BigUintValue, BytesValue, U64Value};
+use crate::{
+    scenario::model::{BigUintValue, BytesValue, U64Value},
+    scenario_model::AddressValue,
+};
 
 #[derive(Debug, Default, Clone)]
 pub struct KdaObject {
@@ -49,6 +52,73 @@ impl KdaObject {
             inst_for_nonce.attributes = Some(attr_bytes);
         } else {
             inst_for_nonce.attributes = None;
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn set_token_all_properties<N, V, T, A>(
+        &mut self,
+        nonce_expr: N,
+        balance_expr: V,
+        opt_attributes_expr: Option<T>,
+        royalties_expr: N,
+        creator_expr: Option<A>,
+        hash_expr: Option<T>,
+        uris_expr: Vec<T>,
+    ) where
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        BytesValue: From<T>,
+        AddressValue: From<A>,
+    {
+        let inst_for_nonce = self.get_or_insert_instance_for_nonce(nonce_expr);
+
+        let balance = BigUintValue::from(balance_expr);
+        if balance.value > 0u32.into() {
+            inst_for_nonce.balance = Some(balance);
+        } else {
+            inst_for_nonce.balance = None;
+        }
+
+        if let Some(attributes) = opt_attributes_expr {
+            let attributes = BytesValue::from(attributes);
+            if !attributes.value.is_empty() {
+                inst_for_nonce.attributes = Some(attributes);
+            } else {
+                inst_for_nonce.attributes = None;
+            }
+        }
+
+        let royalties = U64Value::from(royalties_expr);
+        if royalties.value > 0 {
+            inst_for_nonce.royalties = Some(royalties);
+        } else {
+            inst_for_nonce.royalties = None;
+        }
+
+        if let Some(creator_expr) = creator_expr {
+            let creator = AddressValue::from(creator_expr);
+            if !creator.value.is_zero() {
+                inst_for_nonce.creator = Some(creator);
+            } else {
+                inst_for_nonce.creator = None;
+            }
+        }
+
+        if let Some(hash) = hash_expr {
+            let hash = BytesValue::from(hash);
+            if !hash.value.is_empty() {
+                inst_for_nonce.hash = Some(hash);
+            } else {
+                inst_for_nonce.hash = None;
+            }
+        }
+
+        if !uris_expr.is_empty() {
+            inst_for_nonce.uri = uris_expr
+                .into_iter()
+                .map(|uri| BytesValue::from(uri))
+                .collect()
         }
     }
 

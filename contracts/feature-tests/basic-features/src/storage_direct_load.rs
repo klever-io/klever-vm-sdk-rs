@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use klever_sc::api::{use_raw_handle, HandleTypeInfo};
 
@@ -78,9 +78,7 @@ pub trait StorageLoadFeatures {
     #[endpoint]
     fn load_from_address_raw(&self, address: ManagedAddress, key: ManagedBuffer) -> ManagedBuffer {
         // TODO: maybe wrap this kind of functionality in a StorageRawWrapper
-        use klever_sc::api::{
-            StaticVarApi, StaticVarApiImpl, StorageReadApi, StorageReadApiImpl,
-        };
+        use klever_sc::api::{StaticVarApi, StaticVarApiImpl, StorageReadApi, StorageReadApiImpl};
         let value_handle: <<Self as ContractBase>::Api as HandleTypeInfo>::ManagedBufferHandle =
             use_raw_handle(Self::Api::static_var_api_impl().next_handle());
         Self::Api::storage_read_api_impl().storage_load_from_address(

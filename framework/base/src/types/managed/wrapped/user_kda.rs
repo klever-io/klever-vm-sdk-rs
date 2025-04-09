@@ -1,12 +1,19 @@
 use crate::{
     api::ManagedTypeApi,
     codec,
-    codec::derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-    types::{BigUint, get_u32, get_raw_handle, ManagedBuffer, ManagedType, ManagedVec},
+    codec::{
+        derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
+        *,
+    },
+    contract_base::ExitCodecErrorHandler,
+    derive::{ManagedVecItem, TypeAbi},
+    types::{get_raw_handle, get_u32, BigUint, ManagedBuffer, ManagedType, ManagedVec},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 use crate as klever_sc; // needed by the TypeAbi generated code
-use crate::derive::{ManagedVecItem, TypeAbi};
+
+const DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding NFT attributes: ";
 
 #[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
 pub struct UserKDA<M: ManagedTypeApi> {
@@ -48,4 +55,18 @@ pub struct UserBucket<M: ManagedTypeApi> {
     pub unstaked_epoch: u32,
     pub value: BigUint<M>,
     pub delegation: ManagedBuffer<M>,
+}
+
+impl<M: ManagedTypeApi> UserKDA<M> {
+    pub fn try_decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
+        T::top_decode(self.metadata.clone())
+    }
+
+    pub fn decode_attributes<T: TopDecode>(&self) -> T {
+        T::top_decode_or_handle_err(
+            self.metadata.clone(),
+            ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
+        )
+        .unwrap_infallible()
+    }
 }

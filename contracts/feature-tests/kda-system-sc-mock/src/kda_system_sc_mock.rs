@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 const ZERO_ASCII: u8 = b'0';
 const DASH: u8 = b'-';
@@ -27,8 +27,7 @@ pub trait PayableFeatures {
         if initial_supply > 0 {
             let caller = self.blockchain().get_caller();
 
-            self.send()
-                .kda_mint(&new_token_id, 0, &initial_supply);
+            self.send().kda_mint(&new_token_id, 0, &initial_supply);
             self.send()
                 .direct_kda(&caller, &new_token_id, 0, &initial_supply);
         }
@@ -53,18 +52,6 @@ pub trait PayableFeatures {
         &self,
         _token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
-        _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
-        self.create_new_token_id(token_ticker)
-    }
-
-    #[payable("KLV")]
-    #[endpoint(registerMetaKDA)]
-    fn issue_meta_kda(
-        &self,
-        _token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-        _num_decimals: usize,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
     ) -> TokenIdentifier {
         self.create_new_token_id(token_ticker)

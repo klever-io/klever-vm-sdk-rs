@@ -28,7 +28,8 @@
                             ]
                         }
                     },
-                    "code": "file:../output/rust-testing-framework-tester.wasm"
+                    "code": "file:../output/rust-testing-framework-tester.wasm",
+                    "codeMetadata": "0x0506"
                 }
             }
         },

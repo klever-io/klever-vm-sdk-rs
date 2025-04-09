@@ -15,5 +15,5 @@ path = "proxy-test-first"
 path = "proxy-test-second"
 
 [dev-dependencies.klever-sc-scenario]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/scenario"

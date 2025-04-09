@@ -1,17 +1,9 @@
-use crate::klever_sc::types::Address;
 use klever_chain_vm::tx_mock::TxResult;
-use klever_vm_sdk::data::transaction::{
-    ApiLogs, ApiSmartContractResult, Events,
-};
+use klever_vm_sdk::data::transaction::{ApiLogs, ApiSmartContractResult};
 
-use super::{
-    decode_scr_data_or_panic, is_out_scr, process_topics_error, Log, TxExpect, TxResponseStatus,
-};
+use crate::klever_sc::types::Address;
 
-const LOG_IDENTIFIER_SC_DEPLOY: &str = "SCDeploy";
-const LOG_IDENTIFIER_SIGNAL_ERROR: &str = "signalError";
-
-const SYSTEM_SC_BECH32: &str = "klv1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
+use super::{Log, TxExpect, TxResponseStatus};
 
 #[derive(Debug, Default, Clone)]
 /// The response of a transaction.
@@ -83,83 +75,5 @@ impl TxResponse {
     /// Checks if the transaction was successful.
     pub fn is_success(&self) -> bool {
         self.tx_error.is_success()
-    }
-
-    fn process_signal_error(&self) -> TxResponseStatus {
-        if let Some(event) = self.find_log(LOG_IDENTIFIER_SIGNAL_ERROR) {
-            let topics = event.topics.as_ref();
-            if let Some(error) = process_topics_error(topics) {
-                return TxResponseStatus::signal_error(&error);
-            }
-
-            let error_raw = base64::decode(topics.unwrap().get(1).unwrap()).unwrap();
-            let error = String::from_utf8(error_raw).unwrap();
-            return TxResponseStatus::signal_error(&error);
-        }
-
-        TxResponseStatus::default()
-    }
-
-    fn process(self) -> Self {
-        self.process_out()
-            .process_new_deployed_address()
-            .process_new_issued_token_identifier()
-    }
-
-    fn process_out(mut self) -> Self {
-        let out_scr = self.api_scrs.iter().find(is_out_scr);
-
-        if let Some(out_scr) = out_scr {
-            self.out = decode_scr_data_or_panic(&out_scr.data);
-        }
-
-        self
-    }
-
-    fn process_new_deployed_address(mut self) -> Self {
-        if let Some(event) = self.find_log(LOG_IDENTIFIER_SC_DEPLOY).cloned() {
-            let topics = event.topics.as_ref();
-            if process_topics_error(topics).is_some() {
-                return self;
-            }
-
-            let address_raw = base64::decode(topics.unwrap().get(0).unwrap()).unwrap();
-            let address: Address = Address::from_slice(address_raw.as_slice());
-            self.new_deployed_address = Some(address);
-        }
-
-        self
-    }
-
-    fn process_new_issued_token_identifier(mut self) -> Self {
-        let token_identifier_issue_scr: Option<&ApiSmartContractResult> = self
-            .api_scrs
-            .iter()
-            .find(|scr| scr.sender.to_string() == SYSTEM_SC_BECH32 && scr.data.starts_with("@00@"));
-
-        if token_identifier_issue_scr.is_none() {
-            return self;
-        }
-
-        let token_identifier_issue_scr = token_identifier_issue_scr.unwrap();
-        let encoded_tid = token_identifier_issue_scr.data.split('@').nth(2);
-        if encoded_tid.is_none() {
-            return self;
-        }
-
-        self.new_issued_token_identifier =
-            Some(String::from_utf8(hex::decode(encoded_tid.unwrap()).unwrap()).unwrap());
-
-        self
-    }
-
-    fn find_log(&self, log_identifier: &str) -> Option<&Events> {
-        if let Some(logs) = &self.api_logs {
-            logs.events
-                .iter()
-                .find(|event| event.identifier == log_identifier)
-        } else {
-            None
-        }
     }
 }

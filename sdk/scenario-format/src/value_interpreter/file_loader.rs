@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::{
     fs,
     path::{Component, Path, PathBuf},
@@ -5,17 +6,29 @@ use std::{
 
 use crate::interpret_trait::InterpreterContext;
 
-pub fn load_file(file_path: &str, context: &InterpreterContext) -> Vec<u8> {
+#[derive(Serialize, Deserialize)]
+pub struct KleverscFileJson {
+    pub code: String,
+}
+
+pub fn load_file<F: FnOnce(Vec<u8>) -> Vec<u8>>(
+    file_path: &str,
+    context: &InterpreterContext,
+    process_content: F,
+) -> Vec<u8> {
     let mut path_buf = context.context_path.clone();
     path_buf.push(file_path);
     path_buf = normalize_path(path_buf);
-    fs::read(&path_buf).unwrap_or_else(|_| {
-        if context.allow_missing_files {
-            missing_file_value(&path_buf)
-        } else {
-            panic!("not found: {path_buf:#?}")
-        }
-    })
+
+    fs::read(&path_buf)
+        .map(process_content)
+        .unwrap_or_else(|_| {
+            if context.allow_missing_files {
+                missing_file_value(&path_buf)
+            } else {
+                panic!("not found: {path_buf:#?}")
+            }
+        })
 }
 
 fn missing_file_value(path_buf: &Path) -> Vec<u8> {
@@ -34,7 +47,7 @@ fn missing_file_value(path_buf: &Path) -> Vec<u8> {
 ///
 /// Source: https://stackoverflow.com/questions/68231306/stdfscanonicalize-for-files-that-dont-exist
 fn normalize_path<P: AsRef<Path>>(path: P) -> PathBuf {
-    let ends_with_slash = path.as_ref().to_str().map_or(false, |s| s.ends_with('/'));
+    let ends_with_slash = path.as_ref().to_str().is_some_and(|s| s.ends_with('/'));
     let mut normalized = PathBuf::new();
     for component in path.as_ref().components() {
         match &component {

@@ -1,6 +1,8 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
+
+pub mod adder_proxy;
 
 /// One of the simplest smart contracts possible,
 /// it holds a single variable in storage, which anyone can increment.
@@ -26,5 +28,11 @@ pub trait Adder {
     #[payable("KLV")]
     fn add_payable(&self, value: BigUint) {
         self.sum().update(|sum| *sum += value);
+    }
+
+    // Changes sum to a new value on contract upgrades
+    #[upgrade]
+    fn upgrade(&self, new_value: BigUint) {
+        self.sum().set(new_value);
     }
 }

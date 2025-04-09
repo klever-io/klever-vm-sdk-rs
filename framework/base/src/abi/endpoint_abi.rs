@@ -1,18 +1,18 @@
 use super::*;
+use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
 #[derive(Clone, Debug)]
 pub struct InputAbi {
-    pub arg_name: &'static str,
-    pub type_name: TypeName,
-    // pub original_type_name: TypeName,
+    pub arg_name: String,
+    pub type_names: TypeNames,
     pub multi_arg: bool,
 }
 
 #[derive(Clone, Debug)]
 pub struct OutputAbi {
-    pub output_name: &'static str,
-    pub type_name: TypeName,
+    pub output_name: String,
+    pub type_names: TypeNames,
     pub multi_result: bool,
 }
 
@@ -30,29 +30,63 @@ pub enum EndpointMutabilityAbi {
 pub enum EndpointTypeAbi {
     #[default]
     Init,
+    Upgrade,
     Endpoint,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct EndpointAbi {
-    pub docs: &'static [&'static str],
-    pub name: &'static str,
-    pub rust_method_name: &'static str,
+    pub docs: Vec<String>,
+    pub name: String,
+    pub rust_method_name: String,
     pub only_owner: bool,
     pub only_admin: bool,
-    pub labels: &'static [&'static str],
+    pub labels: Vec<String>,
     pub endpoint_type: EndpointTypeAbi,
     pub mutability: EndpointMutabilityAbi,
-    pub payable_in_tokens: &'static [&'static str],
+    pub payable_in_tokens: Vec<String>,
     pub inputs: Vec<InputAbi>,
     pub outputs: OutputAbis,
+    pub allow_multiple_var_args: bool,
 }
 
 impl EndpointAbi {
-    pub fn add_input<T: TypeAbi>(&mut self, arg_name: &'static str) {
+    /// Used in code generation.
+    ///
+    /// TODO: replace with builder pattern to gt rid of the too many arguments.
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        docs: &[&str],
+        name: &str,
+        rust_method_name: &str,
+        only_owner: bool,
+        only_admin: bool,
+        mutability: EndpointMutabilityAbi,
+        endpoint_type: EndpointTypeAbi,
+        payable_in_tokens: &[&str],
+        labels: &[&str],
+        allow_multiple_var_args: bool,
+    ) -> Self {
+        EndpointAbi {
+            docs: docs.iter().map(|s| s.to_string()).collect(),
+            name: name.to_string(),
+            rust_method_name: rust_method_name.to_string(),
+            only_owner,
+            only_admin,
+            labels: labels.iter().map(|s| s.to_string()).collect(),
+            endpoint_type,
+            mutability,
+            payable_in_tokens: payable_in_tokens.iter().map(|s| s.to_string()).collect(),
+            inputs: Vec::new(),
+            outputs: Vec::new(),
+            allow_multiple_var_args,
+        }
+    }
+
+    pub fn add_input<T: TypeAbi>(&mut self, arg_name: &str) {
         self.inputs.push(InputAbi {
-            arg_name,
-            type_name: T::type_name(),
+            arg_name: arg_name.to_string(),
+            type_names: T::type_names(),
             multi_arg: T::is_variadic(),
         });
     }
@@ -67,8 +101,8 @@ impl EndpointAbi {
         labels: &'static [&'static str],
     ) -> Self {
         EndpointAbi {
-            name,
-            labels,
+            name: name.to_string(),
+            labels: labels.iter().map(|s| s.to_string()).collect(),
             endpoint_type: EndpointTypeAbi::Endpoint,
             ..Default::default()
         }

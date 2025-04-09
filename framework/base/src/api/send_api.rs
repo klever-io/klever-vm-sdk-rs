@@ -54,6 +54,7 @@ pub trait SendApiImpl: ManagedTypeApiImpl {
         result_handle: RawHandle,
     );
 
+    #[allow(clippy::too_many_arguments)]
     fn upgrade_from_source_contract(
         &self,
         sc_address_handle: RawHandle,
@@ -62,11 +63,13 @@ pub trait SendApiImpl: ManagedTypeApiImpl {
         source_contract_address_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     );
 
     /// Upgrades a child contract of the currently executing contract.
     /// The upgrade is synchronous, and the current transaction will fail if the upgrade fails.
     /// The child contract's new init function will be called with the provided arguments
+    #[allow(clippy::too_many_arguments)]
     fn upgrade_contract(
         &self,
         sc_address_handle: RawHandle,
@@ -75,7 +78,12 @@ pub trait SendApiImpl: ManagedTypeApiImpl {
         code_handle: RawHandle,
         code_metadata_handle: RawHandle,
         arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
     );
+
+    /// Deletes a contract.
+    /// The deletion is synchronous and the current transaction will fail if the deletion fails.
+    fn delete_contract(&self, address_handle: RawHandle, gas: u64, arg_buffer_handle: RawHandle);
 
     /// In-line execution of another contract.
     fn execute_on_dest_context_raw(

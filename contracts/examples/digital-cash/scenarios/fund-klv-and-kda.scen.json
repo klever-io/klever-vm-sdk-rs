@@ -36,7 +36,7 @@
                 "from": "address:acc1",
                 "to": "sc:the_digital_cash_contract",
                 "klvValue": "1,000",
-                "function": "deposit_fees",
+                "function": "depositFees",
                 "arguments": [
                     "0xdb474a3a065d3f0c0a62ae680ef6435e48eb482899d2ae30ff7a3a4b0ef19c60"
                 ],
@@ -85,20 +85,28 @@
                     "storage": {
                         "str:deposit|0xdb474a3a065d3f0c0a62ae680ef6435e48eb482899d2ae30ff7a3a4b0ef19c60": {
                             "0-depositor_address": "address:acc1",
-                            "1-kda_funds": {
-                                "0-list_size": "u32:0"
-                            },
+                            "1-kda_funds": "u32:0",
                             "2-klv_funds": "biguint:1,000",
                             "3-valability": "u64:60",
                             "4-expiration_round": "u64:10",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:1",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
-                        "str:fee": "10"
+                        "str:fee|nested:str:KLV": "10",
+                        "str:whitelistedFeeTokens|str:.len": "1",
+                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:whitelistedFeeTokens|str:.index|nested:str:KLV": "1",
+                        "str:allTimeFeeTokens|str:.len": "1",
+                        "str:allTimeFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:allTimeFeeTokens|str:.index|nested:str:KLV": "1"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "3",
@@ -137,7 +145,7 @@
                 "from": "address:acc2",
                 "to": "sc:the_digital_cash_contract",
                 "klvValue": "1,000",
-                "function": "deposit_fees",
+                "function": "depositFees",
                 "arguments": [
                     "0x487bd4010b50c24a02018345fe5171edf4182e6294325382c75ef4c4409f01bd"
                 ],
@@ -193,15 +201,17 @@
                     "storage": {
                         "str:deposit|0xdb474a3a065d3f0c0a62ae680ef6435e48eb482899d2ae30ff7a3a4b0ef19c60": {
                             "0-depositor_address": "address:acc1",
-                            "1-kda_funds": {
-                                "0-list_size": "u32:0"
-                            },
+                            "1-kda_funds": "u32:0",
                             "2-klv_funds": "biguint:1,000",
                             "3-valability": "u64:60",
                             "4-expiration_round": "u64:10",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:1",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
                         "str:deposit|0x487bd4010b50c24a02018345fe5171edf4182e6294325382c75ef4c4409f01bd": {
@@ -212,12 +222,22 @@
                             "4-expiration_round": "u64:16",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:1",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
-                        "str:fee": "10"
+                        "str:fee|nested:str:KLV": "10",
+                        "str:whitelistedFeeTokens|str:.len": "1",
+                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:whitelistedFeeTokens|str:.index|nested:str:KLV": "1",
+                        "str:allTimeFeeTokens|str:.len": "1",
+                        "str:allTimeFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:allTimeFeeTokens|str:.index|nested:str:KLV": "1"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "3",
@@ -253,6 +273,34 @@
             "step": "scCall",
             "id": "fund-fail-2",
             "tx": {
+                "from": "address:acc2",
+                "to": "sc:the_digital_cash_contract",
+                "kdaValue": [
+                    {
+                        "tokenIdentifier": "str:CASHTOKEN-123456",
+                        "value": "10"
+                    }
+                ],
+                "function": "fund",
+                "arguments": [
+                    "0x487bd4010b50c24a02018345fe5171edf4182e6294325382c75ef4c4409f01bd",
+                    "u64:100"
+                ],
+                "gasLimit": "100,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "57",
+                "message": "str:key already used",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "fund-fail-3",
+            "tx": {
                 "from": "address:acc3",
                 "to": "sc:the_digital_cash_contract",
                 "kdaValue": [
@@ -280,7 +328,7 @@
             "expect": {
                 "out": [],
                 "status": "57",
-                "message": "str:key already used",
+                "message": "str:invalid depositor",
                 "gas": "*",
                 "refund": "*"
             }
@@ -292,7 +340,7 @@
                 "from": "address:acc3",
                 "to": "sc:the_digital_cash_contract",
                 "klvValue": "1,000",
-                "function": "deposit_fees",
+                "function": "depositFees",
                 "arguments": [
                     "0x885532043a061e0c779e4064b85193f72cffd22c5bcc208c209128e60f21bf0d"
                 ],
@@ -359,70 +407,58 @@
                     "storage": {
                         "str:deposit|0xdb474a3a065d3f0c0a62ae680ef6435e48eb482899d2ae30ff7a3a4b0ef19c60": {
                             "0-depositor_address": "address:acc1",
-                            "1-kda_funds": {
-                                "0-list_size": "u32:0"
-                            },
+                            "1-kda_funds": "u32:0",
                             "2-klv_funds": "biguint:1,000",
                             "3-valability": "u64:60",
                             "4-expiration_round": "u64:10",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:1",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
                         "str:deposit|0x487bd4010b50c24a02018345fe5171edf4182e6294325382c75ef4c4409f01bd": {
                             "0-depositor_address": "address:acc2",
-                            "1-kda_funds": {
-                                "0-list_size": "u32:1",
-                                "1-items": [
-                                    {
-                                        "0-token_identifier": "nested:str:CASHTOKEN-123456",
-                                        "1-nonce": "u64:0",
-                                        "2-amount": "biguint:50"
-                                    }
-                                ]
-                            },
+                            "1-kda_funds": "u32:1|nested:str:CASHTOKEN-123456|u64:0|biguint:50",
                             "2-klv_funds": "biguint:0",
                             "3-valability": "u64:100",
                             "4-expiration_round": "u64:16",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:1",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
                         "str:deposit|0x885532043a061e0c779e4064b85193f72cffd22c5bcc208c209128e60f21bf0d": {
                             "0-depositor_address": "address:acc3",
-                            "1-kda_funds": {
-                                "0-list_size": "u32:3",
-                                "1-items": [
-                                    {
-                                        "0-token_identifier": "nested:str:CASHTOKEN-112233",
-                                        "1-nonce": "u64:0",
-                                        "2-amount": "biguint:50"
-                                    },
-                                    {
-                                        "0-token_identifier": "nested:str:CASHTOKEN-445566",
-                                        "1-nonce": "u64:0",
-                                        "2-amount": "biguint:50"
-                                    },
-                                    {
-                                        "0-token_identifier": "nested:str:CASHTOKEN-778899",
-                                        "1-nonce": "u64:0",
-                                        "2-amount": "biguint:50"
-                                    }
-                                ]
-                            },
+                            "1-kda_funds": "u32:3|nested:str:CASHTOKEN-112233|u64:0|biguint:50|nested:str:CASHTOKEN-445566|u64:0|biguint:50|nested:str:CASHTOKEN-778899|u64:0|biguint:50",
                             "2-klv_funds": "biguint:0",
                             "3-valability": "u64:100",
                             "4-expiration_round": "u64:16",
                             "5-fees": {
                                 "0-num_token_to_transfer": "u32:3",
-                                "1-value": "biguint:1,000"
+                                "1-value": {
+                                    "0-tokenIdentifier": "nested:str:KLV",
+                                    "1-nonce": "u64:0",
+                                    "2-amount": "biguint:1,000"
+                                }
                             }
                         },
-                        "str:fee": "10"
+                        "str:fee|nested:str:KLV": "10",
+                        "str:whitelistedFeeTokens|str:.len": "1",
+                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:whitelistedFeeTokens|str:.index|nested:str:KLV": "1",
+                        "str:allTimeFeeTokens|str:.len": "1",
+                        "str:allTimeFeeTokens|str:.item|u32:1": "str:KLV",
+                        "str:allTimeFeeTokens|str:.index|nested:str:KLV": "1"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "kleversc:../output/digital-cash.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "3",
@@ -430,7 +466,7 @@
                     "storage": {}
                 },
                 "address:acc2": {
-                    "nonce": "2",
+                    "nonce": "3",
                     "balance": "999,000",
                     "kda": {
                         "str:CASHTOKEN-123456": "50"

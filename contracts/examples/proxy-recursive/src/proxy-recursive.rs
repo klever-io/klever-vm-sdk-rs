@@ -1,21 +1,21 @@
 #![no_std]
 
 mod callee_proxy {
-    klever_sc::imports!();
 
     #[klever_sc::proxy]
     pub trait CalleeContract {
         #[endpoint(compute)]
-        fn compute(&self, amount: BigUint) -> SCResult<BigUint>;
+        fn compute(&self, amount: BigUint) -> BigUint;
     }
 }
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 #[klever_sc::contract]
 pub trait ProxyRecursive {
     #[init]
     fn init(&self) {
-        self.contract_address().set(self.blockchain().get_sc_address());
+        self.contract_address()
+            .set(self.blockchain().get_sc_address());
     }
 
     #[storage_mapper("contract_address")]
@@ -24,20 +24,18 @@ pub trait ProxyRecursive {
     #[proxy]
     fn contract_proxy(&self, to: ManagedAddress) -> callee_proxy::Proxy<Self::Api>;
 
-
     #[endpoint]
-    fn compute(&self, amount: BigUint) -> SCResult<BigUint> {
+    fn compute(&self, amount: BigUint) -> BigUint {
         if amount == 0 {
-            return Ok(amount);
+            return amount;
         }
         let contract_address = self.contract_address().get();
-        
-        let result: BigUint = self.contract_proxy(contract_address)
+
+        let result: BigUint = self
+            .contract_proxy(contract_address)
             .compute(amount.clone() - 1u64)
             .execute_on_dest_context();
 
-        
-        return Ok(amount + result);
+        return amount + result;
     }
-
 }

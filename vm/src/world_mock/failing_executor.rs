@@ -26,10 +26,8 @@ impl Executor for FailingExecutor {
         &self,
         _wasm_bytes: &[u8],
         _compilation_options: &klever_chain_vm_executor::CompilationOptions,
-    ) -> Result<
-        Box<dyn klever_chain_vm_executor::Instance>,
-        klever_chain_vm_executor::ExecutorError,
-    > {
+    ) -> Result<Box<dyn klever_chain_vm_executor::Instance>, klever_chain_vm_executor::ExecutorError>
+    {
         panic!("called FailingExecutor")
     }
 
@@ -37,10 +35,8 @@ impl Executor for FailingExecutor {
         &self,
         _cache_bytes: &[u8],
         _compilation_options: &klever_chain_vm_executor::CompilationOptions,
-    ) -> Result<
-        Box<dyn klever_chain_vm_executor::Instance>,
-        klever_chain_vm_executor::ExecutorError,
-    > {
+    ) -> Result<Box<dyn klever_chain_vm_executor::Instance>, klever_chain_vm_executor::ExecutorError>
+    {
         panic!("called FailingExecutor")
     }
 }

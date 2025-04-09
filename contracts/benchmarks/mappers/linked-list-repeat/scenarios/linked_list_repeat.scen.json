@@ -23,7 +23,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/linked-list-repeat.wasm",
+                "contractCode": "kleversc:../output/linked-list-repeat.kleversc.json",
                 "arguments": [],
                 "gasLimit": "20,000,000",
                 "gasPrice": "0"

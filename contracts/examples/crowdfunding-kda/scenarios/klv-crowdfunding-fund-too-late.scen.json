@@ -53,7 +53,7 @@
                         "str:tokenIdentifier": "str:KLV",
                         "str:deposit|address:donor1": "250,000,000,000"
                     },
-                    "code": "file:../output/crowdfunding-kda.wasm"
+                    "code": "kleversc:../output/crowdfunding-kda.kleversc.json"
                 }
             }
         },

@@ -6,6 +6,8 @@ const ADDITIONAL_RANDOM_CHARS_LENGTH: usize = 4;
 pub const IDENTIFIER_MIN_LENGTH: usize = TICKER_MIN_LENGTH + ADDITIONAL_RANDOM_CHARS_LENGTH + 1;
 pub const IDENTIFIER_MAX_LENGTH: usize = TICKER_MAX_LENGTH + ADDITIONAL_RANDOM_CHARS_LENGTH + 1;
 
+const VALID_TOKENS: &[&str] = &["KLV", "KFI"];
+
 const DASH_CHARACTER: u8 = b'-';
 
 /// There is a VM implementation of this very function.
@@ -13,6 +15,11 @@ const DASH_CHARACTER: u8 = b'-';
 /// Using the VM implementation instead of this one saves ~0.6 kB of contract code.
 pub fn validate_token_identifier(token_id_slice: &[u8]) -> bool {
     let length = token_id_slice.len();
+    if let Ok(token_str) = core::str::from_utf8(token_id_slice) {
+        if VALID_TOKENS.contains(&token_str) {
+            return true;
+        }
+    }
 
     #[allow(clippy::manual_range_contains)]
     if length < IDENTIFIER_MIN_LENGTH || length > IDENTIFIER_MAX_LENGTH {

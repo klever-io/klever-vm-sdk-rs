@@ -4,6 +4,8 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+use colored::Colorize;
+
 use crate::{
     display_util::address_hex,
     types::VMAddress,
@@ -52,12 +54,23 @@ impl TxCache {
     where
         F: FnOnce(&AccountData) -> R,
     {
+        self.with_account_or_else(address, f, || {
+            panic!("Account {} not found", address_hex(address))
+        })
+    }
+
+    pub fn with_account_or_else<R, F, Else>(&self, address: &VMAddress, f: F, or_else: Else) -> R
+    where
+        F: FnOnce(&AccountData) -> R,
+        Else: FnOnce() -> R,
+    {
         self.load_account_if_necessary(address);
         let accounts = self.accounts.lock().unwrap();
-        let account = accounts
-            .get(address)
-            .unwrap_or_else(|| panic!("Account {} not found", address_hex(address)));
-        f(account)
+        if let Some(account) = accounts.get(address) {
+            f(account)
+        } else {
+            or_else()
+        }
     }
 
     pub fn with_account_mut<R, F>(&self, address: &VMAddress, f: F) -> R
@@ -79,7 +92,7 @@ impl TxCache {
             .insert(account_data.address.clone(), account_data);
     }
 
-    pub fn increase_acount_nonce(&self, address: &VMAddress) {
+    pub fn increase_account_nonce(&self, address: &VMAddress) {
         // Smart contracts don't have nonces.
         if address.is_smart_contract_address() {
             return;
@@ -95,7 +108,18 @@ impl TxCache {
         self.blockchain_ref()
             .get_new_address(creator_address.clone(), current_nonce)
             .unwrap_or_else(|| {
-                panic!("Missing new address. Only explicit new deploy addresses supported")
+                let new_mock_address =
+                    VMAddress::generate_mock_address(&creator_address.to_vec(), current_nonce);
+                println!(
+                    "{}",
+                    format!(
+                        "Missing new address for {:?}.\nCreating a new mock address...: {:?}",
+                        address_hex(creator_address),
+                        address_hex(&new_mock_address)
+                    )
+                    .yellow()
+                );
+                new_mock_address
             })
     }
 

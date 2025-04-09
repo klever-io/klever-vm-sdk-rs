@@ -1,0 +1,5 @@
+[settings]
+main = "web3-dns"
+
+[contracts.web3-dns]
+allocator = "leaking"

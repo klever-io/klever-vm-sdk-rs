@@ -1,5 +1,7 @@
 use num_traits::Zero;
 
+use crate::tx_mock::CallType;
+use crate::types::{top_encode_big_uint, VMCodeMetadata};
 use crate::{
     tx_execution::execute_system_sc,
     tx_mock::{
@@ -29,6 +31,31 @@ fn should_execute_sc_call(tx_input: &TxInput) -> bool {
     !tx_input.func_name.is_empty()
 }
 
+fn should_add_transfer_value_log(tx_input: &TxInput) -> bool {
+    if tx_input.call_type == CallType::UpgradeFromSource {
+        // already handled in upgradeContract builtin function
+        return false;
+    }
+
+    // skip for transactions coming directly from scenario json, which should all be coming from user wallets
+    tx_input.from.is_smart_contract_address() && !tx_input.klv_value.is_zero()
+}
+
+pub(crate) fn create_transfer_value_log(tx_input: &TxInput, call_type: CallType) -> TxLog {
+    let mut data = vec![call_type.to_log_bytes(), tx_input.func_name.to_bytes()];
+    data.append(&mut tx_input.args.clone());
+
+    TxLog {
+        address: tx_input.from.clone(),
+        endpoint: "transferValueOnly".into(),
+        topics: vec![
+            top_encode_big_uint(&tx_input.klv_value),
+            tx_input.to.to_vec(),
+        ],
+        data,
+    }
+}
+
 impl BlockchainVMRef {
     /// Executes without builtin functions, directly on the contract or the given lambda closure.
     pub fn default_execution<F>(
@@ -46,21 +73,8 @@ impl BlockchainVMRef {
             return (TxResult::from_panic_obj(&err), BlockchainUpdate::empty());
         }
 
-        // skip for transactions coming directly from scenario json, which should all be coming from user wallets
-        // TODO: reorg context logic
-        let add_transfer_log =
-            tx_input.from.is_smart_contract_address() && !tx_input.klv_value.is_zero();
-        let transfer_value_log = if add_transfer_log {
-            Some(TxLog {
-                address: VMAddress::zero(), // TODO: figure out the real VM behavior
-                endpoint: "transferValueOnly".into(),
-                topics: vec![
-                    tx_input.from.to_vec(),
-                    tx_input.to.to_vec(),
-                    tx_input.klv_value.to_bytes_be(),
-                ],
-                data: Vec::new(),
-            })
+        let transfer_value_log = if should_add_transfer_value_log(&tx_input) {
+            Some(create_transfer_value_log(&tx_input, tx_input.call_type))
         } else {
             None
         };
@@ -117,6 +131,7 @@ impl BlockchainVMRef {
         &self,
         mut tx_input: TxInput,
         contract_path: Vec<u8>,
+        code_metadata: VMCodeMetadata,
         tx_cache: TxCache,
         f: F,
     ) -> (TxResult, VMAddress, BlockchainUpdate)
@@ -140,7 +155,12 @@ impl BlockchainVMRef {
                 BlockchainUpdate::empty(),
             );
         }
-        tx_context_sh.create_new_contract(&new_address, contract_path, tx_input_ref.from.clone());
+        tx_context_sh.create_new_contract(
+            &new_address,
+            contract_path,
+            code_metadata,
+            tx_input_ref.from.clone(),
+        );
         tx_context_sh
             .tx_cache
             .increase_klv_balance(&new_address, &tx_input_ref.klv_value);

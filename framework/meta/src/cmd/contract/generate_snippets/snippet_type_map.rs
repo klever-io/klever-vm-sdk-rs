@@ -13,10 +13,6 @@ pub struct RustTypeString {
 }
 
 impl RustTypeString {
-    pub fn get_type_name(&self) -> &str {
-        &self.type_name
-    }
-
     pub fn get_default_value_expr(&self) -> &str {
         if !self.contains_custom_types {
             &self.default_value_expr
@@ -99,7 +95,7 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
             contains_custom_types: false,
         },
     );
-    
+
     m.insert(
         "KdaTokenPayment",
         RustTypeString {
@@ -162,7 +158,7 @@ fn get_abi_type(abi_type_str: &str) -> AbiType {
     }
 }
 
-fn handle_abi_type(type_string: &mut RustTypeString, abi_type_str: String) {
+pub fn handle_abi_type(type_string: &mut RustTypeString, abi_type_str: String) {
     let abi_type = get_abi_type(&abi_type_str);
     match abi_type {
         AbiType::UserDefined(user_type) => {

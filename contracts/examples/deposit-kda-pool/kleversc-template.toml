@@ -1,0 +1,12 @@
+name = "deposit-kda-pool"
+contract_trait = "DepositKDAPoolContract"
+src_file = "deposit.rs"
+rename_pairs = []
+files_include = [
+    "meta",
+    "scenarios",
+    "src",
+    "tests",
+    "Cargo.toml",
+    "kleverkapp.json",
+]

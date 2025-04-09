@@ -29,7 +29,7 @@
             "accounts": {
                 "0x0000000000000000d720a08b839a004c2e6386f5aecc19ec74807d1920cb6aeb": {
                     "balance": "0",
-                    "code": "file:../output/crowdfunding-kda.wasm",
+                    "code": "kleversc:../output/crowdfunding-kda.kleversc.json",
                     "owner": "0x66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
                 }
             }
@@ -47,12 +47,12 @@
                                     "nonce": "0",
                                     "balance": "1000",
                                     "royalties": "0",
-                                    "attributes": "0x",
-                                    "canBurn": false
+                                    "attributes": "0x"
                                 }
                             ]
                         }
-                    }
+                    },
+                    "codeMetadata": "0x0506"
                 }
             }
         },
@@ -69,12 +69,12 @@
                                     "nonce": "0",
                                     "balance": "1000",
                                     "royalties": "0",
-                                    "attributes": "0x",
-                                    "canBurn": false
+                                    "attributes": "0x"
                                 }
                             ]
                         }
-                    }
+                    },
+                    "codeMetadata": "0x0506"
                 }
             }
         },
@@ -89,7 +89,8 @@
                         "str:target": "0x07d0",
                         "str:tokenIdentifier": "0x43524f57442d31323334"
                     },
-                    "code": "file:../output/crowdfunding-kda.wasm",
+                    "code": "kleversc:../output/crowdfunding-kda.kleversc.json",
+                    "codeMetadata": "0x0506",
                     "owner": "0x66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
                 }
             }
@@ -108,8 +109,7 @@
                 ],
                 "function": "fund",
                 "arguments": [],
-                "gasLimit": "18446744073709551615",
-                "gasPrice": "0"
+                "gasLimit": "9223372036854775807"
             },
             "expect": {
                 "out": [],

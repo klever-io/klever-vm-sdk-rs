@@ -54,7 +54,7 @@
                     "kda": {
                         "str:FIRSTTOKEN-1234": {
                             "roles": [
-                                "KDARoleLocalMint"
+                                "KDARoleMint"
                             ]
                         }
                     },
@@ -70,7 +70,7 @@
                             "5-release_ticks": "u64:4"
                         }
                     },
-                    "code": "file:../output/token-release.wasm"
+                    "code": "kleversc:../output/token-release.kleversc.json"
                 }
             }
         }

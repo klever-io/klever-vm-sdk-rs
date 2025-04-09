@@ -1,9 +1,12 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy, Debug)]
+pub mod crowdfunding_kda_proxy;
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Status {
     FundingPeriod,
     Successful,
@@ -74,8 +77,10 @@ pub trait Crowdfunding {
                 let token_identifier = self.cf_token_identifier().get();
                 let sc_balance = self.get_current_funds();
 
-                self.send()
-                    .direct_kda(&caller, &token_identifier, 0, &sc_balance);
+                self.tx()
+                    .to(&caller)
+                    .klv_or_single_kda(&token_identifier, 0, &sc_balance)
+                    .transfer();
             },
             Status::Failed => {
                 let caller = self.blockchain().get_caller();
@@ -85,7 +90,10 @@ pub trait Crowdfunding {
                     let token_identifier = self.cf_token_identifier().get();
 
                     self.deposit(&caller).clear();
-                    self.send().direct_kda(&caller, &token_identifier, 0, &deposit);
+                    self.tx()
+                        .to(&caller)
+                        .klv_or_single_kda(&token_identifier, 0, &deposit)
+                        .transfer();
                 }
             },
         }

@@ -40,7 +40,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:erc20_owner",
-                "contractCode": "file:../../erc20/output/erc20.wasm",
+                "contractCode": "kleversc:../../erc20/output/erc20.kleversc.json",
                 "arguments": [
                     "1,000,000,000"
                 ],
@@ -84,7 +84,7 @@
                         "str:balance|address:erc20_owner": "1,000,000,000",
                         "str:totalSupply": "1,000,000,000"
                     },
-                    "code": "file:../../erc20/output/erc20.wasm"
+                    "code": "kleversc:../../erc20/output/erc20.kleversc.json"
                 }
             }
         },
@@ -93,7 +93,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:my_address",
-                "contractCode": "file:../output/lottery-erc20.wasm",
+                "contractCode": "kleversc:../output/lottery-erc20.kleversc.json",
                 "arguments": [
                     "sc:erc20"
                 ],
@@ -137,7 +137,7 @@
                         "str:balance|address:erc20_owner": "1,000,000,000",
                         "str:totalSupply": "1,000,000,000"
                     },
-                    "code": "file:../../erc20/output/erc20.wasm"
+                    "code": "kleversc:../../erc20/output/erc20.kleversc.json"
                 },
                 "sc:lottery": {
                     "nonce": "0",
@@ -145,7 +145,7 @@
                     "storage": {
                         "str:erc20ContractAddress": "sc:erc20"
                     },
-                    "code": "file:../output/lottery-erc20.wasm"
+                    "code": "kleversc:../output/lottery-erc20.kleversc.json"
                 }
             }
         }

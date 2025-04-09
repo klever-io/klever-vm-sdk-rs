@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "klever-sc",
-            "version": "0.43.3"
+            "version": "0.44.0"
         }
     },
     "docs": [
@@ -71,6 +71,20 @@
                     "indexed": true
                 }
             ]
+        }
+    ],
+    "kdaAttributes": [
+        {
+            "ticker": "INMODULE",
+            "type": "u32"
+        },
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
         }
     ],
     "types": {

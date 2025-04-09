@@ -1,7 +1,5 @@
-#![allow(stable_features)]
 // ensure we don't run out of macro stack
 #![recursion_limit = "1024"]
-#![feature(proc_macro_quote)]
 
 #[macro_use]
 extern crate syn;
@@ -48,9 +46,16 @@ pub fn proxy(
 
 #[proc_macro_derive(TypeAbi)]
 pub fn type_abi_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse(input).unwrap();
+    type_abi_derive::type_abi_derive(input).into()
+}
 
-    type_abi_derive::type_abi_derive(&ast)
+#[proc_macro_attribute]
+pub fn type_abi(
+    args: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    assert!(args.is_empty(), "#[type_abi] attribute takes no args");
+    type_abi_derive::type_abi_full(input).into()
 }
 
 #[proc_macro_derive(ManagedVecItem)]
@@ -62,5 +67,10 @@ pub fn managed_vec_item_derive(input: proc_macro::TokenStream) -> proc_macro::To
 
 #[proc_macro]
 pub fn format_receiver_args(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    format::format_receiver_args_macro(input)
+    format::format_receiver_args_macro(input.into()).into()
+}
+
+#[proc_macro]
+pub fn semver_tuple(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    format::semver_tuple(input.into()).into()
 }

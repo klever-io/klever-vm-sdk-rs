@@ -5,16 +5,11 @@ use std::{fs, fs::File, io::Write};
 
 #[test]
 fn use_module_abi_generated_ok() {
-    let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/feature-tests/use-module");
+    let blockchain = ScenarioWorld::new();
 
     // generate ABI
     let multi_contract_config = klever_sc_meta::multi_contract_config::<use_module::AbiProvider>(
-        blockchain
-            .current_dir()
-            .join("multicontract.toml")
-            .to_str()
-            .unwrap(),
+        blockchain.current_dir().as_path(),
     );
 
     let main_contract = multi_contract_config.find_contract("use-module");

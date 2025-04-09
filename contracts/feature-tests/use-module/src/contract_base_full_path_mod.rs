@@ -1,5 +1,3 @@
-klever_sc::imports!();
-
 #[klever_sc::module]
 pub trait ContractBaseFullPathTestModule: klever_sc::contract_base::ContractBase {
     #[endpoint]

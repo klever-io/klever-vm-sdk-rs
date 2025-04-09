@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use klever_sc::types::{SCResult, StaticSCError};
 use klever_sc_scenario::api::StaticApi;
 

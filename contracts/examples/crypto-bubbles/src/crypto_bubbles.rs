@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::contract]
 pub trait CryptoBubbles {
@@ -38,7 +38,7 @@ pub trait CryptoBubbles {
             *balance -= amount;
         });
 
-        self.send().direct_klv(player, amount);
+        self.tx().to(player).klv(amount).transfer();
 
         self.withdraw_event(player, amount);
     }

@@ -1,14 +1,17 @@
 use crate::scenario::model::SetStateStep;
 
 use klever_chain_vm::{
-    types::VMAddress,
+    types::VMCodeMetadata,
     world_mock::{
-        AccountData, AccountKda, BlockInfo as CrateBlockInfo, BlockchainState, KdaData,
-        KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
+        AccountData, AccountKda, AccountPermission, BlockInfo as CrateBlockInfo, BlockchainState,
+        KdaData, KdaInstance, KdaInstanceMetadata, KdaInstances, KdaRoles,
     },
 };
 
 use super::ScenarioVMRunner;
+
+/// Refers to the default of the "setState" scenario step.
+pub const DEFAULT_CODE_METADATA: VMCodeMetadata = VMCodeMetadata::all();
 
 impl ScenarioVMRunner {
     pub fn perform_set_state(&mut self, set_state_step: &SetStateStep) {
@@ -30,6 +33,21 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .map(|(k, v)| (k.value.clone(), convert_mandos_kda_to_world_mock(v)))
                 .collect(),
         );
+
+        let perm = account.permissions.as_ref().map(|permissions| {
+            permissions
+                .clone()
+                .into_iter()
+                .filter_map(|permission| {
+                    let address = permission.address?.to_vm_address();
+                    let operations = permission.perm?.value;
+                    Some(AccountPermission {
+                        address: Some(address),
+                        operations,
+                    })
+                })
+                .collect()
+        });
 
         state.validate_and_add_account(AccountData {
             address: address.to_vm_address(),
@@ -54,10 +72,16 @@ fn execute(state: &mut BlockchainState, set_state_step: &SetStateStep) {
                 .code
                 .as_ref()
                 .map(|bytes_value| bytes_value.value.clone()),
+            code_metadata: account
+                .code_metadata
+                .as_ref()
+                .map(|bytes_value| VMCodeMetadata::from(&bytes_value.value))
+                .unwrap_or(DEFAULT_CODE_METADATA),
             contract_owner: account
                 .owner
                 .as_ref()
                 .map(|address_value| address_value.to_vm_address()),
+            permissions: perm,
         });
     }
     for new_address in set_state_step.new_addresses.iter() {
@@ -142,7 +166,7 @@ fn convert_scenario_kda_instance_to_world_mock(
             creator: scenario_kda
                 .creator
                 .as_ref()
-                .map(|creator| VMAddress::from_slice(creator.value.as_slice())),
+                .map(|creator| creator.to_vm_address()),
             royalties: scenario_kda
                 .royalties
                 .as_ref()
@@ -159,9 +183,7 @@ fn convert_scenario_kda_instance_to_world_mock(
                 .as_ref()
                 .map(|attributes| attributes.value.clone())
                 .unwrap_or_default(),
-            can_burn: scenario_kda.can_burn.as_ref()
-                .map(|m| m.clone())
-                .unwrap_or_default(),
+            can_burn: scenario_kda.can_burn.unwrap_or_default(),
         },
     }
 }

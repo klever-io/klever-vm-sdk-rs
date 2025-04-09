@@ -4,13 +4,14 @@ use crate::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         serde_raw::KdaInstanceRaw,
     },
+    scenario_model::AddressValue,
 };
 
 #[derive(Debug, Default, Clone)]
 pub struct KdaInstance {
     pub nonce: Option<U64Value>,
     pub balance: Option<BigUintValue>,
-    pub creator: Option<BytesValue>,
+    pub creator: Option<AddressValue>,
     pub royalties: Option<U64Value>,
     pub hash: Option<BytesValue>,
     pub uri: Vec<BytesValue>,
@@ -42,7 +43,9 @@ impl InterpretableFrom<KdaInstanceRaw> for KdaInstance {
             balance: from
                 .balance
                 .map(|b| BigUintValue::interpret_from(b, context)),
-            creator: from.creator.map(|b| BytesValue::interpret_from(b, context)),
+            creator: from
+                .creator
+                .map(|b| AddressValue::interpret_from(b, context)),
             royalties: from.royalties.map(|b| U64Value::interpret_from(b, context)),
             hash: from.hash.map(|b| BytesValue::interpret_from(b, context)),
             uri: from
@@ -53,7 +56,7 @@ impl InterpretableFrom<KdaInstanceRaw> for KdaInstance {
             attributes: from
                 .attributes
                 .map(|b| BytesValue::interpret_from(b, context)),
-            can_burn: from.can_burn.map(|b| b.into()),
+            can_burn: from.can_burn,
         }
     }
 }
@@ -68,7 +71,7 @@ impl IntoRaw<KdaInstanceRaw> for KdaInstance {
             hash: self.hash.map(|n| n.original),
             uri: self.uri.into_iter().map(|b| b.original).collect(),
             attributes: self.attributes.map(|n| n.original),
-            can_burn: self.can_burn.map(| b | b.into()),
+            can_burn: self.can_burn,
         }
     }
 }

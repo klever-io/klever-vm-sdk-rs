@@ -1,28 +1,27 @@
 use crate::{
     api::{ErrorApiImpl, ManagedTypeApi, RawHandle},
     codec,
-    codec::{
-        derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        *,
-    },
+    codec::derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
     types::{
         BigUint, KdaTokenType, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
         TokenIdentifier,
     },
 };
+use klever_sc_derive::{type_abi, ManagedVecItem};
 
-use crate as klever_sc; // needed by the TypeAbi generated code
-use crate::derive::{ManagedVecItem, TypeAbi};
+use crate as klever_sc;
 
 const _DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding KDA attributes: ";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[type_abi]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct KdaTokenData<M: ManagedTypeApi> {
     pub asset_type: KdaTokenType,
     pub id: ManagedBuffer<M>,
     pub name: ManagedBuffer<M>,
     pub ticker: ManagedBuffer<M>,
     pub owner_address: ManagedAddress<M>,
+    pub admin_address: ManagedAddress<M>,
     pub logo: ManagedBuffer<M>,
     pub uris: ManagedVec<M, URI<M>>,
     pub precision: BigUint<M>,
@@ -38,7 +37,8 @@ pub struct KdaTokenData<M: ManagedTypeApi> {
     pub roles: ManagedVec<M, RolesInfo<M>>,
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[type_abi]
+#[derive(Default, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct StakingInfo {
     pub interest_type: u32,
     pub apr: u32,
@@ -47,19 +47,8 @@ pub struct StakingInfo {
     pub min_epochs_to_withdraw: u32,
 }
 
-impl Default for StakingInfo {
-    fn default() -> Self {
-        StakingInfo {
-            interest_type: 0,
-            apr: 0,
-            min_epochs_to_claim: 0,
-            min_epochs_to_unstake: 0,
-            min_epochs_to_withdraw: 0,
-        }
-    }
-}
-
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[type_abi]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct PropertiesInfo {
     pub can_freeze: bool,
     pub can_wipe: bool,
@@ -75,8 +64,7 @@ fn check_bit(value: u64, bit: u8) -> bool {
     value & (1 << bit) != 0
 }
 
-impl From<u64> for PropertiesInfo
-{
+impl From<u64> for PropertiesInfo {
     fn from(v: u64) -> Self {
         PropertiesInfo {
             can_freeze: check_bit(v, 0),
@@ -97,10 +85,10 @@ where
 {
     fn from(v: BigUint<M>) -> Self {
         match v.to_u64() {
-            Some(value) => {
-                return PropertiesInfo::from(value)
+            Some(value) => PropertiesInfo::from(value),
+            None => {
+                M::error_api_impl().signal_error(b"Invalid value for PropertiesInfo conversion.")
             },
-            None => M::error_api_impl().signal_error(b"Invalid value for PropertiesInfo conversion.")
         }
     }
 }
@@ -120,7 +108,10 @@ impl Default for PropertiesInfo {
     }
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, Clone)]
+#[type_abi]
+#[derive(
+    Default, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, Clone, ManagedVecItem,
+)]
 pub struct AttributesInfo {
     pub is_paused: bool,
     pub is_nft_mint_stopped: bool,
@@ -143,18 +134,9 @@ where
         }
     }
 }
-impl Default for AttributesInfo {
-    fn default() -> Self {
-        AttributesInfo {
-            is_paused: false,
-            is_nft_mint_stopped: false,
-            is_royalties_change_stopped: false,
-            is_nft_metadata_change_stopped: false,
-        }
-    }
-}
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[type_abi]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct RoyaltiesData<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub transfer_percentage: ManagedVec<M, RoyaltyData<M>>,
@@ -202,12 +184,11 @@ where
             address: ManagedAddress::from_raw_handle(address_handle),
             transfer_percentage: ManagedVec::from_raw_handle(transfer_percentage_handle),
             transfer_fixed: BigUint::from_raw_handle(transfer_fixed_handle),
-            market_percentage: market_percentage,
+            market_percentage,
             market_fixed: BigUint::from_raw_handle(market_fixed_handle),
             split_royalties: ManagedVec::from_raw_handle(split_royalties),
             ito_fixed: BigUint::from_raw_handle(ito_fixed_handle),
-            ito_percentage: ito_percentage,
-            ..Default::default()
+            ito_percentage,
         }
     }
 }
@@ -227,12 +208,14 @@ impl<M: ManagedTypeApi> Default for RoyaltiesData<M> {
     }
 }
 
-pub fn convert_buff_to_roles<M: ManagedTypeApi>(mb: ManagedBuffer<M>) -> ManagedVec<M, RolesInfo<M>> {
+pub fn convert_buff_to_roles<M: ManagedTypeApi>(
+    mb: ManagedBuffer<M>,
+) -> ManagedVec<M, RolesInfo<M>> {
     let mut roles = ManagedVec::new();
     let mut i = 0;
 
-    while (i+1)*8 <= mb.len() {
-        let dest_slice = mb.copy_slice(8*i, 8).unwrap();
+    while (i + 1) * 8 <= mb.len() {
+        let dest_slice = mb.copy_slice(8 * i, 8).unwrap();
 
         roles.push(RolesInfo::from(dest_slice.clone()));
         i += 1;
@@ -259,9 +242,8 @@ where
     }
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct RoyaltyInfo<M: ManagedTypeApi> {
     pub key: ManagedAddress<M>,
     pub percent_transfer_percentage: u32,
@@ -272,34 +254,32 @@ pub struct RoyaltyInfo<M: ManagedTypeApi> {
     pub percent_ito_fixed: u32,
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct URI<M: ManagedTypeApi> {
     pub key: ManagedBuffer<M>,
     pub value: ManagedBuffer<M>,
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct RoyaltyData<M: ManagedTypeApi> {
     pub amount: BigUint<M>,
     pub percentage: u32,
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct RolesInfo<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub has_role_mint: bool,
     pub has_role_set_ito_prices: bool,
     pub has_role_deposit: bool,
-    has_role_transfer: bool,
+    pub has_role_transfer: bool,
 }
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[type_abi]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct RoyaltySplitData<M: ManagedTypeApi> {
     pub percent_transfer_percentage: u32,
     pub percent_transfer_fixed: BigUint<M>,
@@ -318,6 +298,7 @@ impl<M: ManagedTypeApi> Default for KdaTokenData<M> {
             name: ManagedBuffer::default(),
             ticker: ManagedBuffer::default(),
             owner_address: ManagedAddress::default(),
+            admin_address: ManagedAddress::default(),
             logo: ManagedBuffer::default(),
             uris: ManagedVec::default(),
             precision: BigUint::default(),
@@ -335,42 +316,23 @@ impl<M: ManagedTypeApi> Default for KdaTokenData<M> {
     }
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct ITOPackInfo<M: ManagedTypeApi> {
     pub token: TokenIdentifier<M>,
     pub packs: ManagedVec<M, ITOPackItem<M>>,
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct ITOPackItem<M: ManagedTypeApi> {
     pub amount: BigUint<M>,
     pub price: BigUint<M>,
 }
 
-#[derive(
-    ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug,
-)]
+#[type_abi]
+#[derive(ManagedVecItem, Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
 pub struct ITOWhitelist<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub limit: BigUint<M>,
-}
-
-impl<M: ManagedTypeApi> KdaTokenData<M> {
-    pub fn try_decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
-        // T::top_decode(self.attributes.clone()) // TODO: remove clone
-        todo!()
-    }
-
-    pub fn decode_attributes<T: TopDecode>(&self) -> T {
-        // let Ok(value) = T::top_decode_or_handle_err(
-        //     self.attributes.clone(), // TODO: remove clone
-        //     ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        // );
-        // value
-        todo!()
-    }
 }

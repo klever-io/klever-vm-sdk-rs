@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc-modules"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
 
 authors = ["Klever <contact@klever.io>"]
@@ -8,7 +8,7 @@ license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/klever-io/klever-vm-sdk-rs"
 homepage = "https://klever.io/"
-documentation = "https://docs.klever.finance/"
+documentation = "https://docs.klever.org/"
 description = "Klever WebAssembly standard smart contract modules"
 keywords = ["klever", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 alloc = ["klever-sc/alloc"]
 
 [dependencies.klever-sc]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../framework/base"

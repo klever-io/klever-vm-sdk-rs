@@ -14,7 +14,7 @@
                 "to": "sc:kda-transfer-with-fee",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "100"
                     }
                 ],
@@ -43,7 +43,7 @@
                 "function": "setPercentageFee",
                 "arguments": [
                     "u32:1000",
-                    "str:USDC-aaaaaa"
+                    "str:USDC-aaaa"
                 ],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
@@ -65,9 +65,9 @@
                 "to": "sc:kda-transfer-with-fee",
                 "function": "setExactValueFee",
                 "arguments": [
-                    "str:USDC-aaaaaa",
+                    "str:USDC-aaaa",
                     "5",
-                    "str:MFNFT-567890"
+                    "str:MFNFT-5678"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
@@ -89,11 +89,11 @@
                 "to": "sc:kda-transfer-with-fee",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "10"
                     },
                     {
-                        "tokenIdentifier": "str:WKLV-012345",
+                        "tokenIdentifier": "str:WKLV-0123",
                         "value": "100"
                     }
                 ],
@@ -121,9 +121,9 @@
                 "to": "sc:kda-transfer-with-fee",
                 "function": "setExactValueFee",
                 "arguments": [
-                    "str:USDC-aaaaaa",
+                    "str:USDC-aaaa",
                     "10",
-                    "str:WKLV-012345"
+                    "str:WKLV-0123"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
@@ -145,7 +145,7 @@
                 "to": "sc:kda-transfer-with-fee",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:WKLV-012345",
+                        "tokenIdentifier": "str:WKLV-0123",
                         "value": "2"
                     }
                 ],
@@ -173,11 +173,11 @@
                 "to": "sc:kda-transfer-with-fee",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:WKLV-012345",
+                        "tokenIdentifier": "str:WKLV-0123",
                         "value": "100"
                     },
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "1"
                     }
                 ],
@@ -205,23 +205,25 @@
                 "to": "sc:kda-transfer-with-fee",
                 "kdaValue": [
                     {
-                        "tokenIdentifier": "str:MFNFT-567890",
-                        "nonce": "1"
+                        "tokenIdentifier": "str:MFNFT-5678",
+                        "nonce": "1",
+                        "value": "1"
                     },
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "5"
                     },
                     {
-                        "tokenIdentifier": "str:MFNFT-567890",
-                        "nonce": "2"
+                        "tokenIdentifier": "str:MFNFT-5678",
+                        "nonce": "2",
+                        "value": "1"
                     },
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "5"
                     },
                     {
-                        "tokenIdentifier": "str:USDC-aaaaaa",
+                        "tokenIdentifier": "str:USDC-aaaa",
                         "value": "20"
                     }
                 ],
@@ -243,13 +245,14 @@
         },
         {
             "step": "checkState",
+            "id": "check-state-after-scCalls",
             "accounts": {
                 "address:owner": {
                     "nonce": "5",
                     "balance": "0",
                     "kda": {
-                        "str:USDC-aaaaaa": "9",
-                        "str:WKLV-012345": "100"
+                        "str:USDC-aaaa": "9",
+                        "str:WKLV-0123": "100"
                     },
                     "storage": {}
                 },
@@ -257,27 +260,27 @@
                     "nonce": "2",
                     "balance": "0",
                     "kda": {
-                        "str:MFNFT-567890": {
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "1",
-                                    "balance": "0"
+                                    "balance": "1"
                                 },
                                 {
                                     "nonce": "2",
-                                    "balance": "0"
+                                    "balance": "1"
                                 }
                             ]
                         },
-                        "str:USDC-aaaaaa": "418",
-                        "str:WKLV-012345": "500"
+                        "str:USDC-aaaa": "418",
+                        "str:WKLV-0123": "500"
                     }
                 },
                 "address:user2": {
                     "nonce": "3",
                     "balance": "0",
                     "kda": {
-                        "str:MFNFT-567890": {
+                        "str:MFNFT-5678": {
                             "instances": [
                                 {
                                     "nonce": "3",
@@ -285,26 +288,26 @@
                                 }
                             ]
                         },
-                        "str:USDC-aaaaaa": "60",
-                        "str:WKLV-012345": "400"
+                        "str:USDC-aaaa": "60",
+                        "str:WKLV-0123": "400"
                     }
                 },
                 "sc:kda-transfer-with-fee": {
                     "nonce": "0",
                     "kda": {
-                        "str:USDC-aaaaaa": "13"
+                        "str:USDC-aaaa": "13"
                     },
                     "storage": {
-                        "str:token_fee|nested:str:USDC-aaaaaa": "u8:2|u32:1000",
-                        "str:token_fee|nested:str:MFNFT-567890": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:5",
-                        "str:token_fee|nested:str:WKLV-012345": "u8:1|nested:str:USDC-aaaaaa|u64:0|biguint:10",
+                        "str:token_fee|nested:str:USDC-aaaa": "u8:2|u32:1000",
+                        "str:token_fee|nested:str:MFNFT-5678": "u8:1|nested:str:USDC-aaaa|u64:0|biguint:5",
+                        "str:token_fee|nested:str:WKLV-0123": "u8:1|nested:str:USDC-aaaa|u64:0|biguint:10",
                         "str:paid_fees.info": "u32:1|u32:1|u32:1|u32:1",
                         "str:paid_fees.node_links|u32:1": "u32:0|u32:0",
-                        "str:paid_fees.node_id|nested:str:USDC-aaaaaa|u64:0": "1",
-                        "str:paid_fees.value|u32:1": "nested:str:USDC-aaaaaa|u64:0",
-                        "str:paid_fees.mapped|nested:str:USDC-aaaaaa|u64:0": "13"
+                        "str:paid_fees.node_id|nested:str:USDC-aaaa|u64:0": "1",
+                        "str:paid_fees.value|u32:1": "nested:str:USDC-aaaa|u64:0",
+                        "str:paid_fees.mapped|nested:str:USDC-aaaa|u64:0": "13"
                     },
-                    "code": "file:../output/kda-transfer-with-fee.wasm",
+                    "code": "kleversc:../output/kda-transfer-with-fee.kleversc.json",
                     "owner": "address:owner"
                 }
             }

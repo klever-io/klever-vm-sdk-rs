@@ -3,7 +3,8 @@ use core::ops::Mul;
 use core::ops::Sub;
 
 use klever_sc::{
-    api::ManagedTypeApi, types::{ManagedBuffer, BigUint}
+    api::ManagedTypeApi,
+    types::{BigUint, ManagedBuffer},
 };
 
 pub fn name_to_id<M: ManagedTypeApi>(buffer: &ManagedBuffer<M>) -> ManagedBuffer<M> {
@@ -21,10 +22,11 @@ pub fn name_to_id<M: ManagedTypeApi>(buffer: &ManagedBuffer<M>) -> ManagedBuffer
     ret
 }
 
-pub fn discount_percentage_fee<M: ManagedTypeApi>(amount: &BigUint<M>, percentage: u32) -> BigUint<M> {
+pub fn discount_percentage_fee<M: ManagedTypeApi>(
+    amount: &BigUint<M>,
+    percentage: u32,
+) -> BigUint<M> {
     let fee = amount.clone().div(&BigUint::from(100u32));
     let final_fee = fee.clone().mul(&BigUint::from(percentage));
-    let claim_value = amount.clone().sub(final_fee.clone());
-
-    claim_value
+    amount.clone().sub(final_fee.clone())
 }

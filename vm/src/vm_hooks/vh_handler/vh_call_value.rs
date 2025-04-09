@@ -7,10 +7,8 @@ use super::VMHooksManagedTypes;
 
 pub trait VMHooksCallValue: VMHooksHandlerSource + VMHooksManagedTypes {
     fn check_not_payable(&self) {
-        if self.input_ref().klv_value > num_bigint::BigUint::zero() {
-            self.vm_error(vm_err_msg::NON_PAYABLE_FUNC_KLV);
-        }
-        if self.kda_num_transfers() > 0 {
+        if self.input_ref().klv_value > num_bigint::BigUint::zero() || self.kda_num_transfers() > 0
+        {
             self.vm_error(vm_err_msg::NON_PAYABLE_FUNC_KDA);
         }
     }
@@ -35,6 +33,12 @@ pub trait VMHooksCallValue: VMHooksHandlerSource + VMHooksManagedTypes {
     }
 
     fn load_all_kda_transfers(&self, dest_handle: RawHandle) {
+        let transfers = self.input_ref().received_kda_with_klv();
+        self.m_types_lock()
+            .mb_set_vec_of_kda_payments(dest_handle, transfers.as_slice());
+    }
+
+    fn load_all_kda_transfers_no_klv(&self, dest_handle: RawHandle) {
         let transfers = self.input_ref().received_kda();
         self.m_types_lock()
             .mb_set_vec_of_kda_payments(dest_handle, transfers);

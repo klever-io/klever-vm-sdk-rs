@@ -14,12 +14,12 @@
         },
         "framework": {
             "name": "klever-sc",
-            "version": "0.43.3"
+            "version": "0.44.0"
         }
     },
     "docs": [
         "Contract whose sole purpose is to verify that",
-        "the ABI generation framework works sa expected.",
+        "the ABI generation framework works as expected.",
         "",
         "Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,",
         "including Rust docs."
@@ -31,6 +31,22 @@
         ],
         "payableInTokens": [
             "KLV"
+        ],
+        "inputs": [
+            {
+                "name": "_constructor_arg_1",
+                "type": "i32"
+            },
+            {
+                "name": "_constructor_arg_2",
+                "type": "OnlyShowsUpInConstructor"
+            }
+        ],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "docs": [
+            "Upgrade constructor."
         ],
         "inputs": [
             {
@@ -354,6 +370,16 @@
             ]
         },
         {
+            "name": "operation_completion_status",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "OperationCompletionStatus"
+                }
+            ]
+        },
+        {
             "name": "payable_klv",
             "mutability": "mutable",
             "payableInTokens": [
@@ -410,6 +436,40 @@
                     "indexed": true
                 }
             ]
+        }
+    ],
+    "kdaAttributes": [
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
+        },
+        {
+            "ticker": "TICKER3",
+            "type": "u32"
+        },
+        {
+            "ticker": "STRUCT1",
+            "type": "AbiEnum"
+        },
+        {
+            "ticker": "STRUCT2",
+            "type": "AbiManagedType"
+        },
+        {
+            "ticker": "OnlyInKda",
+            "type": "OnlyShowsUpInKdaAttr"
+        },
+        {
+            "ticker": "ExplicitDiscriminant",
+            "type": "ExplicitDiscriminant"
+        },
+        {
+            "ticker": "ExplicitDiscriminantMixed",
+            "type": "ExplicitDiscriminantMixed"
         }
     ],
     "types": {
@@ -550,6 +610,78 @@
                 }
             ]
         },
+        "ExplicitDiscriminant": {
+            "type": "enum",
+            "docs": [
+                "An enum with similar explicit discriminants"
+            ],
+            "variants": [
+                {
+                    "name": "Zero",
+                    "discriminant": 0
+                },
+                {
+                    "name": "Thirty",
+                    "discriminant": 30
+                },
+                {
+                    "name": "Twelve",
+                    "discriminant": 12
+                },
+                {
+                    "name": "Fifty",
+                    "discriminant": 50
+                },
+                {
+                    "name": "FiftyOne",
+                    "discriminant": 51
+                }
+            ]
+        },
+        "ExplicitDiscriminantMixed": {
+            "type": "enum",
+            "docs": [
+                "An enum with different explicit discriminants"
+            ],
+            "variants": [
+                {
+                    "name": "Zero",
+                    "discriminant": 0
+                },
+                {
+                    "name": "Unit",
+                    "discriminant": 3
+                },
+                {
+                    "name": "Tuple",
+                    "discriminant": 4,
+                    "fields": [
+                        {
+                            "name": "0",
+                            "type": "u16"
+                        }
+                    ]
+                },
+                {
+                    "name": "Five",
+                    "discriminant": 5
+                },
+                {
+                    "name": "Struct",
+                    "discriminant": 1,
+                    "fields": [
+                        {
+                            "name": "a",
+                            "type": "u8"
+                        },
+                        {
+                            "name": "b",
+                            "type": "u16"
+                        }
+                    ]
+                }
+            ]
+        },
         "KdaTokenData": {
             "type": "struct",
             "fields": [
@@ -571,6 +703,10 @@
                 },
                 {
                     "name": "owner_address",
+                    "type": "Address"
+                },
+                {
+                    "name": "admin_address",
                     "type": "Address"
                 },
                 {
@@ -725,6 +861,12 @@
                 "Tests that the ABI generator also fetches types that only appear as fields."
             ]
         },
+        "OnlyShowsUpAsNested10": {
+            "type": "struct",
+            "docs": [
+                "Tests that the ABI generator also fetches types that only appear as fields."
+            ]
+        },
         "OnlyShowsUpAsNestedInArray": {
             "type": "struct",
             "docs": [
@@ -788,6 +930,32 @@
                 {
                     "name": "something",
                     "type": "()"
+                }
+            ]
+        },
+        "OnlyShowsUpInKdaAttr": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "field",
+                    "type": "OnlyShowsUpAsNested10"
+                }
+            ]
+        },
+        "OperationCompletionStatus": {
+            "type": "explicit-enum",
+            "variants": [
+                {
+                    "docs": [
+                        "indicates that operation was completed"
+                    ],
+                    "name": "completed"
+                },
+                {
+                    "docs": [
+                        "indicates that operation was interrupted prematurely, due to low gas"
+                    ],
+                    "name": "interrupted"
                 }
             ]
         },

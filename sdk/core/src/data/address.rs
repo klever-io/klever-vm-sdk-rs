@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 
 use crate::crypto::public_key::PublicKey;
 use anyhow::Result;
@@ -40,7 +40,7 @@ impl Address {
     }
 }
 
-impl<'a> From<&'a PublicKey> for Address {
+impl From<&PublicKey> for Address {
     fn from(public_key: &PublicKey) -> Address {
         let bytes = public_key.to_bytes();
 
@@ -51,15 +51,21 @@ impl<'a> From<&'a PublicKey> for Address {
     }
 }
 
-impl ToString for Address {
-    fn to_string(&self) -> String {
-        self.to_bech32_string().unwrap()
+impl Display for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.to_bech32_string().unwrap().as_str())
     }
 }
 
 impl Debug for Address {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.to_bech32_string().unwrap().as_str())
+    }
+}
+
+impl Default for Address {
+    fn default() -> Self {
+        Address::from_bytes([0u8; 32])
     }
 }
 

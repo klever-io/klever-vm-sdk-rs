@@ -2,14 +2,13 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
     blockchain.register_contract(
-        "file:output/basic-features.wasm",
+        "kleversc:output/basic-features.kleversc.json",
         basic_features::ContractBuilder,
     );
     blockchain.register_contract(
-        "file:../kda-system-sc-mock/output/kda-system-sc-mock.wasm",
+        "kleversc:../kda-system-sc-mock/output/kda-system-sc-mock.kleversc.json",
         kda_system_sc_mock::ContractBuilder,
     );
 
@@ -37,6 +36,11 @@ fn big_uint_eq_u_64_rs() {
 }
 
 #[test]
+fn small_num_overflow_rs() {
+    world().run("scenarios/small_num_overflow.scen.json");
+}
+
+#[test]
 fn big_uint_from_u_64_rs() {
     world().run("scenarios/big_uint_from_u64.scen.json");
 }
@@ -44,6 +48,11 @@ fn big_uint_from_u_64_rs() {
 #[test]
 fn big_uint_sqrt_rs() {
     world().run("scenarios/big_uint_sqrt.scen.json");
+}
+
+#[test]
+fn big_uint_pow_rs() {
+    world().run("scenarios/big_uint_pow.scen.json");
 }
 
 #[test]
@@ -206,6 +215,16 @@ fn get_caller_rs() {
 }
 
 #[test]
+fn get_code_metadata_rs() {
+    world().run("scenarios/get_code_metadata.scen.json");
+}
+
+#[test]
+fn is_builtin_function_rs() {
+    world().run("scenarios/is_builtin_function.scen.json");
+}
+
+#[test]
 fn managed_address_array_rs() {
     world().run("scenarios/managed_address_array.scen.json");
 }
@@ -242,13 +261,13 @@ fn managed_vec_address_push_rs() {
 }
 
 #[test]
-fn managed_vec_array_push_rs() {
-    world().run("scenarios/managed_vec_array_push.scen.json");
+fn managed_vec_biguint_push_rs() {
+    world().run("scenarios/managed_vec_biguint_push.scen.json");
 }
 
 #[test]
-fn managed_vec_biguint_push_rs() {
-    world().run("scenarios/managed_vec_biguint_push.scen.json");
+fn new_address_rs() {
+    world().run("scenarios/new_address.scen.json");
 }
 
 #[test]
@@ -345,6 +364,11 @@ fn storage_mapper_fungible_token_rs() {
 }
 
 #[test]
+fn storage_mapper_get_at_address_rs() {
+    world().run("scenarios/storage_mapper_get_at_address.scen.json");
+}
+
+#[test]
 fn storage_mapper_linked_list_rs() {
     world().run("scenarios/storage_mapper_linked_list.scen.json");
 }
@@ -361,8 +385,8 @@ fn storage_mapper_map_storage_rs() {
 
 #[test]
 #[ignore]
-fn storage_mapper_non_fungible_token_rs() {
-    world().run("scenarios/storage_mapper_non_fungible_token.scen.json");
+fn storage_mapper_semi_fungible_token_rs() {
+    world().run("scenarios/storage_mapper_semi_fungible_token.scen.json");
 }
 
 #[test]

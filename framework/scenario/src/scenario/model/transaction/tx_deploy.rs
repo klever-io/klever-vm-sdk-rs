@@ -13,8 +13,8 @@ use super::{tx_interpret_util::interpret_klv_value, DEFAULT_GAS_EXPR};
 pub struct TxDeploy {
     pub from: AddressValue,
     pub klv_value: BigUintValue,
-    pub code_metadata: CodeMetadata,
     pub contract_code: BytesValue,
+    pub code_metadata: CodeMetadata,
     pub arguments: Vec<BytesValue>,
     pub gas_limit: U64Value,
     pub gas_price: U64Value,
@@ -47,7 +47,7 @@ impl InterpretableFrom<TxDeployRaw> for TxDeploy {
                 .map(|t| BytesValue::interpret_from(t, context))
                 .collect(),
             gas_limit: U64Value::interpret_from(from.gas_limit, context),
-            gas_price: U64Value::interpret_from(from.gas_price, context),
+            gas_price: U64Value::interpret_from(from.gas_price.unwrap_or_default(), context),
         }
     }
 }
@@ -65,7 +65,7 @@ impl IntoRaw<TxDeployRaw> for TxDeploy {
                 .map(|arg| arg.into_raw())
                 .collect(),
             gas_limit: self.gas_limit.into_raw(),
-            gas_price: self.gas_price.into_raw(),
+            gas_price: self.gas_price.into_raw_opt(),
         }
     }
 }
@@ -73,7 +73,7 @@ impl IntoRaw<TxDeployRaw> for TxDeploy {
 impl TxDeploy {
     pub fn to_tx_data(&self) -> String {
         let mut result = hex::encode(&self.contract_code.value);
-        result.push_str("@0500@"); // VM identifier
+        result.push_str("@0000@"); // VM identifier
         result.push_str(hex::encode(self.code_metadata.to_byte_array()).as_str());
         for argument in &self.arguments {
             result.push('@');

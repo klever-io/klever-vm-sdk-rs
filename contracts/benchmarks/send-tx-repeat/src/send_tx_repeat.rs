@@ -1,7 +1,5 @@
 #![no_std]
 
-klever_sc::imports!();
-
 #[klever_sc::contract]
 pub trait SendTxRepeat {
     #[init]
@@ -11,7 +9,7 @@ pub trait SendTxRepeat {
     #[endpoint]
     fn repeat(&self, to: ManagedAddress, amount: BigUint, times: usize) {
         for _ in 0..times {
-            self.send().direct_klv(&to, &amount);
+            self.tx().to(&to).klv(&amount).transfer();
         }
     }
 }

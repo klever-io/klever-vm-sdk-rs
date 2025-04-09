@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc-wasm-adapter"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
 
 authors = [
@@ -11,7 +11,7 @@ license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/klever-io/klever-vm-sdk-rs"
 homepage = "https://klever.io/"
-documentation = "https://docs.klever.finance/"
+documentation = "https://docs.klever.org/"
 description = "Klever WebAssembly VM API wrapper"
 keywords = ["klever", "wasm", "webassembly", "blockchain", "contract"]
 categories = [
@@ -22,5 +22,5 @@ categories = [
 ]
 
 [dependencies.klever-sc]
-version = "=0.43.3"
+version = "=0.44.0"
 path = "../base"

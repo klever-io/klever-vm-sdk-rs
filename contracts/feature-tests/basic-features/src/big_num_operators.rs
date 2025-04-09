@@ -1,5 +1,3 @@
-klever_sc::imports!();
-
 /// Checks that BigUint/BigInt operators work as expected.
 #[klever_sc::module]
 #[allow(clippy::redundant_clone)]

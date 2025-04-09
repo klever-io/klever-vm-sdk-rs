@@ -1,5 +1,4 @@
 mod dns_proxy {
-    klever_sc::imports!();
 
     #[klever_sc::proxy]
     pub trait Dns {
@@ -9,7 +8,7 @@ mod dns_proxy {
     }
 }
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Standard smart contract module that deals with registering usernames in a DNS contract.
 ///

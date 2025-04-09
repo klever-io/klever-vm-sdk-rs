@@ -1,7 +1,5 @@
 use super::VmApiImpl;
-use klever_sc::api::{
-    StorageReadApi, StorageReadApiImpl, StorageWriteApi, StorageWriteApiImpl,
-};
+use klever_sc::api::{StorageReadApi, StorageReadApiImpl, StorageWriteApi, StorageWriteApiImpl};
 
 extern "C" {
     // managed buffer API

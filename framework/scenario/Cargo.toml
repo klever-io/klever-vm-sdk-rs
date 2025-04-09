@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc-scenario"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
 
 authors = [
@@ -11,13 +11,13 @@ license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/klever-io/klever-vm-sdk-rs"
 homepage = "https://klever.io/"
-documentation = "https://docs.klever.finance/"
+documentation = "https://docs.klever.org/"
 description = "Klever tools for writing and executing scenarios"
 keywords = ["klever", "blockchain", "contract", "debug"]
 categories = ["cryptography::cryptocurrencies", "development-tools::debugging"]
 
 [dependencies]
-base64 = "0.13.0"
+base64 = "0.22"
 num-bigint = "0.4"
 num-traits = "0.2"
 hex = "0.4"
@@ -27,10 +27,11 @@ sha2 = "0.10.6"
 serde = "1.0"
 serde_json = "1.0"
 pathdiff = "0.2.1"
-itertools = "0.10.3"
+itertools = "0.12.0"
 colored = "2.0"
-clap = { version = "4.1.0", features = ["derive", "cargo"] }
+clap = { version = "4.4.7", features = ["derive"] }
 tokio = { version = "1.24", features = ["full"] }
+unwrap-infallible = "0.1.5"
 
 [[bin]]
 name = "sc-scenario"
@@ -40,11 +41,12 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.klever-sc]
-version = "=0.43.3"
+version = "=0.44.0"
+features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.klever-sc-meta]
-version = "=0.43.3"
+version = "=0.44.0"
 path = "../meta"
 
 [dependencies.klever-chain-scenario-format]
@@ -53,8 +55,8 @@ path = "../../sdk/scenario-format"
 
 [dependencies.klever-chain-vm-executor]
 git = "https://github.com/klever-io/klever-vm-executor-rs"
-version = "0.2.0"
-rev = "4794613"
+version = "0.2.2"
+rev = "b0395cd"
 
 [dependencies.klever-chain-vm]
 version = "=0.5.2"

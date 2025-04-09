@@ -2,6 +2,7 @@ use crate::{
     klever_sc::types::heap::Address, scenario::model::ScDeployStep, scenario_model::TxResponse,
 };
 
+use klever_chain_vm::types::VMCodeMetadata;
 use klever_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxFunctionName, TxInput, TxResult},
@@ -34,6 +35,7 @@ impl ScenarioVMRunner {
         let (new_address, tx_result) = self.blockchain_mock.vm.sc_create(
             tx_input,
             contract_code,
+            VMCodeMetadata::from(sc_deploy_step.tx.code_metadata.bits()),
             &mut self.blockchain_mock.state,
             f,
         );

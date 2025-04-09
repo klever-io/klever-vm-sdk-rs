@@ -1,8 +1,7 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
 
 pub mod erc1155_user_proxy;
 
@@ -160,7 +159,7 @@ pub trait Erc1155 {
             self.token_owner(type_id, nft_id).set(to);
         } else {
             self.token_owner(type_id, nft_id)
-                .set(&ManagedAddress::zero());
+                .set(ManagedAddress::zero());
         }
     }
 
@@ -320,7 +319,7 @@ pub trait Erc1155 {
         let amount = BigUint::from(1u32);
         self.decrease_balance(owner, type_id, &amount);
         self.token_owner(type_id, nft_id)
-            .set(&ManagedAddress::zero());
+            .set(ManagedAddress::zero());
     }
 
     /// Range is inclusive for both `start` and `end`
@@ -355,7 +354,7 @@ pub trait Erc1155 {
             .execute_on_dest_context::<IgnoreValue>();
 
         let biguint_one = BigUint::from(1u32);
-        
+
         if self.is_fungible(&type_id).get() {
             self.increase_balance(&to, &type_id, &value);
         } else {
@@ -383,8 +382,7 @@ pub trait Erc1155 {
                 data,
             )
             .execute_on_dest_context::<IgnoreValue>();
-        
-        
+
         let biguint_one = BigUint::from(1u32);
 
         for (type_id, value) in type_ids.iter().zip(values.iter()) {

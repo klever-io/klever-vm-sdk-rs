@@ -82,7 +82,7 @@ impl Instance for ContractContainerRef {
                 Ok(())
             } else {
                 println!("func not found: {}", func_name);
-                Err(TxPanic::new(1, "invalid function (not found)"))
+                Err(TxPanic::new(55, "invalid function (not found)"))
             }
         });
 

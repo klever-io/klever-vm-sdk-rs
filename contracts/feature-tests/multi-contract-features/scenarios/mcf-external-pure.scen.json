@@ -6,12 +6,12 @@
                 "sc:mcf": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../output/multi-contract-features.wasm"
+                    "code": "kleversc:../output/multi-contract-features.kleversc.json"
                 },
                 "sc:mcf-view": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../output/multi-contract-features-view.wasm"
+                    "code": "kleversc:../output/multi-contract-features-view.kleversc.json"
                 },
                 "address:an-account": {
                     "nonce": "0",
@@ -45,7 +45,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "1",
+                "status": "55",
                 "message": "str:invalid function (not found)"
             }
         }

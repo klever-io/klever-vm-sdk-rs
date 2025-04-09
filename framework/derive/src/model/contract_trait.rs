@@ -1,5 +1,11 @@
 use super::{Method, Supertrait, TraitProperties};
 
+#[derive(Clone, Debug)]
+pub struct KdaAttribute {
+    pub ticker: String,
+    pub ty: proc_macro2::TokenStream,
+}
+
 /// Models a contract or module trait.
 pub struct ContractTrait {
     pub docs: Vec<String>,
@@ -10,6 +16,7 @@ pub struct ContractTrait {
     /// It is possible to automatically implement a contract module for all contracts that use it indirectly.
     /// The drawback is that the developer make sure multiple inheritance does not happen.
     /// This feature is currently disabled.
+    #[allow(dead_code)]
     pub auto_inheritance_modules: Vec<Supertrait>,
 
     pub methods: Vec<Method>,

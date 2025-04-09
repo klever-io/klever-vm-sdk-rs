@@ -1,13 +1,7 @@
 use crate::{
     generate::{
-        method_call_gen_arg::{
-            generate_call_method_arg_load,
-        },
-        method_gen::generate_arg_call_name,
-        payable_gen::*,
-        restricted_caller_gen::*,
-        snippets,
-        util::*,
+        method_call_gen_arg::generate_call_method_arg_load, method_gen::generate_arg_call_name,
+        payable_gen::*, restricted_caller_gen::*, snippets, util::*,
     },
     model::Method,
 };

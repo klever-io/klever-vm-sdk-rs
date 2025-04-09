@@ -7,7 +7,7 @@ fn main() {
     let debug = false;
 
 
-    let path = "/home/nickgs/localProjects/RustroverProjects/klever-vm-sdk-rs/contracts/examples/digital-cash/scenarios/withdraw-multi-kda.scen.json";
+    let path = "./contracts/examples/digital-cash/scenarios/withdraw-multi-kda.scen.json";
 
     let mut projects_paths:Vec<String> = vec![];
     if path.ends_with("scen.json") {
@@ -34,7 +34,7 @@ fn run_scenarios_operator(projects_paths: Vec<String>) -> i32 {
         let output =
             cmd.stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
-                .current_dir("/home/nickgs/localProjects/GolandProjects/klever-go")
+                .current_dir("../klever-go")
                 .arg("run")
                 .arg("./cmd/operator/")
                 .arg("--key-file=./localWalletKey.pem")

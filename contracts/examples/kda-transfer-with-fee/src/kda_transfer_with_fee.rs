@@ -3,7 +3,7 @@
 mod fee;
 use fee::*;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 #[klever_sc::contract]
 pub trait KdaTransferWithFee {
     #[init]
@@ -19,7 +19,7 @@ pub trait KdaTransferWithFee {
     ) {
         self.token_fee(&token)
             .set(Fee::ExactValue(KdaTokenPayment::new(
-                fee_token, 0, fee_amount
+                fee_token, 0, fee_amount,
             )));
     }
 
@@ -40,8 +40,7 @@ pub trait KdaTransferWithFee {
         }
         self.paid_fees().clear();
 
-        let caller = self.blockchain().get_caller();
-        self.send().direct_multi(&caller, &fees);
+        self.tx().to(ToCaller).payment(fees).transfer();
     }
 
     #[payable("*")]
@@ -56,6 +55,9 @@ pub trait KdaTransferWithFee {
 
         let mut payments_iter = payments.iter();
         while let Some(payment) = payments_iter.next() {
+            if payment.amount == BigUint::zero() {
+                continue;
+            }
             let fee_type = self.token_fee(&payment.token_identifier).get();
             match &fee_type {
                 Fee::ExactValue(fee) => {
@@ -82,7 +84,7 @@ pub trait KdaTransferWithFee {
                 },
             }
         }
-        self.send().direct_multi(&address, &new_payments);
+        self.tx().to(&address).payment(new_payments).transfer();
     }
 
     fn get_payment_after_fees(

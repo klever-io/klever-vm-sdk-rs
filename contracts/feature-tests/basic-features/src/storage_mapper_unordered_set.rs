@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Storage mapper test.
 #[klever_sc::module]

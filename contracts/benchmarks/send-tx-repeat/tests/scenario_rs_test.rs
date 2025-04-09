@@ -3,7 +3,7 @@ use klever_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
-        "file:output/send-tx-repeat.wasm",
+        "kleversc:output/send-tx-repeat.kleversc.json",
         send_tx_repeat::ContractBuilder,
     );
     blockchain

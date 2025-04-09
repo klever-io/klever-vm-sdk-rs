@@ -5,7 +5,7 @@
             "accounts": {
                 "address:a_user": {},
                 "sc:forwarder": {
-                    "code": "file:../output/use-module.wasm"
+                    "code": "kleversc:../output/use-module.kleversc.json"
                 }
             }
         },
@@ -22,7 +22,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "1",
+                "status": "55",
                 "message": "str:invalid function (not found)",
                 "gas": "*",
                 "refund": "*"

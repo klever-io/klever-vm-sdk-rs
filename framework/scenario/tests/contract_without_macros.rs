@@ -9,7 +9,7 @@
 #![allow(unused)]
 
 use klever_sc::{
-    contract_base::ProxyObjBase,
+    contract_base::ProxyObjNew,
     types::{BigInt, ManagedAddress},
 };
 use klever_sc_scenario::api::{SingleTxApi, StaticApi};
@@ -17,7 +17,7 @@ use klever_sc_scenario::api::{SingleTxApi, StaticApi};
 use crate::module_1::VersionModule;
 
 mod module_1 {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CONTRACT TRAIT /////////////////////////////////////////////////////////////////////////
@@ -50,10 +50,8 @@ mod module_1 {
         fn callback(&self) {}
     }
 
-    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where
-        A: klever_sc::api::VMApi
-    {
-    }
+    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where A: klever_sc::api::VMApi
+    {}
 
     pub trait EndpointWrappers: VersionModule + klever_sc::contract_base::ContractBase {
         #[inline]
@@ -112,7 +110,7 @@ mod module_1 {
 }
 
 mod sample_adder {
-    klever_sc::imports!();
+    use klever_sc::imports::*;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CONTRACT TRAIT /////////////////////////////////////////////////////////////////////////
@@ -123,15 +121,14 @@ mod sample_adder {
         fn init(&self, initial_value: &BigInt<Self::Api>) {
             self.set_sum(initial_value);
         }
-        fn add(&self, value: BigInt<Self::Api>) -> SCResult<()> {
+        fn add(&self, value: BigInt<Self::Api>) {
             let mut sum = self.get_sum();
             sum.add_assign(value);
             self.set_sum(&sum);
-            Ok(())
         }
         fn get_sum(&self) -> BigInt<Self::Api>;
         fn set_sum(&self, sum: &BigInt<Self::Api>);
-        fn add_version(&self) -> SCResult<()> {
+        fn add_version(&self) {
             self.add(self.version())
         }
     }
@@ -157,10 +154,8 @@ mod sample_adder {
         }
     }
 
-    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where
-        A: klever_sc::api::VMApi
-    {
-    }
+    impl<A> AutoImpl for klever_sc::contract_base::UniversalContractObj<A> where A: klever_sc::api::VMApi
+    {}
 
     pub trait EndpointWrappers:
         Adder + klever_sc::contract_base::ContractBase + super::module_1::EndpointWrappers
@@ -191,8 +186,7 @@ mod sample_adder {
                 Self::Api,
                 (klever_sc::types::BigInt<Self::Api>, ()),
             >(("value", ()));
-            let result = self.add(value);
-            klever_sc::io::finish_multi::<Self::Api, _>(&result);
+            self.add(value);
         }
 
         fn call(&self, fn_name: &str) -> bool {
@@ -291,8 +285,7 @@ mod sample_adder {
     impl klever_sc::contract_base::CallableContractBuilder for ContractBuilder {
         fn new_contract_obj<A: klever_sc::api::VMApi>(
             &self,
-        ) -> klever_sc::types::heap::Box<dyn klever_sc::contract_base::CallableContract>
-        {
+        ) -> klever_sc::types::heap::Box<dyn klever_sc::contract_base::CallableContract> {
             klever_sc::types::heap::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })
@@ -322,8 +315,7 @@ mod sample_adder {
     where
         A: klever_sc::api::VMApi + 'static,
     {
-        pub address:
-            klever_sc::types::ManagedOption<A, klever_sc::types::ManagedAddress<A>>,
+        _phantom: core::marker::PhantomData<A>,
     }
 
     impl<A> klever_sc::contract_base::ProxyObjBase for Proxy<A>
@@ -331,42 +323,84 @@ mod sample_adder {
         A: klever_sc::api::VMApi + 'static,
     {
         type Api = A;
-
-        fn new_proxy_obj() -> Self {
-            Proxy {
-                address: klever_sc::types::ManagedOption::none(),
-            }
-        }
-
-        fn contract(mut self, address: klever_sc::types::ManagedAddress<Self::Api>) -> Self {
-            self.address = klever_sc::types::ManagedOption::some(address);
-            self
-        }
+        type To = ();
 
         fn extract_opt_address(
             &mut self,
-        ) -> klever_sc::types::ManagedOption<
-            Self::Api,
-            klever_sc::types::ManagedAddress<Self::Api>,
-        > {
-            core::mem::replace(
-                &mut self.address,
-                klever_sc::types::ManagedOption::none(),
-            )
+        ) -> klever_sc::types::ManagedOption<Self::Api, klever_sc::types::ManagedAddress<Self::Api>>
+        {
+            klever_sc::types::ManagedOption::none()
         }
 
         fn extract_address(&mut self) -> klever_sc::types::ManagedAddress<Self::Api> {
-            let address = core::mem::replace(
-                &mut self.address,
-                klever_sc::types::ManagedOption::none(),
-            );
+            klever_sc::api::ErrorApiImpl::signal_error(
+                &<A as klever_sc::api::ErrorApi>::error_api_impl(),
+                klever_sc::err_msg::RECIPIENT_ADDRESS_NOT_SET.as_bytes(),
+            )
+        }
+
+        fn extract_proxy_to(&mut self) -> Self::To {}
+    }
+
+    impl<A> klever_sc::contract_base::ProxyObjNew for Proxy<A>
+    where
+        A: klever_sc::api::VMApi + 'static,
+    {
+        type ProxyTo = ProxyTo<A>;
+
+        fn new_proxy_obj() -> Self {
+            Proxy {
+                _phantom: core::marker::PhantomData,
+            }
+        }
+
+        fn contract(
+            mut self,
+            address: klever_sc::types::ManagedAddress<Self::Api>,
+        ) -> Self::ProxyTo {
+            ProxyTo {
+                address: klever_sc::types::ManagedOption::some(address),
+            }
+        }
+    }
+
+    pub struct ProxyTo<A>
+    where
+        A: klever_sc::api::VMApi + 'static,
+    {
+        pub address: klever_sc::types::ManagedOption<A, klever_sc::types::ManagedAddress<A>>,
+    }
+
+    impl<A> klever_sc::contract_base::ProxyObjBase for ProxyTo<A>
+    where
+        A: klever_sc::api::VMApi + 'static,
+    {
+        type Api = A;
+        type To = klever_sc::types::ManagedAddress<A>;
+
+        fn extract_opt_address(
+            &mut self,
+        ) -> klever_sc::types::ManagedOption<Self::Api, klever_sc::types::ManagedAddress<Self::Api>>
+        {
+            core::mem::replace(&mut self.address, klever_sc::types::ManagedOption::none())
+        }
+
+        fn extract_address(&mut self) -> klever_sc::types::ManagedAddress<Self::Api> {
+            let address =
+                core::mem::replace(&mut self.address, klever_sc::types::ManagedOption::none());
             address.unwrap_or_sc_panic(klever_sc::err_msg::RECIPIENT_ADDRESS_NOT_SET)
+        }
+
+        fn extract_proxy_to(&mut self) -> Self::To {
+            self.extract_address()
         }
     }
 
     impl<A> super::module_1::ProxyTrait for Proxy<A> where A: klever_sc::api::VMApi {}
+    impl<A> super::module_1::ProxyTrait for ProxyTo<A> where A: klever_sc::api::VMApi {}
 
     impl<A> ProxyTrait for Proxy<A> where A: klever_sc::api::VMApi {}
+    impl<A> ProxyTrait for ProxyTo<A> where A: klever_sc::api::VMApi {}
 }
 
 #[test]
@@ -378,15 +412,15 @@ fn contract_without_macros_basic() {
     adder.init(&BigInt::from(5));
     assert_eq!(BigInt::from(5), adder.get_sum());
 
-    let _ = adder.add(BigInt::from(7));
+    adder.add(BigInt::from(7));
     assert_eq!(BigInt::from(12), adder.get_sum());
 
-    let _ = adder.add(BigInt::from(-1));
+    adder.add(BigInt::from(-1));
     assert_eq!(BigInt::from(11), adder.get_sum());
 
     assert_eq!(BigInt::from(100), adder.version());
 
-    let _ = adder.add_version();
+    adder.add_version();
     assert_eq!(BigInt::from(111), adder.get_sum());
 
     assert!(!adder.call("invalid_endpoint"));
@@ -403,7 +437,7 @@ fn contract_without_macros_basic() {
 fn world() -> klever_sc_scenario::ScenarioWorld {
     let mut blockchain = klever_sc_scenario::ScenarioWorld::new();
     blockchain.register_contract(
-        "file:../../contracts/examples/adder/output/adder.wasm",
+        "kleversc:../../contracts/examples/adder/output/adder.kleversc.json",
         sample_adder::ContractBuilder,
     );
     blockchain

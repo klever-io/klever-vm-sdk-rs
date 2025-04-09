@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use super::private_key::PrivateKey;
 use anyhow::Result;
 use bech32::{self, ToBase32, Variant};
@@ -33,7 +35,7 @@ impl PublicKey {
     }
 }
 
-impl<'a> From<&'a PrivateKey> for PublicKey {
+impl From<&PrivateKey> for PublicKey {
     fn from(private_key: &PrivateKey) -> PublicKey {
         let bytes = private_key.to_bytes();
 
@@ -44,9 +46,9 @@ impl<'a> From<&'a PrivateKey> for PublicKey {
     }
 }
 
-impl ToString for PublicKey {
-    fn to_string(&self) -> String {
-        hex::encode(self.0)
+impl Display for PublicKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        hex::encode(self.0).fmt(f)
     }
 }
 

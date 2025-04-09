@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Contains all events that can be emitted by the contract.
 #[klever_sc::module]
@@ -31,5 +31,15 @@ pub trait BlockchainApiFeatures {
     #[endpoint]
     fn get_gas_left(&self) -> u64 {
         self.blockchain().get_gas_left()
+    }
+
+    #[endpoint]
+    fn get_code_metadata(&self, address: ManagedAddress) -> CodeMetadata {
+        self.blockchain().get_code_metadata(&address)
+    }
+
+    #[endpoint]
+    fn is_builtin_function(&self, function_name: ManagedBuffer) -> bool {
+        self.blockchain().is_builtin_function(&function_name)
     }
 }

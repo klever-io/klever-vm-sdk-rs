@@ -11,6 +11,7 @@ fn generate_endpoint_snippet(
     only_admin: bool,
     mutability: EndpointMutabilityMetadata,
     endpoint_type: EndpointTypeMetadata,
+    allow_multiple_var_args: bool,
 ) -> proc_macro2::TokenStream {
     let endpoint_docs = &m.docs;
     let rust_method_name = m.name.to_string();
@@ -53,19 +54,18 @@ fn generate_endpoint_snippet(
     let endpoint_type_tokens = endpoint_type.to_tokens();
 
     quote! {
-        let mut endpoint_abi = klever_sc::abi::EndpointAbi{
-            docs: &[ #(#endpoint_docs),* ],
-            name: #endpoint_name,
-            rust_method_name: #rust_method_name,
-            only_owner: #only_owner,
-            only_admin: #only_admin,
-            mutability: #mutability_tokens,
-            endpoint_type: #endpoint_type_tokens,
-            payable_in_tokens: &[ #(#payable_in_tokens),* ],
-            inputs: klever_sc::types::heap::Vec::new(),
-            outputs: klever_sc::types::heap::Vec::new(),
-            labels: &[ #(#label_names),* ],
-        };
+        let mut endpoint_abi = klever_sc::abi::EndpointAbi::new(
+            &[ #(#endpoint_docs),* ],
+            #endpoint_name,
+            #rust_method_name,
+            #only_owner,
+            #only_admin,
+            #mutability_tokens,
+            #endpoint_type_tokens,
+            &[ #(#payable_in_tokens),* ],
+            &[ #(#label_names),* ],
+            #allow_multiple_var_args,
+        );
         #(#input_snippets)*
         #output_snippet
     }
@@ -84,10 +84,26 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     false,
                     EndpointMutabilityMetadata::Mutable,
                     EndpointTypeMetadata::Init,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
                     contract_abi.constructors.push(endpoint_abi);
+                })
+            },
+            PublicRole::Upgrade(_) => {
+                let endpoint_def = generate_endpoint_snippet(
+                    m,
+                    "upgrade",
+                    false,
+                    false,
+                    EndpointMutabilityMetadata::Mutable,
+                    EndpointTypeMetadata::Upgrade,
+                    m.is_allow_multiple_var_args(),
+                );
+                Some(quote! {
+                    #endpoint_def
+                    contract_abi.upgrade_constructors.push(endpoint_abi);
                 })
             },
             PublicRole::Endpoint(endpoint_metadata) => {
@@ -98,6 +114,7 @@ fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::Toke
                     endpoint_metadata.only_admin,
                     endpoint_metadata.mutability.clone(),
                     EndpointTypeMetadata::Endpoint,
+                    m.is_allow_multiple_var_args(),
                 );
                 Some(quote! {
                     #endpoint_def
@@ -128,11 +145,10 @@ fn generate_event_snippet(m: &Method, event_name: &str) -> proc_macro2::TokenStr
         .collect();
 
     quote! {
-        let mut event_abi = klever_sc::abi::EventAbi{
-            docs: &[ #(#event_docs),* ],
-            identifier: #event_name,
-            inputs: klever_sc::types::heap::Vec::new(),
-        };
+         let mut event_abi = klever_sc::abi::EventAbi::new(
+            &[ #(#event_docs),* ],
+            #event_name,
+        );
         #(#input_snippets)*
     }
 }
@@ -157,15 +173,30 @@ fn generate_event_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenSt
 
 fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
     contract
-			.supertraits
-			.iter()
-			.map(|supertrait| {
-				let module_path = &supertrait.module_path;
-				quote! {
-					contract_abi.coalesce(<#module_path AbiProvider as klever_sc::contract_base::ContractAbiProvider>::abi());
-				}
-			})
-			.collect()
+            .supertraits
+            .iter()
+            .map(|supertrait| {
+                let module_path = &supertrait.module_path;
+                quote! {
+                    contract_abi.coalesce(<#module_path AbiProvider as klever_sc::contract_base::ContractAbiProvider>::abi());
+                }
+            })
+            .collect()
+}
+
+fn generate_kda_attribute_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
+    contract
+        .trait_attributes
+        .kda_attribute
+        .iter()
+        .map(|kda_attr| {
+            let ticker = &kda_attr.ticker;
+            let ty = &kda_attr.ty;
+            quote!(
+                contract_abi.kda_attributes.push(klever_sc::abi::KdaAttributeAbi::new::<#ty>(#ticker));
+                contract_abi.add_type_descriptions::<#ty>();
+            )
+        }).collect()
 }
 
 fn generate_abi_method_body(
@@ -181,10 +212,15 @@ fn generate_abi_method_body(
     } else {
         Vec::new()
     };
+    let kda_attributes = if !&contract.trait_attributes.kda_attribute.is_empty() {
+        generate_kda_attribute_snippets(contract)
+    } else {
+        Vec::new()
+    };
 
     quote! {
-        let mut contract_abi = klever_sc::abi::ContractAbi {
-            build_info: klever_sc::abi::BuildInfoAbi {
+        let mut contract_abi = klever_sc::abi::ContractAbi::new(
+            klever_sc::abi::BuildInfoAbi {
                 contract_crate: klever_sc::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
@@ -192,16 +228,13 @@ fn generate_abi_method_body(
                 },
                 framework: klever_sc::abi::FrameworkBuildAbi::create(),
             },
-            docs: &[ #(#contract_docs),* ],
-            name: #contract_name,
-            constructors: klever_sc::types::heap::Vec::new(),
-            endpoints: klever_sc::types::heap::Vec::new(),
-            events: klever_sc::types::heap::Vec::new(),
-            type_descriptions: <klever_sc::abi::TypeDescriptionContainerImpl as klever_sc::abi::TypeDescriptionContainer>::new(),
-        };
+            &[ #(#contract_docs),* ],
+            #contract_name,
+        );
         #(#endpoint_snippets)*
         #(#event_snippets)*
         #(#supertrait_snippets)*
+        #(#kda_attributes)*
         contract_abi
     }
 }

@@ -1,5 +1,7 @@
+use alloc::format;
+
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
+    abi::{TypeAbi, TypeAbiFrom, TypeDescriptionContainer, TypeName},
     api::{ErrorApi, ErrorApiImpl},
     codec::{self, arrayvec::ArrayVec, NestedDecode, NestedEncode, TopDecode, TopEncode},
 };
@@ -154,7 +156,7 @@ where
     }
 }
 
-impl<'a, E, const CAPACITY: usize> Iterator for SparseArrayIterator<'a, E, CAPACITY>
+impl<E, const CAPACITY: usize> Iterator for SparseArrayIterator<'_, E, CAPACITY>
 where
     E: ErrorApi,
 {
@@ -177,12 +179,12 @@ where
     }
 }
 
-impl<'a, E, const CAPACITY: usize> ExactSizeIterator for SparseArrayIterator<'a, E, CAPACITY> where
+impl<E, const CAPACITY: usize> ExactSizeIterator for SparseArrayIterator<'_, E, CAPACITY> where
     E: ErrorApi
 {
 }
 
-impl<'a, E, const CAPACITY: usize> DoubleEndedIterator for SparseArrayIterator<'a, E, CAPACITY>
+impl<E, const CAPACITY: usize> DoubleEndedIterator for SparseArrayIterator<'_, E, CAPACITY>
 where
     E: ErrorApi,
 {
@@ -198,7 +200,7 @@ where
     }
 }
 
-impl<'a, E, const CAPACITY: usize> Clone for SparseArrayIterator<'a, E, CAPACITY>
+impl<E, const CAPACITY: usize> Clone for SparseArrayIterator<'_, E, CAPACITY>
 where
     E: ErrorApi,
 {
@@ -302,13 +304,22 @@ where
     }
 }
 
+impl<E, const CAPACITY: usize> TypeAbiFrom<Self> for SparseArray<E, CAPACITY> where E: ErrorApi {}
+impl<E, const CAPACITY: usize> TypeAbiFrom<&Self> for SparseArray<E, CAPACITY> where E: ErrorApi {}
+
 impl<E, const CAPACITY: usize> TypeAbi for SparseArray<E, CAPACITY>
 where
     E: ErrorApi,
 {
+    type Unmanaged = Self;
+
     /// It is semantically equivalent to any list of `usize`.
     fn type_name() -> TypeName {
         <&[usize] as TypeAbi>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        format!("SparseArray<$API, {CAPACITY}usize>")
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

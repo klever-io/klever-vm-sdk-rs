@@ -1,11 +1,10 @@
-pub const NON_PAYABLE_FUNC_KLV: &str = "function does not accept KLV payment";
 pub const NON_PAYABLE_FUNC_KDA: &str = "function does not accept KDA payment";
 
 pub const BIG_INT_BITWISE_OPERATION_NEGATIVE: &str =
     "bitwise operations only allowed on positive integers";
 pub const DIVISION_BY_0: &str = "division by 0";
 pub const BAD_BOUNDS_LOWER: &str = "bad bounds (lower)";
-pub const EXPONENT_IS_POSITIVE: &str = "exponent must be negative";
+pub const EXPONENT_IS_POSITIVE: &str = "exponent must be negative or zero";
 pub const NUMBER_IS_NOT_NORMAL: &str =
     "number is not normal. It is either infinite, NaN or subnormal";
 pub const CANNOT_COMPARE_VALUES: &str = "values are not comparable";

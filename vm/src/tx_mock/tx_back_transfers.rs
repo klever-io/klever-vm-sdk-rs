@@ -2,7 +2,7 @@ use num_bigint::BigUint;
 
 use crate::{tx_execution::BuiltinFunctionContainer, types::VMAddress};
 
-use super::{TxResult, TxTokenTransfer, TxInput};
+use super::{call_tx_input, CallType, TxResult, TxTokenTransfer};
 
 #[derive(Default)]
 pub struct BackTransfers {
@@ -31,18 +31,7 @@ impl BackTransfers {
                 continue;
             }
 
-            let tx_input = TxInput{
-                from: call.from.clone(),
-                to: call.to.clone(),
-                klv_value: call.call_value.clone(),
-                kda_values: Vec::new(),
-                func_name: call.endpoint_name.clone(),
-                args: call.arguments.clone(),
-                gas_limit: 1000,
-                gas_price: 0,
-                tx_hash: call.tx_hash.clone(),
-                ..Default::default()
-            };
+            let tx_input = call_tx_input(call, CallType::BackTransfer);
             let mut token_transfers = builtin_functions.extract_token_transfers(&tx_input);
             if &token_transfers.real_recipient == own_address {
                 bt.kda_transfers.append(&mut token_transfers.transfers);

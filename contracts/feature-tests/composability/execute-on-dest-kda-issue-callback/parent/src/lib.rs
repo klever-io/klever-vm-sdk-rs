@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 // Base cost for standalone + estimate cost of actual sc call
 const ISSUE_EXPECTED_GAS_COST: u64 = 90_000_000 + 25_000_000;
@@ -44,7 +44,7 @@ pub trait Parent {
             .child_proxy(child_contract_adress)
             .issue_wrapped_klv(token_display_name, token_ticker, initial_supply)
             .with_klv_transfer(issue_cost.clone_value())
-            .with_gas_limit(ISSUE_EXPECTED_GAS_COST)
+            .gas(ISSUE_EXPECTED_GAS_COST)
             .execute_on_dest_context();
     }
 

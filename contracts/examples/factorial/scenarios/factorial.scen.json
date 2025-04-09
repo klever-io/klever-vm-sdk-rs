@@ -9,7 +9,7 @@
                     "balance": "0"
                 },
                 "sc:factorial": {
-                    "code": "file:../output/factorial.wasm"
+                    "code": "kleversc:../output/factorial.kleversc.json"
                 }
             }
         },

@@ -1,12 +1,12 @@
-use klever_sc::types::H256;
+use klever_sc::{
+    abi::TypeAbiFrom,
+    types::{ContractCallBase, H256},
+};
 use num_traits::Zero;
 
 use crate::{
     api::StaticApi,
-    klever_sc::{
-        codec::{CodecFrom, TopEncodeMulti},
-        types::ContractCall,
-    },
+    klever_sc::{codec::TopEncodeMulti, types::ContractCall},
     scenario::model::{AddressValue, BytesValue, TxExpect, TxQuery},
     scenario_model::TxResponse,
 };
@@ -67,7 +67,7 @@ impl ScQueryStep {
     /// - "arguments"
     pub fn call<CC>(mut self, contract_call: CC) -> TypedScQuery<CC::OriginalResult>
     where
-        CC: ContractCall<StaticApi>,
+        CC: ContractCallBase<StaticApi>,
     {
         let (to_str, function, klv_value_expr, mandos_args) = process_contract_call(contract_call);
         assert!(
@@ -96,7 +96,7 @@ impl ScQueryStep {
     ) -> TypedScQuery<CC::OriginalResult>
     where
         CC: ContractCall<StaticApi>,
-        ExpectedResult: CodecFrom<CC::OriginalResult> + TopEncodeMulti,
+        ExpectedResult: TypeAbiFrom<CC::OriginalResult> + TopEncodeMulti,
     {
         let typed = self.call(contract_call);
         typed.expect_value(expected_value)

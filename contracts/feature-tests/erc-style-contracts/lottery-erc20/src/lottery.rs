@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 mod lottery_info;
 mod random;
@@ -23,6 +23,7 @@ pub trait Lottery {
         self.set_erc20_contract_address(&erc20_contract_address);
     }
 
+    #[allow_multiple_var_args]
     #[endpoint]
     fn start(
         &self,
@@ -45,6 +46,7 @@ pub trait Lottery {
         )
     }
 
+    #[allow_multiple_var_args]
     #[endpoint(createLotteryPool)]
     fn create_lottery_pool(
         &self,
@@ -67,6 +69,7 @@ pub trait Lottery {
         )
     }
 
+    #[allow_multiple_var_args]
     #[allow(clippy::too_many_arguments)]
     fn start_lottery(
         &self,
@@ -229,7 +232,6 @@ pub trait Lottery {
         info.queued_tickets -= 1;
 
         self.set_lottery_info(lottery_name, &info);
-
     }
 
     fn reserve_ticket(&self, lottery_name: &BoxedBytes) {
@@ -293,7 +295,7 @@ pub trait Lottery {
         self.erc20_proxy(erc20_address)
             .transfer(winner_address, prize)
             .execute_on_dest_context::<IgnoreValue>();
-            
+
         self.distribute_prizes(lottery_name);
     }
 

@@ -1,5 +1,5 @@
+use klever_sc::derive_imports::*;
 use klever_sc::types::Box;
-klever_sc::derive_imports!();
 
 const ARRAY_SIZE: usize = 512;
 

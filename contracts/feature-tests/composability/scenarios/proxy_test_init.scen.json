@@ -11,13 +11,13 @@
                 "sc:proxy-first": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../proxy-test-first/output/proxy-test-first.wasm"
+                    "code": "kleversc:../proxy-test-first/output/proxy-test-first.kleversc.json"
                 }
             },
             "newAddresses": [
                 {
                     "creatorAddress": "sc:proxy-first",
-                    "creatorNonce": "1",
+                    "creatorNonce": "0",
                     "newAddress": "sc:proxy-second"
                 }
             ]
@@ -31,7 +31,7 @@
                 "klvValue": "100",
                 "function": "deploySecondContract",
                 "arguments": [
-                    "file:../proxy-test-second/output/proxy-test-second.wasm"
+                    "kleversc:../proxy-test-second/output/proxy-test-second.kleversc.json"
                 ],
                 "gasLimit": "1,000,000,000,000",
                 "gasPrice": "0"
@@ -61,7 +61,7 @@
                     "storage": {
                         "str:other_contract": "sc:proxy-second"
                     },
-                    "code": "file:../proxy-test-first/output/proxy-test-first.wasm"
+                    "code": "kleversc:../proxy-test-first/output/proxy-test-first.kleversc.json"
                 },
                 "sc:proxy-second": {
                     "nonce": "0",
@@ -70,7 +70,7 @@
                         "str:init_arg": "123",
                         "str:last_payment": "100"
                     },
-                    "code": "file:../proxy-test-second/output/proxy-test-second.wasm"
+                    "code": "kleversc:../proxy-test-second/output/proxy-test-second.kleversc.json"
                 }
             }
         }

@@ -13,8 +13,6 @@ mod only_admin_mod;
 mod only_owner_derived_mod;
 mod only_owner_mod;
 
-klever_sc::imports!();
-
 /// Contract that tests that using modules works correctly.
 /// Also provides testing for the most common modules:
 /// - DnsModule
@@ -23,6 +21,8 @@ klever_sc::imports!();
 /// - GovernanceModule
 /// - PauseModule
 #[klever_sc::contract]
+#[kda_attribute("TICKER1", BigUint)]
+#[kda_attribute("TICKER2", ManagedBuffer)]
 pub trait UseModule:
     ContractBase
     + contract_base_full_path_mod::ContractBaseFullPathTestModule
@@ -40,7 +40,6 @@ pub trait UseModule:
     + klever_sc_modules::kda::KdaModule
     + klever_sc_modules::features::FeaturesModule
     + klever_sc_modules::pause::PauseModule
-    + klever_sc_modules::staking::StakingModule
     + klever_sc_modules::only_admin::OnlyAdminModule
     + klever_sc_modules::ongoing_operation::OngoingOperationModule
 {
@@ -52,7 +51,7 @@ pub trait UseModule:
     }
 
     #[endpoint(checkPause)]
-    fn check_pause(&self) -> SCResult<bool> {
-        Ok(self.is_paused())
+    fn check_pause(&self) -> bool {
+        self.is_paused()
     }
 }

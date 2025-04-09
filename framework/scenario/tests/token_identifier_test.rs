@@ -142,7 +142,7 @@ fn test_token_identifier_eq() {
     );
 
     assert_eq!(
-        TokenIdentifier::<StaticApi>::from(TokenIdentifier::from("KDA-0003")),
+        TokenIdentifier::from("KDA-0003"),
         TokenIdentifier::<StaticApi>::from("KDA-0003")
     );
     assert_ne!(

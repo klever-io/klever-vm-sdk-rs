@@ -1,10 +1,15 @@
+use alloc::vec::Vec;
+use klever_sc_codec::{
+    DecodeError, DecodeErrorHandler, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
+};
+
 use crate::{
     abi::{
-        ExplicitEnumVariantDescription, TypeAbi, TypeContents, TypeDescription,
+        ExplicitEnumVariantDescription, TypeAbi, TypeAbiFrom, TypeContents, TypeDescription,
         TypeDescriptionContainer, TypeName,
     },
     api::ManagedTypeApi,
-    codec::{CodecFrom, EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput},
+    codec::EncodeErrorHandler,
     types::ManagedBuffer,
 };
 
@@ -37,43 +42,74 @@ impl OperationCompletionStatus {
     }
 }
 
-impl TopEncodeMulti for OperationCompletionStatus {
-    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+impl TopEncode for OperationCompletionStatus {
+    fn top_encode_or_handle_err<O, H>(&self, output: O, _h: H) -> Result<(), H::HandledErr>
     where
-        O: TopEncodeMultiOutput,
+        O: TopEncodeOutput,
         H: EncodeErrorHandler,
     {
-        output.push_single_value(&self.output_bytes(), h)
+        output.set_slice_u8(self.output_bytes());
+        Ok(())
     }
 }
 
-impl<M: ManagedTypeApi> CodecFrom<OperationCompletionStatus> for ManagedBuffer<M> {}
-impl CodecFrom<OperationCompletionStatus> for crate::types::heap::BoxedBytes {}
-impl CodecFrom<OperationCompletionStatus> for crate::types::heap::Vec<u8> {}
+impl TopDecode for OperationCompletionStatus {
+    fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
+    where
+        I: TopDecodeInput,
+        H: DecodeErrorHandler,
+    {
+        const BUFFER_LEN: usize = 16;
+        let mut buffer = [0u8; BUFFER_LEN];
+        let len = input.into_max_size_buffer_align_right(&mut buffer, h)?;
+        let bytes = &buffer[BUFFER_LEN - len..];
+
+        if bytes.starts_with(COMPLETED_STR.as_bytes()) {
+            Ok(OperationCompletionStatus::Completed)
+        } else if bytes.starts_with(INTERRUPTED_STR.as_bytes()) {
+            Ok(OperationCompletionStatus::InterruptedBeforeOutOfGas)
+        } else {
+            Err(h.handle_error(DecodeError::INVALID_VALUE))
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> TypeAbiFrom<OperationCompletionStatus> for ManagedBuffer<M> {}
+impl TypeAbiFrom<OperationCompletionStatus> for crate::types::heap::BoxedBytes {}
+impl TypeAbiFrom<OperationCompletionStatus> for crate::types::heap::Vec<u8> {}
+
+impl TypeAbiFrom<Self> for OperationCompletionStatus {}
 
 impl TypeAbi for OperationCompletionStatus {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         TypeName::from("OperationCompletionStatus")
     }
 
+    fn type_name_rust() -> TypeName {
+        TypeName::from("OperationCompletionStatus")
+    }
+
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {
-        let type_name = Self::type_name();
+        let type_names = Self::type_names();
 
         accumulator.insert(
-            type_name,
+            type_names,
             TypeDescription {
-                docs: &[],
-                name: Self::type_name(),
+                docs: Vec::new(),
+                names: Self::type_names(),
                 contents: TypeContents::ExplicitEnum([
-                    ExplicitEnumVariantDescription {
-                        docs: &["indicates that operation was completed"],
-                        name: COMPLETED_STR,
-                    },
-                    ExplicitEnumVariantDescription {
-                        docs: &["indicates that operation was interrupted prematurely, due to low gas"],
-                        name: INTERRUPTED_STR,
-                    }
+                    ExplicitEnumVariantDescription::new(
+                        &["indicates that operation was completed"],
+                        COMPLETED_STR,
+                    ),
+                    ExplicitEnumVariantDescription::new(
+                        &["indicates that operation was interrupted prematurely, due to low gas"],
+                        INTERRUPTED_STR,
+                    )
                 ].to_vec()),
+                macro_attributes: Vec::new()
             },
         );
     }
@@ -83,6 +119,8 @@ impl TypeAbi for OperationCompletionStatus {
 
 #[cfg(test)]
 mod tests {
+    use klever_sc_codec::test_util::check_top_encode_decode;
+
     use super::*;
 
     #[test]
@@ -91,5 +129,17 @@ mod tests {
         assert!(!OperationCompletionStatus::Completed.is_interrupted());
         assert!(!OperationCompletionStatus::InterruptedBeforeOutOfGas.is_completed());
         assert!(OperationCompletionStatus::InterruptedBeforeOutOfGas.is_interrupted());
+    }
+
+    #[test]
+    fn test_codec_decode_operation_completion() {
+        check_top_encode_decode(
+            OperationCompletionStatus::Completed,
+            COMPLETED_STR.as_bytes(),
+        );
+        check_top_encode_decode(
+            OperationCompletionStatus::InterruptedBeforeOutOfGas,
+            INTERRUPTED_STR.as_bytes(),
+        );
     }
 }

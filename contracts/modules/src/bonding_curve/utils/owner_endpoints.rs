@@ -1,5 +1,4 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
 
 use klever_sc::contract_base::ManagedSerializer;
 
@@ -135,8 +134,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             let bonding_curve: BondingCurve<Self::Api, T> =
                 serializer.top_decode_from_managed_buffer(&self.bonding_curve(&token).get());
 
-            if !bonding_curve.payment.token_identifier.is_klv()
-            {
+            if !bonding_curve.payment.token_identifier.is_klv() {
                 tokens_to_claim.push(KdaTokenPayment::new(
                     bonding_curve.payment.token_identifier,
                     bonding_curve.payment.token_nonce,
@@ -150,9 +148,9 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
             self.bonding_curve(&token).clear();
         }
         self.owned_tokens(&caller).clear();
-        self.send().direct_multi(&caller, &tokens_to_claim);
+        self.tx().to(&caller).multi_kda(tokens_to_claim).transfer();
         if klv_to_claim > BigUint::zero() {
-            //self.send().direct_klv(&caller, &klv_to_claim);
+            self.tx().to(&caller).klv(&klv_to_claim).transfer();
         }
     }
 

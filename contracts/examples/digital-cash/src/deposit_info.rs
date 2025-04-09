@@ -1,11 +1,8 @@
-use klever_sc::{
-    api::ManagedTypeApi,
-    types::{BigUint, KdaTokenPayment, ManagedAddress, ManagedVec},
-};
+use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
-klever_sc::derive_imports!();
-
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct DepositInfo<M: ManagedTypeApi> {
     pub depositor_address: ManagedAddress<M>,
     pub kda_funds: ManagedVec<M, KdaTokenPayment<M>>,
@@ -20,12 +17,18 @@ where
     M: ManagedTypeApi,
 {
     pub fn get_num_tokens(&self) -> usize {
-        (self.klv_funds != BigUint::zero()) as usize + self.kda_funds.len()
+        let mut amount = self.kda_funds.len();
+        if self.klv_funds > 0 {
+            amount += 1;
+        }
+
+        amount
     }
 }
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, Default)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct Fee<M: ManagedTypeApi> {
     pub num_token_to_transfer: usize,
-    pub value: BigUint<M>,
+    pub value: KdaTokenPayment<M>,
 }

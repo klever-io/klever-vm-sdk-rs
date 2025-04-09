@@ -1,12 +1,10 @@
 use crate::{
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
     contract_base::BlockchainWrapper,
+    kda::KDASystemSmartContractProxy,
     storage::StorageKey,
     storage_get, storage_get_len, storage_set,
-    types::{
-        KdaTokenPayment, ManagedAddress, ManagedRef,
-        ManagedVec, TokenIdentifier,
-    }, kda::KDASystemSmartContractProxy,
+    types::{KdaTokenPayment, ManagedAddress, ManagedRef, ManagedVec, TokenIdentifier},
 };
 
 use super::TokenMapperState;
@@ -74,8 +72,14 @@ where
 
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id_ref();
-        system_sc_proxy
-            .set_special_roles(address, token_id, allow_mint, allow_set_ito_price, allow_deposit, allow_transfer);
+        system_sc_proxy.set_special_roles(
+            address,
+            token_id,
+            allow_mint,
+            allow_set_ito_price,
+            allow_deposit,
+            allow_transfer,
+        );
     }
 
     fn get_sc_address() -> ManagedAddress<SA> {

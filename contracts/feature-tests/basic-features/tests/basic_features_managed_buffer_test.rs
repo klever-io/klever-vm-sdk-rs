@@ -1,5 +1,4 @@
-use klever_sc::types::{ManagedAddress, ManagedBuffer};
-use klever_sc_scenario::{api::StaticApi, *};
+use klever_sc_scenario::imports::*;
 
 use basic_features::managed_buffer_features::ManagedBufferFeatures;
 

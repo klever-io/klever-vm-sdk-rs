@@ -1,15 +1,13 @@
 use crate::{
     tx_mock::{
-        call_tx_input, callback_tx_input, promise_tx_input, merge_results,
-        CallTxData, BlockchainUpdate, Promise, TxCache, TxContext, TxContextStack, TxInput,
-        TxPanic, TxResult, TxResultCalls,
+        call_tx_input, callback_tx_input, merge_results, promise_tx_input, BlockchainUpdate,
+        CallTxData, CallType, Promise, TxCache, TxContext, TxContextStack, TxInput, TxPanic,
+        TxResult, TxResultCalls,
     },
-    types::VMAddress,
+    types::{VMAddress, VMCodeMetadata},
     with_shared::Shareable,
     world_mock::{AccountData, AccountKda, BlockchainState},
 };
-use num_bigint::BigUint;
-use num_traits::Zero;
 use std::collections::HashMap;
 
 use super::BlockchainVMRef;
@@ -106,7 +104,7 @@ impl BlockchainVMRef {
         state: &mut Shareable<BlockchainState>,
     ) -> (TxResult, TxResult) {
         if state.accounts.contains_key(&async_data.to) {
-            let async_input = call_tx_input(&async_data);
+            let async_input = call_tx_input(&async_data, CallType::AsyncCall);
 
             let async_result = self.sc_call_with_async_and_callback(
                 async_input,
@@ -189,7 +187,7 @@ impl BlockchainVMRef {
         state: &mut Shareable<BlockchainState>,
     ) -> (TxResult, TxResult) {
         if state.accounts.contains_key(&promise.call.to) {
-            let async_input = call_tx_input(&promise.call);
+            let async_input = call_tx_input(&promise.call, CallType::AsyncCall);
             let async_result = self.sc_call_with_async_and_callback(
                 async_input,
                 state,
@@ -236,7 +234,9 @@ impl BlockchainVMRef {
                 username: Vec::new(),
                 storage: HashMap::new(),
                 contract_path: None,
+                code_metadata: VMCodeMetadata::empty(),
                 contract_owner: None,
+                permissions: None,
             });
             Ok(tx_cache.into_blockchain_updates())
         })

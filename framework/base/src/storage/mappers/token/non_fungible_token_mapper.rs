@@ -4,19 +4,20 @@ use super::{
     TokenMapperState,
 };
 
+use crate::abi::TypeAbiFrom;
 use crate::{
     abi::{TypeAbi, TypeName},
     api::{CallTypeApi, ErrorApiImpl, StorageMapperApi},
-    codec::{
-        CodecFrom, EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput,
-    },
+    codec::{EncodeErrorHandler, TopDecode, TopEncodeMulti, TopEncodeMultiOutput},
     contract_base::{BlockchainWrapper, SendWrapper},
-    storage::StorageKey, storage_get,
-    types::{
-        BigUint, KdaTokenData, PropertiesInfo,
-        ManagedAddress, ManagedBuffer, ManagedType, TokenIdentifier, ManagedVec,
-    },
+    imports::{AttributesInfo, UserKDA},
     kda::KDASystemSmartContractProxy,
+    storage::StorageKey,
+    storage_get,
+    types::{
+        BigUint, KdaTokenData, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec,
+        PropertiesInfo, TokenIdentifier, URI,
+    },
 };
 
 pub struct NonFungibleTokenMapper<SA>
@@ -98,8 +99,14 @@ where
                 can_add_roles: true,
                 limit_transfer: false,
             },
+            &AttributesInfo {
+                is_paused: false,
+                is_nft_mint_stopped: false,
+                is_nft_metadata_change_stopped: false,
+                is_royalties_change_stopped: false,
+            },
+            &ManagedVec::<SA, URI<SA>>::new(),
         );
-
 
         self.set_token_id(token_id.clone());
 
@@ -110,7 +117,7 @@ where
         let system_sc_proxy = KDASystemSmartContractProxy::<SA>::new_proxy_obj();
         let token_id = self.get_token_id();
 
-        system_sc_proxy.mint(&token_id, &amount)
+        system_sc_proxy.mint(&token_id, amount)
     }
 
     pub fn nft_mint_to_address(
@@ -139,6 +146,14 @@ where
         b_wrapper.get_kda_token_data(&own_sc_address, token_id, token_nonce)
     }
 
+    pub fn get_nft_token_data(&self, token_nonce: u64) -> UserKDA<SA> {
+        let b_wrapper = BlockchainWrapper::new();
+        let own_sc_address = Self::get_sc_address();
+        let token_id = self.get_token_id_ref();
+
+        b_wrapper.get_user_kda(&own_sc_address, token_id, token_nonce)
+    }
+
     pub fn get_balance(&self, token_nonce: u64) -> BigUint<SA> {
         let b_wrapper = BlockchainWrapper::new();
         let own_sc_address = Self::get_sc_address();
@@ -147,9 +162,9 @@ where
         b_wrapper.get_kda_balance(&own_sc_address, token_id, token_nonce)
     }
 
-    pub fn get_token_attributes<T: TopDecode>(&self, token_nonce: u64) -> T {
+    pub fn get_token_attributes<T: TopDecode>(&self, token_nonce: u64) -> AttributesInfo {
         let token_data = self.get_all_token_data(token_nonce);
-        token_data.decode_attributes()
+        token_data.attributes
     }
 }
 
@@ -170,17 +185,25 @@ where
     }
 }
 
-impl<SA> CodecFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
+impl<SA> TypeAbiFrom<NonFungibleTokenMapper<SA>> for TokenIdentifier<SA> where
     SA: StorageMapperApi + CallTypeApi
 {
 }
+
+impl<SA> TypeAbiFrom<Self> for NonFungibleTokenMapper<SA> where SA: StorageMapperApi + CallTypeApi {}
 
 impl<SA> TypeAbi for NonFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         TokenIdentifier::<SA>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        TokenIdentifier::<SA>::type_name_rust()
     }
 
     fn provide_type_descriptions<TDC: crate::abi::TypeDescriptionContainer>(accumulator: &mut TDC) {

@@ -1,6 +1,6 @@
 use crate::{
     scenario::model::{
-        AddressValue, BigUintValue, BytesKey, BytesValue, Kda, KdaObject, U64Value,
+        AddressValue, BigUintValue, BytesKey, BytesValue, Kda, KdaObject, Permission, U64Value,
     },
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -19,7 +19,9 @@ pub struct Account {
     pub username: Option<BytesValue>,
     pub storage: BTreeMap<BytesKey, BytesValue>,
     pub code: Option<BytesValue>,
+    pub code_metadata: Option<BytesValue>,
     pub owner: Option<AddressValue>,
+    pub permissions: Option<Vec<Permission>>,
 }
 
 impl Account {
@@ -71,14 +73,48 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_balance(nonce_expr.clone(), balance_expr);
 
         if let Some(attributes_expr) = opt_attributes_expr {
             kda_obj_ref.set_token_attributes(nonce_expr, attributes_expr);
         }
+
+        self
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn kda_nft_all_properties<K, N, V, T, A>(
+        mut self,
+        token_id_expr: K,
+        nonce_expr: N,
+        balance_expr: V,
+        opt_attributes_expr: Option<T>,
+        royalties_expr: N,
+        creator_expr: Option<A>,
+        hash_expr: Option<T>,
+        uris_expr: Vec<T>,
+    ) -> Self
+    where
+        BytesKey: From<K>,
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        BytesValue: From<T>,
+        AddressValue: From<A>,
+    {
+        let token_id = BytesKey::from(token_id_expr);
+
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
+
+        kda_obj_ref.set_token_all_properties(
+            nonce_expr,
+            balance_expr,
+            opt_attributes_expr,
+            royalties_expr,
+            creator_expr,
+            hash_expr,
+            uris_expr,
+        );
 
         self
     }
@@ -90,9 +126,7 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_last_nonce(last_nonce_expr);
 
         self
@@ -105,9 +139,7 @@ impl Account {
     {
         let token_id = BytesKey::from(token_id_expr);
 
-        let kda_obj_ref = self
-            .get_kda_data_or_create(&token_id)
-            .get_mut_kda_object();
+        let kda_obj_ref = self.get_kda_data_or_create(&token_id).get_mut_kda_object();
         kda_obj_ref.set_roles(roles);
 
         self
@@ -172,7 +204,16 @@ impl InterpretableFrom<AccountRaw> for Account {
                 })
                 .collect(),
             code: from.code.map(|c| BytesValue::interpret_from(c, context)),
+            code_metadata: from
+                .code_metadata
+                .map(|c| BytesValue::interpret_from(c, context)),
             owner: from.owner.map(|v| AddressValue::interpret_from(v, context)),
+            permissions: from.permissions.map(|permissions| {
+                permissions
+                    .into_iter()
+                    .map(|permission| Permission::interpret_from(permission, context))
+                    .collect()
+            }),
         }
     }
 }
@@ -195,7 +236,14 @@ impl IntoRaw<AccountRaw> for Account {
                 .map(|(key, value)| (key.original, value.original))
                 .collect(),
             code: self.code.map(|n| n.original),
+            code_metadata: self.code_metadata.map(|n| n.original),
             owner: self.owner.map(|n| n.original),
+            permissions: self.permissions.map(|permissions| {
+                permissions
+                    .into_iter()
+                    .map(|permission| permission.into_raw())
+                    .collect()
+            }),
         }
     }
 }

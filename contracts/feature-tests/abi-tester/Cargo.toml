@@ -9,14 +9,14 @@ publish = false
 path = "src/abi_tester.rs"
 
 [dependencies.klever-sc]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.klever-sc-scenario]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/scenario"
 
 [dev-dependencies.klever-sc-meta]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../framework/meta"

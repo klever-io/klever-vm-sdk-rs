@@ -1,7 +1,7 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[derive(TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone, Copy)]
 pub enum Status {

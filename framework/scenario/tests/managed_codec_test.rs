@@ -1,6 +1,4 @@
-use klever_sc::types::{
-    BigInt, BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, ManagedVec,
-};
+use klever_sc::types::{BigInt, BigUint, BoxedBytes, ManagedAddress, ManagedBuffer, ManagedVec};
 use klever_sc_scenario::{api::StaticApi, managed_test_util::check_managed_top_encode_decode};
 
 #[test]

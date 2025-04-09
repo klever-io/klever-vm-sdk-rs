@@ -26,7 +26,8 @@
                     "storage": {
                         "str:totalValue": "0x01"
                     },
-                    "code": "file:../output/rust-testing-framework-tester.wasm"
+                    "code": "file:../output/rust-testing-framework-tester.wasm",
+                    "codeMetadata": "0x0506"
                 }
             }
         },
@@ -55,8 +56,7 @@
                 "arguments": [
                     "0x32"
                 ],
-                "gasLimit": "100000000",
-                "gasPrice": "0"
+                "gasLimit": "100000000"
             },
             "expect": {
                 "out": [],

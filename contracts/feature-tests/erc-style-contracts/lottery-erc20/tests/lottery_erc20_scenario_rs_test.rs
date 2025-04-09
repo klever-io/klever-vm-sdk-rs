@@ -2,16 +2,15 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace(
-        "contracts/feature-tests/erc-style-contracts/lottery-erc20",
-    );
-
     blockchain.register_contract(
-        "file:output/lottery-erc20.wasm",
+        "kleversc:output/lottery-erc20.kleversc.json",
         lottery_erc20::ContractBuilder,
     );
 
-    blockchain.register_contract("file:../erc20/output/erc20.wasm", erc20::ContractBuilder);
+    blockchain.register_contract(
+        "kleversc:../erc20/output/erc20.kleversc.json",
+        erc20::ContractBuilder,
+    );
 
     blockchain
 }
@@ -138,7 +137,9 @@ fn start_limited_tickets_and_fixed_deadline_invalid_deadline_rs() {
 
 #[test]
 fn start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_rs() {
-    world().run("scenarios/start-limited-tickets-and-fixed-deadline-invalid-ticket-price-arg.scen.json");
+    world().run(
+        "scenarios/start-limited-tickets-and-fixed-deadline-invalid-ticket-price-arg.scen.json",
+    );
 }
 
 #[test]

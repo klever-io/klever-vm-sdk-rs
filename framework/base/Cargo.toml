@@ -1,14 +1,15 @@
 [package]
 name = "klever-sc"
-version = "0.43.3"
+version = "0.44.0"
 edition = "2021"
+rust-version = "1.78"
 
 authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/klever-io/klever-vm-sdk-rs"
 homepage = "https://klever.io/"
-documentation = "https://docs.klever.finance/"
+documentation = "https://docs.klever.org/"
 description = "Klever smart contract API"
 keywords = ["klever", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
@@ -19,19 +20,16 @@ all-features = true
 [features]
 num-bigint = ["klever-sc-codec/num-bigint"]
 alloc = ["klever-sc-codec/alloc"]
-promises = []
-managed-map = []
+managed-buffer-builder-cached = []
 
 [dependencies]
-hex-literal = "0.3.1"
-bitflags = "1.3.2"
-
-[dependencies.num-traits]
-version = "0.2"
-default-features = false
+hex-literal = "=0.4.1"
+bitflags = "=2.5.0"
+num-traits = { version = "=0.2.19", default-features = false }
+unwrap-infallible = "0.1.5"
 
 [dependencies.klever-sc-derive]
-version = "=0.43.3"
+version = "=0.44.0"
 path = "../derive"
 
 [dependencies.klever-sc-codec]

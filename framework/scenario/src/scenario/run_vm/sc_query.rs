@@ -59,7 +59,7 @@ fn tx_input_from_query(sc_query_step: &ScQueryStep) -> TxInput {
             .iter()
             .map(|scen_arg| scen_arg.value.clone())
             .collect(),
-        gas_limit: u64::MAX,
+        gas_limit: i64::MAX as u64,
         gas_price: 0u64,
         tx_hash: generate_tx_hash(&sc_query_step.id, &sc_query_step.explicit_tx_hash),
         ..Default::default()

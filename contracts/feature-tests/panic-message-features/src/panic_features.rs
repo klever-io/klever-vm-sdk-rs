@@ -1,6 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Explores panic messaging.
 /// Sending panic messages to the VM is possible, as shown in this contract,
@@ -24,4 +24,9 @@ pub trait PanicMessageFeatures {
 
     #[event("before-panic")]
     fn before_panic(&self);
+
+    #[view]
+    fn sc_panic(&self) {
+        sc_panic!("sc_panic! test");
+    }
 }

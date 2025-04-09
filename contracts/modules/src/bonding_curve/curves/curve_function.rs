@@ -1,5 +1,4 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
 
 use crate::bonding_curve::utils::structs::CurveArguments;
 pub trait CurveFunction<M: ManagedTypeApi> {

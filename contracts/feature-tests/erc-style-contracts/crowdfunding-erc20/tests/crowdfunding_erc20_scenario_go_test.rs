@@ -10,6 +10,7 @@ fn deploy_erc_20_and_crowdfunding_go() {
 }
 
 #[test]
+#[ignore = "Halts execution during execute_on_dest_context; Go SDK does not propagate error, triggering fail instead"]
 fn fund_with_insufficient_allowance_go() {
     world().run("scenarios/fund_with_insufficient_allowance.scen.json");
 }
@@ -20,6 +21,7 @@ fn fund_with_sufficient_allowance_go() {
 }
 
 #[test]
+#[ignore = "Halts execution during execute_on_dest_context; Go SDK does not propagate error, triggering fail instead"]
 fn fund_without_allowance_go() {
     world().run("scenarios/fund_without_allowance.scen.json");
 }

@@ -1,6 +1,9 @@
-use crate::codec::{
-    multi_types::MultiValue3, DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti,
-    TopDecodeMultiInput, TopDecodeMultiLength, TopEncodeMulti, TopEncodeMultiOutput,
+use crate::{
+    abi::TypeAbiFrom,
+    codec::{
+        multi_types::MultiValue3, DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti,
+        TopDecodeMultiInput, TopDecodeMultiLength, TopEncodeMulti, TopEncodeMultiOutput,
+    },
 };
 
 use crate::{
@@ -37,7 +40,7 @@ impl<M: ManagedTypeApi> KdaTokenPaymentMultiValue<M> {
 }
 
 impl<M: ManagedTypeApi> ManagedVecItem for KdaTokenPaymentMultiValue<M> {
-    const PAYLOAD_SIZE: usize = KdaTokenPayment::<M>::PAYLOAD_SIZE;
+    type PAYLOAD = <KdaTokenPayment<M> as ManagedVecItem>::PAYLOAD;
     const SKIPS_RESERIALIZATION: bool = KdaTokenPayment::<M>::SKIPS_RESERIALIZATION;
     type Ref<'a> = Self;
 
@@ -98,12 +101,20 @@ where
     const LEN: usize = 3;
 }
 
+impl<M> TypeAbiFrom<Self> for KdaTokenPaymentMultiValue<M> where M: ManagedTypeApi {}
+
 impl<M> TypeAbi for KdaTokenPaymentMultiValue<M>
 where
     M: ManagedTypeApi,
 {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         MultiValue3::<TokenIdentifier<M>, u64, BigUint<M>>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "KdaTokenPaymentMultiValue<$API>".into()
     }
 
     fn is_variadic() -> bool {

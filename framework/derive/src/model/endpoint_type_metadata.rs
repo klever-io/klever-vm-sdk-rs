@@ -2,6 +2,7 @@
 #[derive(Debug, Clone)]
 pub enum EndpointTypeMetadata {
     Init,
+    Upgrade,
     Endpoint,
 }
 
@@ -10,6 +11,9 @@ impl EndpointTypeMetadata {
         match self {
             EndpointTypeMetadata::Init => {
                 quote! { klever_sc::abi::EndpointTypeAbi::Init }
+            },
+            EndpointTypeMetadata::Upgrade => {
+                quote! { klever_sc::abi::EndpointTypeAbi::Upgrade }
             },
             EndpointTypeMetadata::Endpoint => {
                 quote! { klever_sc::abi::EndpointTypeAbi::Endpoint }

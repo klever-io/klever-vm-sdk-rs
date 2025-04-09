@@ -1,49 +1,17 @@
 #![no_std]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use hex_literal::hex;
+
+pub mod message_me_proxy;
+pub mod pay_me_proxy;
 
 static HARDCODED_ADDRESS: [u8; 32] =
     hex!("fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe");
 
-mod pay_me_proxy {
-    klever_sc::imports!();
-
-    #[klever_sc::proxy]
-    pub trait PayMe {
-        #[payable("KLV")]
-        #[endpoint(payMe)]
-        fn pay_me(&self, arg1: i64);
-
-        #[payable("KLV")]
-        #[endpoint(payMeWithResult)]
-        fn pay_me_with_result(&self, arg1: i64);
-    }
-}
-
-mod message_me_proxy {
-    klever_sc::imports!();
-
-    #[klever_sc::proxy]
-    pub trait MessageMe {
-        #[init]
-        #[payable("KLV")]
-        fn init(&self, init_arg: i32) -> i32;
-
-        #[endpoint(messageMe)]
-        fn message_me(&self, arg1: i64, arg2: &BigUint, arg3: Vec<u8>, arg4: &ManagedAddress);
-    }
-}
-
 #[klever_sc::contract]
 pub trait ProxyTestFirst {
-    #[proxy]
-    fn pay_me_proxy(&self) -> pay_me_proxy::Proxy<Self::Api>;
-
-    #[proxy]
-    fn message_me_proxy(&self) -> message_me_proxy::Proxy<Self::Api>;
-
     #[storage_get("other_contract")]
     fn get_other_contract(&self) -> ManagedAddress;
 
@@ -62,11 +30,18 @@ pub trait ProxyTestFirst {
     #[endpoint(deploySecondContract)]
     fn deploy_second_contract(&self, code: ManagedBuffer) -> i32 {
         let payment = self.call_value().klv_value();
+
         let (address, init_result) = self
-            .message_me_proxy()
+            .tx()
+            .typed(message_me_proxy::MessageMeProxy)
             .init(123)
-            .with_klv_transfer(payment.clone_value())
-            .deploy_contract::<i32>(&code, CodeMetadata::DEFAULT);
+            .code(code)
+            .code_metadata(CodeMetadata::UPGRADEABLE)
+            .returns(ReturnsNewManagedAddress)
+            .returns(ReturnsResult)
+            .klv(payment)
+            .sync_call();
+
         self.set_other_contract(&address);
         init_result + 1
     }
@@ -77,11 +52,15 @@ pub trait ProxyTestFirst {
         let payment = self.call_value().klv_value();
         let other_contract = self.get_other_contract();
 
-        self.message_me_proxy()
-            .contract(other_contract)
-            .init(456)
-            .with_klv_transfer(payment.clone_value())
-            .upgrade_contract(&code, CodeMetadata::DEFAULT);
+        self.tx()
+            .to(other_contract)
+            .typed(pay_me_proxy::PayMeProxy)
+            .upgrade()
+            .argument(&456)
+            .klv(payment)
+            .code(code)
+            .code_metadata(CodeMetadata::UPGRADEABLE)
+            .upgrade_sync_call();
     }
 
     #[payable("KLV")]
@@ -89,11 +68,13 @@ pub trait ProxyTestFirst {
     fn forward_to_other_contract(&self) {
         let payment = self.call_value().klv_value();
         let other_contract = self.get_other_contract();
-        self.pay_me_proxy()
-            .contract(other_contract)
+
+        self.tx()
+            .to(&other_contract)
+            .typed(pay_me_proxy::PayMeProxy)
             .pay_me(0x56)
-            .with_klv_transfer(payment.clone_value())
-            .execute_on_dest_context::<IgnoreValue>();
+            .klv(payment)
+            .transfer_execute();
     }
 
     #[payable("KLV")]
@@ -101,18 +82,20 @@ pub trait ProxyTestFirst {
     fn forward_to_other_contract_with_callback(&self) {
         let payment = self.call_value().klv_value();
         let other_contract = self.get_other_contract();
-        self.pay_me_proxy()
-            .contract(other_contract)
+        self.tx()
+            .to(&other_contract)
+            .typed(pay_me_proxy::PayMeProxy)
             .pay_me_with_result(0x56)
-            .with_klv_transfer(payment.clone_value())
-            .execute_on_dest_context::<IgnoreValue>();
+            .klv(payment)
+            .transfer_execute();
     }
 
     #[endpoint(messageOtherContract)]
     fn message_other_contract(&self) {
         let other_contract = self.get_other_contract();
-        self.message_me_proxy()
-            .contract(other_contract)
+        self.tx()
+            .to(&other_contract)
+            .typed(message_me_proxy::MessageMeProxy)
             .message_me(
                 0x01,
                 &BigUint::from(2u32),

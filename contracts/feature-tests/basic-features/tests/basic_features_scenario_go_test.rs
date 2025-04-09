@@ -35,6 +35,11 @@ fn big_uint_sqrt_go() {
 }
 
 #[test]
+fn big_uint_pow_go() {
+    world().run("scenarios/big_uint_pow.scen.json");
+}
+
+#[test]
 fn big_uint_to_u_64_go() {
     world().run("scenarios/big_uint_to_u64.scen.json");
 }
@@ -190,6 +195,16 @@ fn get_caller_go() {
 }
 
 #[test]
+fn get_code_metadata_go() {
+    world().run("scenarios/get_code_metadata.scen.json");
+}
+
+#[test]
+fn is_builtin_function_go() {
+    world().run("scenarios/is_builtin_function.scen.json");
+}
+
+#[test]
 fn managed_address_array_go() {
     world().run("scenarios/managed_address_array.scen.json");
 }
@@ -225,13 +240,13 @@ fn managed_vec_address_push_go() {
 }
 
 #[test]
-fn managed_vec_array_push_go() {
-    world().run("scenarios/managed_vec_array_push.scen.json");
+fn managed_vec_biguint_push_go() {
+    world().run("scenarios/managed_vec_biguint_push.scen.json");
 }
 
 #[test]
-fn managed_vec_biguint_push_go() {
-    world().run("scenarios/managed_vec_biguint_push.scen.json");
+fn new_address_go() {
+    world().run("scenarios/new_address.scen.json");
 }
 
 #[test]
@@ -325,6 +340,11 @@ fn storage_mapper_fungible_token_go() {
 }
 
 #[test]
+fn storage_mapper_get_at_address_go() {
+    world().run("scenarios/storage_mapper_get_at_address.scen.json");
+}
+
+#[test]
 fn storage_mapper_linked_list_go() {
     world().run("scenarios/storage_mapper_linked_list.scen.json");
 }
@@ -340,8 +360,8 @@ fn storage_mapper_map_storage_go() {
 }
 
 #[test]
-fn storage_mapper_non_fungible_token_go() {
-    world().run("scenarios/storage_mapper_non_fungible_token.scen.json");
+fn storage_mapper_semi_fungible_token_go() {
+    world().run("scenarios/storage_mapper_semi_fungible_token.scen.json");
 }
 
 #[test]
@@ -390,7 +410,6 @@ fn storage_raw_api_features_go() {
 }
 
 #[test]
-#[ignore = "the error message has changed, re-enable when we move to VM 1.5"]
 fn storage_reserved_go() {
     world().run("scenarios/storage_reserved.scen.json");
 }

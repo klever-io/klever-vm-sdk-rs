@@ -1,8 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
-
+pub mod proxy_crypto_zombies;
 mod storage;
 mod zombie;
 mod zombie_attack;
@@ -25,6 +23,9 @@ pub trait CryptoZombies:
         self.level_up_fee().set(BigUint::from(1000000000000000u64));
         self.cooldown_time().set(86400u64);
     }
+
+    #[upgrade]
+    fn upgrade(&self) {}
 
     #[only_owner]
     #[endpoint]

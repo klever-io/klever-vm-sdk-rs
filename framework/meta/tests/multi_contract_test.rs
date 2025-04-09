@@ -1,9 +1,7 @@
 use klever_sc::abi::{ContractAbi, EndpointAbi};
-use klever_sc_meta::cmd::contract::output_contract::{
-    MultiContractConfigSerde, OutputContractGlobalConfig,
-};
+use klever_sc_meta::cmd::contract::sc_config::{ScConfig, ScConfigSerde};
 
-fn get_serialized_toml() -> MultiContractConfigSerde {
+fn get_serialized_toml() -> ScConfigSerde {
     toml::from_str(
         r#"
         [settings]
@@ -15,6 +13,7 @@ fn get_serialized_toml() -> MultiContractConfigSerde {
 
         [contracts.secondary-contract]
         name = "contract2-name"
+        add-unlabelled = false
         add-labels = ["label1", "label2"]
         external-view = true
         
@@ -87,11 +86,11 @@ fn test_serialize_multi_contract() {
 }
 
 #[test]
-fn test_output_contract_config() {
+fn test_sc_config() {
     let serde = get_serialized_toml();
     let abi = get_contract_abi();
 
-    let contract_config = OutputContractGlobalConfig::load_from_config(&serde, &abi);
+    let contract_config = ScConfig::load_from_config(&serde, &abi);
 
     assert_eq!(
         contract_config.default_contract_config_name,

@@ -7,7 +7,7 @@
                 "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "kleversc:../output/basic-features.kleversc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -28,7 +28,7 @@
             },
             "expect": {
                 "out": [],
-                "status": "1",
+                "status": "55",
                 "message": "str:invalid function (not found)",
                 "logs": "*",
                 "gas": "*",

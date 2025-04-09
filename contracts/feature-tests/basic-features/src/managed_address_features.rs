@@ -1,6 +1,6 @@
 use core::convert::TryFrom;
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::module]
 pub trait ManagedAddressFeatures {

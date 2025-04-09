@@ -6,52 +6,63 @@ on:
       - master
   pull_request:
 
-permissions:
-  checks: write
-  pull-requests: write
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
   template_test_released:
+    if: vars.TEST_TEMPLATE_RELEASED == 'true'
     name: Template tool test - released templates
     runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-A dead_code"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          default: true
-          toolchain: nightly-2023-08-08
-          target: wasm32-unknown-unknown
-
-      - name: Setup the PATH variable
         run: |
-          echo "PATH=$HOME/.local/bin:$HOME/klever-vm-sdk/vmtools:$PATH" >> $GITHUB_ENV
+          rustup default stable
+          rustup target add wasm32-unknown-unknown
+
+      - name: Setup koperator
+        uses: ./.github/actions/koperator-setup
+        with:
+          gcp_files_url: ${{ vars.GCP_FILES_URL }}
+          platform: "linux"
+
+      - name: Cargo Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-
+  
+      - name: Cargo Target Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-
 
       - name: Install prerequisites
         run: |
-          pip3 install klever-vm-sdk-cli==v6.0.0
-          mkdir $HOME/klever-vm-sdk
-          python3 -m klever_vm_sdk_cli.cli deps install vmtools --tag v1.4.60
-          
-          wget -O binaryen.tar.gz https://github.com/WebAssembly/binaryen/releases/download/version_112/binaryen-version_112-x86_64-linux.tar.gz
-          tar -xf binaryen.tar.gz
-          cp binaryen-version_112/bin/wasm-opt $HOME/.local/bin
-
-          sudo apt install -y wabt=1.0.27-1
-
+          cargo install wasm-opt
+          cargo install --path framework/meta
           which wasm-opt
-          which wasm2wat
-          which run-scenarios
 
-      - name: Install libtinfo5
-        if: inputs.install-libtinfo5
+      - name: Create operator account
         run: |
-          sudo apt update
-          sudo apt install -y libtinfo5
+          cd "$HOME/koperator"
+          operator account create
 
       - name: Run template tool test
         run: |
+          export OPERATOR_KEY_FILE="$HOME/koperator/walletKey.pem"
+
           cd framework/meta
-          cargo test --features template-test-released
+          cargo test --features template-test-released --test template_test

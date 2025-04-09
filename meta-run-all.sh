@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cargo install klever-sc-meta
+SC_META=./target/release/sc-meta
 
 TARGET_DIR=$PWD/target
 
-sc-meta all update --path ./contracts
+$SC_META all update --target-dir-all $TARGET_DIR --path ./contracts

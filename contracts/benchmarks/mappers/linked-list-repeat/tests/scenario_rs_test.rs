@@ -2,10 +2,9 @@ use klever_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/linked-list-repeat");
 
     blockchain.register_contract(
-        "file:output/linked-list-repeat.wasm",
+        "kleversc:output/linked-list-repeat.kleversc.json",
         linked_list_repeat::ContractBuilder,
     );
     blockchain

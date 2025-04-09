@@ -1,7 +1,7 @@
 use crate::distribution_module;
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 const NFT_AMOUNT: u32 = 1;
 
@@ -13,19 +13,15 @@ pub struct PriceTag<M: ManagedTypeApi> {
 }
 
 #[klever_sc::module]
-pub trait NftModule:
-    distribution_module::DistributionModule
-{
+pub trait NftModule: distribution_module::DistributionModule {
     // endpoints - owner-only
 
     #[only_owner]
     #[payable("KLV")]
     #[endpoint(issueToken)]
     fn issue_token(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        self.nft_token_id().issue(
-            &token_display_name,
-            &token_ticker,
-        );
+        self.nft_token_id()
+            .issue(&token_display_name, &token_ticker);
     }
 
     // endpoints
@@ -58,13 +54,11 @@ pub trait NftModule:
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get_token_id();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_kda(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+
+        self.tx()
+            .to(ToCaller)
+            .single_kda(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         self.distribute_funds(
             &payment.token_identifier,

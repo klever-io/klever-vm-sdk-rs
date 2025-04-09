@@ -5,9 +5,7 @@ use crate::{
     },
     contract_base::CallValueWrapper,
     err_msg,
-    types::{
-        BigUint, KdaTokenPayment, ManagedRef, ManagedType, ManagedVec, TokenIdentifier,
-    },
+    types::{BigUint, KdaTokenPayment, ManagedRef, ManagedType, ManagedVec, TokenIdentifier},
 };
 
 /// Called initially in the generated code whenever no payable annotation is provided.
@@ -46,7 +44,7 @@ pub fn payable_single_specific_token<A>(expected_token_identifier: &str)
 where
     A: CallValueApi + ManagedTypeApi + ErrorApi,
 {
-    let transfers = CallValueWrapper::<A>::new().all_kda_transfers();
+    let transfers = CallValueWrapper::<A>::new().all_kda_transfers_no_klv();
     if transfers.len() != 1 {
         A::error_api_impl().signal_error(err_msg::SINGLE_KDA_EXPECTED.as_bytes());
     }
@@ -88,9 +86,7 @@ pub fn arg_payment_nonce<A>() -> u64
 where
     A: CallValueApi + ManagedTypeApi,
 {
-    CallValueWrapper::<A>::new()
-        .klv_or_single_kda()
-        .token_nonce
+    CallValueWrapper::<A>::new().klv_or_single_kda().token_nonce
 }
 
 /// Initializes an argument annotated with `#[payment_multi]`.

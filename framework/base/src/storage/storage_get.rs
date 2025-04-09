@@ -1,4 +1,4 @@
-use core::marker::PhantomData;
+use core::{convert::Infallible, marker::PhantomData};
 
 use crate::{
     api::{
@@ -12,6 +12,7 @@ use crate::{
     },
 };
 use alloc::boxed::Box;
+use unwrap_infallible::UnwrapInfallible;
 
 use super::StorageKey;
 
@@ -55,7 +56,7 @@ where
     }
 }
 
-impl<'k, A> TopDecodeInput for StorageGetInput<'k, A>
+impl<A> TopDecodeInput for StorageGetInput<'_, A>
 where
     A: StorageReadApi + ManagedTypeApi + ErrorApi + 'static,
 {
@@ -70,15 +71,24 @@ where
     }
 
     #[inline]
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
+    ) -> Result<usize, H::HandledErr>
     where
         H: DecodeErrorHandler,
     {
-        self.to_managed_buffer().into_max_size_buffer(buffer, h)
+        self.to_managed_buffer()
+            .into_max_size_buffer_align_right(buffer, h)
+    }
+
+    #[inline]
+    fn into_i64<H>(self, h: H) -> Result<i64, H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        self.to_managed_buffer().into_i64(h)
     }
 
     #[inline]
@@ -113,11 +123,11 @@ where
     T: TopDecode,
     A: StorageReadApi + ManagedTypeApi + ErrorApi,
 {
-    let Ok(value) = T::top_decode_or_handle_err(
+    T::top_decode_or_handle_err(
         StorageGetInput::new(key),
         StorageGetErrorHandler::<A>::default(),
-    );
-    value
+    )
+    .unwrap_infallible()
 }
 
 /// Useful for storage mappers.
@@ -158,7 +168,7 @@ impl<M> DecodeErrorHandler for StorageGetErrorHandler<M>
 where
     M: ManagedTypeApi + ErrorApi,
 {
-    type HandledErr = !;
+    type HandledErr = Infallible;
 
     fn handle_error(&self, err: DecodeError) -> Self::HandledErr {
         let mut message_buffer = ManagedBuffer::<M>::new_from_bytes(err_msg::STORAGE_DECODE_ERROR);

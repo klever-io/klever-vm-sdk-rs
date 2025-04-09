@@ -1,5 +1,5 @@
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::derive_imports::*;
+use klever_sc::imports::*;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct RgbColor {
@@ -12,11 +12,9 @@ pub struct RgbColor {
 pub trait NonFungibleTokenMapperFeatures {
     #[payable("KLV")]
     #[endpoint]
-    fn issue(&self, token_ticker: ManagedBuffer) {
-        self.non_fungible_token_mapper().issue(     
-            &ManagedBuffer::new(),
-            &token_ticker,
-        );
+    fn issue_nft(&self, token_ticker: ManagedBuffer) {
+        self.non_fungible_token_mapper()
+            .issue(&ManagedBuffer::new(), &token_ticker);
     }
 
     #[endpoint]
@@ -25,18 +23,14 @@ pub trait NonFungibleTokenMapperFeatures {
     }
 
     #[endpoint]
-    fn mapper_nft_mint(
-        &self,
-        amount: BigUint,
-    ) {
-        self.non_fungible_token_mapper()
-            .nft_mint(&amount);
+    fn mapper_nft_mint(&self, amount: BigUint) {
+        self.non_fungible_token_mapper().nft_mint(&amount);
     }
 
     #[endpoint]
     fn mapper_nft_burn(&self, token_nonce: u64, amount: BigUint) {
         self.non_fungible_token_mapper()
-            .nft_burn(token_nonce,  &amount);
+            .nft_burn(token_nonce, &amount);
     }
 
     #[endpoint]
@@ -45,9 +39,11 @@ pub trait NonFungibleTokenMapperFeatures {
     }
 
     #[endpoint]
-    fn mapper_get_token_attributes(&self, token_nonce: u64) -> RgbColor {
-        self.non_fungible_token_mapper()
-            .get_token_attributes(token_nonce)
+    fn mapper_get_nft_attributes(&self, token_nonce: u64) -> RgbColor {
+        let token_data = self
+            .non_fungible_token_mapper()
+            .get_nft_token_data(token_nonce);
+        token_data.decode_attributes()
     }
 
     #[view(getNonFungibleTokenId)]

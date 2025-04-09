@@ -1,21 +1,186 @@
-name: CI
+name: Contracts builds & tests
 
 on:
   push:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
 
-permissions:
-  checks: write
-  pull-requests: write
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  contracts:
-    name: Contracts
-    uses: multiversx/mx-sc-actions/.github/workflows/contracts.yml@v2.3.0
-    with:
-      rust-toolchain: nightly-2023-08-08
-      vmtools-version: v1.4.60
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+  clippy_check:
+    name: Clippy linter check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust
+        run: |
+          rustup default stable
+          rustup component add rustfmt clippy
+
+      - name: Cargo Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-
+
+      - name: Cargo Target Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-
+
+
+      - name: Lint
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy -- -D warnings
+
+  wasm_test:
+    needs: clippy_check
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-A dead_code"
+      binaryenVersion: "version_112"
+      wabtVersion: "1.0.27-1"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Maximize build space
+        uses: ./.github/actions
+
+      - name: Install rust
+        run: |
+          rustup default stable
+          rustup target add wasm32-unknown-unknown
+
+      - name: Setup koperator
+        uses: ./.github/actions/koperator-setup
+        with:
+          gcp_files_url: ${{ vars.GCP_FILES_URL }}
+          platform: "linux"
+
+      - name: Cargo Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-
+  
+      - name: Cargo Target Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-
+  
+      - name: Install prerequisites
+        run: |
+          curl -L "https://github.com/WebAssembly/binaryen/releases/download/$binaryenVersion/binaryen-$binaryenVersion-x86_64-linux.tar.gz" | tar -xz -C /tmp
+          sudo mv "/tmp/binaryen-$binaryenVersion/bin/wasm-opt" /usr/local/bin/
+      
+
+          cargo install --path framework/meta
+
+          which wasm-opt
+
+      - name: Create operator account
+        run: |
+          cd "$HOME/koperator"
+          operator account create
+
+      - name: Build the wasm contracts
+        run: sc-meta all build --no-imports --target-dir "$(pwd)/target" --path .
+
+      - name: Run the wasm tests
+        run: |
+          export OPERATOR_KEY_FILE="$HOME/koperator/walletKey.pem"
+
+          cargo test --features klever-sc-scenario/run-go-tests
+
+  test_coverage:
+    needs: [wasm_test]
+    if: ${{ false }} #test-coverage is not implemented in this version
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-A dead_code"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Maximize build space
+        uses: ./.github/actions
+
+      - name: Install rust
+        run: |
+          rustup default stable
+          rustup target add wasm32-unknown-unknown
+
+      - name: Cargo Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-
+
+      - name: Cargo Target Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-
+  
+
+      - name: Install prerequisites
+        run: |
+          rustup component add llvm-tools-preview
+          dirname "$(find ~/.rustup -name llvm-cov)" >> "$GITHUB_PATH"
+
+          dirname "$(find ~/.rustup -name llvm-cov)"
+
+          cargo install --path framework/meta
+
+      - name: Run tests and generate report
+        env:
+          RUSTFLAGS: ""
+        run: |
+          sc-meta test-coverage --output ./coverage.md
+
+      - name: Upload the report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage.md
+
+      - name: Find the comment containing the report
+        id: fc
+        uses: peter-evans/find-comment@v2
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Coverage Summary"
+
+      - name: Create or update the report comment
+        uses: peter-evans/create-or-update-comment@v2
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-file: ./coverage.md
+          edit-mode: replace

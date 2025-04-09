@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "klever-sc",
-            "version": "0.43.3"
+            "version": "0.44.0"
         }
     },
     "docs": [
@@ -222,48 +222,6 @@
             ]
         },
         {
-            "name": "stake",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "name": "unstake",
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "unstake_amount",
-                    "type": "BigUint"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "voteSlashMember",
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "member_to_slash",
-                    "type": "Address"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "slashMember",
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "member_to_slash",
-                    "type": "Address"
-                }
-            ],
-            "outputs": []
-        },
-        {
             "name": "isAdmin",
             "mutability": "readonly",
             "inputs": [
@@ -324,6 +282,20 @@
                     "indexed": true
                 }
             ]
+        }
+    ],
+    "kdaAttributes": [
+        {
+            "ticker": "INMODULE",
+            "type": "u32"
+        },
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
         }
     ],
     "types": {

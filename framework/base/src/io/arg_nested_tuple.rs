@@ -8,6 +8,7 @@ use crate::{
     err_msg,
     io::{ArgErrorHandler, ArgId},
 };
+use unwrap_infallible::UnwrapInfallible;
 
 /// Argument count cannot change during execution, and it can get queried multiple times,
 /// so it makes sense to save it statically.
@@ -70,8 +71,7 @@ where
 {
     let mut arg_loader = EndpointSingleArgLoader::<AA>::new(index);
     let h = ArgErrorHandler::<AA>::from(arg_id);
-    let Ok(value) = T::multi_decode_or_handle_err(&mut arg_loader, h);
-    value
+    T::multi_decode_or_handle_err(&mut arg_loader, h).unwrap_infallible()
 }
 
 #[inline(never)]
@@ -82,9 +82,7 @@ where
     T: TopDecodeMulti,
 {
     let h = ArgErrorHandler::<AA>::from(arg_id);
-    let result = T::multi_decode_or_handle_err(loader, h);
-    let Ok(value) = result;
-    value
+    T::multi_decode_or_handle_err(loader, h).unwrap_infallible()
 }
 
 /// Models an argument tree of the form `(arg1, (arg2, ... (argn, ())))`, used for retrieving endpoint arguments.

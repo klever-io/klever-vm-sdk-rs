@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 /// Contract that only tests the call value features,
 /// i.e. the framework/Arwen functionality for accepting KLV and KDA payments.
@@ -17,7 +17,7 @@ pub trait PayableFeatures {
     ) -> MultiValue2<BigUint, ManagedVec<Self::Api, KdaTokenPayment<Self::Api>>> {
         (
             self.call_value().klv_value().clone_value(),
-            self.call_value().all_kda_transfers().clone_value(),
+            self.call_value().all_kda_transfers_no_klv().clone_value(),
         )
             .into()
     }
@@ -50,10 +50,7 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("*")]
-    fn payable_any_2(
-        &self,
-        #[payment] payment: BigUint,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_any_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
         let token = self.call_value().klv_or_single_kda().token_identifier;
         (payment, token).into()
     }
@@ -87,10 +84,7 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("KLV")]
-    fn payable_klv_2(
-        &self,
-        #[payment] payment: BigUint,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_klv_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
         let token = self.call_value().klv_or_single_kda().token_identifier;
         (payment, token).into()
     }

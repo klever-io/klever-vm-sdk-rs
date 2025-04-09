@@ -19,7 +19,7 @@ enum SimpleEnum {
 #[allow(clippy::assertions_on_constants)]
 fn enum_static() {
     assert_eq!(
-        <SimpleEnum as klever_sc::types::ManagedVecItem>::PAYLOAD_SIZE,
+        <SimpleEnum as klever_sc::types::ManagedVecItem>::payload_size(),
         1
     );
     assert!(<SimpleEnum as klever_sc::types::ManagedVecItem>::SKIPS_RESERIALIZATION);

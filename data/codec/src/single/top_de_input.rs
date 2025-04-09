@@ -1,3 +1,4 @@
+use crate::num_conv::universal_decode_number_unchecked;
 use crate::{
     num_conv::universal_decode_number, transmute::vec_into_boxed_slice, DecodeError,
     DecodeErrorHandler, NestedDecodeInput, OwnedBytesNestedDecodeInput, TryStaticCast,
@@ -16,15 +17,17 @@ pub trait TopDecodeInput: Sized {
     /// Consumes the input object in the process.
     fn into_boxed_slice_u8(self) -> Box<[u8]>;
 
-    /// Puts the underlying data into a fixed size byte buffer
-    /// and returns the populated data slice from this buffer.
+    /// Puts the underlying data into a fixed size byte buffer,
+    /// aligned to the right.
     ///
-    /// Will return an error if the data exceeds the provided buffer.
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    /// This eases big endian decoding.
+    ///
+    /// Returns the length of the original buffer.
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
+    ) -> Result<usize, H::HandledErr>
     where
         H: DecodeErrorHandler;
 
@@ -37,8 +40,8 @@ pub trait TopDecodeInput: Sized {
         H: DecodeErrorHandler,
     {
         let mut buffer = [0u8; 8];
-        let slice = self.into_max_size_buffer(&mut buffer, h)?;
-        Ok(universal_decode_number(slice, false))
+        let _ = self.into_max_size_buffer_align_right(&mut buffer, h)?;
+        Ok(u64::from_be_bytes(buffer))
     }
 
     /// Retrieves the underlying data as a pre-parsed i64.
@@ -50,8 +53,8 @@ pub trait TopDecodeInput: Sized {
         H: DecodeErrorHandler,
     {
         let mut buffer = [0u8; 8];
-        let slice = self.into_max_size_buffer(&mut buffer, h)?;
-        Ok(universal_decode_number(slice, true) as i64)
+        let len = self.into_max_size_buffer_align_right(&mut buffer, h)?;
+        Ok(universal_decode_number_unchecked(&buffer[8 - len..], true) as i64)
     }
 
     #[inline]
@@ -81,15 +84,15 @@ impl TopDecodeInput for Box<[u8]> {
         self
     }
 
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
+    ) -> Result<usize, H::HandledErr>
     where
         H: DecodeErrorHandler,
     {
-        (&*self).into_max_size_buffer(buffer, h)
+        (&*self).into_max_size_buffer_align_right(buffer, h)
     }
 
     fn into_nested_buffer(self) -> Self::NestedBuffer {
@@ -108,15 +111,15 @@ impl TopDecodeInput for Vec<u8> {
         vec_into_boxed_slice(self)
     }
 
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
+    ) -> Result<usize, H::HandledErr>
     where
         H: DecodeErrorHandler,
     {
-        self.as_slice().into_max_size_buffer(buffer, h)
+        self.as_slice().into_max_size_buffer_align_right(buffer, h)
     }
 
     fn into_nested_buffer(self) -> Self::NestedBuffer {
@@ -135,20 +138,22 @@ impl<'a> TopDecodeInput for &'a [u8] {
         Box::from(self)
     }
 
-    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+    fn into_max_size_buffer_align_right<H, const MAX_LEN: usize>(
         self,
         buffer: &mut [u8; MAX_LEN],
         h: H,
-    ) -> Result<&[u8], H::HandledErr>
+    ) -> Result<usize, H::HandledErr>
     where
         H: DecodeErrorHandler,
     {
-        let l = self.len();
-        if l > MAX_LEN {
+        let len = self.len();
+        if len > MAX_LEN {
             return Err(h.handle_error(DecodeError::INPUT_TOO_LONG));
         }
-        buffer[..l].copy_from_slice(self);
-        Ok(&buffer[..l])
+        let target_start = MAX_LEN - len;
+        let byte_slice = &mut buffer[target_start..];
+        byte_slice.copy_from_slice(self);
+        Ok(len)
     }
 
     #[inline]

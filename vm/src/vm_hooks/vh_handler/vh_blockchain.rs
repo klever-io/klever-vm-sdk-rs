@@ -1,15 +1,41 @@
 use num_bigint::BigInt;
 
 use crate::{
+    tx_execution::vm_builtin_function_names::*,
     types::{RawHandle, VMAddress},
     vm_hooks::VMHooksHandlerSource,
-    world_mock::{KdaData, KdaInstance},
+    world_mock::{AccountData, KdaData, KdaInstance},
 };
 // use num_bigint::BigInt;
 // use num_traits::Zero;
 
 // The Go VM doesn't do it, but if we change that, we can enable it easily here too via this constant.
 const KDA_TOKEN_DATA_FUNC_RESETS_VALUES: bool = false;
+
+const VM_BUILTIN_FUNCTION_NAMES: [&str; 22] = [
+    KLEVER_TRANSFER_FUNC_NAME,
+    KLEVER_CREATE_ASSET_FUNC_NAME,
+    KLEVER_FREEZE_FUNC_NAME,
+    KLEVER_UNFREEZE_FUNC_NAME,
+    KLEVER_DELEGATE_FUNC_NAME,
+    KLEVER_UNDELEGATE_FUNC_NAME,
+    KLEVER_WITHDRAW_FUNC_NAME,
+    KLEVER_CLAIM_FUNC_NAME,
+    KLEVER_ASSET_TRIGGER_FUNC_NAME,
+    KLEVER_SET_ACCOUNT_NAME_FUNC_NAME,
+    KLEVER_VOTE_FUNC_NAME,
+    KLEVER_CONFIG_ITO_FUNC_NAME,
+    KLEVER_BUY_FUNC_NAME,
+    KLEVER_SELL_FUNC_NAME,
+    KLEVER_CANCEL_MARKET_ORDER_FUNC_NAME,
+    KLEVER_CREATE_MARKETPLACE_FUNC_NAME,
+    KLEVER_CONFIG_MARKETPLACE_FUNC_NAME,
+    KLEVER_UPDATE_ACCOUNT_PERMISSION,
+    KLEVER_DEPOSIT_FUNC_NAME,
+    KLEVER_ITO_TRIGGER_FUNC_NAME,
+    CHANGE_OWNER_BUILTIN_FUNC_NAME,
+    UPGRADE_CONTRACT_FUNC_NAME,
+];
 
 pub trait VMHooksBlockchain: VMHooksHandlerSource {
     fn is_contract_address(&self, address_bytes: &[u8]) -> bool {
@@ -141,6 +167,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         todo!()
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn reset_user_kda_values(
         &self,
         _address_handle: RawHandle,
@@ -168,22 +195,95 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         buckets_handle: RawHandle,
         mime_handle: RawHandle,
         metadata_handle: RawHandle,
-    ){
+    ) {
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
-        let account = self.account_data(&address);
 
-        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
-            if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
-                self.set_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
-            }
-            else {
-                self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+        if let Some(account) = self.account_data(&address) {
+            if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+                if let Some(_instance) = kda_data.instances.get_by_nonce(nonce) {
+                    self.set_user_kda_values(
+                        address_handle,
+                        ticker_handle,
+                        nonce,
+                        balance_handle,
+                        frozen_handle,
+                        last_claim_handle,
+                        buckets_handle,
+                        mime_handle,
+                        metadata_handle,
+                    );
+                    return;
+                }
             }
         }
-        else {
-            self.reset_user_kda_values(address_handle, ticker_handle, nonce, balance_handle, frozen_handle, last_claim_handle, buckets_handle, mime_handle, metadata_handle)
+        self.reset_user_kda_values(
+            address_handle,
+            ticker_handle,
+            nonce,
+            balance_handle,
+            frozen_handle,
+            last_claim_handle,
+            buckets_handle,
+            mime_handle,
+            metadata_handle,
+        )
+    }
+
+    fn managed_get_sft_metadata(
+        &self,
+        _ticker_handle: RawHandle,
+        _nonce: u64,
+        _data_handle: RawHandle,
+    ) {
+        todo!()
+    }
+
+    fn managed_acc_has_perm(
+        &self,
+        ops: i64,
+        source_acc_addr: RawHandle,
+        target_acc_addr: RawHandle,
+    ) -> i32 {
+        let source_address = VMAddress::from_slice(self.m_types_lock().mb_get(source_acc_addr));
+        let target_address = VMAddress::from_slice(self.m_types_lock().mb_get(target_acc_addr));
+
+        let source_account: AccountData = match self.account_data(&source_address) {
+            None => {
+                self.vm_error(&format!(
+                    "account not found: {}",
+                    hex::encode(source_address.as_bytes())
+                ));
+            },
+            Some(src_acc) => src_acc,
+        };
+
+        let target_account: AccountData = match self.account_data(&target_address) {
+            None => {
+                self.vm_error(&format!(
+                    "account not found: {}",
+                    hex::encode(target_address.as_bytes())
+                ));
+            },
+            Some(tgt_acc) => tgt_acc,
+        };
+
+        match source_account.permissions {
+            None => return 0,
+            Some(permissions) => {
+                for perm in permissions {
+                    if let Some(signer_address) = perm.address {
+                        if signer_address == target_account.address
+                            && perm.operations & (ops as u64) == (ops as u64)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+            },
         }
+
+        0
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -211,79 +311,55 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     ) {
         let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
         let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
-        let account = self.account_data(&address);
 
-        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
-            if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
-                self.set_kda_data_values(
-                    kda_data,
-                    instance,
-                    precision_handle,
-                    id_handle,
-                    name_handle,
-                    creator_handle,
-                    logo_handle,
-                    uris_handle,
-                    initial_supply_handle,
-                    circulating_supply_handle,
-                    max_supply_handle,
-                    minted_handle,
-                    burned_handle,
-                    royalties_handle,
-                    properties_handle,
-                    attributes_handle,
-                    roles_handle,
-                    issue_date_handle,
-                )
-            } else {
-                // missing nonce
-                self.reset_kda_data_values(
-                    precision_handle,
-                    id_handle,
-                    name_handle,
-                    creator_handle,
-                    logo_handle,
-                    uris_handle,
-                    initial_supply_handle,
-                    circulating_supply_handle,
-                    max_supply_handle,
-                    minted_handle,
-                    burned_handle,
-                    royalties_handle,
-                    properties_handle,
-                    attributes_handle,
-                    roles_handle,
-                    issue_date_handle,
-                );
+        if let Some(account) = self.account_data(&address) {
+            if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+                if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
+                    self.set_kda_data_values(
+                        kda_data,
+                        instance,
+                        precision_handle,
+                        id_handle,
+                        name_handle,
+                        creator_handle,
+                        logo_handle,
+                        uris_handle,
+                        initial_supply_handle,
+                        circulating_supply_handle,
+                        max_supply_handle,
+                        minted_handle,
+                        burned_handle,
+                        royalties_handle,
+                        properties_handle,
+                        attributes_handle,
+                        roles_handle,
+                        issue_date_handle,
+                    );
+                    return;
+                }
             }
-        } else {
-            // missing token identifier
-            self.reset_kda_data_values(
-                precision_handle,
-                id_handle,
-                name_handle,
-                creator_handle,
-                logo_handle,
-                uris_handle,
-                initial_supply_handle,
-                circulating_supply_handle,
-                max_supply_handle,
-                minted_handle,
-                burned_handle,
-                royalties_handle,
-                properties_handle,
-                attributes_handle,
-                roles_handle,
-                issue_date_handle,
-            );
         }
+        self.reset_kda_data_values(
+            precision_handle,
+            id_handle,
+            name_handle,
+            creator_handle,
+            logo_handle,
+            uris_handle,
+            initial_supply_handle,
+            circulating_supply_handle,
+            max_supply_handle,
+            minted_handle,
+            burned_handle,
+            royalties_handle,
+            properties_handle,
+            attributes_handle,
+            roles_handle,
+            issue_date_handle,
+        );
     }
 
-    fn managed_get_kda_roles(
-        &self,
-        _token_id_handle: i32,
-        _roles_handle: i32,
-    ) {
+    fn managed_get_kda_roles(&self, _token_id_handle: i32, _roles_handle: i32) {
         todo!()
     }
 
@@ -295,10 +371,8 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         let back_transfers = self.back_transfers_lock();
         let mut m_types = self.m_types_lock();
         m_types.bi_overwrite(call_value_handle, back_transfers.call_value.clone().into());
-        m_types.mb_set_vec_of_kda_payments(
-            kda_transfer_value_handle,
-            &back_transfers.kda_transfers,
-        );
+        m_types
+            .mb_set_vec_of_kda_payments(kda_transfer_value_handle, &back_transfers.kda_transfers);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -318,7 +392,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
         _minted_handle: RawHandle,
         _burned_handle: RawHandle,
         _royalties_handle: RawHandle,
-        _properties_handle: RawHandle,
+        properties_handle: RawHandle,
         _attributes_handle: RawHandle,
         _roles_handle: RawHandle,
         _issue_date_handle: RawHandle,
@@ -331,9 +405,8 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             prop += 1 << 4;
         }
 
-        m_types.bi_overwrite(_properties_handle, BigInt::from(prop));
+        m_types.bi_overwrite(properties_handle, BigInt::from(prop));
 
-    
         // if kda_data.frozen {
         //     m_types.mb_set(properties_handle, vec![1, 0]);
         // } else {
@@ -390,5 +463,24 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             // m_types.bi_overwrite(royalties_handle, BigInt::zero());
             // m_types.bi_overwrite(uris_handle, BigInt::zero());
         }
+    }
+
+    fn managed_get_code_metadata(&self, address_handle: i32, response_handle: i32) {
+        let address = VMAddress::from_slice(self.m_types_lock().mb_get(address_handle));
+        let Some(data) = self.account_data(&address) else {
+            self.vm_error("account was not found")
+        };
+        let code_metadata_bytes = data.code_metadata.to_byte_array();
+        self.m_types_lock()
+            .mb_set(response_handle, code_metadata_bytes.to_vec())
+    }
+
+    fn managed_is_builtin_function(&self, function_name_handle: i32) -> bool {
+        VM_BUILTIN_FUNCTION_NAMES.contains(
+            &self
+                .m_types_lock()
+                .mb_to_function_name(function_name_handle)
+                .as_str(),
+        )
     }
 }

@@ -1,3 +1,5 @@
+use core::convert::Infallible;
+
 use crate::{DecodeError, EncodeError};
 
 pub trait EncodeErrorHandler: Copy {
@@ -39,19 +41,19 @@ impl DecodeErrorHandler for DefaultErrorHandler {
 pub struct PanicErrorHandler;
 
 impl EncodeErrorHandler for PanicErrorHandler {
-    type HandledErr = !;
+    type HandledErr = Infallible;
 
     #[inline]
     fn handle_error(&self, err: EncodeError) -> Self::HandledErr {
-        panic!("Encode error occured: {}", err.message_str())
+        panic!("Encode error occurred: {}", err.message_str())
     }
 }
 
 impl DecodeErrorHandler for PanicErrorHandler {
-    type HandledErr = !;
+    type HandledErr = Infallible;
 
     #[inline]
     fn handle_error(&self, err: DecodeError) -> Self::HandledErr {
-        panic!("Decode error occured: {}", err.message_str())
+        panic!("Decode error occurred: {}", err.message_str())
     }
 }

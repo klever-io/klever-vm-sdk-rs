@@ -16,7 +16,7 @@
                         "str:balance|address:account_1": "0x2710",
                         "str:totalSupply": "0x2710"
                     },
-                    "code": "file:../output/erc20.wasm"
+                    "code": "kleversc:../output/erc20.kleversc.json"
                 }
             }
         },
@@ -35,7 +35,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -58,7 +58,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -82,7 +82,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -106,7 +106,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -130,7 +130,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -155,7 +155,7 @@
             "expect": {
                 "out": [],
                 "status": "62",
-                "message": "str:function does not accept KLV payment",
+                "message": "str:function does not accept KDA payment",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -177,7 +177,7 @@
                         "str:balance|address:account_1": "0x2710",
                         "str:totalSupply": "0x2710"
                     },
-                    "code": "file:../output/erc20.wasm"
+                    "code": "kleversc:../output/erc20.kleversc.json"
                 }
             }
         }

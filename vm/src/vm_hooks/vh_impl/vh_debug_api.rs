@@ -2,11 +2,12 @@ use std::sync::{Arc, MutexGuard};
 
 use klever_chain_vm_executor::BreakpointValue;
 
+use crate::tx_mock::CallType;
 use crate::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{
-        call_tx_input, CallTxData, BackTransfers, BlockchainUpdate, TxCache, TxContext, TxFunctionName,
-        TxInput, TxManagedTypes, TxPanic, TxResult,
+        call_tx_input, BackTransfers, BlockchainUpdate, CallTxData, TxCache, TxContext,
+        TxFunctionName, TxInput, TxManagedTypes, TxPanic, TxResult,
     },
     types::{VMAddress, VMCodeMetadata},
     vm_err_msg,
@@ -83,8 +84,9 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         self.0.back_transfers_lock()
     }
 
-    fn account_data(&self, address: &VMAddress) -> AccountData {
-        self.0.with_account(address, |account| account.clone())
+    fn account_data(&self, address: &VMAddress) -> Option<AccountData> {
+        self.0
+            .with_account_or_else(address, |account| Some(account.clone()), || None)
     }
 
     fn account_code(&self, address: &VMAddress) -> Vec<u8> {
@@ -102,7 +104,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         arguments: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
         let call_data = self.create_call_data(to, klv_value, func_name, arguments);
-        let tx_input = call_tx_input(&call_data);
+        let tx_input = call_tx_input(&call_data, CallType::ExecuteOnDestContext);
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
             tx_input,
@@ -122,7 +124,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         &self,
         klv_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
-        _code_metadata: VMCodeMetadata,
+        code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
     ) -> (VMAddress, Vec<Vec<u8>>) {
         let contract_address = self.current_address();
@@ -141,10 +143,11 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         };
 
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
-        tx_cache.increase_acount_nonce(contract_address);
+        tx_cache.increase_account_nonce(contract_address);
         let (tx_result, new_address, blockchain_updates) = self.0.vm_ref.deploy_contract(
             tx_input,
             contract_code,
+            code_metadata,
             tx_cache,
             execute_current_tx_context_input,
         );
@@ -167,7 +170,10 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         arguments: Vec<Vec<u8>>,
     ) {
         let call_data = self.create_call_data(to, klv_value, func_name, arguments);
-        let tx_input = call_tx_input(&call_data);
+        let mut tx_input = call_tx_input(&call_data, CallType::TransferExecute);
+        if self.is_back_transfer(&tx_input) {
+            tx_input.call_type = CallType::BackTransfer;
+        }
 
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
@@ -216,6 +222,11 @@ impl DebugApiVMHooksHandler {
         self.0.blockchain_cache().commit_updates(blockchain_updates);
 
         self.0.result_lock().merge_after_sync_call(&tx_result);
+
+        let contract_address = &self.0.input_ref().to;
+        let builtin_functions = &self.0.vm_ref.builtin_functions;
+        self.back_transfers_lock()
+            .new_from_result(contract_address, &tx_result, builtin_functions);
 
         tx_result.result_values
     }

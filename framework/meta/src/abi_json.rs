@@ -2,12 +2,16 @@ mod build_info_abi_json;
 mod contract_abi_json;
 mod endpoint_abi_json;
 mod event_abi_json;
+mod kda_attribute_abi_json;
+mod kda_attribute_json;
 mod type_abi_json;
 
 pub use build_info_abi_json::{BuildInfoAbiJson, RustcAbiJson};
 pub use contract_abi_json::*;
 pub use endpoint_abi_json::*;
 pub use event_abi_json::*;
+pub use kda_attribute_abi_json::KdaAttributeAbiJson;
+pub use kda_attribute_json::KdaAttributeJson;
 use klever_sc::{abi::ContractAbi, contract_base::ContractAbiProvider};
 pub use type_abi_json::*;
 

@@ -8,9 +8,10 @@ publish = false
 path = ".."
 
 [dependencies.klever-sc]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../../../../framework/base"
 
 [dependencies.klever-sc-meta]
-version = "0.43.3"
+version = "0.44.0"
 path = "../../../../../../framework/meta"
+default-features = false

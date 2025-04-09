@@ -16,7 +16,7 @@
                         "str:playerBalance|address:acc1": "0x100",
                         "str:playerBalance|address:acc2": "0x100"
                     },
-                    "code": "file:../output/crypto-bubbles.wasm",
+                    "code": "kleversc:../output/crypto-bubbles.kleversc.json",
                     "owner": "address:crypto_bubbles_owner"
                 },
                 "address:acc1": {
@@ -52,7 +52,9 @@
                             "0x12",
                             "address:acc1"
                         ],
-                        "data": "0x200"
+                        "data": [
+                            "0x200"
+                        ]
                     },
                     {
                         "address": "*",
@@ -63,7 +65,7 @@
                             "0x0200",
                             "address:acc1"
                         ],
-                        "data": ""
+                        "data": "*"
                     },
                     {
                         "address": "sc:crypto_bubbles",
@@ -72,7 +74,9 @@
                             "str:withdraw",
                             "address:acc1"
                         ],
-                        "data": "0x200"
+                        "data": [
+                            "0x200"
+                        ]
                     }
                 ],
                 "gas": "*",
@@ -95,7 +99,7 @@
                         "str:playerBalance|address:acc1": "0x100",
                         "str:playerBalance|address:acc2": "0x100"
                     },
-                    "code": "file:../output/crypto-bubbles.wasm"
+                    "code": "kleversc:../output/crypto-bubbles.kleversc.json"
                 },
                 "address:acc1": {
                     "nonce": "0",

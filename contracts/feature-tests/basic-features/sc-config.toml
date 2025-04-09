@@ -1,0 +1,7 @@
+[settings]
+main = "basic-features"
+
+[contracts.basic-features]
+
+[contracts.basic-features-storage-bytes]
+add-endpoints = ["init", "load_bytes", "store_bytes"]

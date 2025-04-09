@@ -4,7 +4,6 @@ use crate::{
     codec::{
         self,
         derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-        CodecFromSelf,
     },
     types::BigUint,
 };
@@ -23,4 +22,48 @@ pub enum KlvOrMultiKdaPayment<M: ManagedTypeApi> {
     MultiKda(ManagedVec<M, KdaTokenPayment<M>>),
 }
 
-impl<M> CodecFromSelf for KlvOrMultiKdaPayment<M> where M: ManagedTypeApi {}
+impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
+    pub fn is_empty(&self) -> bool {
+        match self {
+            KlvOrMultiKdaPayment::Klv(klv_value) => klv_value == &0u32,
+            KlvOrMultiKdaPayment::MultiKda(kda_payments) => kda_payments.is_empty(),
+        }
+    }
+}
+
+/// The version of `KlvOrMultiKdaPayment` that contains referrences instead of owned fields.
+pub enum KlvOrMultiKdaPaymentRefs<'a, M: ManagedTypeApi> {
+    Klv(&'a BigUint<M>),
+    MultiKda(&'a ManagedVec<M, KdaTokenPayment<M>>),
+}
+
+impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
+    pub fn as_refs(&self) -> KlvOrMultiKdaPaymentRefs<'_, M> {
+        match self {
+            KlvOrMultiKdaPayment::Klv(klv_value) => KlvOrMultiKdaPaymentRefs::Klv(klv_value),
+            KlvOrMultiKdaPayment::MultiKda(kda_payments) => {
+                KlvOrMultiKdaPaymentRefs::MultiKda(kda_payments)
+            },
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> KlvOrMultiKdaPaymentRefs<'_, M> {
+    pub fn to_owned_payment(&self) -> KlvOrMultiKdaPayment<M> {
+        match self {
+            KlvOrMultiKdaPaymentRefs::Klv(klv_value) => {
+                KlvOrMultiKdaPayment::Klv((*klv_value).clone())
+            },
+            KlvOrMultiKdaPaymentRefs::MultiKda(kda_payments) => {
+                KlvOrMultiKdaPayment::MultiKda((*kda_payments).clone())
+            },
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        match self {
+            KlvOrMultiKdaPaymentRefs::Klv(klv_value) => *klv_value == &0u32,
+            KlvOrMultiKdaPaymentRefs::MultiKda(kda_payments) => kda_payments.is_empty(),
+        }
+    }
+}

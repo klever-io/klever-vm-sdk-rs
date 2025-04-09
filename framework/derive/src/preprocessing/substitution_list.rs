@@ -65,7 +65,7 @@ fn add_managed_types(substitutions: &mut SubstitutionsMap) {
     add_managed_type(substitutions, &quote!(KdaTokenData));
     add_managed_type(substitutions, &quote!(KdaTokenPayment));
     add_managed_type(substitutions, &quote!(ManagedAddress));
-    add_managed_type(substitutions, &quote!(ManagedBufferCachedBuilder));
+    add_managed_type(substitutions, &quote!(ManagedBufferBuilder));
     add_managed_type_with_generics(substitutions, &quote!(ManagedByteArray));
     add_managed_type_with_generics(substitutions, &quote!(ManagedOption));
     add_managed_type_with_generics(substitutions, &quote!(ManagedRef));
@@ -76,6 +76,7 @@ fn add_managed_types(substitutions: &mut SubstitutionsMap) {
     add_managed_type_with_generics(substitutions, &quote!(PreloadedManagedBuffer));
     add_managed_type(substitutions, &quote!(RandomnessSource));
     add_managed_type(substitutions, &quote!(TokenIdentifier));
+    add_managed_type(substitutions, &quote!(FunctionCall));
 }
 
 fn add_storage_mapper_single_generic_arg(
@@ -99,6 +100,7 @@ fn add_storage_mapper(
 fn add_storage_mappers(substitutions: &mut SubstitutionsMap) {
     add_storage_mapper_single_generic_arg(substitutions, &quote!(FungibleTokenMapper));
     add_storage_mapper_single_generic_arg(substitutions, &quote!(NonFungibleTokenMapper));
+    add_storage_mapper_single_generic_arg(substitutions, &quote!(SemiFungibleTokenMapper));
     add_storage_mapper_single_generic_arg(substitutions, &quote!(TokenAttributesMapper));
     add_storage_mapper_single_generic_arg(substitutions, &quote!(UniqueIdMapper));
     add_storage_mapper_single_generic_arg(substitutions, &quote!(UserMapper));

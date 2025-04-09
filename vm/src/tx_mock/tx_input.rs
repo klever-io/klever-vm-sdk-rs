@@ -1,6 +1,7 @@
 use num_bigint::BigUint;
 use num_traits::Zero;
 
+use crate::tx_mock::tx_input_call_type::CallType;
 use crate::{
     display_util::*,
     types::{VMAddress, H256},
@@ -17,10 +18,11 @@ pub struct TxInput {
     pub kda_values: Vec<TxTokenTransfer>,
     pub func_name: TxFunctionName,
     pub args: Vec<Vec<u8>>,
+    pub call_type: CallType,
     pub gas_limit: u64,
     pub gas_price: u64,
     pub tx_hash: H256,
-    pub promise_callback_closure_data: Vec<u8>,
+    pub promise_callback_closure_data: Option<Vec<u8>>,
     pub callback_payments: CallbackPayments,
 }
 
@@ -33,10 +35,11 @@ impl Default for TxInput {
             kda_values: Vec::new(),
             func_name: TxFunctionName::EMPTY,
             args: Vec::new(),
+            call_type: CallType::DirectCall,
             gas_limit: 0,
             gas_price: 0,
             tx_hash: H256::zero(),
-            promise_callback_closure_data: Vec::new(),
+            promise_callback_closure_data: None,
             callback_payments: Default::default(),
         }
     }
@@ -100,6 +103,29 @@ impl TxInput {
         } else {
             self.kda_values.as_slice()
         }
+    }
+
+    /// The received KDA tokens can come either from the original caller, or from an async call, during callback.
+    pub fn received_kda_with_klv(&self) -> Vec<TxTokenTransfer> {
+        let mut combined_values = if !self.callback_payments.kda_values.is_empty() {
+            // Start with callback payments if they're available
+            self.callback_payments.kda_values.clone()
+        } else {
+            // Otherwise, start with the main KDA values
+            self.kda_values.clone()
+        };
+
+        let klv_value = self.received_klv();
+        if !klv_value.is_zero() {
+            // Add the KLV transfer if its value is greater than zero
+            combined_values.push(TxTokenTransfer {
+                token_identifier: "KLV".as_bytes().to_vec(),
+                nonce: 0,
+                value: klv_value.clone(),
+            });
+        }
+
+        combined_values
     }
 
     pub fn get_argument_vec_u8(&self, arg_index: i32) -> Vec<u8> {

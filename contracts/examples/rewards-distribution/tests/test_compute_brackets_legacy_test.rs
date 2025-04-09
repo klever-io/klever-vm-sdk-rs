@@ -7,8 +7,6 @@ use rewards_distribution::{RewardsDistribution, DIVISION_SAFETY_CONSTANT};
 
 mod utils;
 
-klever_sc::imports!();
-
 #[test]
 fn test_compute_brackets() {
     DebugApi::dummy();

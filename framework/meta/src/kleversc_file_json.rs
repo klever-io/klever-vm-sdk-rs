@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::{fs::File, io::Write, path::Path};
 
 use crate::abi_json::{BuildInfoAbiJson, ContractAbiJson};
+use crate::report_info_json::ReportInfoJson;
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -10,6 +11,7 @@ pub struct KleverscFileJson {
     pub abi: ContractAbiJson,
     pub size: usize,
     pub code: String,
+    pub report: ReportInfoJson,
 }
 
 pub fn serialize_kleversc_file_json(kleversc_file_json: &KleverscFileJson) -> String {

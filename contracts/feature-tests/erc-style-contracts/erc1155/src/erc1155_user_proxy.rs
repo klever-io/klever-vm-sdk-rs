@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 #[klever_sc::proxy]
 pub trait Erc1155UserProxy {

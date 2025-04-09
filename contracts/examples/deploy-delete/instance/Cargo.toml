@@ -1,0 +1,17 @@
+[package]
+name = "instance"
+version = "0.0.0"
+authors = ["Klever <contact@klever.io>"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/instance.rs"
+
+[dependencies.klever-sc]
+version = "0.44.0"
+path = "../../../../framework/base"
+
+[dev-dependencies.klever-sc-scenario]
+version = "0.44.0"
+path = "../../../../framework/scenario"

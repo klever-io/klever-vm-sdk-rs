@@ -1,7 +1,6 @@
 #![no_std]
 
-klever_sc::imports!();
-klever_sc::derive_imports!();
+use klever_sc::imports::*;
 
 mod common;
 mod events;

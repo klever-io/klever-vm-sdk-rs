@@ -6,18 +6,17 @@ use crate::data::{
     address::Address,
     kda::{KdaBalance, KdaBalanceResponse, KdaRolesResponse},
     transaction::{
-        ArgCreateTransaction, ResponseTxCost, SendTransactionResponse, SendTransactionsResponse,
-        Transaction, TransactionInfo, TransactionOnNetwork, TransactionStatus, TxCostResponseData,
+        ResponseTxCost, SendTransactionResponse, Transaction, TransactionInfo,
+        TransactionOnNetwork, TransactionStatus, TxCostResponseData,
     },
     vm::{ResponseVmValue, VmValueRequest, VmValuesResponseData},
 };
 use anyhow::{anyhow, Result};
-use itertools::Itertools;
 use reqwest::Client;
 
-pub const MAINNET_GATEWAY: &str = "https://api.mainnet.klever.finance";
-pub const TESTNET_GATEWAY: &str = "https://api.testnet.klever.finance";
-pub const DEVNET_GATEWAY: &str = "https://api.devnet.klever.finance";
+pub const MAINNET_GATEWAY: &str = "https://api.mainnet.klever.org";
+pub const TESTNET_GATEWAY: &str = "https://api.testnet.klever.org";
+pub const DEVNET_GATEWAY: &str = "https://api.devnet.klever.org";
 
 // MetachainShardId will be used to identify a shard ID as metachain
 pub const METACHAIN_SHARD_ID: u32 = 0xFFFFFFFF;
@@ -219,7 +218,6 @@ impl CommunicationProxy {
             Some(b) => Ok(b.status),
         }
     }
-
 
     pub async fn send_transaction(&self, tx: &Transaction) -> Result<String> {
         let endpoint = self.get_endpoint(SEND_TRANSACTION_ENDPOINT);

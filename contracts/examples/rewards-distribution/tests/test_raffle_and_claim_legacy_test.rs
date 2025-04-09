@@ -2,7 +2,7 @@
 
 use klever_sc::{
     codec::multi_types::MultiValue2,
-    types::{BigUint, TokenIdentifier, MultiValueEncoded, OperationCompletionStatus},
+    types::{BigUint, MultiValueEncoded, OperationCompletionStatus, TokenIdentifier},
 };
 use klever_sc_scenario::{
     managed_token_id, rust_biguint,
@@ -111,12 +111,8 @@ fn test_raffle_and_claim() {
             let mut rewards: Vec<BigUint<DebugApi>> = Vec::new();
 
             for nonce in 1u64..=nft_count {
-                let amount = sc.compute_claimable_amount(
-                    raffle_id,
-                    &TokenIdentifier::klv(),
-                    0,
-                    nonce,
-                );
+                let amount =
+                    sc.compute_claimable_amount(raffle_id, &TokenIdentifier::klv(), 0, nonce);
                 rewards.push(amount);
             }
 
@@ -167,12 +163,8 @@ fn test_raffle_and_claim() {
             let raffle_id = 0;
             assert_eq!(nft_nonces.len(), expected_rewards.len());
             for (nonce, expected_reward) in std::iter::zip(nft_nonces, expected_rewards) {
-                let rewards = sc.compute_claimable_amount(
-                    raffle_id,
-                    &TokenIdentifier::klv(),
-                    0,
-                    nonce,
-                );
+                let rewards =
+                    sc.compute_claimable_amount(raffle_id, &TokenIdentifier::klv(), 0, nonce);
                 assert_eq!(rewards, expected_reward);
             }
 

@@ -2,7 +2,7 @@
     "name": "example scenario file",
     "comment": "comments are nice",
     "checkGas": false,
-    "gasSchedule": "v3",
+    "gasSchedule": "dummy",
     "steps": [
         {
             "step": "externalSteps",
@@ -60,8 +60,8 @@
                             ],
                             "lastNonce": "7",
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn",
+                                "KDARoleMint",
+                                "KDARoleBurn",
                                 "KDARoleNFTCreate",
                                 "KDARoleNFTAddQuantity",
                                 "KDARoleNFTBurn"
@@ -131,7 +131,9 @@
                             ]
                         }
                     },
-                    "username": "str:myusername.klever"
+                    "username": "str:myusername.klever",
+                    "owner": "address:alice",
+                    "permissions": []
                 },
                 "address:smart_contract_address": {
                     "nonce": "0x00",
@@ -153,8 +155,9 @@
                             ]
                         }
                     },
-                    "code": "file:smart-contract.wasm",
-                    "owner": "address:alice"
+                    "code": "kleversc:smart-contract.kleversc.json",
+                    "owner": "address:alice",
+                    "permissions": []
                 }
             },
             "newAddresses": [
@@ -234,7 +237,9 @@
                             "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
                             "0x1234123400000000000000000000000000000000000000000000000000000004"
                         ],
-                        "data": "0x00"
+                        "data": [
+                            "0x00"
+                        ]
                     },
                     "+"
                 ],
@@ -418,8 +423,8 @@
                             ],
                             "lastNonce": "*",
                             "roles": [
-                                "KDARoleLocalMint",
-                                "KDARoleLocalBurn",
+                                "KDARoleMint",
+                                "KDARoleBurn",
                                 "KDARoleNFTCreate",
                                 "KDARoleNFTAddQuantity",
                                 "KDARoleNFTBurn"
@@ -455,7 +460,7 @@
                         "str:anything-goes": "*",
                         "+": ""
                     },
-                    "code": "file:smart-contract.wasm",
+                    "code": "kleversc:smart-contract.kleversc.json",
                     "owner": "address:bob"
                 },
                 "address:smart_contract_address_2": {

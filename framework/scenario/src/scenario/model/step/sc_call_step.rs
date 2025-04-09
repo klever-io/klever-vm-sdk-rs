@@ -1,13 +1,17 @@
-use klever_sc::types::H256;
+use klever_sc::{
+    abi::TypeAbiFrom,
+    types::{ContractCallBase, H256},
+};
+use unwrap_infallible::UnwrapInfallible;
 
 use crate::{
     api::StaticApi,
-    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxKDA, TxExpect, U64Value},
+    scenario::model::{AddressValue, BigUintValue, BytesValue, TxCall, TxExpect, TxKDA, U64Value},
     scenario_model::TxResponse,
 };
 
 use crate::klever_sc::{
-    codec::{CodecFrom, PanicErrorHandler, TopEncodeMulti},
+    codec::{PanicErrorHandler, TopEncodeMulti},
     types::{ContractCall, ManagedArgBuffer},
 };
 
@@ -90,8 +94,29 @@ impl ScCallStep {
         self
     }
 
+    pub fn multi_kda_transfer<T>(mut self, tokens: T) -> Self
+    where
+        T: IntoIterator<Item = TxKDA>,
+    {
+        if self.tx.klv_value.value > 0u32.into() {
+            panic!("Cannot transfer both KLV and KDA");
+        }
+
+        self.tx.kda_value.extend(tokens);
+
+        self
+    }
+
     pub fn function(mut self, expr: &str) -> Self {
         self.tx.function = expr.to_string();
+        self
+    }
+
+    pub fn tx_hash<T>(mut self, tx_hash_expr: T) -> Self
+    where
+        H256: From<T>,
+    {
+        self.explicit_tx_hash = Some(H256::from(tx_hash_expr));
         self
     }
 
@@ -117,7 +142,7 @@ impl ScCallStep {
     /// - "arguments"
     pub fn call<CC>(mut self, contract_call: CC) -> TypedScCall<CC::OriginalResult>
     where
-        CC: ContractCall<StaticApi>,
+        CC: ContractCallBase<StaticApi>,
     {
         let (to_str, function, klv_value_expr, scenario_args) =
             process_contract_call(contract_call);
@@ -153,7 +178,7 @@ impl ScCallStep {
     ) -> TypedScCall<CC::OriginalResult>
     where
         CC: ContractCall<StaticApi>,
-        ExpectedResult: CodecFrom<CC::OriginalResult> + TopEncodeMulti,
+        ExpectedResult: TypeAbiFrom<CC::OriginalResult> + TopEncodeMulti,
     {
         self.call(contract_call).expect_value(expected_value)
     }
@@ -203,7 +228,7 @@ pub(super) fn process_contract_call<CC>(
     contract_call: CC,
 ) -> (String, String, BigUintValue, Vec<String>)
 where
-    CC: ContractCall<StaticApi>,
+    CC: ContractCallBase<StaticApi>,
 {
     let normalized_cc = contract_call.into_normalized();
     let to_str = format!(
@@ -213,13 +238,14 @@ where
     let function = String::from_utf8(
         normalized_cc
             .basic
-            .endpoint_name
+            .function_call
+            .function_name
             .to_boxed_bytes()
             .into_vec(),
     )
     .unwrap();
     let klv_value_expr = BigUintValue::from(normalized_cc.klv_payment);
-    let scenario_args = convert_call_args(&normalized_cc.basic.arg_buffer);
+    let scenario_args = convert_call_args(&normalized_cc.basic.function_call.arg_buffer);
     (to_str, function, klv_value_expr, scenario_args)
 }
 
@@ -233,7 +259,8 @@ pub fn convert_call_args(arg_buffer: &ManagedArgBuffer<StaticApi>) -> Vec<String
 
 pub(super) fn format_expect<T: TopEncodeMulti>(t: T) -> TxExpect {
     let mut encoded = Vec::<Vec<u8>>::new();
-    let Ok(()) = t.multi_encode_or_handle_err(&mut encoded, PanicErrorHandler);
+    t.multi_encode_or_handle_err(&mut encoded, PanicErrorHandler)
+        .unwrap_infallible();
     let mut expect = TxExpect::ok().no_result();
     for encoded_res in encoded {
         let encoded_hex_string = format!("0x{}", hex::encode(encoded_res.as_slice()));

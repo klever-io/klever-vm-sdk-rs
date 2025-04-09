@@ -1,4 +1,4 @@
-klever_sc::imports!();
+use klever_sc::imports::*;
 
 use crate::types::*;
 use core::num::NonZeroUsize;
@@ -107,6 +107,7 @@ pub trait EchoTypes {
         nz
     }
 
+    #[allow_multiple_var_args]
     #[view]
     fn echo_some_args_ignore_others(
         &self,

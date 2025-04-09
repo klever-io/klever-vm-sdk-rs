@@ -1,24 +1,23 @@
 use crate::{
     api::ManagedTypeApi,
-    types::{
-        BigUint, KdaTokenPaymentMultiValue, KdaTokenType, ManagedVecItem,
-        TokenIdentifier,
-    },
+    types::{BigUint, KdaTokenPaymentMultiValue, KdaTokenType, ManagedVecItem, TokenIdentifier},
 };
 
 use super::ManagedVec;
 
 use crate as klever_sc; // needed by the codec and TypeAbi generated code
+use crate::types::ManagedVecItemPayloadBuffer;
 use crate::{
     codec::{
         self,
         derive::{NestedEncode, TopEncode},
         IntoMultiValue, NestedDecode, TopDecode,
     },
-    derive::TypeAbi,
+    derive::type_abi,
 };
 
-#[derive(TopEncode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug)]
+#[type_abi]
+#[derive(TopEncode, NestedEncode, Clone, PartialEq, Eq, Debug)]
 pub struct KdaTokenPayment<M: ManagedTypeApi> {
     pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
@@ -30,11 +29,7 @@ pub type MultiKdaPayment<Api> = ManagedVec<Api, KdaTokenPayment<Api>>;
 
 impl<M: ManagedTypeApi> KdaTokenPayment<M> {
     #[inline]
-    pub fn new(
-        token_identifier: TokenIdentifier<M>,
-        token_nonce: u64,
-        amount: BigUint<M>,
-    ) -> Self {
+    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
         KdaTokenPayment {
             token_identifier,
             token_nonce,
@@ -51,61 +46,29 @@ impl<M: ManagedTypeApi> KdaTokenPayment<M> {
     }
 
     pub fn token_type(&self) -> KdaTokenType {
-            if self.token_nonce == 0 {
-                KdaTokenType::Fungible
-            } else if self.amount == 1u64 {
-                KdaTokenType::NonFungible
-            } else  {
-                KdaTokenType::SemiFungible
-            } 
+        if self.token_nonce == 0 {
+            KdaTokenType::Fungible
+        } else if self.amount == 1u64 {
+            KdaTokenType::NonFungible
+        } else {
+            KdaTokenType::SemiFungible
+        }
     }
 
     #[inline]
-    pub fn into_tuple(
-        self,
-    ) -> (
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    ) {
-        (
-            self.token_identifier,
-            self.token_nonce,
-            self.amount,
-        )
+    pub fn into_tuple(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
+        (self.token_identifier, self.token_nonce, self.amount)
     }
 
     #[inline]
-    pub fn into_tuple_with_royalties(
-        self,
-    ) -> (
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    ) {
-        (
-            self.token_identifier,
-            self.token_nonce,
-            self.amount,
-        )
+    pub fn into_tuple_with_royalties(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
+        (self.token_identifier, self.token_nonce, self.amount)
     }
 }
 
-impl<M: ManagedTypeApi>
-    From<(
-        TokenIdentifier<M>,
-        u64,
-        BigUint<M>,
-    )> for KdaTokenPayment<M>
-{
+impl<M: ManagedTypeApi> From<(TokenIdentifier<M>, u64, BigUint<M>)> for KdaTokenPayment<M> {
     #[inline]
-    fn from(
-        value: (
-            TokenIdentifier<M>,
-            u64,
-            BigUint<M>,
-        ),
-    ) -> Self {
+    fn from(value: (TokenIdentifier<M>, u64, BigUint<M>)) -> Self {
         let (token_identifier, token_nonce, amount) = value;
         Self::new(token_identifier, token_nonce, amount)
     }
@@ -159,7 +122,7 @@ where
     T: ManagedVecItem,
 {
     ManagedVecItem::from_byte_reader(|bytes| {
-        let size = T::PAYLOAD_SIZE;
+        let size = T::payload_size();
         bytes.copy_from_slice(&arr[*index..*index + size]);
         *index += size;
     })
@@ -170,7 +133,7 @@ where
     T: ManagedVecItem,
 {
     ManagedVecItem::to_byte_writer(item, |bytes| {
-        let size = T::PAYLOAD_SIZE;
+        let size = T::payload_size();
         arr[*index..*index + size].copy_from_slice(bytes);
         *index += size;
     });
@@ -186,7 +149,7 @@ impl<M: ManagedTypeApi> IntoMultiValue for KdaTokenPayment<M> {
 }
 
 impl<M: ManagedTypeApi> ManagedVecItem for KdaTokenPayment<M> {
-    const PAYLOAD_SIZE: usize = 16;
+    type PAYLOAD = ManagedVecItemPayloadBuffer<16>;
     const SKIPS_RESERIALIZATION: bool = false;
     type Ref<'a> = Self;
 
@@ -221,5 +184,63 @@ impl<M: ManagedTypeApi> ManagedVecItem for KdaTokenPayment<M> {
         managed_vec_item_to_slice(&mut arr, &mut index, &self.amount);
 
         writer(&arr[..])
+    }
+}
+
+/// The version of `KdaTokenPayment` that contains referrences instead of owned fields.
+pub struct KdaTokenPaymentRefs<'a, M: ManagedTypeApi> {
+    pub token_identifier: &'a TokenIdentifier<M>,
+    pub token_nonce: u64,
+    pub amount: &'a BigUint<M>,
+}
+
+impl<M: ManagedTypeApi> KdaTokenPayment<M> {
+    pub fn as_refs(&self) -> KdaTokenPaymentRefs<'_, M> {
+        KdaTokenPaymentRefs::new(&self.token_identifier, self.token_nonce, &self.amount)
+    }
+}
+
+impl<'a, M: ManagedTypeApi> KdaTokenPaymentRefs<'a, M> {
+    #[inline]
+    pub fn new(
+        token_identifier: &'a TokenIdentifier<M>,
+        token_nonce: u64,
+        amount: &'a BigUint<M>,
+    ) -> Self {
+        KdaTokenPaymentRefs {
+            token_identifier,
+            token_nonce,
+            amount,
+        }
+    }
+
+    /// Will clone the referenced values.
+    pub fn to_owned_payment(&self) -> KdaTokenPayment<M> {
+        KdaTokenPayment {
+            token_identifier: self.token_identifier.clone(),
+            token_nonce: self.token_nonce,
+            amount: self.amount.clone(),
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> From<()> for MultiKdaPayment<M> {
+    #[inline]
+    fn from(_value: ()) -> Self {
+        MultiKdaPayment::new()
+    }
+}
+
+impl<M: ManagedTypeApi> From<KdaTokenPayment<M>> for MultiKdaPayment<M> {
+    #[inline]
+    fn from(value: KdaTokenPayment<M>) -> Self {
+        MultiKdaPayment::from_single_item(value)
+    }
+}
+
+impl<M: ManagedTypeApi> From<(TokenIdentifier<M>, u64, BigUint<M>)> for MultiKdaPayment<M> {
+    #[inline]
+    fn from(value: (TokenIdentifier<M>, u64, BigUint<M>)) -> Self {
+        MultiKdaPayment::from_single_item(value.into())
     }
 }

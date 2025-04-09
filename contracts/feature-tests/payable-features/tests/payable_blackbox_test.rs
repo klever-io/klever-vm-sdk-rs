@@ -1,10 +1,9 @@
-use klever_sc_scenario::{scenario_model::*, *};
+use klever_sc_scenario::imports::*;
 
-const PF_PATH_EXPR: &str = "file:output/payable-features.wasm";
+const PF_PATH_EXPR: &str = "kleversc:output/payable-features.kleversc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/feature-tests/payable-features");
 
     blockchain.register_contract(PF_PATH_EXPR, payable_features::ContractBuilder);
     blockchain
