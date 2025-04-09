@@ -14,9 +14,9 @@ use crate::data::{
 use anyhow::{anyhow, Result};
 use reqwest::Client;
 
-pub const MAINNET_GATEWAY: &str = "https://api.mainnet.klever.finance";
-pub const TESTNET_GATEWAY: &str = "https://api.testnet.klever.finance";
-pub const DEVNET_GATEWAY: &str = "https://api.devnet.klever.finance";
+pub const MAINNET_GATEWAY: &str = "https://api.mainnet.klever.org";
+pub const TESTNET_GATEWAY: &str = "https://api.testnet.klever.org";
+pub const DEVNET_GATEWAY: &str = "https://api.devnet.klever.org";
 
 // MetachainShardId will be used to identify a shard ID as metachain
 pub const METACHAIN_SHARD_ID: u32 = 0xFFFFFFFF;

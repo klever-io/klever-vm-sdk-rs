@@ -16,14 +16,24 @@ The repo contains:
 - A framework for interacting with the blockchain, based on the smart contract logic, especially suitable for developers.
 - A code snippet generator.
 
-# Documentation & Getting started
+# Documentation 
 
-The documentation can be found [here](docs/README.md)
+Most documentation can be found at https://docs.klever.org/klever-vm
+
+# Getting started
+
+The crowdfunding tutorial is a great place to start: https://docs.klever.org/tutorials/crowdfunding
+
+# IDE
+
+The framework is designed to be easiest to use with the KleverChain IDE VSCode extension: https://marketplace.visualstudio.com/items?itemName=Klever-org.vscode-kvm-ide
+
+You can find a KleverChain IDE tutorial at https://docs.klever.org/tutorials/kleverchain-ide
 
 # Building contracts
 
-A comprehensive build guide can be found here: https://docs.klever.com/developers/developer-reference/sc-build-reference/
+A comprehensive build guide can be found here: https://docs.klever.org/smart-contracts/config-and-tooling/build-reference
 
-# Debugging contracts
+# Testing contracts
 
-The debugger guide: https://docs.klever.com/developers/developer-reference/sc-debugging/
+The Smart Contracts Testing guide: https://docs.klever.org/smart-contracts/testing
