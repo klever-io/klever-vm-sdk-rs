@@ -21,7 +21,7 @@ jobs:
         include:
           - build: linux
             os: ubuntu-latest
-            target: x86_64-unknown-linux-musl
+            target: x86_64-unknown-linux-gnu
 
           - build: macos
             os: macos-latest
@@ -64,7 +64,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             sudo apt update && sudo apt install -y --no-install-recommends \
-              clang clang-tools llvm musl-tools musl-dev build-essential || exit 1
+              clang clang-tools llvm build-essential || exit 1
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
             brew install scdoc
             rustup update && rustup target add aarch64-apple-darwin
@@ -74,9 +74,7 @@ jobs:
         shell: bash
         run: |
           RUST_BACKTRACE=full \
-          CC_x86_64_unknown_linux_musl=clang \
-          AR_x86_64_unknown_linux_musl=llvm-ar \
-          CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static" \
+          RUSTFLAGS='-C target-feature=+crt-static' \
           cargo build -p klever-sc-meta --target ${{ matrix.target }} --release
 
       - name: Build archive
