@@ -33,6 +33,6 @@ version = "=0.44.0"
 path = "../derive"
 
 [dependencies.klever-sc-codec]
-version = "=0.18.1"
+version = "=0.18.2"
 path = "../../data/codec"
 features = ["derive"]

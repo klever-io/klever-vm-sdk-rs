@@ -1,9 +1,9 @@
 [package]
 name = "klever-sc-codec"
-version = "0.18.1"
+version = "0.18.2"
 edition = "2021"
 
-authors = ["Andrei Marinica <andrei.marinica@multiversx.com>", "Klever <contact@klever.io>"]
+authors = ["Klever <contact@klever.io>"]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/klever-io/klever-vm-sdk-rs"
@@ -19,7 +19,7 @@ alloc = []
 
 [dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
-version = "=0.18.1"
+version = "=0.18.2"
 optional = true
 
 [dependencies]
@@ -29,4 +29,4 @@ unwrap-infallible = "0.1.5"
 
 [dev-dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
-version = "=0.18.1"
+version = "=0.18.2"

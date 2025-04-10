@@ -1641,7 +1641,7 @@ dependencies = [
 
 [[package]]
 name = "klever-chain-scenario-format"
-version = "0.20.0"
+version = "0.20.1"
 dependencies = [
  "bech32",
  "hex",
@@ -1690,7 +1690,7 @@ dependencies = [
 
 [[package]]
 name = "klever-sc-codec"
-version = "0.18.1"
+version = "0.18.2"
 dependencies = [
  "arrayvec",
  "klever-sc-codec-derive",
@@ -1700,7 +1700,7 @@ dependencies = [
 
 [[package]]
 name = "klever-sc-codec-derive"
-version = "0.18.1"
+version = "0.18.2"
 dependencies = [
  "hex",
  "proc-macro2",

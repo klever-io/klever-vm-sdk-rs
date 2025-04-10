@@ -50,7 +50,7 @@ version = "=0.44.0"
 path = "../meta"
 
 [dependencies.klever-chain-scenario-format]
-version = "0.20.0"
+version = "0.20.1"
 path = "../../sdk/scenario-format"
 
 [dependencies.klever-chain-vm-executor]
