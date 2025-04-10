@@ -38,7 +38,8 @@ jobs:
       - name: Install Rust
         run: |
           rustup default stable
-          rustup update rustup target add ${{ matrix.target }}
+          rustup update
+          rustup target add ${{ matrix.target }}
 
       - name: Cargo Cache
         uses: actions/cache@v4
