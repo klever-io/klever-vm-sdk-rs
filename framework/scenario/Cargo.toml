@@ -63,5 +63,5 @@ version = "=0.5.3"
 path = "../../vm"
 
 [dependencies.klever-vm-sdk]
-version = "=0.2.0"
+version = "=0.2.1"
 path = "../../sdk/core"
