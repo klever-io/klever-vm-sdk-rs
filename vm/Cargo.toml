@@ -1,10 +1,9 @@
 [package]
 name = "klever-chain-vm"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2021"
 
 authors = [
-    "Andrei Marinica <andrei.marinica@multiversx.com>",
     "Klever <contact@klever.io>",
 ]
 license = "GPL-3.0-only"

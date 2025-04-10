@@ -31,7 +31,7 @@ They are:
 - Refactor blockchain calls and builtin functions
 - Main features at this time:
 
-## [sc 0.44.0] - 2025-04-07
+## [sc 0.44.0, vm 0.5.3, codec 0.18.2] - 2025-04-07
 
 - Support contract deletion (`delete_contract`) and new deploy-delete example
 - Introduce `upgrade()` endpoint for on-chain state updates in smart contracts
