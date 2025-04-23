@@ -1678,6 +1678,7 @@ dependencies = [
  "hex-literal",
  "itertools",
  "klever-chain-vm-executor",
+ "klever-sc-codec",
  "num-bigint",
  "num-traits",
  "rand",

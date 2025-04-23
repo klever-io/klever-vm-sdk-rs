@@ -14,5 +14,8 @@ pub use world_mock::BlockchainMock;
 // Re-exporting the executor, for convenience.
 pub use klever_chain_vm_executor as executor;
 
+/// Re-exported for convenience.
+pub use klever_sc_codec as codec;
+
 #[macro_use]
 extern crate alloc;
