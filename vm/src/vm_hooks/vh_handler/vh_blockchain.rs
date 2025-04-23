@@ -2,7 +2,7 @@ use num_bigint::BigInt;
 
 use crate::{
     tx_execution::vm_builtin_function_names::*,
-    types::{KDALocalRoleFlags,KDALocalRole, RawHandle, VMAddress},
+    types::{KDALocalRole, KDALocalRoleFlags, RawHandle, VMAddress},
     vm_hooks::VMHooksHandlerSource,
     world_mock::{AccountData, KdaData, KdaInstance},
 };
@@ -362,15 +362,13 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
     fn managed_get_kda_roles(&self, token_id_handle: i32, roles_handle: i32) {
         let token_id_bytes = self.m_types_lock().mb_get(token_id_handle).to_vec();
         let mut m_types = self.m_types_lock();
-        
         let account = self.current_account_data();
         let addr_handle = m_types.mb_new(account.address.to_vec());
-        
         // Add address to byte buffer
         m_types.mb_append_bytes(roles_handle, &addr_handle.to_be_bytes());
 
         // iterates over roles to parse them to correct flag
-        let mut result= KDALocalRoleFlags::NONE;
+        let mut result = KDALocalRoleFlags::NONE;
         if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
             for role_name in kda_data.roles.get() {
                 result |= KDALocalRole::from(role_name.as_slice()).to_flag();

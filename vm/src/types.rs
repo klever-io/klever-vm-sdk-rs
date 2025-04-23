@@ -1,18 +1,18 @@
+mod kda_local_role;
+mod kda_local_role_flags;
 mod vm_address;
 mod vm_code_metadata;
 mod vm_h256;
 mod vm_token_type;
-mod kda_local_role_flags;
-mod kda_local_role;
 
+pub use kda_local_role::KDALocalRole;
+pub use kda_local_role_flags::KDALocalRoleFlags;
 use num_bigint::BigUint;
 use num_traits::Zero;
 pub use vm_address::VMAddress;
 pub use vm_code_metadata::VMCodeMetadata;
 pub use vm_h256::H256;
 pub use vm_token_type::VMTokenType;
-pub use kda_local_role::KDALocalRole;
-pub use kda_local_role_flags::KDALocalRoleFlags;
 
 pub type RawHandle = i32;
 

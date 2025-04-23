@@ -55,7 +55,6 @@ impl KdaInstances {
             balance: BigUint::zero(),
             metadata: KdaInstanceMetadata::default(),
         });
-        
         instance.metadata.can_burn = can_burn;
     }
 
