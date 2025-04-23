@@ -57,6 +57,21 @@ impl AccountKda {
         kda_data.roles = KdaRoles::new(roles);
     }
 
+    pub fn set_can_burn(&mut self, 
+        token_identifier: Vec<u8>, 
+        nonce: u64, 
+        can_burn: bool
+    ) { 
+        
+        let kda_data = self.0.entry(token_identifier).or_insert_with(|| KdaData {
+            instances: KdaInstances::new(),
+            last_nonce: nonce,
+            roles: KdaRoles::default(),
+            frozen: false,
+        });
+        kda_data.instances.set_can_burn(nonce, can_burn);
+    }
+
     /// Will provide a clone.
     pub fn get_by_identifier_or_default(&self, identifier: &[u8]) -> KdaData {
         if let Some(value) = self.0.get(identifier) {

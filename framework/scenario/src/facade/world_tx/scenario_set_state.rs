@@ -49,6 +49,40 @@ impl ScenarioWorld {
     pub fn current_block(&mut self) -> SetStateBuilder<'_, BlockItem> {
         self.empty_builder().current_block()
     }
+
+    pub fn set_kda_local_roles<A>(&mut self, address: A, token_id: &[u8], roles: Vec<String>)
+    where
+        A: AnnotatedValue<ScenarioTxEnvData, ManagedAddress<StaticApi>>,
+    {
+        let env = self.new_env_data();
+        let address_value = address_annotated(&env, &address);
+        let accounts = &mut self.get_mut_state().accounts;
+        for (vm_address, account) in accounts.iter_mut() {
+            if vm_address == &address_value.to_vm_address() {
+                account.kda.set_roles(
+                    token_id.to_vec(),
+                    roles
+                        .iter()
+                        .map(|role| role.clone().into_bytes())
+                        .collect(),
+                );
+            }
+        }
+    }
+
+    pub fn set_kda_can_burn<A>(&mut self, address: A, token_id: &[u8], token_nonce: u64, can_burn: bool)
+    where
+        A: AnnotatedValue<ScenarioTxEnvData, ManagedAddress<StaticApi>>,
+    {
+        let env = self.new_env_data();
+        let address_value = address_annotated(&env, &address);
+        let accounts = &mut self.get_mut_state().accounts;
+        for (vm_address, account) in accounts.iter_mut() {
+            if vm_address == &address_value.to_vm_address() {
+                account.kda.set_can_burn(token_id.to_vec(), token_nonce, can_burn);
+            }
+        }
+    }
 }
 
 pub trait SetStateBuilderItem {

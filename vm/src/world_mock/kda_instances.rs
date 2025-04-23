@@ -41,10 +41,22 @@ impl KdaInstances {
             metadata: metadata.clone(),
         });
         if instance.balance.is_zero() {
+            let can_burn = instance.metadata.can_burn;
             instance.metadata = metadata;
+            instance.metadata.can_burn = can_burn;
         }
 
         instance.balance += value;
+    }
+
+    pub fn set_can_burn(&mut self, nonce: u64, can_burn: bool) {
+        let instance = self.0.entry(nonce).or_insert_with(|| KdaInstance {
+            nonce,
+            balance: BigUint::zero(),
+            metadata: KdaInstanceMetadata::default(),
+        });
+        
+        instance.metadata.can_burn = can_burn;
     }
 
     pub fn set_balance(&mut self, nonce: u64, value: &BigUint, metadata: KdaInstanceMetadata) {
