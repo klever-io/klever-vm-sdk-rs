@@ -27,7 +27,7 @@ pub trait Dice {
 
     #[payable("KLV")]
     #[endpoint(bet)]
-    fn bet(&self, bet_type: BetType, bet_value: u32) {
+    fn bet(&self, bet_type: BetType, bet_value: u32) -> Bet {
         let caller = self.blockchain().get_caller();
 
         require!(
@@ -85,5 +85,13 @@ pub trait Dice {
             multiplier,
             is_winner,
         });
+
+        Bet {
+            bet_type: bet_type as u32,
+            bet_value,
+            dice_value,
+            multiplier,
+            is_winner,
+        }
     }
 }
