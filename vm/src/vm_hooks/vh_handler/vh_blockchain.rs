@@ -232,11 +232,28 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
 
     fn managed_get_sft_metadata(
         &self,
-        _ticker_handle: RawHandle,
-        _nonce: u64,
-        _data_handle: RawHandle,
+        ticker_handle: RawHandle,
+        nonce: u64,
+        data_handle: RawHandle,
     ) {
-        todo!()
+        let token_id_bytes = self.m_types_lock().mb_get(ticker_handle).to_vec();
+        let mut m_types = self.m_types_lock();
+        let account = self.current_account_data();
+        if let Some(kda_data) = account.kda.get_by_identifier(token_id_bytes.as_slice()) {
+            if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
+                // Compose the metadata buffer: name, hash, attributes (all Vec<u8>), as a flat concatenation
+                let mut buf = Vec::new();
+                buf.extend_from_slice(&instance.metadata.name);
+                if let Some(hash) = &instance.metadata.hash {
+                    buf.extend_from_slice(hash);
+                }
+                buf.extend_from_slice(&instance.metadata.attributes);
+                m_types.mb_set(data_handle, buf);
+                return;
+            }
+        }
+        // Not found, set empty
+        m_types.mb_set(data_handle, Vec::new());
     }
 
     fn managed_acc_has_perm(
