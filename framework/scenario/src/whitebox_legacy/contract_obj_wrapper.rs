@@ -163,7 +163,26 @@ impl BlockchainStateWrapper {
         );
 
         if let Some(expected_attributes) = opt_expected_attributes {
-            let actual_attributes = T::top_decode(actual_attributes_serialized).unwrap();
+            if actual_attributes_serialized.is_empty() {
+                panic!(
+                    "NFT attributes are empty for address {}\n Token: {}, nonce: {}\n Expected attributes but found none\n",
+                    address_to_hex(address),
+                    String::from_utf8(token_id.to_vec()).unwrap(),
+                    nonce,
+                );
+            }
+
+            let actual_attributes = match T::top_decode(actual_attributes_serialized.clone()) {
+                Ok(val) => val,
+                Err(e) => panic!(
+                    "Failed to decode NFT attributes for address {}\n Token: {}, nonce: {}\n Error: {:?}\n Raw bytes: {}\n",
+                    address_to_hex(address),
+                    String::from_utf8(token_id.to_vec()).unwrap(),
+                    nonce,
+                    e,
+                    bytes_to_hex(&actual_attributes_serialized)
+                ),
+            };
             assert!(
                 expected_attributes == &actual_attributes,
                 "KDA NFT attributes mismatch for address {}\n Token: {}, nonce: {}\n Expected: {:?}\n Have: {:?}\n",
@@ -635,11 +654,12 @@ impl BlockchainStateWrapper {
         ContractObjBuilder: 'static + Copy + Fn() -> CB,
         TxFn: FnOnce(CB),
     {
+        let kda_multi_transfer = kda_transfers.to_vec();
         self.execute_tx_any(
             caller,
             sc_wrapper,
             &num_bigint::BigUint::zero(),
-            kda_transfers.to_vec(),
+            kda_multi_transfer,
             tx_fn,
         )
     }
