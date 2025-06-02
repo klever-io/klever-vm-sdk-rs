@@ -7,14 +7,13 @@ use klever_sc::imports::*;
 ///
 /// It is recommended to use this module in conjunction with the `only_admin` module.
 /// It is Not recommended to use it with the `pause` module, as it may cause endpoints conflicts.
-/// 
+///
 /// It offers:
 /// * an endpoint where the admins can pause/unpause contract
 /// * a method to check if contract is paused or not
 ///
 #[klever_sc::module]
-pub trait PauseAdminModule: crate::only_admin::OnlyAdminModule
-{
+pub trait PauseAdminModule: crate::only_admin::OnlyAdminModule {
     #[inline]
     fn is_paused(&self) -> bool {
         self.paused_status().get()

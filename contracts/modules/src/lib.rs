@@ -5,7 +5,7 @@ pub mod features;
 pub mod kda;
 pub mod ongoing_operation;
 pub mod only_admin;
-pub mod pause_admin;
 pub mod pause;
+pub mod pause_admin;
 pub mod transfer_role_proxy;
 pub mod users;
