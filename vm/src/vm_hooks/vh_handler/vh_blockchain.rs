@@ -242,18 +242,19 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             if let Some(instance) = kda_data.instances.get_by_nonce(nonce) {
                 // Create SFTMeta format: max_supply (handle at 0), circulation_supply (handle at 4), metadata (handle at 8)
                 let mut buf = Vec::with_capacity(12); // 3 handles * 4 bytes each
-                
+
                 // Create empty BigUint handles for max_supply and circulation_supply as requested
                 let max_supply_handle = m_types.bi_new_from_big_int(num_bigint::BigInt::zero());
-                let circulation_supply_handle = m_types.bi_new_from_big_int(num_bigint::BigInt::zero());
-                
+                let circulation_supply_handle =
+                    m_types.bi_new_from_big_int(num_bigint::BigInt::zero());
+
                 // Create SFTMetadata buffer: name (handle at 0), hash (handle at 4), attributes (handle at 8)
                 let mut metadata_buf = Vec::with_capacity(12); // 3 handles * 4 bytes each
-                
+
                 // Set name
                 let name_handle = m_types.mb_new(instance.metadata.name.clone());
                 metadata_buf.extend_from_slice(&name_handle.to_be_bytes());
-                
+
                 // Set hash
                 let hash_handle = if let Some(hash) = &instance.metadata.hash {
                     m_types.mb_new(hash.clone())
@@ -261,19 +262,19 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
                     m_types.mb_new(Vec::new())
                 };
                 metadata_buf.extend_from_slice(&hash_handle.to_be_bytes());
-                
+
                 // Set attributes
                 let attributes_handle = m_types.mb_new(instance.metadata.attributes.clone());
                 metadata_buf.extend_from_slice(&attributes_handle.to_be_bytes());
-                
+
                 // Create metadata buffer handle
                 let metadata_handle = m_types.mb_new(metadata_buf);
-                
+
                 // Compose SFTMeta buffer
                 buf.extend_from_slice(&max_supply_handle.to_be_bytes());
                 buf.extend_from_slice(&circulation_supply_handle.to_be_bytes());
                 buf.extend_from_slice(&metadata_handle.to_be_bytes());
-                
+
                 m_types.mb_set(data_handle, buf);
                 return;
             }
