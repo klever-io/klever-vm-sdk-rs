@@ -2,7 +2,6 @@ use std::process::Command;
 
 use crate::tools;
 
-
 pub fn install_wasm32_target() {
     install_target(tools::build_target::WASM32_TARGET);
     if tools::build_target::is_wasm32v1_available() {
