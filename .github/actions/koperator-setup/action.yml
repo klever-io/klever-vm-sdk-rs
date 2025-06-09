@@ -12,6 +12,7 @@ inputs:
 outputs:
   operator_path:
     description: "Path to the downloaded and extracted operator"
+    value: ${{ env.OPERATOR_PATH }}
 
 runs:
   using: "composite"
