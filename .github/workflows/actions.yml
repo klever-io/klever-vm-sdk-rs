@@ -93,6 +93,7 @@ jobs:
       
 
           cargo install --path framework/meta
+          sc-meta install wasm32
 
           which wasm-opt
 
@@ -154,6 +155,7 @@ jobs:
           dirname "$(find ~/.rustup -name llvm-cov)"
 
           cargo install --path framework/meta
+          sc-meta install wasm32
 
       - name: Run tests and generate report
         env:

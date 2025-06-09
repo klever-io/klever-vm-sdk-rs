@@ -53,6 +53,7 @@ jobs:
         run: |
           cargo install wasm-opt
           cargo install --path framework/meta
+          sc-meta install wasm32
           which wasm-opt
 
       - name: Create operator account

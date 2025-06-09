@@ -6,7 +6,7 @@ pub use contract_allocator::{parse_allocator, ContractAllocator};
 use serde::Deserialize;
 pub use stack_size::*;
 
-use crate::ei::EIVersion;
+use crate::{ei::EIVersion, tools};
 
 /// Collection of flags, specified in the multicontract config.
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -30,6 +30,8 @@ pub struct ContractVariantSettings {
     pub features: Vec<String>,
 
     pub profile: ContractVariantProfile,
+
+    pub rustc_target: String,
 }
 
 impl Default for ContractVariantSettings {
@@ -42,6 +44,7 @@ impl Default for ContractVariantSettings {
             stack_size: DEFAULT_STACK_SIZE,
             features: Default::default(),
             profile: Default::default(),
+            rustc_target: tools::build_target::default_target().to_owned(),
         }
     }
 }

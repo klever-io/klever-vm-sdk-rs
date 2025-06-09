@@ -23,6 +23,7 @@ jobs:
       - name: Install prerequisites
         run: |
           cargo install --path framework/meta
+          sc-meta install wasm32
 
       - name: Run proxy compare
         run: |
