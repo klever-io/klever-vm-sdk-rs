@@ -1,4 +1,4 @@
-name: CI
+name: Template tool test - current (unreleased) templates
 
 on:
   push:

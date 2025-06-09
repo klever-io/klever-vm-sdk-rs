@@ -1,4 +1,4 @@
-name: CI
+name: LLDB formatter tests
 
 on:
   push:
