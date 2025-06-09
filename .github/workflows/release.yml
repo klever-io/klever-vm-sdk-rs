@@ -4,13 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: 'Release tag to build (run "git tag -l v*" to see available tags)'
-        required: true
-        type: string
-        default: 'v0.44.0'
 
 permissions:
   contents: write
@@ -38,28 +31,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref }}
+          ref: ${{ github.ref }}
           fetch-depth: 0
-
-      - name: Validate tag exists (manual dispatch only)
-        if: github.event_name == 'workflow_dispatch'
-        shell: bash
-        run: |
-          if ! git rev-parse "${{ github.event.inputs.release_tag }}" >/dev/null 2>&1; then
-            echo "Error: Tag '${{ github.event.inputs.release_tag }}' does not exist!"
-            echo "Available tags starting with 'v':"
-            git tag -l "v*" --sort=-v:refname | head -20
-            exit 1
-          fi
 
       - name: Get the release version from the tag
         shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "VERSION=${{ github.event.inputs.release_tag }}" >> $GITHUB_ENV
-          else
-            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          fi
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Rust
         run: |
@@ -126,7 +103,7 @@ jobs:
           fi
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ env.ASSET }}
