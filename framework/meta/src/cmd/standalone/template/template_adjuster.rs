@@ -254,20 +254,19 @@ impl TemplateAdjuster {
             let src_lib_path = self.target.contract_dir().join("src").join("lib.rs");
             let src_new_path = self.target.contract_dir().join("src").join(&new_src_name);
             if src_lib_path.exists() {
-                std::fs::rename(&src_lib_path, &src_new_path)
-                    .expect("failed to rename src/lib.rs");
+                std::fs::rename(&src_lib_path, &src_new_path).expect("failed to rename src/lib.rs");
             }
-            
+
             // Still need to rename other files containing the template name
             let old_name_snake = self.metadata.name.to_case(Case::Snake);
             let new_name_snake = new_name.clone();
-            
+
             // Handle both proxy file patterns: "proxy_name.rs" and "name_proxy.rs"
             let old_proxy_file_prefix = format!("proxy_{}", old_name_snake);
             let new_proxy_file_prefix = format!("proxy_{}", new_name_snake);
             let old_proxy_file_suffix = format!("{}_proxy", old_name_snake);
             let new_proxy_file_suffix = format!("{}_proxy", new_name_snake);
-            
+
             let pattern: &[(&str, &str)] = &[
                 (&old_proxy_file_prefix, &new_proxy_file_prefix),
                 (&old_proxy_file_suffix, &new_proxy_file_suffix),

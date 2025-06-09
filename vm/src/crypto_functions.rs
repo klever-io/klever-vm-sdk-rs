@@ -1,4 +1,4 @@
-use ed25519_dalek::{Signature, VerifyingKey, Verifier};
+use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use sha2::Sha256;
 use sha3::{Digest, Keccak256};
 
