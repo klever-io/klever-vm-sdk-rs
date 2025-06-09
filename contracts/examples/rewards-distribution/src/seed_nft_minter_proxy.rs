@@ -69,34 +69,6 @@ where
     To: TxTo<Env>,
     Gas: TxGas<Env>,
 {
-    pub fn create_nft<
-        Arg0: ProxyArg<ManagedBuffer<Env::Api>>,
-        Arg1: ProxyArg<BigUint<Env::Api>>,
-        Arg2: ProxyArg<ManagedBuffer<Env::Api>>,
-        Arg3: ProxyArg<BigUint<Env::Api>>,
-        Arg4: ProxyArg<OptionalValue<TokenIdentifier<Env::Api>>>,
-        Arg5: ProxyArg<OptionalValue<u64>>,
-    >(
-        self,
-        name: Arg0,
-        royalties: Arg1,
-        uri: Arg2,
-        selling_price: Arg3,
-        opt_token_used_as_payment: Arg4,
-        opt_token_used_as_payment_nonce: Arg5,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
-        self.wrapped_tx
-            .payment(NotPayable)
-            .raw_call("createNft")
-            .argument(&name)
-            .argument(&royalties)
-            .argument(&uri)
-            .argument(&selling_price)
-            .argument(&opt_token_used_as_payment)
-            .argument(&opt_token_used_as_payment_nonce)
-            .original_result()
-    }
-
     pub fn claim_and_distribute<
         Arg0: ProxyArg<TokenIdentifier<Env::Api>>,
         Arg1: ProxyArg<u64>,
