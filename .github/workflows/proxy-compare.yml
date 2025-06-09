@@ -1,0 +1,30 @@
+name: Proxy compare - newly generated vs present in file tree
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  proxy_compare:
+    name: Proxy compare - newly generated vs present in file tree
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        run: |
+          rustup default stable
+          rustup update
+          rustup target add wasm32-unknown-unknown
+
+      - name: Install prerequisites
+        run: |
+          cargo install --path framework/meta
+
+      - name: Run proxy compare
+        run: |
+          cd contracts
+          sc-meta all proxy --compare
