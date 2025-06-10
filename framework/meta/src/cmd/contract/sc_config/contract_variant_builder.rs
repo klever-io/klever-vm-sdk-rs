@@ -1,6 +1,6 @@
 use crate::cmd::contract::sc_config::contract_variant_settings::ContractVariantProfile;
 use crate::cmd::contract::sc_config::sc_config_model::SC_CONFIG_FILE_NAMES;
-use crate::ei::parse_check_ei;
+use crate::{ei::parse_check_ei, tools};
 use klever_sc::abi::{ContractAbi, EndpointAbi};
 use std::{
     collections::{BTreeSet, HashMap, HashSet},
@@ -75,6 +75,10 @@ impl ContractVariantBuilder {
                     stack_size: parse_stack_size(&cms.stack_size),
                     features: cms.features.clone(),
                     profile: ContractVariantProfile::from_serde(&cms.profile),
+                    rustc_target: cms
+                        .rustc_target
+                        .clone()
+                        .unwrap_or_else(|| tools::build_target::default_target().to_owned()),
                 },
                 ..default
             },

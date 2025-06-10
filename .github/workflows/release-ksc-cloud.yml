@@ -1,0 +1,170 @@
+name: Release KSC to Cloud Storage
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to build (e.g., v0.44.0)'
+        required: true
+        type: string
+        default: 'v0.44.0'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.inputs.release_tag }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+
+jobs:
+  build-and-upload-ksc:
+    name: Build and upload KSC for ${{ matrix.build }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - build: darwin-arm64
+            os: macos-latest
+            target: aarch64-apple-darwin
+          - build: darwin
+            os: macos-latest
+            target: x86_64-apple-darwin
+          - build: win32
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+    
+    steps:
+      - name: 🏁 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_tag }}
+          fetch-depth: 0
+
+      - name: 🔍 Validate release tag
+        id: validate
+        shell: bash
+        run: |
+          if ! git rev-parse "${{ github.event.inputs.release_tag }}" >/dev/null 2>&1; then
+            echo "❌ Error: Tag '${{ github.event.inputs.release_tag }}' does not exist!"
+            echo "📋 Available tags starting with 'v':"
+            git tag -l "v*" --sort=-v:refname | head -20
+            exit 1
+          fi
+          
+          # Extract version from tag
+          echo "version=${{ github.event.inputs.release_tag }}" >> $GITHUB_OUTPUT
+
+      - name: 🦀 Configure Rust toolchain
+        shell: bash
+        run: |
+          # GitHub runners have Rust pre-installed, we just need to add targets
+          rustup default stable
+          rustup target add ${{ matrix.target }}
+          
+          # For macOS, ensure both targets are available for cross-compilation
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          fi
+
+      - name: 💾 Cache Cargo registry & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.target }}-
+            ${{ runner.os }}-cargo-
+
+      - name: 📦 Install system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          # Ubuntu needs C/C++ toolchain for building some dependencies
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang clang-tools llvm build-essential
+
+      - name: 🔨 Build KSC binary
+        shell: bash
+        run: |
+          echo "🚀 Building klever-sc-meta for ${{ matrix.target }}..."
+          RUSTFLAGS='-C target-feature=+crt-static' \
+          cargo build -p klever-sc-meta \
+            --target ${{ matrix.target }} \
+            --release \
+            --locked
+
+      - name: 📦 Package release artifacts
+        id: package
+        shell: bash
+        run: |
+          # Configuration
+          SOURCE_NAME="sc-meta"
+          TARGET_NAME="ksc"
+          VERSION="${{ steps.validate.outputs.version }}"
+          
+          # Create release directory
+          RELEASE_DIR="${TARGET_NAME}-${VERSION}-${{ matrix.target }}"
+          mkdir -p "$RELEASE_DIR"
+          
+          # Copy and rename binary
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            BINARY_EXT=".exe"
+          else
+            BINARY_EXT=""
+          fi
+          
+          SOURCE_BINARY="target/${{ matrix.target }}/release/${SOURCE_NAME}${BINARY_EXT}"
+          TARGET_BINARY="${RELEASE_DIR}/${TARGET_NAME}${BINARY_EXT}"
+          
+          echo "📋 Copying binary from $SOURCE_BINARY to $TARGET_BINARY"
+          cp "$SOURCE_BINARY" "$TARGET_BINARY"
+          
+          # Create archive
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            ARCHIVE="${RELEASE_DIR}.zip"
+            7z a "$ARCHIVE" "$RELEASE_DIR"
+          else
+            ARCHIVE="${RELEASE_DIR}.tar.gz"
+            tar -czf "$ARCHIVE" "$RELEASE_DIR"
+          fi
+          
+          # Output paths
+          echo "archive=$ARCHIVE" >> $GITHUB_OUTPUT
+          echo "binary=$TARGET_BINARY" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Display package info
+          echo "✅ Package created successfully:"
+          echo "   Archive: $ARCHIVE"
+          echo "   Binary: $TARGET_BINARY"
+          ls -lh "$ARCHIVE" "$TARGET_BINARY"
+
+      - name: 🔐 Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CLOUD_RUN_SA }}'
+
+      - name: ☁️ Upload archive to Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ${{ steps.package.outputs.archive }}
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false
+
+      - name: ☁️ Upload binary to Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ${{ steps.package.outputs.binary }}
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false

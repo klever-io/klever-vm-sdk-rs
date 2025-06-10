@@ -129,22 +129,6 @@ where
             .original_result()
     }
 
-    pub fn feed_on_kitty<
-        Arg0: ProxyArg<usize>,
-        Arg1: ProxyArg<u32>,
-    >(
-        self,
-        zombie_id: Arg0,
-        kitty_id: Arg1,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
-        self.wrapped_tx
-            .payment(NotPayable)
-            .raw_call("feed_on_kitty")
-            .argument(&zombie_id)
-            .argument(&kitty_id)
-            .original_result()
-    }
-
     pub fn dna_digits(
         self,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, u8> {

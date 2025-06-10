@@ -238,7 +238,7 @@ where
 
     pub fn kda_token_payment(
         self,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, KdaTokenData<Env::Api>> {
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, KdaTokenPayment<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("kda_token_payment")

@@ -104,8 +104,11 @@ impl TemplateAdjuster {
         let old_name = self.metadata.name.to_case(Case::Snake);
         let new_package = format!("{new_name}::");
         let old_package = format!("{old_name}::");
-        let new_proxy_mod = format!("{new_name}_proxy");
-        let old_proxy_mod = format!("{old_name}_proxy");
+        // Handle both proxy module patterns: "proxy_name" and "name_proxy"
+        let new_proxy_mod_prefix = format!("proxy_{new_name}");
+        let old_proxy_mod_prefix = format!("proxy_{old_name}");
+        let new_proxy_mod_suffix = format!("{new_name}_proxy");
+        let old_proxy_mod_suffix = format!("{old_name}_proxy");
 
         replace_in_files(
             &self.target.contract_dir(),
@@ -113,14 +116,18 @@ impl TemplateAdjuster {
             &[
                 Query::substring(old_trait, &new_trait),
                 Query::substring(&old_package, &new_package),
-                Query::substring(&old_proxy_mod, &new_proxy_mod),
+                Query::substring(&old_proxy_mod_prefix, &new_proxy_mod_prefix),
+                Query::substring(&old_proxy_mod_suffix, &new_proxy_mod_suffix),
             ][..],
         );
 
         replace_in_files(
             &self.target.contract_dir(),
             "*sc-config.toml",
-            &[Query::substring(&old_proxy_mod, &new_proxy_mod)][..],
+            &[
+                Query::substring(&old_proxy_mod_prefix, &new_proxy_mod_prefix),
+                Query::substring(&old_proxy_mod_suffix, &new_proxy_mod_suffix),
+            ][..],
         );
     }
 
@@ -242,11 +249,38 @@ impl TemplateAdjuster {
         let new_name = self.target.new_name.to_case(Case::Snake);
         let new_src_name = rs_file_name(&new_name);
 
-        let pattern: &[(&str, &str)] = &[
-            (&self.metadata.src_file, &new_src_name),
-            (&self.metadata.name, &new_name),
-        ];
-        rename_files(&self.target.contract_dir(), pattern);
+        // Special handling for lib.rs to avoid renaming wasm/src/lib.rs
+        if self.metadata.src_file == "lib.rs" {
+            let src_lib_path = self.target.contract_dir().join("src").join("lib.rs");
+            let src_new_path = self.target.contract_dir().join("src").join(&new_src_name);
+            if src_lib_path.exists() {
+                std::fs::rename(&src_lib_path, &src_new_path).expect("failed to rename src/lib.rs");
+            }
+
+            // Still need to rename other files containing the template name
+            let old_name_snake = self.metadata.name.to_case(Case::Snake);
+            let new_name_snake = new_name.clone();
+
+            // Handle both proxy file patterns: "proxy_name.rs" and "name_proxy.rs"
+            let old_proxy_file_prefix = format!("proxy_{}", old_name_snake);
+            let new_proxy_file_prefix = format!("proxy_{}", new_name_snake);
+            let old_proxy_file_suffix = format!("{}_proxy", old_name_snake);
+            let new_proxy_file_suffix = format!("{}_proxy", new_name_snake);
+
+            let pattern: &[(&str, &str)] = &[
+                (&old_proxy_file_prefix, &new_proxy_file_prefix),
+                (&old_proxy_file_suffix, &new_proxy_file_suffix),
+                (&self.metadata.name, &new_name),
+            ];
+            rename_files(&self.target.contract_dir(), pattern);
+        } else {
+            // For non-lib.rs source files, use the original logic
+            let pattern: &[(&str, &str)] = &[
+                (&self.metadata.src_file, &new_src_name),
+                (&self.metadata.name, &new_name),
+            ];
+            rename_files(&self.target.contract_dir(), pattern);
+        }
     }
 }
 

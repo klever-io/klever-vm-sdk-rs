@@ -97,11 +97,11 @@ impl ContractVariant {
     /// This is where Rust will initially compile the WASM binary.
     pub fn wasm_compilation_output_path(&self, explicit_target_dir: &Option<String>) -> String {
         let target_dir = self.resolve_wasm_target_dir(explicit_target_dir);
+        let wasm_file_name = format!("{}.wasm", &self.wasm_crate_name_snake_case());
 
         format!(
-            "{}/wasm32-unknown-unknown/release/{}.wasm",
-            &target_dir,
-            &self.wasm_crate_name_snake_case(),
+            "{}/{}/release/{}",
+            &target_dir, &self.settings.rustc_target, wasm_file_name,
         )
     }
 

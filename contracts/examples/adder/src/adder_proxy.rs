@@ -70,12 +70,12 @@ where
         Arg0: ProxyArg<BigUint<Env::Api>>,
     >(
         self,
-        initial_value: Arg0,
+        new_value: Arg0,
     ) -> TxTypedUpgrade<Env, From, To, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_upgrade()
-            .argument(&initial_value)
+            .argument(&new_value)
             .original_result()
     }
 }
@@ -108,6 +108,19 @@ where
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("add")
+            .argument(&value)
+            .original_result()
+    }
+
+    /// Add desired amount to the storage variable accepting a payment (usage example of payable). 
+    pub fn add_payable<
+        Arg0: ProxyArg<BigUint<Env::Api>>,
+    >(
+        self,
+        value: Arg0,
+    ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
+        self.wrapped_tx
+            .raw_call("add_payable")
             .argument(&value)
             .original_result()
     }
