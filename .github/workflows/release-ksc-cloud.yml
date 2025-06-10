@@ -151,7 +151,7 @@ jobs:
           ls -lh "$ARCHIVE" "$TARGET_BINARY"
 
       - name: 🔐 Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v0
         with:
           credentials_json: '${{ secrets.GCP_CLOUD_RUN_SA }}'
 
