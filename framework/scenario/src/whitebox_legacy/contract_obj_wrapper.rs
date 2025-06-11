@@ -15,7 +15,7 @@ use crate::{
 use klever_chain_scenario_format::interpret_trait::InterpretableFrom;
 use klever_chain_vm::{
     tx_mock::{TxContext, TxContextStack, TxFunctionName, TxResult},
-    types::VMAddress,
+    types::{KDALocalRole, VMAddress},
     world_mock::KdaInstanceMetadata,
 };
 use klever_sc::types::H256;
@@ -481,16 +481,16 @@ impl BlockchainStateWrapper {
             Some(acc) => {
                 let mut roles_raw = Vec::new();
                 if allow_mint {
-                    roles_raw.push(b"mint".to_vec());
+                    roles_raw.push(KDALocalRole::Mint.as_role_name().to_vec());
                 }
                 if allow_set_ito_price {
-                    roles_raw.push(b"set_ito_price".to_vec());
+                    roles_raw.push(KDALocalRole::SetITOPrices.as_role_name().to_vec());
                 }
                 if allow_deposit {
-                    roles_raw.push(b"deposit".to_vec());
+                    roles_raw.push(KDALocalRole::Deposit.as_role_name().to_vec());
                 }
                 if allow_transfer {
-                    roles_raw.push(b"transfer".to_vec());
+                    roles_raw.push(KDALocalRole::Transfer.as_role_name().to_vec());
                 }
                 acc.kda.set_roles(token_id.to_vec(), roles_raw);
 

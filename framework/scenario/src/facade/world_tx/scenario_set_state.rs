@@ -56,14 +56,15 @@ impl ScenarioWorld {
     {
         let env = self.new_env_data();
         let address_value = address_annotated(&env, &address);
-        let accounts = &mut self.get_mut_state().accounts;
-        for (vm_address, account) in accounts.iter_mut() {
-            if vm_address == &address_value.to_vm_address() {
-                account.kda.set_roles(
-                    token_id.to_vec(),
-                    roles.iter().map(|role| role.clone().into_bytes()).collect(),
-                );
-            }
+        if let Some(acc) = self
+            .get_mut_state()
+            .accounts
+            .get_mut(&address_value.to_vm_address())
+        {
+            acc.kda.set_roles(
+                token_id.to_vec(),
+                roles.into_iter().map(|r| r.into_bytes()).collect(),
+            );
         }
     }
 
@@ -79,12 +80,10 @@ impl ScenarioWorld {
         let env = self.new_env_data();
         let address_value = address_annotated(&env, &address);
         let accounts = &mut self.get_mut_state().accounts;
-        for (vm_address, account) in accounts.iter_mut() {
-            if vm_address == &address_value.to_vm_address() {
-                account
-                    .kda
-                    .set_can_burn(token_id.to_vec(), token_nonce, can_burn);
-            }
+        if let Some(account) = accounts.get_mut(&address_value.to_vm_address()) {
+            account
+                .kda
+                .set_can_burn(token_id.to_vec(), token_nonce, can_burn);
         }
     }
 }
