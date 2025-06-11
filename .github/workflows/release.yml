@@ -8,24 +8,36 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
 
 jobs:
   build-and-upload:
     name: Build and upload
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-
-          - build: macos
+          - build: darwin-arm64
             os: macos-latest
             target: aarch64-apple-darwin
+          - build: darwin
+            os: macos-latest
+            target: x86_64-apple-darwin
+          - build: win32
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
 
     steps:
       - name: Checkout
@@ -34,9 +46,23 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: Get the release version from the tag
+      - name: Validate release tag
+        id: validate
         shell: bash
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: |
+          # Extract version from tag
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Validate tag format
+          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Error: Invalid tag format '$VERSION'"
+            echo "   Expected format: vX.Y.Z (e.g., v0.45.0)"
+            exit 1
+          fi
+          
+          echo "✅ Valid release tag: $VERSION"
 
       - name: Install Rust
         run: |
@@ -44,82 +70,182 @@ jobs:
           rustup update
           rustup target add ${{ matrix.target }}
 
-      - name: Cargo Cache
+      - name: 💾 Cache Cargo registry
         uses: actions/cache@v4
         with:
-          path: ~/.cargo
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-${{ matrix.target }}-
             ${{ runner.os }}-cargo-
 
-      - name: Cargo Target Cache
+      - name: 💾 Cache Cargo target
         uses: actions/cache@v4
         with:
           path: target
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-target-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
+            ${{ runner.os }}-cargo-target-${{ matrix.target }}-
             ${{ runner.os }}-cargo-target-
 
-      - name: Install dependencies
+      
+      - name: 📦 Install system dependencies
+        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            sudo apt update && sudo apt install -y --no-install-recommends \
-              clang clang-tools llvm build-essential || exit 1
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            brew install scdoc
-            rustup update && rustup target add aarch64-apple-darwin
-          fi
+          # Ubuntu needs C/C++ toolchain for building some dependencies
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang clang-tools llvm build-essential
 
-      - name: Build
+      
+      - name: 🔨 Build KSC binary
         shell: bash
         run: |
-          RUST_BACKTRACE=full \
+          echo "🚀 Building klever-sc-meta for ${{ matrix.target }}..."
           RUSTFLAGS='-C target-feature=+crt-static' \
-          cargo build -p klever-sc-meta --target ${{ matrix.target }} --release
+          cargo build -p klever-sc-meta \
+            --target ${{ matrix.target }} \
+            --release \
+            --locked
 
-      - name: Build archive
+      - name: 📦 Package release artifacts
+        id: package
         shell: bash
         run: |
-          # Replace with the name of your binary
-          binary_name="sc-meta"
-
-          dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
-          mkdir "$dirname"
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+          # Configuration
+          SOURCE_NAME="sc-meta"
+          TARGET_NAME="ksc"
+          VERSION="${{ steps.validate.outputs.version }}"
+          
+          # Create release directory
+          RELEASE_DIR="${TARGET_NAME}-${VERSION}-${{ matrix.target }}"
+          mkdir -p "$RELEASE_DIR"
+          
+          # Copy and rename binary
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            BINARY_EXT=".exe"
           else
-            mv "target/${{ matrix.target }}/release/$binary_name" "$dirname"
+            BINARY_EXT=""
           fi
-
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            7z a "$dirname.zip" "$dirname"
-            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
+          
+          SOURCE_BINARY="target/${{ matrix.target }}/release/${SOURCE_NAME}${BINARY_EXT}"
+          TARGET_BINARY="${RELEASE_DIR}/${TARGET_NAME}${BINARY_EXT}"
+          
+          echo "📋 Copying binary from $SOURCE_BINARY to $TARGET_BINARY"
+          cp "$SOURCE_BINARY" "$TARGET_BINARY"
+          
+          # Create archive
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            ARCHIVE="${RELEASE_DIR}.zip"
+            7z a "$ARCHIVE" "$RELEASE_DIR"
           else
-            tar -czf "$dirname.tar.gz" "$dirname"
-            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+            ARCHIVE="${RELEASE_DIR}.tar.gz"
+            tar -czf "$ARCHIVE" "$RELEASE_DIR"
           fi
+          
+          # Output paths
+          echo "archive=$ARCHIVE" >> $GITHUB_OUTPUT
+          echo "binary=$TARGET_BINARY" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Display package info
+          echo "✅ Package created successfully:"
+          echo "   Archive: $ARCHIVE"
+          echo "   Binary: $TARGET_BINARY"
+          ls -lh "$ARCHIVE" "$TARGET_BINARY"
+
+      - name: Generate checksums
+        shell: bash
+        run: |
+          # Generate SHA256 checksums
+          echo "📝 Generating checksums..."
+          
+          # For the archive
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            # Windows: Use certUtil and extract just the hash
+            certUtil -hashfile "${{ steps.package.outputs.archive }}" SHA256 > temp_hash.txt
+            # Extract the second line which contains the hash
+            hash=$(sed -n '2p' temp_hash.txt | tr -d ' ')
+            echo "$hash  ${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+            rm temp_hash.txt
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            # macOS: Use shasum
+            shasum -a 256 "${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+          else
+            # Linux: Use sha256sum
+            sha256sum "${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+          fi
+          
+          # Display checksum
+          echo "✅ Checksum generated:"
+          cat "${{ steps.package.outputs.archive }}.sha256"
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ env.ASSET }}
-
-      - name: Publish to crates.io
-        run: ./scripts/publish.sh
-        env:
-          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
 
       - name: Configure GCP service account
         uses: google-github-actions/auth@v0
         with:
           credentials_json: '${{ secrets.GCP_CLOUD_RUN_SA }}'
 
-      - name: Upload files to bucket
+      - name: Upload archive to Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: ${{ env.ASSET }}
-          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ env.VERSION }}'
+          path: ${{ steps.package.outputs.archive }}
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false
+
+      - name: Upload binary to Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ${{ steps.package.outputs.binary }}
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false
+
+      - name: Upload checksum to Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ${{ steps.package.outputs.archive }}.sha256
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false
+
+  publish-crates:
+    name: Publish to crates.io
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: success()
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      
+      - name: Install Rust
+        run: |
+          rustup default stable
+          rustup update
+      
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      
+      - name: Publish to crates.io
+        run: ./scripts/publish.sh
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}

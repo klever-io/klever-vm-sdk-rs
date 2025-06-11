@@ -73,17 +73,25 @@ jobs:
             rustup target add aarch64-apple-darwin x86_64-apple-darwin
           fi
 
-      - name: 💾 Cache Cargo registry & build
+      - name: 💾 Cache Cargo registry
         uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-${{ matrix.target }}-
             ${{ runner.os }}-cargo-
+
+      - name: 💾 Cache Cargo target
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ matrix.target }}-
+            ${{ runner.os }}-cargo-target-
 
       - name: 📦 Install system dependencies
         if: matrix.os == 'ubuntu-latest'
@@ -150,6 +158,32 @@ jobs:
           echo "   Binary: $TARGET_BINARY"
           ls -lh "$ARCHIVE" "$TARGET_BINARY"
 
+      - name: 🔒 Generate checksums
+        shell: bash
+        run: |
+          # Generate SHA256 checksums
+          echo "📝 Generating checksums..."
+          
+          # For the archive
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            # Windows: Use certUtil and extract just the hash
+            certUtil -hashfile "${{ steps.package.outputs.archive }}" SHA256 > temp_hash.txt
+            # Extract the second line which contains the hash
+            hash=$(sed -n '2p' temp_hash.txt | tr -d ' ')
+            echo "$hash  ${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+            rm temp_hash.txt
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            # macOS: Use shasum
+            shasum -a 256 "${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+          else
+            # Linux: Use sha256sum
+            sha256sum "${{ steps.package.outputs.archive }}" > "${{ steps.package.outputs.archive }}.sha256"
+          fi
+          
+          # Display checksum
+          echo "✅ Checksum generated:"
+          cat "${{ steps.package.outputs.archive }}.sha256"
+
       - name: 🔐 Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
         with:
@@ -166,5 +200,12 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: ${{ steps.package.outputs.binary }}
+          destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
+          parent: false
+
+      - name: ☁️ Upload checksum to Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ${{ steps.package.outputs.archive }}.sha256
           destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
           parent: false

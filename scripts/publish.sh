@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ### How to publish the framework
 #
@@ -59,46 +59,206 @@
 # 15. Write a release announcement in Confluence.
 #
 
-cd vm
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ..
+set -e
 
-cd sdk/core
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-cd sdk/scenario-format/
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Function to print colored output
+print_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
 
-cd data/codec-derive
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
 
-cd data/codec
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
 
-cd framework/derive
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
 
-cd framework/base
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            echo "Usage: $0"
+            echo ""
+            echo "Publishes all packages to crates.io in dependency order."
+            echo ""
+            echo "Environment variables:"
+            echo "  CRATES_TOKEN     The crates.io API token (required)"
+            echo ""
+            echo "Before running this script:"
+            echo "  1. Ensure all version numbers are updated"
+            echo "  2. Update CHANGELOG.md"
+            echo "  3. Commit all changes"
+            echo "  4. Run tests with 'cargo test'"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use -h or --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
-cd framework/meta
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Check for CRATES_TOKEN
+if [[ -z "$CRATES_TOKEN" ]]; then
+    print_error "CRATES_TOKEN environment variable is not set!"
+    print_info "You need to set CRATES_TOKEN to publish to crates.io"
+    print_info "Get your token from https://crates.io/me"
+    exit 1
+fi
 
-cd framework/scenario
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Define packages in dependency order (important!)
+# The order matters because some packages depend on others
+PACKAGES=(
+    # Codec (codec-derive must be published before codec)
+    "data/codec-derive"
+    "data/codec"
 
-cd framework/wasm-adapter
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+    # Core dependencies (no internal dependencies)
+    "vm"
+    "sdk/core"
+    "sdk/scenario-format"
+    
+    # Framework (in dependency order)
+    "framework/derive"
+    "framework/base"
+    "framework/meta"
+    "framework/scenario"
+    "framework/wasm-adapter"
+    
+    # Modules (depends on framework)
+    "contracts/modules"
+)
 
-cd contracts/modules
-cargo publish --token ${CRATES_TOKEN} || return 1
-cd ../..
+# Function to get package name from Cargo.toml
+get_package_name() {
+    local cargo_path="$1/Cargo.toml"
+    if [[ -f "$cargo_path" ]]; then
+        grep "^name" "$cargo_path" | sed -n 's/.*"\([^"]*\)".*/\1/p' | head -1
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to get package version from Cargo.toml
+get_package_version() {
+    local cargo_path="$1/Cargo.toml"
+    if [[ -f "$cargo_path" ]]; then
+        grep "^version" "$cargo_path" | sed -n 's/.*"\([^"]*\)".*/\1/p' | head -1
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to publish a single package
+publish_package() {
+    local package_path=$1
+    local package_name=$(get_package_name "$package_path")
+    local package_version=$(get_package_version "$package_path")
+    
+    if [[ "$package_name" == "unknown" ]]; then
+        print_error "Could not find package at $package_path"
+        return 1
+    fi
+    
+    print_info "Publishing $package_name v$package_version..."
+    
+    cargo publish -p "$package_name" --token "${CRATES_TOKEN}"
+    
+    local result=$?
+    
+    if [[ $result -eq 0 ]]; then
+        print_success "$package_name v$package_version published successfully!"
+    else
+        print_error "Failed to publish $package_name v$package_version"
+        return 1
+    fi
+    
+    # Small delay between publishes to ensure crates.io indexes are updated
+    print_info "Waiting 10 seconds for crates.io to update..."
+    sleep 10
+}
+
+# Main execution
+print_info "Starting publish process..."
+echo ""
+
+# Check git status
+if ! git diff-index --quiet HEAD --; then
+    print_error "There are uncommitted changes in your repository!"
+    print_info "Please commit all changes before publishing"
+    exit 1
+fi
+
+print_info "Publishing packages to crates.io..."
+echo ""
+
+# Track success/failure
+failed_packages=()
+succeeded_packages=()
+
+for package in "${PACKAGES[@]}"; do
+    if [[ -d "$package" ]]; then
+        if publish_package "$package"; then
+            succeeded_packages+=("$package")
+        else
+            failed_packages+=("$package")
+            print_error "Stopping due to failure. Packages not yet published:"
+            for remaining in "${PACKAGES[@]}"; do
+                if [[ ! " ${succeeded_packages[@]} " =~ " ${remaining} " ]] && [[ ! " ${failed_packages[@]} " =~ " ${remaining} " ]]; then
+                    echo "  - $remaining"
+                fi
+            done
+            exit 1
+        fi
+    else
+        print_warning "Skipping non-existent package: $package"
+    fi
+    echo ""
+done
+
+# Summary
+echo ""
+print_info "============================================"
+print_info "Publishing Summary:"
+print_info "============================================"
+
+if [[ ${#succeeded_packages[@]} -gt 0 ]]; then
+    print_success "Successfully published ${#succeeded_packages[@]} packages:"
+    for package in "${succeeded_packages[@]}"; do
+        package_name=$(get_package_name "$package")
+        package_version=$(get_package_version "$package")
+        echo "  ✓ $package_name v$package_version"
+    done
+fi
+
+if [[ ${#failed_packages[@]} -gt 0 ]]; then
+    echo ""
+    print_error "Failed to publish ${#failed_packages[@]} packages:"
+    for package in "${failed_packages[@]}"; do
+        package_name=$(get_package_name "$package")
+        echo "  ✗ $package_name"
+    done
+    exit 1
+fi
+
+echo ""
+print_success "All packages published successfully! 🎉"
+echo ""
+print_info "Next steps:"
+print_info "1. Create and push git tag: git tag -s -a vX.X.X -m 'Release description'"
+print_info "2. Create GitHub release from the tag"
+print_info "3. Run 'sc-meta all update' to update Cargo.lock files"
+print_info "4. Create PR to merge changes"
