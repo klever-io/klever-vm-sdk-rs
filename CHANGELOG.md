@@ -25,12 +25,6 @@ They are:
 - `klever-vm-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
 
-## [sc 0.43.3, vm 0.5.2] - 2024-04-01 FIRST KLEVER RELEASE
-- Initial release of the framework
-- Rename crates to klever
-- Refactor blockchain calls and builtin functions
-- Main features at this time:
-
 ## [sc 0.44.0, vm 0.5.3, codec 0.18.2] - 2025-04-07
 
 - Support contract deletion (`delete_contract`) and new deploy-delete example
@@ -42,3 +36,9 @@ They are:
 - Cleanup: remove outdated wasm comments, unused macros, and internal features
 - Upgrade dependencies: `syn`, `proc-macro2`, `sha2`, `base64`, and others
 - MultiversX SDK sync upgrades: from `0.43.4` to `0.50.4`
+
+## [sc 0.43.3, vm 0.5.2] - 2024-04-01 FIRST KLEVER RELEASE
+- Initial release of the framework
+- Rename crates to klever
+- Refactor blockchain calls and builtin functions
+- Main features at this time:
