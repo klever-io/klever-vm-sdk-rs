@@ -1,6 +1,6 @@
 [package]
 name = "klever-sc-codec"
-version = "0.18.2"
+version = "0.19.0"
 edition = "2021"
 
 authors = ["Klever <contact@klever.io>"]
@@ -19,7 +19,7 @@ alloc = []
 
 [dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
-version = "=0.18.2"
+version = "=0.19.0"
 optional = true
 
 [dependencies]
@@ -29,4 +29,4 @@ unwrap-infallible = "0.1.5"
 
 [dev-dependencies.klever-sc-codec-derive]
 path = "../codec-derive"
-version = "=0.18.2"
+version = "=0.19.0"

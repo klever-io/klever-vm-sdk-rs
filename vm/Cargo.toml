@@ -1,6 +1,6 @@
 [package]
 name = "klever-chain-vm"
-version = "0.5.3"
+version = "0.6.0"
 edition = "2021"
 
 authors = [
@@ -35,6 +35,6 @@ version = "0.2.2"
 rev = "b0395cd"
 
 [dependencies.klever-sc-codec]
-version = "0.18.2"
+version = "0.19.0"
 path = "../data/codec"
 features = ["derive"]
