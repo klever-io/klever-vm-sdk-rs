@@ -25,8 +25,8 @@ impl ContractMap {
     }
 
     pub fn get_contract(&self, contract_identifier: &[u8]) -> ContractContainerRef {
-        if let Some(contract_contatiner) = self.contract_objs.get(contract_identifier) {
-            contract_contatiner.clone()
+        if let Some(contract_container) = self.contract_objs.get(contract_identifier) {
+            contract_container.clone()
         } else {
             unknown_contract_panic(contract_identifier)
         }

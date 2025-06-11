@@ -90,7 +90,7 @@ pub(super) fn attr_one_string_arg(attr: &syn::Attribute) -> String {
         syn::Meta::List(list) => {
             assert!(
                 list.delimiter == syn::MacroDelimiter::Paren(syn::token::Paren::default()),
-                "attribute paranthesis expected"
+                "attribute parenthesis expected"
             );
 
             assert!(
@@ -152,7 +152,7 @@ fn attr_one_opt_token_tree_arg(attr: &syn::Attribute) -> Option<proc_macro2::Tok
         syn::Meta::List(val) => {
             assert!(
                 val.delimiter == syn::MacroDelimiter::Paren(syn::token::Paren::default()),
-                "attribute paranthesis expected"
+                "attribute parenthesis expected"
             );
             assert!(
                 !val.tokens.is_empty(),

@@ -60,7 +60,7 @@ pub trait EchoAllocTypes {
     }
 
     #[endpoint]
-    fn echo_boxed_ser_example_1(&self, se: Box<StructExampleAlloc>) -> Box<StructExampleAlloc> {
+    fn echo_boxed_se_example_1(&self, se: Box<StructExampleAlloc>) -> Box<StructExampleAlloc> {
         se
     }
 
@@ -77,7 +77,7 @@ pub trait EchoAllocTypes {
     }
 
     #[endpoint]
-    fn echo_ser_example_1(&self, se: StructExampleAlloc) -> StructExampleAlloc {
+    fn echo_se_example_1(&self, se: StructExampleAlloc) -> StructExampleAlloc {
         se
     }
 }

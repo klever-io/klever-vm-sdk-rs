@@ -187,7 +187,7 @@ impl<M: ManagedTypeApi> ManagedVecItem for KdaTokenPayment<M> {
     }
 }
 
-/// The version of `KdaTokenPayment` that contains referrences instead of owned fields.
+/// The version of `KdaTokenPayment` that contains references instead of owned fields.
 pub struct KdaTokenPaymentRefs<'a, M: ManagedTypeApi> {
     pub token_identifier: &'a TokenIdentifier<M>,
     pub token_nonce: u64,

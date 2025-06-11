@@ -1,0 +1,9 @@
+[default]
+extend-ignore-re = [
+    # Match the specific context around "abd" that's unique to your file
+    "(?Rm)^.*assert!\\(!cb_eq\\.check\\(&b\"abd\".*$"
+]
+
+[default.extend-words]
+# FPR internal staking type
+FPR = "FPR"

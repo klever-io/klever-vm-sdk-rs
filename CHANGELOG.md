@@ -25,11 +25,33 @@ They are:
 - `klever-vm-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
 
-## [sc 0.43.3, vm 0.5.2] - 2024-04-01 FIRST KLEVER RELEASE
-- Initial release of the framework
-- Rename crates to klever
-- Refactor blockchain calls and builtin functions
-- Main features at this time:
+
+## [sc 0.45.0,codec 0.19.0,vm 0.6.0] - 2025-06-11
+
+### Features
+- Add KSC cloud release workflow and dependency updates (#8)
+- Add manual workflow dispatch to release action with tag validation
+- Add managed_get_kda_roles hook implementation
+- Implement base structure for sft
+- Add additional checks for check nft balance
+- Add pause-admin-module
+
+### Fixes
+- fix: typos && typos checker workflow
+- fix: CHANGELOG order
+
+### Other Changes
+- tools: Check dependencies script
+- Add version bump helper script for automating version management
+- Add scripts for building and updating wasm targets with sc-meta
+- chore: KDA Roles improvements (#9)
+- apply linting fixes
+- Change implementation to be SFTMeta instead of SFTMetadata
+- chore: add return to bet endpoint in dice sc
+- Change ManagedOption type name on proxy generation
+- chore: improved code formatting
+- add kda roles helpers
+- add scenario helpers to set kda burn and roles
 
 ## [sc 0.44.0, vm 0.5.3, codec 0.18.2] - 2025-04-07
 
@@ -42,3 +64,9 @@ They are:
 - Cleanup: remove outdated wasm comments, unused macros, and internal features
 - Upgrade dependencies: `syn`, `proc-macro2`, `sha2`, `base64`, and others
 - MultiversX SDK sync upgrades: from `0.43.4` to `0.50.4`
+
+## [sc 0.43.3, vm 0.5.2] - 2024-04-01 FIRST KLEVER RELEASE
+- Initial release of the framework
+- Rename crates to klever
+- Refactor blockchain calls and builtin functions
+- Main features at this time:

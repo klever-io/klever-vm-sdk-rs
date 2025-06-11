@@ -27,7 +27,7 @@ path = ".."
 features = ["example_feature"]
 
 [dependencies.klever-sc-wasm-adapter]
-version = "0.44.0"
+version = "0.45.0"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]

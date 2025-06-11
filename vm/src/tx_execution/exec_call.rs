@@ -16,7 +16,7 @@ use super::BlockchainVMRef;
 ///
 /// Works directly with the top of the execution stack, that is why it takes no arguments.
 ///
-/// It expectes that the stack is properly set up.
+/// It expects that the stack is properly set up.
 pub fn execute_current_tx_context_input() {
     let tx_context_arc = TxContextStack::static_peek();
     let func_name = tx_context_arc.input_ref().func_name.clone();
@@ -83,7 +83,7 @@ impl BlockchainVMRef {
     where
         F: FnOnce(),
     {
-        // TODO: adjust the gas limit/price to bandwith consumption
+        // TODO: adjust the gas limit/price to bandwidth consumption
         state.subtract_tx_gas(&tx_input.from, tx_input.gas_limit, tx_input.gas_price);
 
         let (tx_result, blockchain_updates) = state.with_shared(|state_arc| {
