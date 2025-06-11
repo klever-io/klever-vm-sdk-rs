@@ -259,7 +259,7 @@ where
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
         allow_mint: bool,
-        alow_set_ito_price: bool,
+        allow_set_ito_price: bool,
         allow_deposit: bool,
         allow_transfer: bool,
     ) {
@@ -268,7 +268,7 @@ where
             token_identifier,
             address,
             allow_mint,
-            alow_set_ito_price,
+            allow_set_ito_price,
             allow_deposit,
             allow_transfer,
         )

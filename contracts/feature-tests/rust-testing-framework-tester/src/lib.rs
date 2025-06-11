@@ -59,7 +59,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[payable("KLV")]
     #[endpoint]
-    fn recieve_klv_half(&self) {
+    fn receive_klv_half(&self) {
         let caller = self.blockchain().get_caller();
         let payment_amount = &*self.call_value().klv_value() / 2u32;
         self.send()

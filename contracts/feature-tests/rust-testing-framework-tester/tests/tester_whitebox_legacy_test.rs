@@ -213,7 +213,7 @@ fn test_sc_half_payment() {
 
     wrapper
         .execute_tx(&caller_addr, &sc_wrapper, &rust_biguint!(1_000), |sc| {
-            sc.recieve_klv_half();
+            sc.receive_klv_half();
         })
         .assert_ok();
 

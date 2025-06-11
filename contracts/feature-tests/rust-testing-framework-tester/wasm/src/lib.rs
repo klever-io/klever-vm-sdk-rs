@@ -22,7 +22,7 @@ klever_sc_wasm_adapter::endpoints! {
         get_klv_balance => get_klv_balance
         get_kda_balance => get_kda_balance
         receive_klv => receive_klv
-        recieve_klv_half => recieve_klv_half
+        receive_klv_half => receive_klv_half
         receive_kda => receive_kda
         reject_payment => reject_payment
         receive_kda_half => receive_kda_half

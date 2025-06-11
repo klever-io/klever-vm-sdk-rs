@@ -102,7 +102,7 @@ fn convert_kda(
 ) -> BTreeMap<String, KdaRaw> {
     let mut result = BTreeMap::new();
     for (key, value) in sdk_kda.into_iter() {
-        let (token_identifier, nonce) = split_token_identifer_nonce(key);
+        let (token_identifier, nonce) = split_token_identifier_nonce(key);
         let kda_raw = result
             .entry(format!("str:{}", token_identifier.clone()))
             .or_insert(KdaRaw::Full(KdaFullRaw::default()));
@@ -117,7 +117,7 @@ fn convert_kda(
     }
 
     for (key, roles) in sdk_kda_roles.into_iter() {
-        let (token_identifier, _) = split_token_identifer_nonce(key);
+        let (token_identifier, _) = split_token_identifier_nonce(key);
         let kda_raw = result
             .entry(format!("str:{}", token_identifier.clone()))
             .or_insert(KdaRaw::Full(KdaFullRaw::default()));
@@ -129,7 +129,7 @@ fn convert_kda(
     result
 }
 
-fn split_token_identifer_nonce(full_identifier: String) -> (String, u64) {
+fn split_token_identifier_nonce(full_identifier: String) -> (String, u64) {
     let tokens = full_identifier.split('-').collect::<Vec<_>>();
     match tokens.len() {
         2 => (full_identifier, 0),

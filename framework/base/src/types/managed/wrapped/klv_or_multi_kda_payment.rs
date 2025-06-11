@@ -31,7 +31,7 @@ impl<M: ManagedTypeApi> KlvOrMultiKdaPayment<M> {
     }
 }
 
-/// The version of `KlvOrMultiKdaPayment` that contains referrences instead of owned fields.
+/// The version of `KlvOrMultiKdaPayment` that contains references instead of owned fields.
 pub enum KlvOrMultiKdaPaymentRefs<'a, M: ManagedTypeApi> {
     Klv(&'a BigUint<M>),
     MultiKda(&'a ManagedVec<M, KdaTokenPayment<M>>),

@@ -25,9 +25,9 @@ klever_sc_wasm_adapter::endpoints! {
         echo_str => echo_str
         echo_str_box => echo_str_box
         echo_large_boxed_byte_array => echo_large_boxed_byte_array
-        echo_boxed_ser_example_1 => echo_boxed_ser_example_1
+        echo_boxed_se_example_1 => echo_boxed_se_example_1
         echo_multi_value_tuples => echo_multi_value_tuples
-        echo_ser_example_1 => echo_ser_example_1
+        echo_se_example_1 => echo_se_example_1
         echo_vec_of_managed_buffer => echo_vec_of_managed_buffer
         echo_big_int_vec => echo_big_int_vec
         echo_varags_u32 => echo_varags_u32

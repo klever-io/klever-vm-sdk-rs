@@ -159,7 +159,7 @@ where
     /// Backwards compatibility, immitates the old API.
     ///
     /// Note that the data type (the `DeployCall`) doesn't have the code set.
-    /// This is because the old API was passing it as paramter, so we use it from the `code` argument.
+    /// This is because the old API was passing it as parameter, so we use it from the `code` argument.
     ///
     /// Also note that the code metadata is taken from the `code_metadata` argument.
     /// If another one was previously set in the `Tx` object, that one will be ignored.
@@ -182,7 +182,7 @@ where
     /// Backwards compatibility, immitates the old API.
     ///
     /// Note that the data type (the `DeployCall`) doesn't have the code set.
-    /// This is because the old API was passing it as paramter, so we use it from the `code` argument.
+    /// This is because the old API was passing it as parameter, so we use it from the `code` argument.
     ///
     /// Also note that the code metadata is taken from the `code_metadata` argument.
     /// If another one was previously set in the `Tx` object, that one will be ignored.
@@ -226,7 +226,7 @@ where
     /// Uses a `DeployCall` instead of the correct `UpgradeCall`, because the old syntax did not know about upgrades.
     ///
     /// Note that the data type (the `DeployCall`) doesn't have the code set.
-    /// This is because the old API was passing it as paramter, so we use it from the `code` argument.
+    /// This is because the old API was passing it as parameter, so we use it from the `code` argument.
     ///
     /// Also note that the code metadata is taken from the `code_metadata` argument.
     /// If another one was previously set in the `Tx` object, that one will be ignored.
@@ -255,7 +255,7 @@ where
     /// Uses a `DeployCall` instead of the correct `UpgradeCall`, because the old syntax did not know about upgrades.
     ///
     /// Note that the data type (the `DeployCall`) doesn't have the code set.
-    /// This is because the old API was passing it as paramter, so we use it from the `code` argument.
+    /// This is because the old API was passing it as parameter, so we use it from the `code` argument.
     ///
     /// Also note that the code metadata is taken from the `code_metadata` argument.
     /// If another one was previously set in the `Tx` object, that one will be ignored.

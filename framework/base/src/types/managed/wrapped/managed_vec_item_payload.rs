@@ -1,4 +1,4 @@
-/// Describes the binary represetnation of a ManagedVecItem.
+/// Describes the binary representations of a ManagedVecItem.
 ///
 /// It is always an array that can be allocated directly on stack.
 pub trait ManagedVecItemPayload {

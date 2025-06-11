@@ -212,7 +212,7 @@ where
 
     /// Sets a single token payment, with the token identifier and amount kept as references.
     ///
-    /// This is handy whem we only want one KDA transfer and we want to avoid unnecessary object clones.
+    /// This is handy when we only want one KDA transfer and we want to avoid unnecessary object clones.
     pub fn single_kda<'a>(
         self,
         token_identifier: &'a TokenIdentifier<Env::Api>,

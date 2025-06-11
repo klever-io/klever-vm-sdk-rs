@@ -25,8 +25,8 @@ fn echo_multi_value_tuples_alloc_go() {
 }
 
 #[test]
-fn echo_ser_ex_1_go() {
-    world().run("scenarios/echo_ser_ex_1.scen.json");
+fn echo_se_ex_1_go() {
+    world().run("scenarios/echo_se_ex_1.scen.json");
 }
 
 #[test]
