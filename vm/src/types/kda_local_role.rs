@@ -55,8 +55,6 @@ impl KDALocalRole {
     }
 }
 
-// TODO: can be done with macros, but I didn't find a public library that does it and is no_std
-// we can implement it, it's easy
 const ALL_ROLES: [KDALocalRole; 4] = [
     KDALocalRole::Mint,
     KDALocalRole::SetITOPrices,
