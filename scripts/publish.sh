@@ -59,7 +59,8 @@
 # 15. Write a release announcement in Confluence.
 #
 
-set -e
+# Don't use set -e because we use non-zero returns for flow control
+set +e
 
 # Color codes for output
 RED='\033[0;31m'
@@ -86,15 +87,21 @@ print_warning() {
 }
 
 # Parse command line arguments
+DEBUG=""
 while [[ $# -gt 0 ]]; do
     case $1 in
         -h|--help)
-            echo "Usage: $0"
+            echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Publishes all packages to crates.io in dependency order."
             echo ""
+            echo "Options:"
+            echo "  -d, --debug      Enable debug output"
+            echo "  -h, --help       Show this help message"
+            echo ""
             echo "Environment variables:"
             echo "  CRATES_TOKEN     The crates.io API token (required)"
+            echo "  DEBUG            Set to enable debug output"
             echo ""
             echo "Before running this script:"
             echo "  1. Ensure all version numbers are updated"
@@ -102,6 +109,10 @@ while [[ $# -gt 0 ]]; do
             echo "  3. Commit all changes"
             echo "  4. Run tests with 'cargo test'"
             exit 0
+            ;;
+        -d|--debug)
+            DEBUG=1
+            shift
             ;;
         *)
             echo "Unknown option: $1"
@@ -162,15 +173,66 @@ get_package_version() {
     fi
 }
 
+# Function to check if a crate version exists on crates.io
+check_crate_exists() {
+    local package_name=$1
+    local package_version=$2
+    
+    print_info "Checking if $package_name v$package_version exists on crates.io..."
+    
+    # Query crates.io API with timeout and connection timeout
+    local response
+    local curl_exit_code
+    
+    response=$(curl -s --max-time 10 --connect-timeout 5 \
+        -H "User-Agent: klever-publish-script" \
+        "https://crates.io/api/v1/crates/$package_name/$package_version" 2>&1)
+    curl_exit_code=$?
+    
+    # Debug output if DEBUG is set
+    if [[ -n "$DEBUG" ]]; then
+        echo "[DEBUG] curl exit code: $curl_exit_code"
+        echo "[DEBUG] Response length: ${#response}"
+        echo "[DEBUG] Response (first 200 chars): ${response:0:200}"
+    fi
+    
+    # Check if curl failed
+    if [[ $curl_exit_code -ne 0 ]]; then
+        print_warning "Failed to check crates.io (curl error $curl_exit_code), assuming package doesn't exist"
+        return 1
+    fi
+    
+    # Check if version exists (API returns 404 for non-existent versions)
+    if echo "$response" | grep -q '"version"'; then
+        return 0  # Version exists
+    else
+        return 1  # Version doesn't exist
+    fi
+}
+
 # Function to publish a single package
 publish_package() {
     local package_path=$1
     local package_name=$(get_package_name "$package_path")
     local package_version=$(get_package_version "$package_path")
     
-    if [[ "$package_name" == "unknown" ]]; then
-        print_error "Could not find package at $package_path"
+    if [[ "$package_name" == "unknown" || -z "$package_name" ]]; then
+        print_error "Could not find package name at $package_path"
         return 1
+    fi
+    
+    if [[ "$package_version" == "unknown" || -z "$package_version" ]]; then
+        print_error "Could not find package version for $package_name at $package_path"
+        return 1
+    fi
+    
+    # Check if this version already exists on crates.io
+    if check_crate_exists "$package_name" "$package_version"; then
+        print_warning "$package_name v$package_version already exists on crates.io, skipping..."
+        if [[ -n "$DEBUG" ]]; then
+            echo "[DEBUG] About to return 2 from publish_package"
+        fi
+        return 2  # Return special code for "already exists"
     fi
     
     print_info "Publishing $package_name v$package_version..."
@@ -181,14 +243,15 @@ publish_package() {
     
     if [[ $result -eq 0 ]]; then
         print_success "$package_name v$package_version published successfully!"
+        # Small delay between publishes to ensure crates.io indexes are updated
+        print_info "Waiting 10 seconds for crates.io to update..."
+        sleep 10
     else
         print_error "Failed to publish $package_name v$package_version"
         return 1
     fi
     
-    # Small delay between publishes to ensure crates.io indexes are updated
-    print_info "Waiting 10 seconds for crates.io to update..."
-    sleep 10
+    return 0
 }
 
 # Main execution
@@ -208,26 +271,68 @@ echo ""
 # Track success/failure
 failed_packages=()
 succeeded_packages=()
+skipped_packages=()
 
-for package in "${PACKAGES[@]}"; do
+# Debug: show total packages
+if [[ -n "$DEBUG" ]]; then
+    echo "[DEBUG] Total packages to process: ${#PACKAGES[@]}"
+    echo "[DEBUG] Packages: ${PACKAGES[@]}"
+fi
+
+for i in "${!PACKAGES[@]}"; do
+    package="${PACKAGES[$i]}"
+    
+    if [[ -n "$DEBUG" ]]; then
+        echo "[DEBUG] Processing package $((i+1))/${#PACKAGES[@]}: $package"
+    fi
+    
+    print_info "Processing package: $package"
+    
     if [[ -d "$package" ]]; then
-        if publish_package "$package"; then
-            succeeded_packages+=("$package")
-        else
-            failed_packages+=("$package")
-            print_error "Stopping due to failure. Packages not yet published:"
-            for remaining in "${PACKAGES[@]}"; do
-                if [[ ! " ${succeeded_packages[@]} " =~ " ${remaining} " ]] && [[ ! " ${failed_packages[@]} " =~ " ${remaining} " ]]; then
-                    echo "  - $remaining"
+        publish_package "$package"
+        status=$?
+        
+        if [[ -n "$DEBUG" ]]; then
+            echo "[DEBUG] publish_package returned status: $status"
+        fi
+        
+        case $status in
+            0)  # Successfully published
+                succeeded_packages+=("$package")
+                if [[ -n "$DEBUG" ]]; then
+                    echo "[DEBUG] Added $package to succeeded list"
                 fi
-            done
-            exit 1
+                ;;
+            2)  # Already exists
+                skipped_packages+=("$package")
+                if [[ -n "$DEBUG" ]]; then
+                    echo "[DEBUG] Added $package to skipped list"
+                fi
+                ;;
+            *)  # Failed
+                failed_packages+=("$package")
+                print_error "Stopping due to failure. Packages not yet processed:"
+                for remaining in "${PACKAGES[@]}"; do
+                    if [[ ! " ${succeeded_packages[@]} " =~ " ${remaining} " ]] && 
+                       [[ ! " ${failed_packages[@]} " =~ " ${remaining} " ]] && 
+                       [[ ! " ${skipped_packages[@]} " =~ " ${remaining} " ]]; then
+                        echo "  - $remaining"
+                    fi
+                done
+                exit 1
+                ;;
+        esac
+        
+        if [[ -n "$DEBUG" ]]; then
+            echo "[DEBUG] Continuing to next package..."
         fi
     else
         print_warning "Skipping non-existent package: $package"
     fi
     echo ""
 done
+
+print_info "Main loop completed. Succeeded: ${#succeeded_packages[@]}, Skipped: ${#skipped_packages[@]}, Failed: ${#failed_packages[@]}"
 
 # Summary
 echo ""
@@ -244,6 +349,16 @@ if [[ ${#succeeded_packages[@]} -gt 0 ]]; then
     done
 fi
 
+if [[ ${#skipped_packages[@]} -gt 0 ]]; then
+    echo ""
+    print_info "Skipped ${#skipped_packages[@]} packages (already published):"
+    for package in "${skipped_packages[@]}"; do
+        package_name=$(get_package_name "$package")
+        package_version=$(get_package_version "$package")
+        echo "  ⏭️  $package_name v$package_version"
+    done
+fi
+
 if [[ ${#failed_packages[@]} -gt 0 ]]; then
     echo ""
     print_error "Failed to publish ${#failed_packages[@]} packages:"
@@ -255,10 +370,17 @@ if [[ ${#failed_packages[@]} -gt 0 ]]; then
 fi
 
 echo ""
-print_success "All packages published successfully! 🎉"
-echo ""
-print_info "Next steps:"
-print_info "1. Create and push git tag: git tag -s -a vX.X.X -m 'Release description'"
-print_info "2. Create GitHub release from the tag"
-print_info "3. Run 'sc-meta all update' to update Cargo.lock files"
-print_info "4. Create PR to merge changes"
+
+if [[ ${#succeeded_packages[@]} -gt 0 ]]; then
+    print_success "Publishing completed successfully! 🎉"
+    echo ""
+    print_info "Next steps:"
+    print_info "1. Create and push git tag: git tag -s -a vX.X.X -m 'Release description'"
+    print_info "2. Create GitHub release from the tag"
+    print_info "3. Run 'sc-meta all update' to update Cargo.lock files"
+    print_info "4. Create PR to merge changes"
+elif [[ ${#skipped_packages[@]} -gt 0 && ${#failed_packages[@]} -eq 0 ]]; then
+    print_info "All packages were already published to crates.io."
+else
+    print_error "No packages were published."
+fi
