@@ -89,9 +89,6 @@ fn upgrade_post_processing(dir: &RelevantDirectory, settings: &UpgradeSettings) 
         if CHECK_AFTER_UPGRADE_TO.contains(to_version) {
             print_post_processing(dir);
             cargo_check(dir, settings);
-        } else {
-            // panic not supported
-            panic!("Unsupported version for post processing: {}", to_version);
         }
     }
 }
