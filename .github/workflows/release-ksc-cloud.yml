@@ -195,6 +195,7 @@ jobs:
           path: ${{ steps.package.outputs.archive }}
           destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
           parent: false
+          predefinedAcl: 'publicRead'
 
       - name: ☁️ Upload binary to Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v2
@@ -202,6 +203,7 @@ jobs:
           path: ${{ steps.package.outputs.binary }}
           destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
           parent: false
+          predefinedAcl: 'publicRead'
 
       - name: ☁️ Upload checksum to Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v2
@@ -209,3 +211,4 @@ jobs:
           path: ${{ steps.package.outputs.archive }}.sha256
           destination: 'kleverchain-public/ksc/${{ matrix.build }}/${{ steps.package.outputs.version }}'
           parent: false
+          predefinedAcl: 'publicRead'
