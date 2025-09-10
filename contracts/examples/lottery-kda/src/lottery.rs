@@ -359,6 +359,12 @@ pub trait Lottery {
         value * percentage / PERCENTAGE_TOTAL
     }
 
+    #[only_owner]
+    #[endpoint(changeContractName)]
+    fn change_contract_name(&self, new_name: ManagedBuffer) {
+        self.send().set_account_name(new_name);
+    }
+
     // storage
 
     #[view(getLotteryInfo)]

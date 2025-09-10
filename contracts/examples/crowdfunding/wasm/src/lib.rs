@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           15
-// Total number of exported functions:  16
+// Endpoints:                           16
+// Total number of exported functions:  17
 
 #![no_std]
 
@@ -16,6 +16,7 @@ klever_sc_wasm_adapter::endpoints! {
     crowdfunding
     (
         init => init
+        changeContractName => change_contract_name
         claim => claim
         create => create
         set_deadline => set_deadline

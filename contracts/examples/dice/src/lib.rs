@@ -94,4 +94,10 @@ pub trait Dice {
             is_winner,
         }
     }
+
+    #[only_owner]
+    #[endpoint(changeContractName)]
+    fn change_contract_name(&self, new_name: ManagedBuffer) {
+        self.send().set_account_name(new_name);
+    }
 }
