@@ -28,6 +28,9 @@ pub trait Crowdfunding:
         self.limit().set(limit);
     }
 
+    #[upgrade]
+    fn upgrade(&self) {}
+
     #[only_owner]
     #[endpoint(changeContractName)]
     fn change_contract_name(&self, new_name: ManagedBuffer) {

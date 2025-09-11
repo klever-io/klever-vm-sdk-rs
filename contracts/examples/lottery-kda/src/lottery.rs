@@ -17,6 +17,9 @@ pub trait Lottery {
     #[init]
     fn init(&self) {}
 
+    #[upgrade]
+    fn upgrade(&self) {}
+
     #[allow_multiple_var_args]
     #[endpoint]
     fn start(

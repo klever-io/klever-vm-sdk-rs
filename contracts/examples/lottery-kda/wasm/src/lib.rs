@@ -4,8 +4,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
+// Upgrade:                              1
 // Endpoints:                            8
-// Total number of exported functions:   9
+// Total number of exported functions:  10
 
 #![no_std]
 
@@ -16,6 +17,7 @@ klever_sc_wasm_adapter::endpoints! {
     lottery_kda
     (
         init => init
+        upgrade => upgrade
         start => start
         createLotteryPool => create_lottery_pool
         buy_ticket => buy_ticket
