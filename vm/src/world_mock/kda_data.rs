@@ -156,7 +156,7 @@ impl AccountKda {
             .attributes = new_attribute_bytes;
     }
 
-    pub fn iter(&self) -> Iter<Vec<u8>, KdaData> {
+    pub fn iter(&self) -> Iter<'_, Vec<u8>, KdaData> {
         self.0.iter()
     }
 

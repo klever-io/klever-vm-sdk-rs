@@ -18,7 +18,7 @@ pub trait StorageTokenWrapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
-    fn get_storage_key(&self) -> ManagedRef<SA, StorageKey<SA>>;
+    fn get_storage_key(&self) -> ManagedRef<'_, SA, StorageKey<SA>>;
 
     fn is_empty(&self) -> bool {
         storage_get_len(self.get_storage_key()) == 0

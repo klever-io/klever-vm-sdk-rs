@@ -174,7 +174,7 @@ where
         self.data
     }
 
-    pub fn iter_buffers(&self) -> ManagedVecRefIterator<M, ManagedBuffer<M>> {
+    pub fn iter_buffers(&self) -> ManagedVecRefIterator<'_, M, ManagedBuffer<M>> {
         ManagedVecRefIterator::new(&self.data)
     }
 }
@@ -203,7 +203,7 @@ impl<M: ManagedTypeApi> ManagedArgBuffer<M>
 where
     M: ManagedTypeApi + 'static,
 {
-    pub fn raw_arg_iter(&self) -> ManagedVecRefIterator<M, ManagedBuffer<M>> {
+    pub fn raw_arg_iter(&self) -> ManagedVecRefIterator<'_, M, ManagedBuffer<M>> {
         self.data.iter()
     }
 }
