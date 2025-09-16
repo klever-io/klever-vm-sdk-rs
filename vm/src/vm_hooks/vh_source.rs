@@ -8,7 +8,7 @@ use crate::{
 
 /// Abstracts away the borrowing of a managed types structure.
 pub trait VMHooksHandlerSource: Debug {
-    fn m_types_lock(&self) -> MutexGuard<TxManagedTypes>;
+    fn m_types_lock(&self) -> MutexGuard<'_, TxManagedTypes>;
 
     fn halt_with_error(&self, status: u64, message: &str) -> !;
 
@@ -29,7 +29,7 @@ pub trait VMHooksHandlerSource: Debug {
     /// Random number generator, based on the blockchain randomness source.
     fn random_next_bytes(&self, length: usize) -> Vec<u8>;
 
-    fn result_lock(&self) -> MutexGuard<TxResult>;
+    fn result_lock(&self) -> MutexGuard<'_, TxResult>;
 
     fn push_tx_log(&self, tx_log: TxLog) {
         self.result_lock().result_logs.push(tx_log);
@@ -47,7 +47,7 @@ pub trait VMHooksHandlerSource: Debug {
 
     fn get_current_block_info(&self) -> &BlockInfo;
 
-    fn back_transfers_lock(&self) -> MutexGuard<BackTransfers>;
+    fn back_transfers_lock(&self) -> MutexGuard<'_, BackTransfers>;
 
     /// For ownership reasons, needs to return a clone.
     ///

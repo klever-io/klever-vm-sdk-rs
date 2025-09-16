@@ -33,7 +33,7 @@ impl DebugApiVMHooksHandler {
 }
 
 impl VMHooksHandlerSource for DebugApiVMHooksHandler {
-    fn m_types_lock(&self) -> MutexGuard<TxManagedTypes> {
+    fn m_types_lock(&self) -> MutexGuard<'_, TxManagedTypes> {
         self.0.m_types_lock()
     }
 
@@ -54,7 +54,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         self.0.rng_lock().next_bytes(length)
     }
 
-    fn result_lock(&self) -> MutexGuard<TxResult> {
+    fn result_lock(&self) -> MutexGuard<'_, TxResult> {
         self.0.result_lock()
     }
 
@@ -80,7 +80,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         &self.0.blockchain_ref().current_block_info
     }
 
-    fn back_transfers_lock(&self) -> MutexGuard<BackTransfers> {
+    fn back_transfers_lock(&self) -> MutexGuard<'_, BackTransfers> {
         self.0.back_transfers_lock()
     }
 

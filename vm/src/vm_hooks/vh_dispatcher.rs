@@ -52,7 +52,7 @@ impl VMHooks for VMHooksDispatcher {
 
     fn signal_error(&self, message_offset: MemPtr, message_length: MemLength) {
         unsafe {
-            mem_conv::with_bytes(message_offset, message_length, |message| {
+            mem_conv::with_bytes::<_, ()>(message_offset, message_length, |message| {
                 self.handler.signal_error(message);
             });
         }

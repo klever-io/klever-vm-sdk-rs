@@ -44,7 +44,7 @@ impl<SA> StorageTokenWrapper<SA> for SemiFungibleTokenMapper<SA>
 where
     SA: StorageMapperApi + CallTypeApi,
 {
-    fn get_storage_key(&self) -> crate::types::ManagedRef<SA, StorageKey<SA>> {
+    fn get_storage_key(&self) -> crate::types::ManagedRef<'_, SA, StorageKey<SA>> {
         self.key.as_ref()
     }
 
