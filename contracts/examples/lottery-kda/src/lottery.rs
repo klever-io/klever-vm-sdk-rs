@@ -17,6 +17,9 @@ pub trait Lottery {
     #[init]
     fn init(&self) {}
 
+    #[upgrade]
+    fn upgrade(&self) {}
+
     #[allow_multiple_var_args]
     #[endpoint]
     fn start(
@@ -357,6 +360,12 @@ pub trait Lottery {
 
     fn calculate_percentage_of(&self, value: &BigUint, percentage: &BigUint) -> BigUint {
         value * percentage / PERCENTAGE_TOTAL
+    }
+
+    #[only_owner]
+    #[endpoint(changeContractName)]
+    fn change_contract_name(&self, new_name: ManagedBuffer) {
+        self.send().set_account_name(new_name);
     }
 
     // storage

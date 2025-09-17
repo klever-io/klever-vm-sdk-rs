@@ -5,8 +5,8 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            2
-// Total number of exported functions:   4
+// Endpoints:                            3
+// Total number of exported functions:   5
 
 #![no_std]
 
@@ -20,5 +20,6 @@ klever_sc_wasm_adapter::endpoints! {
         upgrade => upgrade
         getLastResult => last_result
         bet => bet
+        changeContractName => change_contract_name
     )
 }
