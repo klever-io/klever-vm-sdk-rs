@@ -7,10 +7,9 @@ use crate::data::{
     MIN_PREDICTION_UNDER_VALUE,
 };
 use crate::utils::{calculate_payout, check_bet, roll};
-use rand::*;
+
 
 pub mod data;
-pub mod rand;
 pub mod utils;
 
 #[klever_sc::contract]
@@ -64,11 +63,9 @@ pub trait Dice {
 
         require!(payment > 0, "bet amount can't be zero");
 
-        let dice_value: u32 = roll(Rand::new(
-            self.blockchain().get_block_random_seed(),
-            self.blockchain().get_tx_hash(),
-        ));
-
+        
+        let dice_value: u32 = roll::<Self::Api>();
+        
         let is_winner: bool = check_bet(bet_value, bet_type, dice_value);
 
         let (payment_total, multiplier) = calculate_payout(payout, payment);

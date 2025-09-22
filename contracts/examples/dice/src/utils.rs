@@ -1,15 +1,15 @@
 use crate::data::{BetType, MAX_ROLL_VALUE};
-use crate::Rand;
+use klever_sc::proxy_imports::RandomnessSource;
 
 use core::ops::Div;
 use core::ops::Mul;
 
 use klever_sc::{api::ManagedTypeApi, types::BigUint};
 
-pub fn roll(randomizer: Rand) -> u32 {
-    let mut randomizer = randomizer;
+pub fn roll<M: ManagedTypeApi>() -> u32 {
+    let mut rand = RandomnessSource::<M>::new();
 
-    let result: u32 = randomizer.next_u32() % MAX_ROLL_VALUE;
+    let result: u32 = rand.next_u32() % MAX_ROLL_VALUE;
 
     result + 1
 }
