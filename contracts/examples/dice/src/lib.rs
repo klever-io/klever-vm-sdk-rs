@@ -76,6 +76,10 @@ pub trait Dice {
         if is_winner {
             self.send()
                 .direct_klv(&self.blockchain().get_caller(), &payment_total);
+        } else {
+            // add zero transfer when user lose to fix inconsistency in simulate and real tx
+            let zero_transfer = BigUint::from(0u32);
+            self.send().direct_klv(&self.blockchain().get_caller(), &zero_transfer);
         }
 
         self.last_result(&self.blockchain().get_caller()).set(Bet {
