@@ -7,10 +7,8 @@ use crate::data::{
     MIN_PREDICTION_UNDER_VALUE,
 };
 use crate::utils::{calculate_payout, check_bet, roll};
-use rand::*;
 
 pub mod data;
-pub mod rand;
 pub mod utils;
 
 #[klever_sc::contract]
@@ -57,6 +55,7 @@ pub trait Dice {
         }
 
         let (token_identifier, payment) = self.call_value().klv_or_single_fungible_kda();
+
         require!(
             token_identifier == TokenIdentifier::from("KLV"),
             "payment token must be KLV"
@@ -64,10 +63,7 @@ pub trait Dice {
 
         require!(payment > 0, "bet amount can't be zero");
 
-        let dice_value: u32 = roll(Rand::new(
-            self.blockchain().get_block_random_seed(),
-            self.blockchain().get_tx_hash(),
-        ));
+        let dice_value: u32 = roll::<Self::Api>();
 
         let is_winner: bool = check_bet(bet_value, bet_type, dice_value);
 
@@ -76,6 +72,11 @@ pub trait Dice {
         if is_winner {
             self.send()
                 .direct_klv(&self.blockchain().get_caller(), &payment_total);
+        } else {
+            // Add a zero transfer when the user loses to fix the inconsistency between simulation and real transactions.
+            let zero_transfer = BigUint::from(0u32);
+            self.send()
+                .direct_klv(&self.blockchain().get_caller(), &zero_transfer);
         }
 
         self.last_result(&self.blockchain().get_caller()).set(Bet {
