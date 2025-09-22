@@ -56,8 +56,8 @@ impl Rand {
         let third_byte = self.next_u8() as u32;
         let fourth_byte = self.next_u8() as u32;
 
-        // TODO: Fix, this only generates in u8 range
-        first_byte | second_byte | third_byte | fourth_byte
+        // Combine bytes using proper bit shifting to get full u32 range
+        (first_byte << 24) | (second_byte << 16) | (third_byte << 8) | fourth_byte
     }
 
     pub fn next_u8(&mut self) -> u8 {
