@@ -77,7 +77,7 @@ pub trait Dice {
             self.send()
                 .direct_klv(&self.blockchain().get_caller(), &payment_total);
         } else {
-            // add zero transfer when user lose to fix inconsistency in simulate and real tx
+            // Add a zero transfer when the user loses to fix the inconsistency between simulation and real transactions.
             let zero_transfer = BigUint::from(0u32);
             self.send().direct_klv(&self.blockchain().get_caller(), &zero_transfer);
         }
