@@ -16,6 +16,7 @@ mod managed_vec_owned_iter;
 mod managed_vec_ref;
 mod managed_vec_ref_iter;
 pub(crate) mod preloaded_managed_buffer;
+mod proposal;
 mod randomness_source;
 mod sft_metadata;
 mod token_identifier;
@@ -57,6 +58,7 @@ pub use managed_vec_item_payload::*;
 pub use managed_vec_owned_iter::ManagedVecOwnedIterator;
 pub use managed_vec_ref::ManagedVecRef;
 pub use managed_vec_ref_iter::ManagedVecRefIterator;
+pub use proposal::ProposalParameter;
 pub use randomness_source::RandomnessSource;
 pub use token_identifier::TokenIdentifier;
 

@@ -11,7 +11,7 @@ use num_traits::Zero;
 // The Go VM doesn't do it, but if we change that, we can enable it easily here too via this constant.
 const KDA_TOKEN_DATA_FUNC_RESETS_VALUES: bool = false;
 
-const VM_BUILTIN_FUNCTION_NAMES: [&str; 22] = [
+const VM_BUILTIN_FUNCTION_NAMES: [&str; 23] = [
     KLEVER_TRANSFER_FUNC_NAME,
     KLEVER_CREATE_ASSET_FUNC_NAME,
     KLEVER_FREEZE_FUNC_NAME,
@@ -20,6 +20,7 @@ const VM_BUILTIN_FUNCTION_NAMES: [&str; 22] = [
     KLEVER_UNDELEGATE_FUNC_NAME,
     KLEVER_WITHDRAW_FUNC_NAME,
     KLEVER_CLAIM_FUNC_NAME,
+    KLEVER_PROPOSAL_FUNC_NAME,
     KLEVER_ASSET_TRIGGER_FUNC_NAME,
     KLEVER_SET_ACCOUNT_NAME_FUNC_NAME,
     KLEVER_VOTE_FUNC_NAME,
