@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install rust
         run: |
-          rustup default stable
+          rustup default 1.89.0
           rustup component add rustfmt clippy
 
       - name: Cargo Cache
@@ -59,7 +59,7 @@ jobs:
 
       - name: Install rust
         run: |
-          rustup default stable
+          rustup default 1.89.0
           rustup target add wasm32-unknown-unknown
 
       - name: Setup koperator
@@ -125,7 +125,7 @@ jobs:
 
       - name: Install rust
         run: |
-          rustup default stable
+          rustup default 1.89.0
           rustup target add wasm32-unknown-unknown
 
       - name: Cargo Cache

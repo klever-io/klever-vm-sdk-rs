@@ -65,7 +65,7 @@ jobs:
         shell: bash
         run: |
           # GitHub runners have Rust pre-installed, we just need to add targets
-          rustup default stable
+          rustup default 1.89.0
           rustup target add ${{ matrix.target }}
           
           # For macOS, ensure both targets are available for cross-compilation
