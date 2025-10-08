@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
 use crate::contract_base::{BlockchainWrapper, SendRawWrapper};
-use crate::types::{AttributesInfo, GasLeft, ReturnsRawResult, ToSelf, Tx};
+use crate::types::{AttributesInfo, GasLeft, ProposalParameter, ReturnsRawResult, ToSelf, Tx};
 use crate::{
     api::{
         AssetTriggerType, AssetType, BlockchainApi, BlockchainApiImpl, BuyType, CallTypeApi,
@@ -11,9 +11,10 @@ use crate::{
         KLEVER_CANCEL_MARKET_ORDER_FUNC_NAME, KLEVER_CLAIM_FUNC_NAME, KLEVER_CONFIG_ITO_FUNC_NAME,
         KLEVER_CONFIG_MARKETPLACE_FUNC_NAME, KLEVER_CREATE_ASSET_FUNC_NAME,
         KLEVER_CREATE_MARKETPLACE_FUNC_NAME, KLEVER_DELEGATE_FUNC_NAME, KLEVER_DEPOSIT_FUNC_NAME,
-        KLEVER_FREEZE_FUNC_NAME, KLEVER_ITO_TRIGGER_FUNC_NAME, KLEVER_SELL_FUNC_NAME,
-        KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, KLEVER_UNDELEGATE_FUNC_NAME, KLEVER_UNFREEZE_FUNC_NAME,
-        KLEVER_UPDATE_ACCOUNT_PERMISSION, KLEVER_VOTE_FUNC_NAME, KLEVER_WITHDRAW_FUNC_NAME,
+        KLEVER_FREEZE_FUNC_NAME, KLEVER_ITO_TRIGGER_FUNC_NAME, KLEVER_PROPOSAL_FUNC_NAME,
+        KLEVER_SELL_FUNC_NAME, KLEVER_SET_ACCOUNT_NAME_FUNC_NAME, KLEVER_UNDELEGATE_FUNC_NAME,
+        KLEVER_UNFREEZE_FUNC_NAME, KLEVER_UPDATE_ACCOUNT_PERMISSION, KLEVER_VOTE_FUNC_NAME,
+        KLEVER_WITHDRAW_FUNC_NAME,
     },
     codec::NestedEncode,
     kda::KDASystemSmartContractProxy,
@@ -686,6 +687,26 @@ where
 
         arg_buffer.push_arg(claim_type as u32);
         arg_buffer.push_arg(id);
+
+        self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
+    }
+
+    /// Allows synchronous creation of a proposal. Execution is resumed afterwards.
+    pub fn proposal(
+        &self,
+        epoch_duration: u32,
+        description: &ManagedBuffer<A>,
+        parameters: ManagedVec<A, ProposalParameter<A>>,
+    ) {
+        let mut arg_buffer = ManagedArgBuffer::new();
+        let func_name = KLEVER_PROPOSAL_FUNC_NAME;
+
+        arg_buffer.push_arg(epoch_duration);
+        arg_buffer.push_arg(description);
+
+        let mut parameters_bytes = ManagedBuffer::<A>::new();
+        let _ = parameters.dep_encode(&mut parameters_bytes);
+        arg_buffer.push_arg(&parameters_bytes);
 
         self.call_local_kda_built_in_function_minimal(func_name, arg_buffer);
     }

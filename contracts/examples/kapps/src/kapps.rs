@@ -426,6 +426,20 @@ pub trait Kapps {
     }
 
     #[endpoint]
+    fn proposal(
+        &self,
+        epoch_duration: u32,
+        description: ManagedBuffer,
+        parameter: ProposalParameter<Self::Api>,
+    ) {
+        let mut parameters = ManagedVec::new();
+        parameters.push(parameter);
+
+        self.send()
+            .proposal(epoch_duration, &description, parameters);
+    }
+
+    #[endpoint]
     fn ito_config(
         &self,
         token: TokenIdentifier,

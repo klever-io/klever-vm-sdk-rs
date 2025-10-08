@@ -13,6 +13,7 @@ pub const KLEVER_DELEGATE_FUNC_NAME: &str = "KleverDelegate";
 pub const KLEVER_UNDELEGATE_FUNC_NAME: &str = "KleverUndelegate";
 pub const KLEVER_WITHDRAW_FUNC_NAME: &str = "KleverWithdraw";
 pub const KLEVER_CLAIM_FUNC_NAME: &str = "KleverClaim";
+pub const KLEVER_PROPOSAL_FUNC_NAME: &str = "KleverProposal";
 pub const KLEVER_ASSET_TRIGGER_FUNC_NAME: &str = "KleverAssetTrigger";
 pub const KLEVER_SET_ACCOUNT_NAME_FUNC_NAME: &str = "KleverSetAccountName";
 pub const KLEVER_VOTE_FUNC_NAME: &str = "KleverVote";

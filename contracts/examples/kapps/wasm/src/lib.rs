@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           44
-// Total number of exported functions:  45
+// Endpoints:                           45
+// Total number of exported functions:  46
 
 #![no_std]
 
@@ -48,6 +48,7 @@ klever_sc_wasm_adapter::endpoints! {
         buy => buy
         deposit => deposit
         vote => vote
+        proposal => proposal
         ito_config => ito_config
         ito_set_prices => ito_set_prices
         ito_update_status => ito_update_status
