@@ -1,7 +1,7 @@
 use super::{
     builtin_func_trait::BuiltinFunction,
     builtin_function_names::*,
-    general::{ChangeOwner, KleverAssetTrigger, SetAccountName, UpgradeContract},
+    general::{ChangeOwner, KleverAssetTrigger, KleverCreateAsset, SetAccountName, UpgradeContract},
     transfer::KDAMultiTransfer,
     BuiltinFunctionKdaTransferInfo,
 };
@@ -74,6 +74,7 @@ impl<'a> BuiltinFunctionCall<'a> {
     {
         match self.tx_input.func_name.as_str() {
             KLEVER_ASSET_TRIGGER_FUNC_NAME => self.execute_bf(KleverAssetTrigger, f),
+            KLEVER_CREATE_ASSET_FUNC_NAME => self.execute_bf(KleverCreateAsset, f),
             KLEVER_SET_ACCOUNT_NAME_FUNC_NAME => self.execute_bf(SetAccountName, f),
             KLEVER_TRANSFER_FUNC_NAME => self.execute_bf(KDAMultiTransfer, f),
             CHANGE_OWNER_BUILTIN_FUNC_NAME => self.execute_bf(ChangeOwner, f),
