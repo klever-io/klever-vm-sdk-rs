@@ -1,0 +1,46 @@
+{
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "kapps_base_init.scen.json"
+        },
+        {  "step": "scCall",
+            "id": "create_asset",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:empty",
+                "function": "kda_create",
+                "arguments": [],
+                "gasLimit": "5,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": ["0x54455354"],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+
+        },
+        {
+            "step": "scCall",
+            "id": "create_asset_nft",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:empty",
+                "function": "kda_create_nft",
+                "arguments": [],
+                "gasLimit": "5,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": ["0x544553544e4654"],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        }
+    ]
+}
