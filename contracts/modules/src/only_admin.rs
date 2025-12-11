@@ -11,24 +11,18 @@ pub trait OnlyAdminModule {
     #[endpoint(addAdmin)]
     fn add_admin(&self, address: ManagedAddress) {
         let caller = self.blockchain().get_caller();
-        let epoch = self.blockchain().get_block_epoch();
-        let timestamp = self.blockchain().get_block_timestamp();
-
         self.admins().insert(address.clone());
 
-        self.admin_added_event(&caller, epoch, timestamp, &address);
+        self.admin_added_event(&caller, &address);
     }
 
     #[only_owner]
     #[endpoint(removeAdmin)]
     fn remove_admin(&self, address: ManagedAddress) {
         let caller = self.blockchain().get_caller();
-        let epoch = self.blockchain().get_block_epoch();
-        let timestamp = self.blockchain().get_block_timestamp();
-
         self.admins().swap_remove(&address);
 
-        self.admin_removed_event(&caller, epoch, timestamp, &address);
+        self.admin_removed_event(&caller, &address);
     }
 
     #[view(getAdmins)]
@@ -46,8 +40,6 @@ pub trait OnlyAdminModule {
     fn admin_added_event(
         &self,
         #[indexed] caller: &ManagedAddress,
-        #[indexed] epoch: u64,
-        #[indexed] timestamp: u64,
         #[indexed] new_admin: &ManagedAddress,
     );
 
@@ -55,8 +47,6 @@ pub trait OnlyAdminModule {
     fn admin_removed_event(
         &self,
         #[indexed] caller: &ManagedAddress,
-        #[indexed] epoch: u64,
-        #[indexed] timestamp: u64,
         #[indexed] removed_admin: &ManagedAddress,
     );
 }
