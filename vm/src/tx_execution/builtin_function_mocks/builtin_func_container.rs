@@ -1,7 +1,9 @@
 use super::{
     builtin_func_trait::BuiltinFunction,
     builtin_function_names::*,
-    general::{ChangeOwner, KleverAssetTrigger, KleverCreateAsset, SetAccountName, UpgradeContract},
+    general::{
+        ChangeOwner, KleverAssetTrigger, KleverCreateAsset, SetAccountName, UpgradeContract,
+    },
     transfer::KDAMultiTransfer,
     BuiltinFunctionKdaTransferInfo,
 };
