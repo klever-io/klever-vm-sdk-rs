@@ -282,6 +282,36 @@
                     "indexed": true
                 }
             ]
+        },
+        {
+            "identifier": "admin_added",
+            "inputs": [
+                {
+                    "name": "caller",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "new_admin",
+                    "type": "Address",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "admin_removed",
+            "inputs": [
+                {
+                    "name": "caller",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "removed_admin",
+                    "type": "Address",
+                    "indexed": true
+                }
+            ]
         }
     ],
     "kdaAttributes": [
