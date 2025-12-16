@@ -15,7 +15,7 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": ["0x54455354"],
+                "out": ["str:TEST"],
                 "status": "",
                 "logs": "*",
                 "gas": "*",
@@ -35,7 +35,7 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": ["0x544553544e4654"],
+                "out": ["str:TESTNFT"],
                 "status": "",
                 "logs": "*",
                 "gas": "*",
