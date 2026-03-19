@@ -10,9 +10,9 @@ checksum = "7c02d123df017efcdfbd739ef81735b36c5ba83ec3c59c80a9d7ecc718f92e50"
 
 [[package]]
 name = "autocfg"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
+checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "bitflags"
@@ -40,7 +40,7 @@ checksum = "6fe2267d4ed49bc07b63801559be28c718ea06c4738b7a03c94df7386d2cde46"
 
 [[package]]
 name = "klever-sc"
-version = "0.45.0"
+version = "0.45.1"
 dependencies = [
  "bitflags",
  "hex-literal",
@@ -71,7 +71,7 @@ dependencies = [
 
 [[package]]
 name = "klever-sc-derive"
-version = "0.45.0"
+version = "0.45.1"
 dependencies = [
  "hex",
  "proc-macro2",
@@ -82,14 +82,14 @@ dependencies = [
 
 [[package]]
 name = "klever-sc-modules"
-version = "0.45.0"
+version = "0.45.1"
 dependencies = [
  "klever-sc",
 ]
 
 [[package]]
 name = "klever-sc-wasm-adapter"
-version = "0.45.0"
+version = "0.45.1"
 dependencies = [
  "klever-sc",
 ]
@@ -142,9 +142,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.15.0"
+version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8917285742e9f3e1683f0a9c4e6b57960b7314d0b08d30d1ecd426713ee2eee9"
+checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 
 [[package]]
 name = "syn"
@@ -159,9 +159,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.18"
+version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"
+checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
 name = "unwrap-infallible"

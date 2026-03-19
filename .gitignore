@@ -56,3 +56,6 @@ tags
 # pem files
 *.pem
 *.key
+
+# Environment variables
+.env

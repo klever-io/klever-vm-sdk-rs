@@ -12,9 +12,9 @@ path = "src/multi_contract_features.rs"
 example_feature = []
 
 [dependencies.klever-sc]
-version = "0.45.0"
+version = "0.45.1"
 path = "../../../framework/base"
 
 [dev-dependencies.klever-sc-scenario]
-version = "0.45.0"
+version = "0.45.1"
 path = "../../../framework/scenario"

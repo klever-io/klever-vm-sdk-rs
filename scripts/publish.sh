@@ -122,10 +122,17 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Load CRATES_TOKEN from .env if not already set
+if [[ -z "$CRATES_TOKEN" && -f ".env" ]]; then
+    print_info "Loading CRATES_TOKEN from .env..."
+    export $(grep "^CRATES_TOKEN=" .env | head -1)
+fi
+
 # Check for CRATES_TOKEN
 if [[ -z "$CRATES_TOKEN" ]]; then
     print_error "CRATES_TOKEN environment variable is not set!"
     print_info "You need to set CRATES_TOKEN to publish to crates.io"
+    print_info "Or create a .env file with: CRATES_TOKEN=your_token"
     print_info "Get your token from https://crates.io/me"
     exit 1
 fi

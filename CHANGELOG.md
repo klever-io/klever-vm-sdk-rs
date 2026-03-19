@@ -26,6 +26,24 @@ They are:
 
 
 
+
+## [sc 0.45.1, vm 0.6.1] - 2026-03-19
+
+### Features
+- [KLC-1874] Add Create Asset mock (#19)
+- [KLC-1616] Add events to Admin module (#13)
+- [KLC-1750] Create built in function to proposal actions (#17)
+- [KLC-1674] Add set account name on testnet contracts (#14)
+
+### Fixes
+- [KLC-1811] Add transfer zero to dice to fix sc out of gas (#16)
+- [KLC-1615] fix: remove panic for unsupported versions in post-processing check (#12)
+- [KLC-1614] fix: publish script failing on already published packages (#11)
+- fix: mismatched lifetime syntaxes (#15)
+
+### Other Changes
+- Define a fixed rust toolchain version (#18)
+
 ## [sc 0.45.0,codec 0.19.0,vm 0.6.0] - 2025-06-11
 
 ### Features
