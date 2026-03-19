@@ -191,7 +191,7 @@ jobs:
             ${{ steps.package.outputs.archive }}.sha256
 
       - name: Configure GCP service account
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_CLOUD_RUN_SA }}'
 
