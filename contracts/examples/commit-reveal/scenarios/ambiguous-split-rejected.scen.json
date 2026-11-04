@@ -1,0 +1,145 @@
+{
+  "name": "moving the value/salt boundary cannot open a commitment to a different value",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "reveal phase of round 1: commit deadline 1600 <= now < reveal deadline 2200",
+      "currentBlockInfo": {
+        "blockTimestamp": "1700"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-roc-with-33-byte-salt",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:roc",
+          "str:kalice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:argument decode error (salt): bad array length",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "the old scheme accepted value 'roc' + salt 'k'++salt; the salt is now exactly 32 bytes by type"
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-roc-with-32-byte-salt",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:roc",
+          "str:kalice-salt-00000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:hash mismatch",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "with a fixed-length salt the value always starts at the same offset, so a shifted split hashes differently"
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-not-revealed-after-split",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          ""
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-revealed-rock",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          "str:rock"
+        ],
+        "status": "0"
+      }
+    }
+  ]
+}

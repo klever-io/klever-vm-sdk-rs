@@ -1,0 +1,68 @@
+# Abstract
+
+A commit-reveal round with KLV bonds. Each player locks a bond together with a hash of a secret value (the commit phase), then discloses the value and the salt (the reveal phase). Players who do not reveal in time forfeit their bond to the players who did.
+
+The example is meant to show:
+
+- deadlines based on block timestamps, with exact boundaries (`now < commit_deadline`, `commit_deadline <= now < reveal_deadline`, `now >= reveal_deadline`);
+- bonds that make not revealing costly;
+- a permissionless `finalize`: anyone can settle a round once the reveal deadline has passed;
+- pull payments: `finalize` only credits balances, and each player withdraws with `claim`;
+- an unambiguous commitment encoding that is bound to one round of one contract and to one player.
+
+# Endpoints
+
+- `createRound(commit_secs, reveal_secs, bond, max_players)`: opens a round and returns its id (ids start at 1).
+- `commit(round_id, hash)`: payable, KLV only; joins a round with exactly the bond, once per address.
+- `reveal(round_id, value, salt)`: discloses the value; the salt is exactly 32 bytes.
+- `finalize(round_id)`: settles a round after the reveal deadline; revealers get their bond back plus an equal share of the forfeited bonds, the division remainder goes to the first revealer in commit order. If nobody revealed, the pot is credited to the contract owner.
+- `claim()`: pays out everything credited to the caller.
+- Views: `computeCommitment(round_id, player, salt, value)`, `getRound`, `getPlayers`, `getCommitment`, `getRevealed`, `getClaimable`.
+
+# Rules
+
+| Rule | Value | Error |
+| --- | --- | --- |
+| Commit and reveal phase length | at least 60 seconds each | `phase too short` |
+| Deadline arithmetic | checked addition | `phase too long` |
+| Bond | greater than 0 | `bond must be positive` |
+| Players per round | 2 to 100 | `invalid max players` |
+| Commit | only while `now < commit_deadline` | `commit phase over` |
+| Commit payment | exactly the bond, in KLV | `wrong bond`; other tokens are rejected by the `#[payable("KLV")]` check with `function does not accept KDA payment` |
+| Commit | one per address; round not full | `already committed`, `round full` |
+| Reveal | only while `commit_deadline <= now < reveal_deadline` | `not in reveal phase` |
+| Reveal | needs a commitment, once, non-empty value, matching hash | `no commitment`, `already revealed`, `empty value`, `hash mismatch` |
+| Reveal | salt of exactly 32 bytes | argument decode error |
+| Finalize | only once `now >= reveal_deadline`, once per round | `too early`, `already finalized` |
+| Claim | needs a credited balance | `nothing to claim` |
+| Any round call | the round must exist | `round not found` |
+
+# Computing a commitment
+
+The commitment is `keccak256` of the following bytes, in this order:
+
+```
+round_id   8 bytes, big-endian u64
+contract   32 bytes, the contract address
+player     32 bytes, the address that will call commit and reveal
+salt       32 bytes
+value      the rest (non-empty)
+```
+
+All fields except `value` have a fixed length and `value` comes last, so the preimage splits into fields in only one way. The round id and the contract address make a hash valid for one round of one contract only, and the player address means nobody else can reveal a copied hash.
+
+Pick a random 32-byte salt and keep it secret until the reveal phase. The `computeCommitment` view returns the same hash, but it takes the secret as input: querying it through a node sends your salt and value to that node, and calling it as a transaction publishes them on-chain. For real use, compute the hash locally with the layout above and use the view only for testing.
+
+# Running the tests
+
+```
+cargo test -p commit-reveal
+```
+
+The scenarios in `scenarios/` run on the Rust VM. The Go scenario tests need the `operator` binary on `PATH` and a feature flag:
+
+```
+cargo test -p commit-reveal --features klever-sc-scenario/run-go-tests
+```
+
+To build the contract, install the wasm target once with `sc-meta install wasm32`, then run `cargo run build` in the `meta/` folder.

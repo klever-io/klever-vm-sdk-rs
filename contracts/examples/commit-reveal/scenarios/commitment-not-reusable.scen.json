@@ -1,0 +1,169 @@
+{
+  "name": "a commitment is bound to its round: a round-1 hash cannot be revealed in round 2",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-2",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1001",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [
+          "2"
+        ],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1-hash-in-round-2",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1001",
+        "function": "commit",
+        "arguments": [
+          "2",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "the contract cannot tell which round a hash was made for, so committing it is accepted"
+    },
+    {
+      "step": "setState",
+      "comment": "reveal phase of round 1 and 2: commit deadline 1600 <= now < reveal deadline 2200",
+      "currentBlockInfo": {
+        "blockTimestamp": "1700"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-round-1-hash-in-round-2",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "2",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:hash mismatch",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "same value, salt and caller, but round_id 2 enters the preimage, so the round-1 hash does not open"
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-revealed-round-1",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          "str:rock"
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-not-revealed-round-2",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "2",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          ""
+        ],
+        "status": "0"
+      }
+    }
+  ]
+}
