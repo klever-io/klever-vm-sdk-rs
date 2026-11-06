@@ -79,3 +79,8 @@ fn create_round_guards_go() {
 fn finalize_guards_go() {
     world().run("scenarios/finalize-guards.scen.json");
 }
+
+#[test]
+fn edge_cases_go() {
+    world().run("scenarios/edge-cases.scen.json");
+}

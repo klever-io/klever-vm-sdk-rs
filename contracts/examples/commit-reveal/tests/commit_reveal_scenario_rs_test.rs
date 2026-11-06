@@ -85,3 +85,8 @@ fn create_round_guards_rs() {
 fn finalize_guards_rs() {
     world().run("scenarios/finalize-guards.scen.json");
 }
+
+#[test]
+fn edge_cases_rs() {
+    world().run("scenarios/edge-cases.scen.json");
+}

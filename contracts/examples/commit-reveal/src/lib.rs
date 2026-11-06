@@ -103,7 +103,8 @@ pub trait CommitReveal {
     /// (`commit_deadline <= now < reveal_deadline`). The value must be
     /// non-empty, the salt exactly `SALT_LEN` bytes (a wrong length fails
     /// argument decoding), and `compute_commitment(round_id, caller, salt,
-    /// value)` must equal the commitment.
+    /// value)` must equal the commitment. Emits `valueRevealed`, the lasting
+    /// record of the value: `finalize` deletes the stored copy.
     #[endpoint]
     fn reveal(
         &self,
@@ -131,6 +132,7 @@ pub trait CommitReveal {
         );
 
         revealed.set(&value);
+        self.value_revealed_event(round_id, &caller, &value);
     }
 
     /// Settles a round once `now >= reveal_deadline`; anyone may call it, once.
@@ -138,9 +140,13 @@ pub trait CommitReveal {
     /// Bonds of players who did not reveal are split equally among the
     /// revealers, who also get their own bond back. The division remainder
     /// goes to the first revealer in the players set's order, which is commit
-    /// order (not reveal order). If nobody revealed, the whole pot goes to
-    /// the contract owner. Amounts are credited to `claimable`; per-player
-    /// round storage is cleared, the round info is kept and marked finalized.
+    /// order (not reveal order). If nobody revealed, all bonds are forfeit
+    /// and go to the contract owner. Amounts are credited to `claimable`.
+    ///
+    /// Per-player round storage (players, commitments, revealed values) is
+    /// removed; the round info is kept and marked finalized. The revealed
+    /// values stay readable in the `valueRevealed` events, and
+    /// `roundFinalized` records the revealer count and the forfeited total.
     #[endpoint]
     fn finalize(&self, round_id: u64) {
         let mut round = self.require_round(round_id);
@@ -157,10 +163,11 @@ pub trait CommitReveal {
         let forfeit_total = &round.bond * &BigUint::from(player_count - revealer_count);
 
         if revealer_count == 0 {
-            let pot = &round.bond * &BigUint::from(player_count);
-            if pot > 0u32 {
+            // Every bond is forfeit. An empty round forfeits nothing: skip
+            // the owner lookup and the no-op credit.
+            if forfeit_total > 0u32 {
                 let owner = self.blockchain().get_owner_address();
-                self.credit(&owner, &pot);
+                self.credit(&owner, &forfeit_total);
             }
         } else {
             let revealers = BigUint::from(revealer_count);
@@ -246,6 +253,14 @@ pub trait CommitReveal {
     }
 
     // events
+
+    #[event("valueRevealed")]
+    fn value_revealed_event(
+        &self,
+        #[indexed] round_id: u64,
+        #[indexed] player: &ManagedAddress,
+        value: &ManagedBuffer,
+    );
 
     #[event("roundFinalized")]
     fn round_finalized_event(

@@ -15,9 +15,14 @@ The example is meant to show:
 - `createRound(commit_secs, reveal_secs, bond, max_players)`: opens a round and returns its id (ids start at 1).
 - `commit(round_id, hash)`: payable, KLV only; joins a round with exactly the bond, once per address.
 - `reveal(round_id, value, salt)`: discloses the value; the salt is exactly 32 bytes.
-- `finalize(round_id)`: settles a round after the reveal deadline; revealers get their bond back plus an equal share of the forfeited bonds, the division remainder goes to the first revealer in commit order. If nobody revealed, the pot is credited to the contract owner.
+- `finalize(round_id)`: settles a round after the reveal deadline; revealers get their bond back plus an equal share of the forfeited bonds, the division remainder goes to the first revealer in commit order. If nobody revealed, all bonds are forfeit and credited to the contract owner. Finalize then removes the round's per-player storage (players, commitments, revealed values) and marks the round finalized.
 - `claim()`: pays out everything credited to the caller.
-- Views: `computeCommitment(round_id, player, salt, value)`, `getRound`, `getPlayers`, `getCommitment`, `getRevealed`, `getClaimable`.
+- Views: `computeCommitment(round_id, player, salt, value)`, `getRound`, `getPlayers`, `getCommitment`, `getRevealed`, `getClaimable`. `getPlayers`, `getCommitment` and `getRevealed` return empty values once the round is finalized.
+
+# Events
+
+- `valueRevealed(round_id, player, value)`: emitted by every successful `reveal`; `round_id` and `player` are indexed topics, `value` is the data. Because `finalize` removes the stored values, these events are the lasting record of what each player revealed.
+- `roundFinalized(round_id, revealer_count, forfeit_total)`: emitted by `finalize`; `round_id` and `revealer_count` are indexed topics, `forfeit_total` (the bonds of players who did not reveal, which is every bond when nobody revealed) is the data.
 
 # Rules
 

@@ -97,6 +97,20 @@
       "expect": {
         "out": [],
         "status": "0",
+        "logs": [
+          {
+            "address": "sc:commit-reveal",
+            "endpoint": "str:reveal",
+            "topics": [
+              "str:valueRevealed",
+              "1",
+              "address:alice"
+            ],
+            "data": [
+              "str:rock"
+            ]
+          }
+        ],
         "gas": "*",
         "refund": "*"
       }
@@ -146,6 +160,20 @@
       "expect": {
         "out": [],
         "status": "0",
+        "logs": [
+          {
+            "address": "sc:commit-reveal",
+            "endpoint": "str:finalize",
+            "topics": [
+              "str:roundFinalized",
+              "1",
+              "2"
+            ],
+            "data": [
+              "1000"
+            ]
+          }
+        ],
         "gas": "*",
         "refund": "*"
       }
