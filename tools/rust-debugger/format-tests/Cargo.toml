@@ -29,3 +29,8 @@ members = ["."]
 
 [dependencies]
 hex = "0.4"
+# Pinned to the version the root workspace locks. This crate has its own
+# workspace and no committed Cargo.lock (tools/**/Cargo.lock is gitignored),
+# so CI resolves num-bigint fresh. The LLDB pretty printer reads the internal
+# `data` field of num_bigint::BigUint, and from 0.4.7 that layout reads as 0.
+num-bigint = "=0.4.5"
