@@ -1,0 +1,133 @@
+{
+  "name": "commit-reveal deployment and first round",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        },
+        "address:alice": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        },
+        "address:bob": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        },
+        "address:carol": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        }
+      },
+      "newAddresses": [
+        {
+          "creatorAddress": "address:owner",
+          "creatorNonce": "1",
+          "newAddress": "sc:commit-reveal"
+        }
+      ],
+      "currentBlockInfo": {
+        "blockTimestamp": "1000"
+      }
+    },
+    {
+      "step": "scDeploy",
+      "id": "deploy",
+      "tx": {
+        "from": "address:owner",
+        "contractCode": "kleversc:../output/commit-reveal.kleversc.json",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-1",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": ["600", "600", "1000", "3"],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": ["1"],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "get-round-1",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRound",
+        "arguments": ["1"]
+      },
+      "expect": {
+        "out": [
+          {
+            "0-commit_deadline": "u64:1600",
+            "1-reveal_deadline": "u64:2200",
+            "2-bond": "biguint:1000",
+            "3-max_players": "u32:3",
+            "4-finalized": "u8:0"
+          }
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:alice": {
+          "nonce": "0",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:bob": {
+          "nonce": "0",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:carol": {
+          "nonce": "0",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "0",
+          "storage": {
+            "str:lastRoundId": "1",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:0"
+            }
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        }
+      }
+    }
+  ]
+}

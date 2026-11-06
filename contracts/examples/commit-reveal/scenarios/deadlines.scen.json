@@ -1,0 +1,347 @@
+{
+  "name": "phase boundaries: commit < 1600, reveal in [1600, 2200), finalize >= 2200",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "setState",
+      "comment": "last second of the commit phase (commit deadline 1600)",
+      "currentBlockInfo": {
+        "blockTimestamp": "1599"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-commit-round-1",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x76884a0157fba04156712d27c73ca28ae7582ebefe69a2bb6b7202a0478cc8e8"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-commit-round-1",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x6f0a697ece0cb76c3d18f951ee6f4e19cd9afb9037e412e468b01953efc23602"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-at-1599",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:not in reveal phase",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "one second before the commit deadline the reveal phase has not started"
+    },
+    {
+      "step": "setState",
+      "comment": "commit deadline reached",
+      "currentBlockInfo": {
+        "blockTimestamp": "1600"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "owner-commit-at-1600",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0xc1d8437aa06011a02bcefb63a582c1448df1389172d665b6b23282088df2302c"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:commit phase over",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "address:alice": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "address:bob": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "address:carol": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "3000",
+          "storage": {
+            "+": ""
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-at-1600",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "first second of the reveal phase"
+    },
+    {
+      "step": "setState",
+      "comment": "last second of the reveal phase (reveal deadline 2200)",
+      "currentBlockInfo": {
+        "blockTimestamp": "2199"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-reveal-at-2199",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:paper",
+          "str:bob-salt-00000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "last second of the reveal phase is still accepted"
+    },
+    {
+      "step": "scCall",
+      "id": "owner-finalize-at-2199",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "finalize",
+        "arguments": [
+          "1"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:too early",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "reveal deadline reached",
+      "currentBlockInfo": {
+        "blockTimestamp": "2200"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-reveal-at-2200",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:scissors",
+          "str:carol-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:not in reveal phase",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "carol is late by exactly the deadline second and forfeits her bond"
+    },
+    {
+      "step": "scCall",
+      "id": "owner-finalize-at-2200",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "finalize",
+        "arguments": [
+          "1"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:alice": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {}
+        },
+        "address:bob": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {}
+        },
+        "address:carol": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "3000",
+          "storage": {
+            "str:lastRoundId": "1",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:1"
+            },
+            "str:claimable|address:alice": "1500",
+            "str:claimable|address:bob": "1500"
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    }
+  ]
+}

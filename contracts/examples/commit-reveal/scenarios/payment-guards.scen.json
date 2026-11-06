@@ -1,0 +1,219 @@
+{
+  "name": "only the exact KLV bond is accepted, once per address; rejected attempts keep nothing",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "setState",
+      "comment": "alice also holds a KDA token that the contract must not accept as a bond",
+      "accounts": {
+        "address:alice": {
+          "nonce": "0",
+          "balance": "1,000,000",
+          "kda": {
+            "str:ANY-TOKENA": "1000"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-bond-too-low",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "999",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:wrong bond",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-bond-too-high",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1001",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:wrong bond",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-zero-klv",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "0",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:wrong bond",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-with-kda",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0",
+        "kdaValue": [
+          {
+            "tokenIdentifier": "str:ANY-TOKENA",
+            "value": "1000"
+          }
+        ]
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:function does not accept KDA payment",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:alice": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "0",
+          "storage": {
+            "+": ""
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-twice",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:already committed",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:alice": {
+          "nonce": "*",
+          "balance": "999,000",
+          "kda": {
+            "str:ANY-TOKENA": "1000"
+          },
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "1000",
+          "storage": {
+            "str:lastRoundId": "1",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:0"
+            },
+            "str:commitment|u64:1|address:alice": "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0",
+            "str:players|u64:1|str:.len": "1",
+            "str:players|u64:1|str:.item|u32:1": "address:alice",
+            "str:players|u64:1|str:.index|address:alice": "1"
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    }
+  ]
+}
