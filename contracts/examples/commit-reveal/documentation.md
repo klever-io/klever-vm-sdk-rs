@@ -40,7 +40,15 @@ The example is meant to show:
 | Reveal | salt of exactly 32 bytes | argument decode error |
 | Finalize | only once `now >= reveal_deadline`, once per round | `too early`, `already finalized` |
 | Claim | needs a credited balance | `nothing to claim` |
+| Commit, Reveal | the round is not finalized (defense in depth: timestamps already rule it out on chain) | `round finalized` |
 | Any round call | the round must exist | `round not found` |
+
+# Trust limits
+
+The forfeit rules are kept simple for teaching. Two consequences to weigh before reusing them:
+
+- **Sybil discount.** Forfeited bonds go to the revealers, so a player who holds several seats in a round gets back part of the bond one of their own addresses forfeits. With two of three seats, withholding one reveal costs half a bond, not a whole one. If that matters, send forfeits to a sink no player controls (burn or a treasury).
+- **Open rounds.** Anyone can create a round and anyone can commit to it. A party that fills every seat and never reveals blocks other players with `round full`; if that party is the contract owner, the no-reveal pot comes back to them at `finalize`. If that matters, restrict who may commit (an allowlist or the round creator's choice), or route a no-reveal pot somewhere other than the owner.
 
 # Computing a commitment
 

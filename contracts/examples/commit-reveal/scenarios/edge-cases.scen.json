@@ -1,5 +1,5 @@
 {
-  "name": "edge cases: commit phase overflow, KLV sent to non-payable endpoints, finalizing an empty round",
+  "name": "edge cases: commit phase overflow, KLV sent to non-payable endpoints, finalizing an empty round, commit and reveal refused after finalize",
   "gasSchedule": "dummy",
   "steps": [
     {
@@ -133,6 +133,66 @@
             ]
           }
         ],
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "only a mock can move time back: round 1 is finalized but now < commit_deadline again",
+      "currentBlockInfo": {
+        "blockTimestamp": "1500"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-after-finalize",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x0000000000000000000000000000000000000000000000000000000000000001"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round finalized",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "back inside the reveal window of the finalized round",
+      "currentBlockInfo": {
+        "blockTimestamp": "1700"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-after-finalize",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round finalized",
         "gas": "*",
         "refund": "*"
       }

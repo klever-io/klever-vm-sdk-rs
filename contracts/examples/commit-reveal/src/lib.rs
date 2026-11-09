@@ -86,6 +86,9 @@ pub trait CommitReveal {
     #[endpoint]
     fn commit(&self, round_id: u64, hash: ManagedByteArray<Self::Api, 32>) {
         let round = self.require_round(round_id);
+        // Defense in depth: the timestamp checks below already rule this out on
+        // a real chain, but a bond accepted after finalize could never be paid.
+        require!(!round.finalized, "round finalized");
         let now = self.blockchain().get_block_timestamp();
         require!(now < round.commit_deadline, "commit phase over");
         require!(*self.call_value().klv_value() == round.bond, "wrong bond");
@@ -113,6 +116,7 @@ pub trait CommitReveal {
         salt: ManagedByteArray<Self::Api, SALT_LEN>,
     ) {
         let round = self.require_round(round_id);
+        require!(!round.finalized, "round finalized");
         let now = self.blockchain().get_block_timestamp();
         require!(
             round.commit_deadline <= now && now < round.reveal_deadline,
@@ -142,6 +146,16 @@ pub trait CommitReveal {
     /// goes to the first revealer in the players set's order, which is commit
     /// order (not reveal order). If nobody revealed, all bonds are forfeit
     /// and go to the contract owner. Amounts are credited to `claimable`.
+    ///
+    /// Trust limits of this split, by design of the example:
+    /// - Sybil: a player with several addresses in one round gets back part
+    ///   of the bond an address of theirs forfeits (with two of three seats,
+    ///   withholding one reveal costs half a bond, not a whole one). Send
+    ///   forfeits to a sink no player controls if that matters.
+    /// - Anyone may create a round and anyone may fill it. A party that
+    ///   commits from every seat and never reveals blocks other players; when
+    ///   that party is the owner, the whole pot comes back to them. Restrict
+    ///   who may commit, or route a no-reveal pot elsewhere, if that matters.
     ///
     /// Per-player round storage (players, commitments, revealed values) is
     /// removed; the round info is kept and marked finalized. The revealed
