@@ -20,6 +20,8 @@ pub use round::RoundInfo;
 
 /// Shortest allowed phase: 15 blocks of 4 seconds.
 pub const MIN_PHASE_SECONDS: u64 = 60;
+/// Longest allowed phase: 30 days, so a round cannot lock bonds indefinitely.
+pub const MAX_PHASE_SECONDS: u64 = 60 * 60 * 24 * 30;
 /// Upper bound on players, so `finalize` iterates a bounded set.
 pub const MAX_PLAYERS: u32 = 100;
 /// Salt length in bytes, fixed by the argument type: a fixed length keeps the
@@ -37,7 +39,8 @@ pub trait CommitReveal {
 
     /// Opens a new round and returns its id (ids start at 1).
     /// The commit phase lasts `commit_secs` from now and the reveal phase
-    /// `reveal_secs` after that; both must be at least `MIN_PHASE_SECONDS`.
+    /// `reveal_secs` after that; both must be between `MIN_PHASE_SECONDS` and
+    /// `MAX_PHASE_SECONDS`.
     #[endpoint(createRound)]
     fn create_round(
         &self,
@@ -49,6 +52,10 @@ pub trait CommitReveal {
         require!(
             commit_secs >= MIN_PHASE_SECONDS && reveal_secs >= MIN_PHASE_SECONDS,
             "phase too short"
+        );
+        require!(
+            commit_secs <= MAX_PHASE_SECONDS && reveal_secs <= MAX_PHASE_SECONDS,
+            "phase too long"
         );
         require!(bond > 0u32, "bond must be positive");
         require!(
@@ -156,6 +163,10 @@ pub trait CommitReveal {
     ///   commits from every seat and never reveals blocks other players; when
     ///   that party is the owner, the whole pot comes back to them. Restrict
     ///   who may commit, or route a no-reveal pot elsewhere, if that matters.
+    /// - Upgrades: the contract has an `#[upgrade]` endpoint. Deployed as
+    ///   upgradeable, the owner can replace the code and take every locked
+    ///   bond and unclaimed balance, which is full custody of the funds, not
+    ///   just the no-reveal pot. Deploy it non-upgradeable for real use.
     ///
     /// Per-player round storage (players, commitments, revealed values) is
     /// removed; the round info is kept and marked finalized. The revealed
@@ -177,12 +188,9 @@ pub trait CommitReveal {
         let forfeit_total = &round.bond * &BigUint::from(player_count - revealer_count);
 
         if revealer_count == 0 {
-            // Every bond is forfeit. An empty round forfeits nothing: skip
-            // the owner lookup and the no-op credit.
-            if forfeit_total > 0u32 {
-                let owner = self.blockchain().get_owner_address();
-                self.credit(&owner, &forfeit_total);
-            }
+            // Every bond is forfeit. For an empty round this credits zero,
+            // which stores nothing and leaves `claim` refusing.
+            self.credit(&self.blockchain().get_owner_address(), &forfeit_total);
         } else {
             let revealers = BigUint::from(revealer_count);
             let share = &forfeit_total / &revealers;

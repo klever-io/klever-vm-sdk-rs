@@ -29,6 +29,7 @@ The example is meant to show:
 | Rule | Value | Error |
 | --- | --- | --- |
 | Commit and reveal phase length | at least 60 seconds each | `phase too short` |
+| Commit and reveal phase length | at most 30 days each, so a round cannot lock bonds indefinitely | `phase too long` |
 | Deadline arithmetic | checked addition | `phase too long` |
 | Bond | greater than 0 | `bond must be positive` |
 | Players per round | 2 to 100 | `invalid max players` |
@@ -49,6 +50,8 @@ The forfeit rules are kept simple for teaching. Two consequences to weigh before
 
 - **Sybil discount.** Forfeited bonds go to the revealers, so a player who holds several seats in a round gets back part of the bond one of their own addresses forfeits. With two of three seats, withholding one reveal costs half a bond, not a whole one. If that matters, send forfeits to a sink no player controls (burn or a treasury).
 - **Open rounds.** Anyone can create a round and anyone can commit to it. A party that fills every seat and never reveals blocks other players with `round full`; if that party is the contract owner, the no-reveal pot comes back to them at `finalize`. If that matters, restrict who may commit (an allowlist or the round creator's choice), or route a no-reveal pot somewhere other than the owner.
+- **Upgradeable deployment.** The contract has an `#[upgrade]` endpoint. Deployed as upgradeable, the owner can replace the code and take every locked bond and every unclaimed balance: full custody of the funds, not just the no-reveal pot. Deploy it non-upgradeable for real use.
+- **Check the round before committing.** Read `getRound` first: the deadlines, the bond and `max_players` are whatever the round's creator chose, within the limits above.
 
 # Computing a commitment
 
