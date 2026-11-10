@@ -46,7 +46,7 @@ The example is meant to show:
 
 # Trust limits
 
-The forfeit rules are kept simple for teaching. Two consequences to weigh before reusing them:
+The example is kept simple for teaching. Weigh these before reusing it:
 
 - **Sybil discount.** Forfeited bonds go to the revealers, so a player who holds several seats in a round gets back part of the bond one of their own addresses forfeits. With two of three seats, withholding one reveal costs half a bond, not a whole one. If that matters, send forfeits to a sink no player controls (burn or a treasury).
 - **Open rounds.** Anyone can create a round and anyone can commit to it. A party that fills every seat and never reveals blocks other players with `round full`; if that party is the contract owner, the no-reveal pot comes back to them at `finalize`. If that matters, restrict who may commit (an allowlist or the round creator's choice), or route a no-reveal pot somewhere other than the owner.
