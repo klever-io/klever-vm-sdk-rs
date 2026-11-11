@@ -221,9 +221,9 @@ pub trait CommitReveal {
     #[endpoint]
     fn claim(&self) {
         let caller = self.blockchain().get_caller();
-        let amount = self.claimable(&caller).get();
+        // `take` reads and clears in one step; a failing `require!` reverts both.
+        let amount = self.claimable(&caller).take();
         require!(amount > 0u32, "nothing to claim");
-        self.claimable(&caller).clear();
         self.send().direct_klv(&caller, &amount);
     }
 
