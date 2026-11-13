@@ -468,6 +468,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "commit-reveal"
+version = "0.0.0"
+dependencies = [
+ "klever-sc",
+ "klever-sc-scenario",
+]
+
+[[package]]
+name = "commit-reveal-meta"
+version = "0.0.0"
+dependencies = [
+ "commit-reveal",
+ "klever-sc-meta",
+]
+
+[[package]]
 name = "common-path"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,0 +1,323 @@
+{
+  "name": "edge cases: a u64::MAX phase length, deadlines that overflow near the end of time, KLV sent to non-payable endpoints, finalizing an empty round, commit and reveal refused after finalize",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-commit-phase-u64-max",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "18446744073709551615",
+          "60",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-with-klv",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "62",
+        "message": "str:function does not accept KDA payment",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-finalize-with-klv",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1",
+        "function": "finalize",
+        "arguments": [
+          "1"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "62",
+        "message": "str:function does not accept KDA payment",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-claim-with-klv",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1",
+        "function": "claim",
+        "arguments": [],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "62",
+        "message": "str:function does not accept KDA payment",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "reveal deadline 2200 has passed; round 1 has no commitments",
+      "currentBlockInfo": {
+        "blockTimestamp": "2300"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-finalize-empty-round-1",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "function": "finalize",
+        "arguments": [
+          "1"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "logs": [
+          {
+            "address": "sc:commit-reveal",
+            "endpoint": "str:finalize",
+            "topics": [
+              "str:roundFinalized",
+              "1",
+              "0"
+            ],
+            "data": [
+              "0"
+            ]
+          }
+        ],
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "only a mock can move time back: round 1 is finalized but now < commit_deadline again",
+      "currentBlockInfo": {
+        "blockTimestamp": "1500"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-after-finalize",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x0000000000000000000000000000000000000000000000000000000000000001"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round finalized",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "back inside the reveal window of the finalized round",
+      "currentBlockInfo": {
+        "blockTimestamp": "1700"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-after-finalize",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round finalized",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "valid phase lengths, but now + commit_secs overflows u64 (now = u64::MAX - 515): only checked_add catches it",
+      "currentBlockInfo": {
+        "blockTimestamp": "18446744073709551100"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-commit-deadline-overflow",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "now + commit_secs fits (u64::MAX - 15) but commit_deadline + reveal_secs overflows",
+      "currentBlockInfo": {
+        "blockTimestamp": "18446744073709551000"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-reveal-deadline-overflow",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "60",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "owner-claim-nothing",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "claim",
+        "arguments": [],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:nothing to claim",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:alice": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:bob": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "address:carol": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "0",
+          "storage": {
+            "str:lastRoundId": "1",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:1"
+            }
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    }
+  ]
+}
