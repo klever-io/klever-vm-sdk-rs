@@ -51,7 +51,12 @@ The example is kept simple for teaching. Weigh these before reusing it:
 - **Sybil discount.** Forfeited bonds go to the revealers, so a player who holds several seats in a round gets back part of the bond one of their own addresses forfeits. With two of three seats, withholding one reveal costs half a bond, not a whole one. If that matters, send forfeits to a sink no player controls (burn or a treasury).
 - **Open rounds.** Anyone can create a round and anyone can commit to it. A party that fills every seat and never reveals blocks other players with `round full`; if that party is the contract owner, the no-reveal pot comes back to them at `finalize`. If that matters, restrict who may commit (an allowlist or the round creator's choice), or route a no-reveal pot somewhere other than the owner.
 - **Upgradeable deployment.** The contract has an `#[upgrade]` endpoint. Deployed as upgradeable, the owner can replace the code and take every locked bond and every unclaimed balance: full custody of the funds, not just the no-reveal pot. Deploy it non-upgradeable for real use.
+- **Censorship near the deadline.** A reveal only counts if a block includes it before `reveal_deadline`. A validator who also plays, or a group of colluding validators, could leave other players' reveals out of the last blocks and collect their forfeited bonds. The 60-second minimum is about 15 blocks; for rounds with real value, use a reveal phase of several minutes and reveal early, so that the reveal lands in a block proposed by someone else.
 - **Check the round before committing.** Read `getRound` first: the deadlines, the bond and `max_players` are whatever the round's creator chose, within the limits above.
+
+# Gas
+
+`finalize` is the only path that releases bonds, so a full round must settle in one transaction. Measured on a local devnet running klever-go `develop`, finalizing a 100-player round (`MAX_PLAYERS`) with 99 revealers used 65,219,618 gas, about one sixth of the 400,000,000 gas a transaction may use, and the cost grows linearly with the number of players. The scenarios run with the dummy gas schedule, so they do not check this number: measure again if you raise `MAX_PLAYERS` or add work to `finalize`.
 
 # Computing a commitment
 

@@ -8,7 +8,7 @@
     },
     {
       "step": "scCall",
-      "id": "create-round-deadline-overflow",
+      "id": "create-round-reveal-phase-u64-max",
       "tx": {
         "from": "address:owner",
         "to": "sc:commit-reveal",

@@ -1,5 +1,5 @@
 {
-  "name": "edge cases: commit phase overflow, KLV sent to non-payable endpoints, finalizing an empty round, commit and reveal refused after finalize",
+  "name": "edge cases: a u64::MAX phase length, deadlines that overflow near the end of time, KLV sent to non-payable endpoints, finalizing an empty round, commit and reveal refused after finalize",
   "gasSchedule": "dummy",
   "steps": [
     {
@@ -8,7 +8,7 @@
     },
     {
       "step": "scCall",
-      "id": "create-round-commit-phase-overflow",
+      "id": "create-round-commit-phase-u64-max",
       "tx": {
         "from": "address:owner",
         "to": "sc:commit-reveal",
@@ -193,6 +193,68 @@
         "out": [],
         "status": "57",
         "message": "str:round finalized",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "valid phase lengths, but now + commit_secs overflows u64 (now = u64::MAX - 515): only checked_add catches it",
+      "currentBlockInfo": {
+        "blockTimestamp": "18446744073709551100"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-commit-deadline-overflow",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "comment": "now + commit_secs fits (u64::MAX - 15) but commit_deadline + reveal_secs overflows",
+      "currentBlockInfo": {
+        "blockTimestamp": "18446744073709551000"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-reveal-deadline-overflow",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "60",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
         "gas": "*",
         "refund": "*"
       }
