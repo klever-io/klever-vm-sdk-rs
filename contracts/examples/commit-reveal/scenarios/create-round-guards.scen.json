@@ -1,0 +1,316 @@
+{
+  "name": "createRound validates phase lengths, player limits and bond; the minimums are accepted",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "commit-phase-59",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "59",
+          "600",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too short",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "reveal-phase-59",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "59",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too short",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "commit-phase-0",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "0",
+          "600",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too short",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "commit-phase-30-days-plus-1",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "2592001",
+          "600",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "reveal-phase-30-days-plus-1",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "2592001",
+          "1000",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:phase too long",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "max-players-1",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "1"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:invalid max players",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "max-players-0",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:invalid max players",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "max-players-101",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "101"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:invalid max players",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bond-0",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "0",
+          "3"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:bond must be positive",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "minimums-accepted",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "60",
+          "60",
+          "1",
+          "2"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [
+          "2"
+        ],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "max-players-100-accepted",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "100"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [
+          "3"
+        ],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "0",
+          "storage": {
+            "str:lastRoundId": "3",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:0"
+            },
+            "str:round|u64:2": {
+              "0-commit_deadline": "u64:1060",
+              "1-reveal_deadline": "u64:1120",
+              "2-bond": "biguint:1",
+              "3-max_players": "u32:2",
+              "4-finalized": "u8:0"
+            },
+            "str:round|u64:3": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:100",
+              "4-finalized": "u8:0"
+            }
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+[package]
+name = "commit-reveal-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies.commit-reveal]
+path = ".."
+
+[dependencies.klever-sc-meta]
+version = "0.45.1"
+path = "../../../../framework/meta"
+default-features = false

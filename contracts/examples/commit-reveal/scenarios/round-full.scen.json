@@ -1,0 +1,142 @@
+{
+  "name": "a round with max_players = 2 takes two commitments and rejects the third",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "create-round-2-two-players",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:commit-reveal",
+        "function": "createRound",
+        "arguments": [
+          "600",
+          "600",
+          "1000",
+          "2"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [
+          "2"
+        ],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-2",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "2",
+          "0x77f7099541e907a6f072f122c5ac3f770ce2f2d931fc94031a386d11042b306a"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-commit-round-2",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "2",
+          "0xd238d43845881e18ea3894f3466b38ff69b402e27feac1fd24910a5e5e2fde93"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-commit-round-full",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "2",
+          "0x75bc6e9908202e861c209968e82e796ba0759f851710328cde55e7920070e5fe"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round full",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:carol": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {}
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "2000",
+          "code": "kleversc:../output/commit-reveal.kleversc.json",
+          "storage": {
+            "str:lastRoundId": "2",
+            "str:round|u64:1": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:3",
+              "4-finalized": "u8:0"
+            },
+            "str:round|u64:2": {
+              "0-commit_deadline": "u64:1600",
+              "1-reveal_deadline": "u64:2200",
+              "2-bond": "biguint:1000",
+              "3-max_players": "u32:2",
+              "4-finalized": "u8:0"
+            },
+            "str:commitment|u64:2|address:alice": "0x77f7099541e907a6f072f122c5ac3f770ce2f2d931fc94031a386d11042b306a",
+            "str:commitment|u64:2|address:bob": "0xd238d43845881e18ea3894f3466b38ff69b402e27feac1fd24910a5e5e2fde93",
+            "str:players|u64:2|str:.len": "2",
+            "str:players|u64:2|str:.item|u32:1": "address:alice",
+            "str:players|u64:2|str:.item|u32:2": "address:bob",
+            "str:players|u64:2|str:.index|address:alice": "1",
+            "str:players|u64:2|str:.index|address:bob": "2"
+          }
+        },
+        "+": ""
+      }
+    }
+  ]
+}

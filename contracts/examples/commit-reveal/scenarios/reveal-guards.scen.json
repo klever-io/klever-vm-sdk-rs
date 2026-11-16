@@ -1,0 +1,402 @@
+{
+  "name": "reveal rejects missing commitments, wrong values, repeats, bad salt lengths and unknown rounds",
+  "gasSchedule": "dummy",
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "commit-reveal-init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x944274997a096d1fe9a5276a8c004b1a15bc63dd9bd2631a36c15373e21339e0"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-commit-round-1",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "1",
+          "0x76884a0157fba04156712d27c73ca28ae7582ebefe69a2bb6b7202a0478cc8e8"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-unknown-round",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "99",
+          "0x15b0496dc2a3a97d4b7246e14c8767dbbc0e8eb504349d64e4d48b8ee0485d07"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round not found",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "unknown round id on commit; the bond is not kept"
+    },
+    {
+      "step": "scCall",
+      "id": "alice-commit-round-0",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "klvValue": "1000",
+        "function": "commit",
+        "arguments": [
+          "0",
+          "0xab17ddd8434547c04af93736c226d38ef69dfc5c3ac66502fc435cfe0b352547"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round not found",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-finalize-unknown-round",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "function": "finalize",
+        "arguments": [
+          "99"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round not found",
+        "gas": "*",
+        "refund": "*"
+      },
+      "comment": "unknown round id on finalize"
+    },
+    {
+      "step": "setState",
+      "comment": "reveal phase of round 1: commit deadline 1600 <= now < reveal deadline 2200",
+      "currentBlockInfo": {
+        "blockTimestamp": "1700"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-unknown-round",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "99",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:round not found",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "carol-reveal-no-commitment",
+      "tx": {
+        "from": "address:carol",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:no commitment",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-wrong-value",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:paper",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:hash mismatch",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-wrong-salt",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000001"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:hash mismatch",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-reveal-31-byte-salt",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:paper",
+          "str:bob-salt-0000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:argument decode error (salt): bad array length",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "bob-reveal-empty-salt",
+      "tx": {
+        "from": "address:bob",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:paper",
+          ""
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:argument decode error (salt): bad array length",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-not-revealed-yet",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          ""
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-round-1",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "id": "alice-reveal-again",
+      "tx": {
+        "from": "address:alice",
+        "to": "sc:commit-reveal",
+        "function": "reveal",
+        "arguments": [
+          "1",
+          "str:rock",
+          "str:alice-salt-000000000000000000000"
+        ],
+        "gasLimit": "100,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "57",
+        "message": "str:already revealed",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "alice-revealed-rock",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:alice"
+        ]
+      },
+      "expect": {
+        "out": [
+          "str:rock"
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "scQuery",
+      "id": "bob-not-revealed",
+      "tx": {
+        "to": "sc:commit-reveal",
+        "function": "getRevealed",
+        "arguments": [
+          "1",
+          "address:bob"
+        ]
+      },
+      "expect": {
+        "out": [
+          ""
+        ],
+        "status": "0"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:alice": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "address:bob": {
+          "nonce": "*",
+          "balance": "999,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "address:carol": {
+          "nonce": "*",
+          "balance": "1,000,000",
+          "storage": {
+            "+": ""
+          }
+        },
+        "sc:commit-reveal": {
+          "nonce": "0",
+          "balance": "2000",
+          "storage": {
+            "+": ""
+          },
+          "code": "kleversc:../output/commit-reveal.kleversc.json"
+        },
+        "+": ""
+      }
+    }
+  ]
+}

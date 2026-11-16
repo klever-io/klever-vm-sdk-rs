@@ -57,6 +57,8 @@ members = [
   "contracts/examples/crypto-zombies/meta",
   "contracts/examples/check-pause",
   "contracts/examples/check-pause/meta",
+  "contracts/examples/commit-reveal",
+  "contracts/examples/commit-reveal/meta",
   "contracts/examples/deploy-delete/deployer",
   "contracts/examples/deploy-delete/deployer/meta",
   "contracts/examples/deploy-delete/instance",
