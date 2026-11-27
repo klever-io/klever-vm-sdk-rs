@@ -19,6 +19,10 @@ env:
 
 jobs:
   build-and-upload-ksc:
+    # KLC-2968: keyless Google Cloud auth (Workload Identity) for the uploads
+    permissions:
+      contents: read
+      id-token: write
     name: Build and upload KSC for ${{ matrix.build }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
@@ -187,7 +191,8 @@ jobs:
       - name: 🔐 Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_CLOUD_RUN_SA }}'
+          workload_identity_provider: projects/1045602110429/locations/global/workloadIdentityPools/github-actions/providers/github-releases
+          service_account: gh-release-uploads@common-staging-310514.iam.gserviceaccount.com
 
       - name: ☁️ Upload archive to Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v2
